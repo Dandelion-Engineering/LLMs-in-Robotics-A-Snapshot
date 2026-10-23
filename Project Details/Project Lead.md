@@ -2,7 +2,7 @@
 
 ## Who Randy Is
 
-The project lead is **Randy Crespo**, founder of Dandelion Engineering and creator of Collaboration Station. He has an aerospace-engineering background from UCLA (unfinished degree) and is developing scientific judgment through his work with the [lab name redacted] at UCLA.
+The project lead is **Randy Crespo**, founder of Dandelion Engineering and creator of Collaboration Station. He has an aerospace-engineering background from UCLA (unfinished degree) and is developing scientific judgment through his work with the [lab name redacted].
 
 Randy approaches this project as **an engineer who uses research**. He wants to create useful capabilities, learn from the problems that arise, and use scientific ideas to improve what he builds. Robotics, neuroscience, and AI all genuinely interest him.
 
