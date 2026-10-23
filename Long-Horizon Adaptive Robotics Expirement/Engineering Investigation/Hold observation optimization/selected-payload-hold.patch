@@ -1,0 +1,97 @@
+--- a/Batch 01/Recovery Qualification/measurement.py
++++ b/Batch 01/Recovery Qualification/measurement.py
+@@ -40,6 +40,68 @@
+             and t['fixture'] == fixture]
+ 
+ 
++class PayloadHoldSampler:
++    """Read only fields consumed by HoldWindow from the same native state.
++
++    Indices are cached for this immutable compiled model. Contact semantics
++    match IndependentEvaluator.snapshot_cell exactly: distance tolerance and
++    any descendant of hand, without force, active-constraint or bilateral tests.
++    No stepping, forwarding, output, interpolation or snapshot-time cache.
++    """
++    def __init__(self, cell, part_id):
++        import mujoco
++        from evaluator import EvaluationError
++        self.cell, self.part_id = cell, part_id
++        model = self.model = cell.model
++        self.body = None
++        self.geometries = []
++        if part_id in cell.registry:
++            self.body = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, part_id)
++            if self.body < 0:
++                raise EvaluationError('Registered object lacks a physical body: ' + part_id)
++            self.geometries = [g for g in range(model.ngeom) if int(model.geom_bodyid[g]) == self.body
++                               and (int(model.geom_contype[g]) or int(model.geom_conaffinity[g]))]
++            if not self.geometries:
++                raise EvaluationError('Registered object lacks collision geometry: ' + part_id)
++        hand = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, 'hand')
++        if hand < 0:
++            raise EvaluationError('Panda gripper body was not found')
++        self.gripper_bodies = set()
++        for body in range(model.nbody):
++            current = body
++            while current:
++                if current == hand:
++                    self.gripper_bodies.add(body)
++                    break
++                current = int(model.body_parentid[current])
++
++    def snapshot(self):
++        import mujoco
++        from evaluator import EvaluationError, box_bounds
++        cell, model, data = self.cell, self.cell.model, self.cell.data
++        if model is not self.model:
++            raise EvaluationError('Hold sampler compiled model was replaced')
++        if self.body is None:
++            return {'objects': []}  # Preserve HoldWindow's existing missing-payload failure.
++        contact_found = False
++        for index in range(data.ncon):
++            contact = data.contact[index]
++            if float(contact.dist) > cell.evaluator.config.contact_tolerance_m:
++                continue
++            a, b = int(model.geom_bodyid[contact.geom1]), int(model.geom_bodyid[contact.geom2])
++            if (a == self.body and b in self.gripper_bodies) or (b == self.body and a in self.gripper_bodies):
++                contact_found = True
++        bounds = []
++        for geom in self.geometries:
++            if int(model.geom_type[geom]) != int(mujoco.mjtGeom.mjGEOM_BOX):
++                raise EvaluationError('Unsupported non-box object collision geometry: ' + self.part_id)
++            bounds.append(box_bounds(data.geom_xpos[geom].tolist(), data.geom_xmat[geom].tolist(), model.geom_size[geom].tolist()))
++        return {'objects': [{'id': self.part_id, 'position': data.xpos[self.body].tolist(),
++            'bounds': {'min': [min(b['min'][i] for b in bounds) for i in range(3)],
++                       'max': [max(b['max'][i] for b in bounds) for i in range(3)]},
++            'gripper_contact': contact_found}]}
++
++
+ class HoldWindow:
+     def __init__(self, part_id, sim, wall):
+         self.part_id = part_id
+@@ -52,6 +114,14 @@
+             'accepted_recovery_request_id': None, 'accepted_admission_event_id': None,
+             'all_recorded_hold_checks_pass': True,
+             'scope': 'Unchanged contact and center-z>0.075 predicate at every physics tick and explicit endpoints; not between integration states'}
++
++    def native_snapshot(self, cell):
++        sampler = getattr(self, '_native_sampler', None)
++        if sampler is None:
++            sampler = self._native_sampler = PayloadHoldSampler(cell, self.part_id)
++        elif sampler.cell is not cell:
++            raise ValueError('Hold window physics owner changed')
++        return sampler.snapshot()
+ 
+     def record(self, snapshot, sim, wall, *, tick):
+         data = self.data
+--- a/Batch 01/Recovery Qualification/run_screen.py
++++ b/Batch 01/Recovery Qualification/run_screen.py
+@@ -52,7 +52,7 @@
+     def step(self):
+         super().step()
+         if self.hold_window is not None:
+-            self.hold_window.record(self.snapshot(), float(self.cells[0].data.time),
++            self.hold_window.record(self.hold_window.native_snapshot(self.cells[0]), float(self.cells[0].data.time),
+                                     time.perf_counter() - self.start, tick=True)
+         if self.geometry_trace is not None:
+             self.geometry_trace.sample()

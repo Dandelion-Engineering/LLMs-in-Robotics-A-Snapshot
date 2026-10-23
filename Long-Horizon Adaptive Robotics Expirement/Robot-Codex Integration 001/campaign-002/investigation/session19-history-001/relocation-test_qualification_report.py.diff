@@ -1,0 +1,34 @@
+--- 
++++ 
+@@ -1574,6 +1574,7 @@
+         self.addCleanup(self.f.tearDown)
+         self.enterContext(patch.object(report, 'REPO', self.f.root))
+         self.enterContext(patch.object(report, 'CAMPAIGN', self.f.campaign))
++        self.enterContext(patch.object(qa, 'CAMPAIGN', self.f.campaign))
+ 
+     def fixture(self, kind='raw_event_preflight_diagnostic', schema=None):
+         if schema is None:
+@@ -1649,6 +1650,23 @@
+                 entry[key] = {key: item[key] for key in ('path', 'sha256')}
+             self.refresh(row, entry=entry)
+ 
++    def test_nested_report_output_preserves_exact_campaign_dispatch(self):
++        nested=self.f.output/'checkpoint'/'preview'
++        nested.mkdir(parents=True)
++        for kind,schemas in report.NO_MODEL_DIAGNOSTIC_SCHEMAS.items():
++            for schema in schemas:
++                with self.subTest(kind=kind,schema=schema):
++                    row,_,_,_=self.fixture(kind,schema)
++                    projected=report.qualification_row(row,nested)
++                    self.assertEqual(len(qa.no_model_diagnostic_guard(projected,nested)),4)
++
++    def test_report_directory_cannot_substitute_for_actual_campaign(self):
++        nested=self.f.output/'checkpoint'/'preview';nested.mkdir(parents=True)
++        row,_,_,_=self.fixture();projected=report.qualification_row(row,nested)
++        with patch.object(qa,'CAMPAIGN',nested.parent):
++            with self.assertRaisesRegex(ValueError,'command/output correspondence'):
++                qa.no_model_diagnostic_guard(projected,nested)
++
+     def test_both_schemas_remain_diagnostic_only_with_original_check_values(self):
+         for kind in report.NO_MODEL_DIAGNOSTICS:
+             with self.subTest(kind=kind):

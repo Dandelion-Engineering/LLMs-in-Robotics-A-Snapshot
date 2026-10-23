@@ -1,0 +1,9 @@
+# Current-apparatus route fixture correction
+
+`core001` is failed, exit 1. Its four-toy bedroom task and living-room/kitchen charger approaches passed. The full apartment tour then hit a physical obstacle while rotating at approximately `(9.04545, 4.18605)`; storage, stream and bundle groups were not run. The failed source, result, queue log and receipt remain unchanged.
+
+The inherited v1 route turns from south to east at `(9.1, 4.05)`, immediately beside the current drawer bank. The established v2/v3 geometry puts the east drawer at `(8.3, 3.5)` with its half width `0.49`; the bank reaches `x=8.79`. At the observed rotation pose, the center is only 0.25545 m east of that edge, less than the base's 0.36878 m rotational half diagonal. The retained physical blocked-action outcome is therefore consistent with the route's obsolete turn location. The apparatus and its geometry are unchanged.
+
+Before `core002`, replace only that tour waypoint with `(9.85, 5.6)`: move east before descending beside the drawers, then follow the original `(9.85, 4.05)`, `(9.85, 2.0)` and remaining waypoints. The existing 1.63 m counter aisle and ordinary route through it are already exercised by the fresh offline and physics fixtures. This correction retains the living-room → bedroom → bathroom → kitchen tour, both usable charger approaches, physical docking and the exact `3600 > 10 * tour_duration` reserve gate. No blocked action is ignored, and no production source, obstacle, task, sensor, control, model, limit or tolerance changes.
+
+This is operator-only deterministic engineering fixture geometry. It never enters a Robot Codex filesystem. The corrected fixture is frozen in a new attempt before its outcome is observed, alongside all five applicable regression groups. The independent audit must authenticate both the failed `core001` and the distinct `core002` outcome.

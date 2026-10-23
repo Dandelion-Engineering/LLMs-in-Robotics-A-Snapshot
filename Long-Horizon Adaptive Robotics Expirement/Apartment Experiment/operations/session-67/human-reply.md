@@ -1,0 +1,11 @@
+At 14:03-14:08 PDT, the recovered Maps continuation remained healthy with 16 accepted closed sessions and 11/21 advancements: seven household success latches (three bedroom, four kitchen) plus four timed throwing windows. Session 17 was active on a new bedroom assignment.
+
+Authenticated checkpoints 14-16 and their normal single-report closeout, complete journals and actual Windows/Linux/mount retirement. Session 15 remains a normal incomplete toy attempt; its timing uncertainty around green release is preserved. Session 16 was initially docked with a live latch pending closeout; only the separate followup observation accepted its checkpoint and advancement. Throwing advancement is not mastery, and robot-report claims have not yet received complete independent physical rescoring.
+
+Eighteen calls are counted: five original accepted, one original abandoned session-6 invocation and twelve continuation calls. The abandoned original kitchen latch remains excluded. Session 17's fresh gpt-6-astra/max thread and native/journal growth passed. Actual rendered checks showed session 16 docked at 100% changing to session 17 active at 95.9%, with current filesystem activity and no visible fetch error.
+
+C:/D: retained 517.619331/133.811523 GiB at 14:07, with both full 50 GiB reserves. Frozen sources/route bindings, the complete failed parent, pristine D: Maps and Baseline endpoint anchors passed preservation checks. No robot command, coaching, scientific change, retry, further recovery or comparison occurred.
+
+The dedicated 30-minute monitor remains ACTIVE and all five older monitors remain byte-unchanged/PAUSED. Healthy scientific execution continues across Development closeout. Complete endpoint audit remains pending, including accepted and abandoned history, physical/transport/recording evidence and actual retirement; preserve recovery/storage timing and Baseline snapshot caveats.
+
+[Session 67 report](../../../agents/Codex/Session%20Summaries/HumanReport67.md) and [bound observation evidence](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Apartment%20Experiment/operations/session-67/observation-summary.json) contain the receipts. The existing viewer remains at http://127.0.0.1:57835/.

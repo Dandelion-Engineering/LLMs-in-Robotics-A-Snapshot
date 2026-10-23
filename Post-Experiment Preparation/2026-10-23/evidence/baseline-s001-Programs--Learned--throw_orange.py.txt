@@ -1,0 +1,84 @@
+"""Calibrated orange-sphere throw. Read Playbooks/Learned/ThrowOrange.md first."""
+import argparse
+import json
+import sys
+import time
+
+sys.path.insert(0, "/")
+from robot_client import call
+
+
+def status():
+    s = call("status", {})
+    if not s.get("ok"):
+        raise RuntimeError(s)
+    return s
+
+
+def run(kind, parameters, essential=False):
+    s = status()
+    if s.get("action") is not None:
+        raise RuntimeError("Another action is active")
+    if s["battery"]["low_warning"] and not essential:
+        raise RuntimeError("Battery warning: stop practice and dock")
+    r = call("command", {"kind": kind, "parameters": parameters})
+    if not r.get("accepted"):
+        raise RuntimeError(r)
+    deadline = time.monotonic() + 15
+    while True:
+        s = status()
+        if s.get("action") is None:
+            break
+        if time.monotonic() > deadline:
+            raise RuntimeError("Action still active; inspect status before continuing")
+        time.sleep(.1)
+    a = s.get("last_action") or {}
+    if a.get("request_id") != r["request_id"] or a.get("status") != "completed":
+        raise RuntimeError(s)
+    time.sleep(.3)
+    s = status()
+    print(json.dumps({"kind": kind, "request_id": r["request_id"], "status": s}), flush=True)
+    return s
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--accelerate", type=float, default=.27, help="First throw segment seconds")
+    p.add_argument("--release", type=float, default=.13, help="Opening segment seconds")
+    a = p.parse_args()
+    if not (.20 <= a.accelerate <= .35 and .10 <= a.release <= .18):
+        p.error("Durations outside the bounded practice range")
+    s = status()
+    if "throw" not in s["assignment"].lower():
+        raise RuntimeError("Requires the throwing assignment")
+    if s["battery"]["work_seconds_remaining"] < 8:
+        raise RuntimeError("Insufficient working time for a trial")
+    g = s["gripper"]
+    if not (g["secure_lift_confirmed"] and g["bilateral_contact"] and .08 < g["width"] < .10):
+        raise RuntimeError("Requires a verified lifted orange sphere, about .089 m wide")
+    # Caller must have visually checked the target and the entire arm/flight path.
+    s = run("arm", {"x": .35, "y": 0, "z": .90, "pitch": 0, "duration": 1.2})
+    if not s["gripper"]["bilateral_contact"]:
+        raise RuntimeError("Lost contact in preparation")
+    start = s["sim_time"]
+    run("trajectory", {"points": [
+        {"x": .76, "y": 0, "z": 1.12, "duration": a.accelerate, "width": .025, "pitch": 0},
+        {"x": 1.02, "y": 0, "z": 1.30, "duration": a.release, "width": .15, "pitch": 0},
+    ]})
+    deadline = time.monotonic() + 5
+    feedback = None
+    while time.monotonic() < deadline:
+        s = status()
+        f = s.get("throw_feedback")
+        if f and f["landed_sim_time"] >= start:
+            feedback = f
+            break
+        time.sleep(.1)
+    print(json.dumps({"throw_started_sim_time": start, "feedback": feedback}), flush=True)
+    run("arm", {"x": .30, "y": 0, "z": 1.15, "pitch": 0, "duration": 1.2}, essential=True)
+    if feedback is None:
+        raise RuntimeError("No fresh landing feedback; inspect before resetting")
+
+
+if __name__ == "__main__":
+    main()

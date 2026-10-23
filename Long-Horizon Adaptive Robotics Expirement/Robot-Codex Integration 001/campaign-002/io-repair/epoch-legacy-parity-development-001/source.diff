@@ -1,0 +1,112 @@
+--- before/test_native_owner_bootstrap.py
++++ harness/test_native_owner_bootstrap.py
+@@ -45,6 +45,40 @@
+     (b'                args.code_mode_host_url=host_url\n',
+      b'                args.code_mode_host_url=host_url\n                args.native_process_ready=self.native_process_ready\n'
+      b'                args.native_cleanup_barrier=self.native_cleanup_barrier\n'),
++)
++
++
++# These exact reviewed byte edits are the prospective epoch provenance change.
++# Reversal is pinned on both sides; it cannot hide an unrelated added method.
++EPOCH_ARCHIVE = HERE.parents[2] / 'Architecture Map/releases/RCI001-C02-dev-078/code.zip'
++EPOCH_ARCHIVE_SHA = 'fa31d9c8f8a0090304774c53d30dfe7631a7547e70e0b84e0ecf2538183629d4'
++EPOCH_METHOD = HERE.parent / 'io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md'
++EPOCH_METHOD_SHA = '1deb7c87a485651167a6777731287f76d3cb8ddbf4b0a9d36f47c58018b1c91c'
++EPOCH_RUNTIME_SHA = '80b393d8f539e91bb7c202478372aa212274cc3773307efbc5e5fe3faf378bd5'
++PRE_EPOCH_RUNTIME_SHA = 'fac550bdd92e1ee35c98d21029408522c07ac8e956bdda24b8c5d4615c3d473b'
++EPOCH_RUNTIME_EDITS = (
++    (b'',
++     b"MIRROR_RECORD_LIMIT = 16384\nMIRROR_LOG_LIMIT = 16 * 1024 * 1024\nMIRROR_BODY_LIMIT = 4096\n\ndef mirror_bytes(value):\n    return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')\n"),
++    (b"            phase = 'upstream_request'\n",
++     b"            phase = 'request_context'\n            context = reply = None\n"),
++    (b'',
++     b"                initial = self.files.get('live/state.json', '{}')\n                invocation = json.loads(initial).get('invocation') or {}\n                pinned_id = invocation.get('invocation_id')\n                if (invocation.get('state') != 'active'\n                        or type(invocation.get('authority_epoch')) is not int\n                        or type(self.endpoint.get('authority_epoch')) is not int\n                        or invocation['authority_epoch'] != self.endpoint['authority_epoch']\n                        or not isinstance(pinned_id,str) or not 0 < len(pinned_id) <= 128):\n                    pinned_id = None  # Never manufacture an invocation binding from a response.\n                context = {'schema':'campaign002-mirror-request-1', 'request_id':uuid.uuid4().hex,\n                           'method':'GET', 'path':'/status', 'origin':'protected_host',\n                           'pinned_invocation_id':pinned_id,\n                           'pinned_authority_epoch':self.endpoint.get('authority_epoch'),\n                           'initial_state_sha256':hashlib.sha256(initial.encode()).hexdigest(),\n                           'request_wall_unix_s':time.time()}\n                self._mirror_receipt('mirror-requests.jsonl', context)\n                phase = 'upstream_request'\n"),
++    (b'',
++     b"                received = time.time()\n                phase = 'reply_context'\n                reply = {**context, 'schema':'campaign002-mirror-reply-1',\n                         'response_wall_unix_s':received, 'status':status}\n                retained = json.loads(self.redact(json.dumps(value, allow_nan=False)))\n                raw = mirror_bytes(retained)\n                reply.update(response_bytes=len(raw), response_sha256=hashlib.sha256(raw).hexdigest(),\n                             response_retained=len(raw) <= MIRROR_BODY_LIMIT,\n                             response=retained if len(raw) <= MIRROR_BODY_LIMIT else None)\n                self._mirror_receipt('mirror-replies.jsonl', reply)\n"),
++    (b"                self._observe_revocation('GET', '/status', None, status, value, 'public_mirror')\n",
++     b"                self._observe_revocation('GET', '/status', None, status, value, 'public_mirror',\n                                         mirror_context=reply)\n"),
++    (b"                           'phase':phase,'authority_revocation_established':revoked}\n",
++     b"                           'phase':phase,'authority_revocation_established':revoked,\n                           'mirror_request':context, 'mirror_reply':reply}\n"),
++    (b'',
++     b'    def _mirror_receipt(self, name, value):\n        """Bounded protected metadata; never a capability-bearing endpoint."""\n        raw = mirror_bytes(value) + b\'\\n\'\n        if len(raw) > MIRROR_RECORD_LIMIT:\n            raise RuntimeError(\'Mirror receipt record limit exceeded\')\n        total = sum((self.evidence / n).stat().st_size for n in\n                    (\'mirror-requests.jsonl\', \'mirror-replies.jsonl\') if (self.evidence / n).exists())\n        if total + len(raw) > MIRROR_LOG_LIMIT:\n            raise RuntimeError(\'Mirror receipt aggregate limit exceeded\')\n        with (self.evidence / name).open(\'ab\') as stream:\n            stream.write(raw); stream.flush(); os.fsync(stream.fileno())\n\n'),
++    (b'    def _observe_revocation(self, method, path, payload, status, body, source, trace_id=None):\n',
++     b'    def _observe_revocation(self, method, path, payload, status, body, source, trace_id=None,\n                            mirror_context=None):\n'),
++    (b'',
++     b"        if (source == 'public_mirror' and method == 'GET' and path == '/status'\n                and type(status) is int and status == 409 and body.get('ok') is False\n                and isinstance(error,dict) and error.get('code') == 'stale_authentication'\n                and isinstance(mirror_context,dict)\n                and mirror_context.get('schema') == 'campaign002-mirror-reply-1'\n                and mirror_context.get('response_retained') is True\n                and mirror_context.get('response') == body\n                and type(mirror_context.get('pinned_authority_epoch')) is int\n                and mirror_context['pinned_authority_epoch'] == self.endpoint.get('authority_epoch')\n                and isinstance(mirror_context.get('pinned_invocation_id'),str)\n                and 0 < len(mirror_context['pinned_invocation_id']) <= 128):\n            reason = 'host_epoch_denied'\n"),
++    (b"            write_json(self.evidence/'authority-revocation.json',{\n",
++     b'            receipt = {\n'),
++    (b"                'response':json.loads(self.redact(json.dumps(body)))})\n",
++     b"                'response':json.loads(self.redact(json.dumps(body)))}\n            if reason == 'host_epoch_denied':\n                receipt['mirror_context'] = mirror_context\n            write_json(self.evidence/'authority-revocation.json',receipt)\n"),
+ )
+ 
+ 
+@@ -182,6 +216,32 @@
+ 
+ 
+ class NativeOwnerParityTests(unittest.TestCase):
++    def remove_epoch_runtime_additions(self, candidate):
++        self.assertEqual(hashlib.sha256(EPOCH_METHOD.read_bytes()).hexdigest(), EPOCH_METHOD_SHA)
++        self.assertEqual(hashlib.sha256(candidate).hexdigest(), EPOCH_RUNTIME_SHA)
++        for before, after in EPOCH_RUNTIME_EDITS:
++            self.assertEqual(candidate.count(after), 1)
++            candidate = candidate.replace(after, before)
++        self.assertEqual(hashlib.sha256(candidate).hexdigest(), PRE_EPOCH_RUNTIME_SHA)
++        return candidate
++
++    def test_exact_declared_epoch_reversal_recovers_entire_dev078_runtime(self):
++        self.assertEqual(hashlib.sha256(EPOCH_ARCHIVE.read_bytes()).hexdigest(), EPOCH_ARCHIVE_SHA)
++        with zipfile.ZipFile(EPOCH_ARCHIVE) as archive:
++            original = archive.read((HERE/'runtime.py').relative_to(REPO).as_posix())
++        self.assertEqual(self.remove_epoch_runtime_additions((HERE/'runtime.py').read_bytes()), original)
++
++    def test_epoch_reversal_rejects_changed_declared_block_or_unrelated_method(self):
++        current = (HERE/'runtime.py').read_bytes()
++        mutations = (current.replace(b'MIRROR_BODY_LIMIT = 4096', b'MIRROR_BODY_LIMIT = 8192'),
++                     current.replace(b'    def _broker_loop(self):',
++                         b'    def unexpected_method(self): return None\n\n    def _broker_loop(self):'))
++        for candidate in mutations:
++            with self.subTest(sha256=hashlib.sha256(candidate).hexdigest()):
++                self.assertNotEqual(candidate, current)
++                with self.assertRaises(AssertionError):
++                    self.remove_epoch_runtime_additions(candidate)
++
+     def remove_unload_additions(self,candidate):
+         for addition in UNLOAD_ADDITIONS:
+             # Match whole lines so differing indentation cannot hide an extra key.
+@@ -195,7 +255,7 @@
+         with zipfile.ZipFile(UNLOAD_ARCHIVE) as archive:
+             original=archive.read((HERE/'bootstrap_client_v4.py').relative_to(REPO).as_posix()).decode().replace('\r\n','\n')
+             self.assertEqual(self.remove_unload_additions((HERE/'bootstrap_client_v4.py').read_text()),original)
+-            runtime=(HERE/'runtime.py').read_bytes()
++            runtime=self.remove_epoch_runtime_additions((HERE/'runtime.py').read_bytes())
+             addition=b'                args.native_cleanup_barrier=self.native_cleanup_barrier\n'
+             self.assertEqual(runtime.count(addition),1)
+             self.assertEqual(runtime.replace(addition,b''),archive.read((HERE/'runtime.py').relative_to(REPO).as_posix()))
+@@ -220,7 +280,7 @@
+                 candidate=frozen.read((HERE/'bootstrap_client_v4.py').relative_to(REPO).as_posix())
+             self.assertEqual(candidate.count(CALLBACK_BLOCK),1)
+             self.assertEqual(candidate.replace(CALLBACK_BLOCK,b''),original)
+-            current=(HERE/'runtime.py').read_bytes()
++            current=self.remove_epoch_runtime_additions((HERE/'runtime.py').read_bytes())
+             for before,after in RUNTIME_EDITS:
+                 self.assertEqual(current.count(after),1); current=current.replace(after,before)
+             self.assertEqual(current,archive.read((HERE/'runtime.py').relative_to(REPO).as_posix()))
+@@ -229,7 +289,7 @@
+         with zipfile.ZipFile(ARCHIVE) as archive:
+             for name,oldfile,newfile,changed in [('Runtime','runtime.py','runtime.py',{'argv','model'})]:
+                 old=ast.parse(archive.read((HERE/oldfile).relative_to(REPO).as_posix()))
+-                new=ast.parse((HERE/newfile).read_bytes())
++                new=ast.parse(self.remove_epoch_runtime_additions((HERE/newfile).read_bytes()))
+                 def methods(tree):
+                     cls=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name==name)
+                     return {n.name:ast.dump(n,include_attributes=False) for n in cls.body
+@@ -277,7 +337,7 @@
+             self.assertEqual(candidate.count(new_finally),1)
+             candidate=candidate.replace(new_finally,'            client.close()\n')
+             self.assertEqual(candidate,original)
+-            runtime=(HERE/'runtime.py').read_bytes()
++            runtime=self.remove_epoch_runtime_additions((HERE/'runtime.py').read_bytes())
+             addition=b'                args.native_cleanup_barrier=self.native_cleanup_barrier\n'
+             self.assertEqual(runtime.count(addition),1)
+             self.assertEqual(runtime.replace(addition,b''),archive.read((HERE/'runtime.py').relative_to(REPO).as_posix()))

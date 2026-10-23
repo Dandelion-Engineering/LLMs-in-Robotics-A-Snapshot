@@ -1,0 +1,1564 @@
+
+SOURCE codex-rs/exec-server/src/environment_provider.rs
+
+50: /// Default provider backed by `CODEX_EXEC_SERVER_URL`.
+51: #[derive(Clone, Debug)]
+52: pub struct DefaultEnvironmentProvider {
+53:     exec_server_url: Option<String>,
+54: }
+55: 
+56: impl DefaultEnvironmentProvider {
+57:     /// Builds a provider from an already-read raw `CODEX_EXEC_SERVER_URL` value.
+58:     pub fn new(exec_server_url: Option<String>) -> Self {
+59:         Self { exec_server_url }
+60:     }
+61: 
+62:     /// Builds a provider by reading `CODEX_EXEC_SERVER_URL`.
+63:     pub fn from_env() -> Self {
+64:         Self::new(std::env::var(CODEX_EXEC_SERVER_URL_ENV_VAR).ok())
+65:     }
+66: 
+67:     pub(crate) fn snapshot_inner(&self) -> EnvironmentProviderSnapshot {
+68:         let mut environments = Vec::new();
+69:         let (exec_server_url, disabled) = normalize_exec_server_url(self.exec_server_url.clone());
+70: 
+71:         if let Some(exec_server_url) = exec_server_url {
+72:             environments.push((
+73:                 REMOTE_ENVIRONMENT_ID.to_string(),
+74:                 ExecServerTransportParams::websocket_url(
+75:                     exec_server_url,
+76:                     DEFAULT_REMOTE_EXEC_SERVER_CONNECT_TIMEOUT,
+77:                 ),
+78:             ));
+79:         }
+80: 
+81:         let has_remote = environments
+82:             .iter()
+83:             .any(|(id, _environment)| id == REMOTE_ENVIRONMENT_ID);
+84:         let include_local = !disabled && !has_remote;
+85:         let default = if disabled {
+86:             EnvironmentDefault::Disabled
+87:         } else if has_remote {
+88:             EnvironmentDefault::EnvironmentId(REMOTE_ENVIRONMENT_ID.to_string())
+89:         } else {
+90:             EnvironmentDefault::EnvironmentId(LOCAL_ENVIRONMENT_ID.to_string())
+91:         };
+92: 
+93:         EnvironmentProviderSnapshot {
+94:             environments,
+95:             default,
+96:             include_local,
+97:         }
+98:     }
+99: }
+100: 
+101: impl EnvironmentProvider for DefaultEnvironmentProvider {
+102:     fn snapshot(&self) -> EnvironmentProviderFuture<'_> {
+103:         Box::pin(async { Ok(self.snapshot_inner()) })
+
+
+
+SOURCE codex-rs/exec-server/src/environment.rs
+
+178:     /// Discovers configured environments without starting remote connections.
+179:     ///
+180:     /// If `CODEX_HOME/environments.toml` is present, it defines the configured
+181:     /// environments. Otherwise this preserves the legacy
+182:     /// `CODEX_EXEC_SERVER_URL` behavior.
+183:     pub async fn prepare_from_codex_home(
+184:         codex_home: impl AsRef<std::path::Path>,
+185:     ) -> Result<PreparedEnvironmentManager, ExecServerError> {
+186:         let source = if let Some(config) = noise_environment_config_from_env()? {
+187:             PreparedEnvironmentSource::Noise(config)
+188:         } else {
+189:             let provider = environment_provider_from_codex_home(codex_home.as_ref())?;
+190:             PreparedEnvironmentSource::Snapshot(provider.snapshot().await?)
+191:         };
+192:         Ok(PreparedEnvironmentManager { source })
+193:     }
+194: 
+195:     /// Builds a manager from `CODEX_HOME` with an explicit outbound HTTP policy.
+196:     pub async fn from_codex_home(
+197:         codex_home: impl AsRef<std::path::Path>,
+198:         local_runtime_paths: Option<ExecServerRuntimePaths>,
+199:         http_client_factory: HttpClientFactory,
+200:     ) -> Result<Self, ExecServerError> {
+201:         Self::prepare_from_codex_home(codex_home)
+202:             .await?
+203:             .build(local_runtime_paths, http_client_factory)
+204:     }
+205: 
+206:     /// Discovers environment-variable environments without starting connections.
+207:     pub async fn prepare_from_env() -> Result<PreparedEnvironmentManager, ExecServerError> {
+208:         let source = if let Some(config) = noise_environment_config_from_env()? {
+209:             PreparedEnvironmentSource::Noise(config)
+210:         } else {
+211:             let provider = DefaultEnvironmentProvider::from_env();
+212:             PreparedEnvironmentSource::Snapshot(provider.snapshot().await?)
+213:         };
+214:         Ok(PreparedEnvironmentManager { source })
+215:     }
+216: 
+217:     /// Builds a manager from environment variables with an explicit outbound HTTP policy.
+218:     pub async fn from_env(
+219:         local_runtime_paths: Option<ExecServerRuntimePaths>,
+220:         http_client_factory: HttpClientFactory,
+221:     ) -> Result<Self, ExecServerError> {
+222:         Self::prepare_from_env()
+223:             .await?
+224:             .build(local_runtime_paths, http_client_factory)
+225:     }
+
+
+294:             environment_map.insert(
+295:                 LOCAL_ENVIRONMENT_ID.to_string(),
+296:                 Arc::clone(&local_environment),
+297:             );
+298:             Some(local_environment)
+299:         } else {
+300:             None
+301:         };
+302:         for (id, transport) in environments {
+303:             if id.is_empty() {
+304:                 return Err(ExecServerError::Protocol(
+305:                     "environment id cannot be empty".to_string(),
+306:                 ));
+307:             }
+308:             if id == LOCAL_ENVIRONMENT_ID {
+309:                 return Err(ExecServerError::Protocol(format!(
+310:                     "environment id `{LOCAL_ENVIRONMENT_ID}` is reserved for EnvironmentManager"
+311:                 )));
+312:             }
+313:             let environment = Environment::remote_with_transport(
+314:                 transport,
+315:                 /*local_runtime_paths*/ None,
+316:                 http_client_factory.clone(),
+317:             );
+318:             if environment_map
+319:                 .insert(id.clone(), Arc::new(environment))
+320:                 .is_some()
+321:             {
+322:                 return Err(ExecServerError::Protocol(format!(
+323:                     "environment id `{id}` is duplicated"
+324:                 )));
+
+
+788:     pub(crate) fn remote_with_client(
+789:         client: LazyRemoteExecServerClient,
+790:         local_runtime_paths: Option<ExecServerRuntimePaths>,
+791:     ) -> Self {
+792:         let exec_backend: Arc<dyn ExecBackend> = Arc::new(RemoteProcess::new(client.clone()));
+793:         let filesystem: Arc<dyn ExecutorFileSystem> =
+794:             Arc::new(RemoteFileSystem::new(client.clone()));
+795: 
+796:         Self {
+797:             remote_client: Some(client.clone()),
+798:             ready_info: Arc::new(ArcSwapOption::empty()),
+799:             provisioning_status_tx: None,
+800:             startup_task: Arc::new(Mutex::new(None)),
+801:             exec_backend,
+802:             filesystem,
+803:             http_client: Arc::new(client),
+804:             local_runtime_paths,
+805:         }
+806:     }
+807: 
+808:     pub fn is_remote(&self) -> bool {
+809:         self.remote_client.is_some()
+810:     }
+811: 
+812:     fn apply_error_report(
+813:         &self,
+814:         environment_id: &str,
+815:         error: String,
+816:     ) -> Result<(), ExecServerError> {
+817:         let Some(provisioning_status_tx) = &self.provisioning_status_tx else {
+
+
+1315: 
+1316:     #[tokio::test]
+1317:     async fn environment_manager_creates_remote_environment_for_url() {
+1318:         let manager = EnvironmentManager::create_for_tests(
+1319:             Some("ws://127.0.0.1:8765".to_string()),
+1320:             Some(test_runtime_paths()),
+1321:         )
+1322:         .await;
+1323: 
+1324:         let environment = manager.default_environment().expect("default environment");
+1325:         assert_eq!(
+1326:             manager.default_environment_id(),
+1327:             Some(REMOTE_ENVIRONMENT_ID)
+1328:         );
+1329:         assert!(environment.is_remote());
+1330:         assert!(Arc::ptr_eq(
+1331:             &environment,
+1332:             &manager
+1333:                 .get_environment(REMOTE_ENVIRONMENT_ID)
+1334:                 .expect("remote environment")
+1335:         ));
+1336:         assert!(manager.get_environment(LOCAL_ENVIRONMENT_ID).is_none());
+1337:         assert_local_environment_unavailable(&manager);
+1338:     }
+1339: 
+
+
+
+SOURCE codex-rs/exec/src/lib.rs
+
+338:         Err(e) => {
+339:             eprintln!("Error parsing -c overrides: {e}");
+340:             std::process::exit(1);
+341:         }
+342:     };
+343: 
+344:     let mut resolved_cwd = cwd.clone();
+345:     let mut config_cwd = match resolved_cwd.as_deref() {
+346:         Some(path) => {
+347:             AbsolutePathBuf::from_absolute_path(canonicalize_existing_preserving_symlinks(path)?)?
+348:         }
+349:         None => AbsolutePathBuf::current_dir()?,
+350:     };
+351: 
+352:     // we load config.toml here to determine project state.
+353:     #[allow(clippy::print_stderr)]
+354:     let codex_home = match find_codex_home() {
+355:         Ok(codex_home) => codex_home,
+356:         Err(err) => {
+357:             eprintln!("Error finding codex home: {err}");
+
+
+698:     let environment_manager = if run_loader_overrides.ignore_user_config {
+699:         EnvironmentManager::from_env(
+700:             Some(local_runtime_paths),
+701:             embedded_network_policy.bind(config.http_client_factory()),
+702:         )
+703:         .await?
+704:     } else {
+705:         EnvironmentManager::from_codex_home(
+706:             config.codex_home.clone(),
+707:             Some(local_runtime_paths),
+708:             embedded_network_policy.bind(config.http_client_factory()),
+709:         )
+710:         .await?
+711:     };
+712:     let in_process_start_args = InProcessClientStartArgs {
+713:         arg0_paths,
+714:         config: std::sync::Arc::new(config.clone()),
+715:         cli_overrides: run_cli_overrides,
+716:         loader_overrides: run_loader_overrides,
+
+
+
+SOURCE codex-rs/core/src/environment_selection.rs
+
+115:                     (attachment_environment_id == thread_environment_id).then_some(attachment_root)
+116:                 })
+117:                 .unwrap_or(thread_root)
+118:                 .clone()
+119:         })
+120:         .collect::<Vec<_>>();
+121:     combined_roots.extend(attachment_roots.into_iter().map(|(_, root)| root));
+122:     combined_roots
+123: }
+124: 
+125: pub(crate) fn default_thread_environment_selections(
+126:     environment_manager: &EnvironmentManager,
+127:     cwd: &AbsolutePathBuf,
+128:     workspace_roots: &[AbsolutePathBuf],
+129: ) -> Vec<TurnEnvironmentSelection> {
+130:     environment_manager
+131:         .default_environment_ids()
+132:         .into_iter()
+133:         .map(|environment_id| TurnEnvironmentSelection {
+134:             environment_id,
+135:             cwd: PathUri::from_abs_path(cwd),
+136:             workspace_roots: workspace_roots.iter().map(PathUri::from_abs_path).collect(),
+137:             config: EnvironmentConfigState::FromThread,
+138:         })
+139:         .collect()
+140: }
+
+
+
+SOURCE codex-rs/utils/path-uri/src/lib.rs
+
+215:     fn opaque_fallback_bytes(&self) -> Option<Vec<u8>> {
+216:         decode_bad_path_uri(&self.0)
+217:     }
+218: 
+219:     /// Infers the native path convention represented by this URI.
+220:     ///
+221:     /// A URI authority is treated as a Windows UNC host, and a leading
+222:     /// drive-letter segment such as `C:` is treated as a Windows drive. All
+223:     /// other ordinary file URIs are treated as POSIX paths. This deliberately
+224:     /// classifies `file:///C:/src` as Windows even though `/C:/src` is also a
+225:     /// valid POSIX path. In practice, POSIX paths with a drive-shaped first
+226:     /// component are rare enough that recognizing foreign Windows paths is the
+227:     /// more useful default.
+228:     ///
+229:     /// Opaque fallback URIs are inspected for an absolute POSIX byte prefix or
+230:     /// an absolute Windows UTF-16LE prefix. `None` is returned when their
+231:     /// payload does not identify either convention.
+232:     ///
+233:     /// TODO(anp): Once `PathUri` carries an environment identifier, prefer the
+234:     /// environment's declared convention over this spelling-based heuristic.
+235:     pub fn infer_path_convention(&self) -> Option<PathConvention> {
+236:         if let Some(path_bytes) = self.opaque_fallback_bytes() {
+237:             return infer_opaque_path_convention(&path_bytes);
+238:         }
+239:         if self.0.host_str().is_some() {
+240:             return Some(PathConvention::Windows);
+241:         }
+242: 
+243:         let has_windows_drive = self
+244:             .0
+
+
+558:     /// Converts this file URI to a path using the current host's path rules.
+559:     ///
+560:     /// The URI's inferred path convention must match the current host. Conversion should succeed
+561:     /// when the URI was created from an [`AbsolutePathBuf`] on the current host, including fallback
+562:     /// URIs created by [`Self::from_abs_path`]. Foreign conventions are rejected rather than being
+563:     /// projected onto a syntactically valid but unrelated host path. Encoded Windows path
+564:     /// separators are rejected before native conversion can reinterpret URI segment boundaries.
+565:     pub fn to_abs_path(&self) -> io::Result<AbsolutePathBuf> {
+566:         if self.infer_path_convention() != Some(PathConvention::native())
+567:             || (PathConvention::native() == PathConvention::Windows
+568:                 && containment_path_segments(&self.0, PathConvention::Windows).is_none())
+569:         {
+570:             return Err(io::Error::new(
+571:                 io::ErrorKind::InvalidInput,
+572:                 PathUriParseError::InvalidFileUriPath {
+573:                     path: self.to_string(),
+574:                 },
+575:             ));
+576:         }
+
+
+
+SOURCE codex-rs/config/src/overrides.rs
+
+1: use crate::merge::is_structured_feature_path;
+2: use crate::merge::merge_toml_values;
+3: use toml::Value as TomlValue;
+4: 
+5: pub(crate) fn default_empty_table() -> TomlValue {
+6:     TomlValue::Table(Default::default())
+7: }
+8: 
+9: pub fn build_cli_overrides_layer(cli_overrides: &[(String, TomlValue)]) -> TomlValue {
+10:     let mut root = default_empty_table();
+11:     for (path, value) in cli_overrides {
+12:         apply_toml_override(&mut root, path, value.clone());
+13:     }
+14:     root
+15: }
+16: 
+17: /// Apply a single dotted-path override onto a TOML value.
+18: fn apply_toml_override(root: &mut TomlValue, path: &str, value: TomlValue) {
+19:     use toml::value::Table;
+20: 
+21:     let mut current = root;
+22:     let mut segments_iter = path.split('.').peekable();
+23:     let mut traversed_segments = Vec::new();
+
+
+57:                                 | TomlValue::Datetime(_)
+58:                                 | TomlValue::Array(_)
+59:                                 | TomlValue::Table(_),
+60:                                 _,
+61:                             ) => {}
+62:                         }
+63:                     }
+64:                     table.insert(segment.to_string(), value);
+65:                 }
+66:                 _ => {
+67:                     let mut table = Table::new();
+68:                     table.insert(segment.to_string(), value);
+69:                     *current = TomlValue::Table(table);
+70:                 }
+71:             }
+72:             return;
+
+
+
+SOURCE codex-rs/config/src/loader/mod.rs
+
+249:     let cli_overrides_layer = if cli_overrides.is_empty() {
+250:         None
+251:     } else {
+252:         let cli_overrides_layer = build_cli_overrides_layer(cli_overrides);
+253:         let base_dir = cwd
+254:             .as_ref()
+255:             .map(AbsolutePathBuf::as_path)
+256:             .unwrap_or(codex_home);
+257:         if strict_config {
+258:             validate_cli_overrides_strictly(&cli_overrides_layer, base_dir)?;
+259:         }
+260:         Some(resolve_relative_paths_in_config_toml(
+261:             cli_overrides_layer,
+262:             base_dir,
+263:         )?)
+264:     };
+265: 
+
+
+335: 
+336:     let mut is_projectless = false;
+337:     if !ignore_project_config && let Some(cwd) = cwd {
+338:         let mut merged_so_far = TomlValue::Table(toml::map::Map::new());
+339:         for layer in &layers {
+340:             merge_toml_values(&mut merged_so_far, &layer.config);
+341:         }
+342:         if let Some(cli_overrides_layer) = cli_overrides_layer.as_ref() {
+343:             merge_toml_values(&mut merged_so_far, cli_overrides_layer);
+344:         }
+345:         let trusted_broker_config = credential_broker_trusted_config(
+346:             &merged_so_far,
+347:             &thread_config_layers,
+
+
+412:         startup_warnings.extend(project_layers.startup_warnings);
+413:     }
+414: 
+415:     // Add a layer for runtime overrides from the CLI or UI, if any exist.
+416:     if let Some(cli_overrides_layer) = cli_overrides_layer {
+417:         layers.push(ConfigLayerEntry::new(
+418:             ConfigLayerSource::SessionFlags,
+419:             cli_overrides_layer,
+420:         ));
+421:     }
+422: 
+423:     for thread_config_layer in thread_config_layers {
+
+
+
+SOURCE codex-rs/config/src/merge.rs
+
+140:         for (key, value) in overlay_table {
+141:             path.push(key.clone());
+142:             if let Some(existing) = base_table.get_mut(&key) {
+143:                 merge_toml_values_at_path(existing, &value, path);
+144:             } else {
+145:                 base_table.insert(key, normalized_with_key_aliases(&value, path));
+146:             }
+147:             path.pop();
+148:         }
+149:     } else {
+150:         *base = normalized_with_key_aliases(overlay, path);
+151:     }
+
+
+
+SOURCE codex-rs/exec-server/src/connection.rs
+
+310:     fn from_stdio_with_max_message_len<R, W>(
+311:         reader: R,
+312:         writer: W,
+313:         connection_label: String,
+314:         max_message_len: usize,
+315:         max_inbound_request_len: Option<usize>,
+316:     ) -> Self
+317:     where
+318:         R: AsyncRead + Unpin + Send + 'static,
+319:         W: AsyncWrite + Unpin + Send + 'static,
+320:     {
+321:         let (outgoing_tx, mut outgoing_rx) = mpsc::channel(CHANNEL_CAPACITY);
+322:         let (incoming_tx, incoming_rx) = mpsc::channel(CHANNEL_CAPACITY);
+323:         let (disconnected_tx, disconnected_rx) = watch::channel(false);
+324: 
+325:         let reader_label = connection_label.clone();
+326:         let incoming_tx_for_reader = incoming_tx.clone();
+327:         let disconnected_tx_for_reader = disconnected_tx.clone();
+328:         // Read one byte past the payload limit so an unterminated oversized
+329:         // message fails promptly. A trailing CR gets one more byte of lookahead
+330:         // because it may be the first half of a valid CRLF terminator.
+331:         let read_limit = u64::try_from(max_message_len.saturating_add(1)).unwrap_or(u64::MAX);
+332:         let reader_task = tokio::spawn(async move {
+333:             let mut reader = BufReader::new(reader);
+334:             let mut line = String::new();
+335:             loop {
+336:                 line.clear();
+337:                 let read_result = (&mut reader).take(read_limit).read_line(&mut line).await;
+338:                 match read_result {
+339:                     Ok(0) => {
+340:                         send_disconnected(
+341:                             &incoming_tx_for_reader,
+342:                             &disconnected_tx_for_reader,
+343:                             /*reason*/ None,
+344:                         )
+345:                         .await;
+346:                         break;
+347:                     }
+348:                     Ok(_) => {
+349:                         if line.ends_with('\n') {
+350:                             line.pop();
+351:                             if line.ends_with('\r') {
+352:                                 line.pop();
+353:                             }
+354:                         } else if line.len() > max_message_len && line.ends_with('\r') {
+355:                             match reader.read_u8().await {
+356:                                 Ok(b'\n') => {
+357:                                     line.pop();
+358:                                 }
+
+
+753: async fn write_jsonrpc_line_message<W>(
+754:     writer: &mut BufWriter<W>,
+755:     message: &JSONRPCMessage,
+756: ) -> std::io::Result<()>
+757: where
+758:     W: AsyncWrite + Unpin,
+759: {
+760:     let encoded =
+761:         serialize_jsonrpc_message(message).map_err(|err| std::io::Error::other(err.to_string()))?;
+762:     writer.write_all(encoded.as_bytes()).await?;
+763:     writer.write_all(b"\n").await?;
+764:     writer.flush().await
+765: }
+766: 
+767: async fn send_websocket_jsonrpc_message<W, M, E>(
+768:     websocket_writer: &mut W,
+769:     connection_label: &str,
+770:     message: &JSONRPCMessage,
+771: ) -> Result<(), String>
+772: where
+773:     W: Sink<M, Error = E> + Unpin,
+774:     M: JsonRpcWebSocketMessage,
+775:     E: std::fmt::Display,
+
+
+
+SOURCE codex-rs/exec-server-protocol/src/rpc.rs
+
+1: //! JSON-RPC wire envelopes used by exec-server.
+2: //!
+3: //! Exec-server uses the Codex JSON-RPC dialect, which omits the
+4: //! `"jsonrpc": "2.0"` field on the wire.
+5: 
+6: use std::fmt;
+7: 
+8: use codex_protocol::protocol::W3cTraceContext;
+9: use serde::Deserialize;
+10: use serde::Deserializer;
+11: use serde::Serialize;
+12: use serde::de;
+13: use serde::de::DeserializeSeed;
+14: use serde::de::MapAccess;
+15: use serde::de::SeqAccess;
+16: use serde::de::Visitor;
+17: use serde_json::Map;
+18: use serde_json::Number;
+19: use serde_json::Value;
+20: 
+21: pub const JSONRPC_VERSION: &str = "2.0";
+22: 
+23: // A maximum-size fs/walk response has at most 50,000 entries and needs roughly
+24: // 150,000 JSON values. Keep ample headroom for legitimate protocol messages
+25: // while preventing compact arrays from expanding into millions of heap values.
+26: const MAX_JSONRPC_VALUE_NODES: usize = 256 * 1024;
+27: 
+28: // With `arbitrary_precision` enabled, serde_json presents decimal, exponent,
+29: // and out-of-range integer values to visitors as a synthetic one-entry map.
+30: const SERDE_JSON_NUMBER_TOKEN: &str = "$serde_json::private::Number";
+31: const SERDE_JSON_RAW_VALUE_TOKEN: &str = "$serde_json::private::RawValue";
+32: 
+33: #[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Deserialize, Serialize, Hash, Eq)]
+34: #[serde(untagged)]
+35: pub enum RequestId {
+36:     String(String),
+37:     Integer(i64),
+38: }
+39: 
+40: impl fmt::Display for RequestId {
+41:     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+
+
+
+SOURCE codex-rs/exec-server/src/server/transport.rs
+
+80:         listen_url.to_string(),
+81:     ))
+82: }
+83: 
+84: pub(crate) async fn run_transport(
+85:     listen_url: &str,
+86:     runtime_paths: ExecServerRuntimePaths,
+87:     telemetry: ExecServerTelemetry,
+88:     http_client_factory: HttpClientFactory,
+89:     request_dispatch_mode: RequestDispatchMode,
+90: ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+91:     match parse_listen_url(listen_url)? {
+92:         ExecServerListenTransport::WebSocket(bind_address) => {
+93:             run_websocket_listener(
+94:                 bind_address,
+95:                 runtime_paths,
+96:                 telemetry,
+97:                 http_client_factory,
+98:                 request_dispatch_mode,
+99:             )
+100:             .await
+101:         }
+102:         ExecServerListenTransport::Stdio => {
+103:             run_stdio_connection(
+104:                 runtime_paths,
+105:                 telemetry,
+106:                 http_client_factory,
+107:                 request_dispatch_mode,
+108:             )
+109:             .await
+110:         }
+111:     }
+112: }
+113: 
+114: async fn run_stdio_connection(
+115:     runtime_paths: ExecServerRuntimePaths,
+116:     telemetry: ExecServerTelemetry,
+117:     http_client_factory: HttpClientFactory,
+118:     request_dispatch_mode: RequestDispatchMode,
+119: ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+120:     run_stdio_connection_with_io(
+121:         io::stdin(),
+122:         io::stdout(),
+123:         runtime_paths,
+124:         telemetry,
+125:         http_client_factory,
+126:         request_dispatch_mode,
+127:     )
+128:     .await
+129: }
+
+
+
+SOURCE codex-rs/cli/src/exec_server_command.rs
+
+200:                 remote_config.name = name;
+201:             }
+202:             remote_config.request_dispatch_mode = self.request_dispatch_mode;
+203:             let remote_config = remote_config.with_telemetry(telemetry);
+204:             let parent_lifetime = if self.exit_on_stdin_close {
+205:                 exec_server_telemetry::ParentLifetime::StdinPipe
+206:             } else {
+207:                 exec_server_telemetry::ParentLifetime::Independent
+208:             };
+
+
+272:             let listen_url = self
+273:                 .listen
+274:                 .unwrap_or_else(|| codex_exec_server::DEFAULT_LISTEN_URL.to_string());
+275:             let run = exec_server_telemetry::run_until_shutdown(
+276:                 codex_exec_server::run_main_with_telemetry(
+277:                     &listen_url,
+278:                     runtime_paths,
+279:                     telemetry,
+280:                     http_client_factory,
+281:                     self.request_dispatch_mode,
+282:                 ),
+283:                 exec_server_telemetry::ParentLifetime::Independent,
+284:                 exec_server_telemetry::ShutdownBehavior::Immediate,
+285:             );
+286:             run.await.map_err(anyhow::Error::from_boxed)
+287:         }
+
+
+
+SOURCE codex-rs/exec-server/src/process_sandbox.rs
+
+130:             network_policy_decider,
+131:             network_policy_audit_observer,
+132:             telemetry,
+133:         )
+134:         .await?;
+135:     let Some(sandbox_context) = params.sandbox.as_ref() else {
+136:         return Ok(PreparedExecRequest {
+137:             command: params.argv.clone(),
+138:             cwd: native_path(&params.cwd, "cwd")?,
+139:             env,
+140:             arg0: params.arg0.clone(),
+141:             sandbox: SandboxType::None,
+142:             network_proxy_handle,
+143:             windows_sandbox: None,
+144:         });
+145:     };
+146:     let runtime_paths = runtime_paths
+
+
+215:         sandbox_context,
+216:         params.enforce_managed_network,
+217:     );
+218:     if sandbox == SandboxType::None {
+219:         return Err(invalid_params(
+220:             "sandbox intent cannot be enforced on this executor".to_string(),
+221:         ));
+222:     }
+223:     let (program, args) = params
+224:         .argv
+225:         .split_first()
+226:         .ok_or_else(|| invalid_params("argv must not be empty".to_string()))?;
+227:     #[cfg(unix)]
+228:     let (program, args) = params.arg0.as_ref().map_or_else(
+
+
+
+SOURCE codex-rs/core/src/prompt_debug.rs
+
+19: use crate::state_db_bridge::StateDbHandle;
+20: use crate::thread_manager::StartThreadOptions;
+21: use crate::thread_manager::ThreadManager;
+22: use crate::thread_manager::thread_store_from_config;
+23: 
+24: /// Build the model-visible `input` list for a single debug turn.
+25: #[doc(hidden)]
+26: pub async fn build_prompt_input(
+27:     mut config: Config,
+28:     input: Vec<UserInput>,
+29:     state_db: Option<StateDbHandle>,
+30:     extensions: Arc<ExtensionRegistry<Config>>,
+31:     user_instructions_provider: Arc<dyn UserInstructionsProvider>,
+32: ) -> CodexResult<Vec<ResponseItem>> {
+33:     config.ephemeral = true;
+34: 
+35:     let auth_manager =
+36:         AuthManager::shared_from_config(&config, /*enable_codex_api_key_env*/ false)
+37:             .await
+38:             .map_err(|err| CodexErr::Fatal(err.to_string()))?;
+39: 
+40:     let local_runtime_paths = ExecServerRuntimePaths::from_optional_paths(
+41:         config.codex_self_exe.clone(),
+42:         config.codex_linux_sandbox_exe.clone(),
+43:     )?;
+44: 
+45:     let thread_store = thread_store_from_config(&config, state_db.clone());
+46:     let installation_id = resolve_installation_id(&config.codex_home).await?;
+47:     let thread_manager = ThreadManager::new(
+48:         &config,
+49:         Arc::clone(&auth_manager),
+50:         crate::thread_manager::build_models_manager(&config, Arc::clone(&auth_manager)),
+51:         crate::CodexAppsToolsCache::default(),
+52:         SessionSource::Exec,
+53:         Arc::new(
+54:             EnvironmentManager::from_codex_home(
+55:                 config.codex_home.clone(),
+56:                 Some(local_runtime_paths),
+57:                 config.http_client_factory(),
+58:             )
+59:             .await
+60:             .map_err(|err| CodexErr::Fatal(err.to_string()))?,
+61:         ),
+62:         extensions,
+63:         user_instructions_provider,
+64:         /*analytics_events_client*/ None,
+65:         crate::thread_manager::passthrough_image_store(),
+66:         thread_store,
+67:         crate::local_agent_graph_store_from_state_db(state_db.as_ref()),
+68:         installation_id,
+69:         /*attestation_provider*/ None,
+70:         /*external_time_provider*/ None,
+71:     );
+72:     let thread = thread_manager
+73:         .start_thread(StartThreadOptions::new(config))
+74:         .await?;
+75: 
+76:     let output = build_prompt_input_from_session(&thread.thread.session, input).await;
+77:     let shutdown = thread.thread.shutdown_and_wait().await;
+78:     let _removed = thread_manager.remove_thread(&thread.thread_id).await;
+79: 
+80:     shutdown?;
+81:     output
+82: }
+83: 
+84: pub(crate) async fn build_prompt_input_from_session(
+85:     sess: &Arc<Session>,
+86:     input: Vec<UserInput>,
+
+
+
+SOURCE codex-rs/config/src/skills_config.rs
+
+30: #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, JsonSchema)]
+31: #[schemars(deny_unknown_fields)]
+32: pub struct SkillsConfig {
+33:     #[serde(default, skip_serializing_if = "Option::is_none")]
+34:     pub bundled: Option<BundledSkillsConfig>,
+35: 
+36:     /// Whether turns receive the automatic skills instructions block.
+37:     #[serde(default, skip_serializing_if = "Option::is_none")]
+38:     pub include_instructions: Option<bool>,
+39: 
+40:     /// Maximum tokens used by the available-skills catalog. Defaults to 2% of
+41:     /// the model context window and is capped at 10,000 tokens when set.
+42:     #[serde(default, skip_serializing_if = "Option::is_none")]
+43:     pub max_context_tokens: Option<NonZeroUsize>,
+44: 
+45:     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+46:     pub config: Vec<SkillConfig>,
+47: }
+48: 
+49: #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, JsonSchema)]
+50: #[schemars(deny_unknown_fields)]
+51: pub struct BundledSkillsConfig {
+52:     #[serde(default = "default_enabled")]
+53:     pub enabled: bool,
+54: }
+55: 
+56: impl Default for BundledSkillsConfig {
+57:     fn default() -> Self {
+58:         Self { enabled: true }
+59:     }
+60: }
+
+
+SOURCE codex-rs/app-server/src/request_processors/mcp_processor.rs
+347:         let runtime_statuses = match thread {
+348:             Some(thread) => thread.mcp_connection_statuses(&mcp_config).await,
+349:             None => HashMap::new(),
+350:         };
+351:         let McpServerStatusSnapshot {
+352:             mut server_infos,
+353:             mut server_capabilities,
+354:             mut tools_by_server,
+355:             mut tools_errors,
+356:             mut resources,
+357:             mut resource_templates,
+358:             mut auth_statuses,
+359:             mut server_names,
+360:         } = snapshot;
+361:         server_names.extend(runtime_statuses.keys().cloned());
+362:         server_names.extend(
+363:             auth_statuses
+364:                 .keys()
+365:                 .cloned()
+366:                 .chain(resources.keys().cloned())
+367:                 .chain(resource_templates.keys().cloned()),
+368:         );
+369:         server_names.sort();
+370:         server_names.dedup();
+
+391:         let data: Vec<McpServerStatus> = server_names[start..end]
+392:             .iter()
+393:             .map(|name| McpServerStatus {
+394:                 name: name.clone(),
+395:                 runtime_status: runtime_statuses.get(name).copied().map(Into::into),
+396:                 plugin_id: mcp_config.mcp_server_catalog.server(name).and_then(
+397:                     |server| match server.source() {
+398:                         McpServerSource::Plugin(plugin)
+399:                         | McpServerSource::SelectedPlugin(plugin) => {
+400:                             Some(plugin.plugin_id().to_owned())
+401:                         }
+402:                         McpServerSource::Config
+403:                         | McpServerSource::Compatibility { .. }
+404:                         | McpServerSource::Extension { .. } => None,
+405:                     },
+406:                 ),
+407:                 http_origin: mcp_config
+408:                     .mcp_server_catalog
+409:                     .server(name)
+410:                     .and_then(|server| match &server.config().transport {
+411:                         McpServerTransportConfig::StreamableHttp { url, .. } => {
+412:                             url::Url::parse(url).ok().and_then(|url| {
+413:                                 matches!(url.scheme(), "http" | "https")
+414:                                     .then(|| url.origin().ascii_serialization())
+415:                             })
+416:                         }
+417:                         McpServerTransportConfig::Stdio { .. } => None,
+418:                     }),
+419:                 server_info: server_infos.remove(name),
+420:                 server_capabilities: server_capabilities.remove(name),
+421:                 tools: tools_by_server.remove(name).unwrap_or_default(),
+422:                 tools_error: tools_errors.remove(name),
+423:                 resources: resources.remove(name).unwrap_or_default(),
+424:                 resource_templates: resource_templates.remove(name).unwrap_or_default(),
+425:                 auth_status: auth_statuses
+426:                     .remove(name)
+427:                     .unwrap_or(CoreMcpAuthStatus::Unsupported)
+428:                     .into(),
+429:             })
+
+
+SOURCE codex-rs/app-server/src/code_mode_host.rs
+10: pub struct AppServerCodeModeHostArgs {
+11:     /// Connect to a remote code-mode host instead of starting a local host.
+12:     #[arg(
+13:         long = "code-mode-host",
+14:         value_name = "URL",
+15:         value_parser = RedactedHostUrlParser
+16:     )]
+17:     pub code_mode_host: Option<Url>,
+18: }
+19: 
+20: /// Process-scoped transport used to reach the code-mode host.
+21: #[derive(Debug, Clone, Default, PartialEq, Eq)]
+22: pub enum CodeModeHostTransport {
+23:     /// Start and own the default local code-mode host.
+24:     #[default]
+25:     Local,
+26:     /// Share an HTTP/2 gRPC connection to the specified remote code-mode host.
+27:     Grpc(Url),
+28: }
+29: 
+30: impl From<AppServerCodeModeHostArgs> for CodeModeHostTransport {
+31:     fn from(args: AppServerCodeModeHostArgs) -> Self {
+32:         match args.code_mode_host {
+33:             Some(url) => Self::Grpc(url),
+34:             None => Self::Local,
+35:         }
+36:     }
+
+64: fn parse_host_url(value: &str) -> Result<Url, String> {
+65:     let url = Url::parse(value).map_err(|error| format!("invalid code-mode host URL: {error}"))?;
+66:     if !matches!(url.scheme(), "http" | "https") || url.host_str().is_none() {
+67:         return Err("code-mode host URL must use http:// or https:// with a host".to_string());
+68:     }
+69:     if url.fragment().is_some() {
+70:         return Err("code-mode host URL must not contain a fragment".to_string());
+71:     }
+72:     if !url.username().is_empty() || url.password().is_some() {
+73:         return Err("gRPC code-mode host URL must not contain credentials".to_string());
+74:     }
+75:     if url.path() != "/" || url.query().is_some() {
+76:         return Err("gRPC code-mode host URL must not contain a path or query".to_string());
+77:     }
+78:     Ok(url)
+
+
+SOURCE codex-rs/app-server/src/lib.rs
+592:     let code_mode_session_provider: Option<Arc<dyn CodeModeSessionProvider>> =
+593:         match &runtime_options.code_mode_host_transport {
+594:             CodeModeHostTransport::Local => None,
+595:             CodeModeHostTransport::Grpc(url) => {
+596:                 if !config.features.enabled(Feature::CodeModeHost) {
+597:                     return Err(std::io::Error::new(
+598:                         ErrorKind::InvalidInput,
+599:                         "remote code-mode host requires the code_mode_host feature to be enabled",
+600:                     ));
+601:                 }
+602:                 Some(Arc::new(
+603:                     GrpcCodeModeSessionProvider::with_http_client_factory(
+604:                         url.to_string(),
+605:                         config.http_client_factory(),
+606:                     ),
+607:                 ))
+608:             }
+609:         };
+
+
+SOURCE codex-rs/code-mode/src/grpc_session/mod.rs
+92:         Self {
+93:             transport: Arc::new(transport),
+94:         }
+95:     }
+96: 
+97:     #[tracing::instrument(name = "code_mode.grpc.open_binding", level = "info", skip_all)]
+98:     async fn open_binding(
+99:         &self,
+100:         limits: CodeModeSessionCellExecutionLimits,
+101:     ) -> Result<Arc<GrpcCodeModeSession>, String> {
+102:         let mut client = deadline::startup("transport connection", self.transport.client()).await?;
+103:         let limits = grpc::SessionCellExecutionLimits {
+104:             max_yield_time_ms: limits.max_yield_time_ms,
+105:             max_heap_size_bytes: limits
+106:                 .max_heap_size_bytes
+107:                 .map(u64::try_from)
+108:                 .transpose()
+109:                 .map_err(|error| format!("invalid code-mode heap size limit: {error}"))?,
+110:         };
+111:         let cell_execution_limits = (limits.max_yield_time_ms.is_some()
+112:             || limits.max_heap_size_bytes.is_some())
+113:         .then_some(limits);
+114:         let open_session_span = tracing::info_span!("code_mode.grpc.open_session");
+115:         let mut open_session_request = tonic::Request::new(grpc::OpenSessionRequest {
+116:             cell_execution_limits,
+117:         });
+118:         inject_span_traceparent(&mut open_session_request, &open_session_span);
+119:         let (lease, first) = async {
+120:             let mut lease =
+121:                 deadline::startup("session opening", client.open_session(open_session_request))
+122:                     .await?
+123:                     .into_inner();
+124:             let first = deadline::startup("session lease opening", lease.message())
+125:                 .await?
+126:                 .ok_or_else(|| "gRPC code-mode session lease ended before opening".to_string())?;
+127:             Ok::<_, String>((lease, first))
+128:         }
+129:         .instrument(open_session_span)
+130:         .await?;
+131:         let Some(grpc::session_event::Event::Opened(opened)) = first.event else {
+
+181: impl CodeModeSessionProvider for GrpcCodeModeSessionProvider {
+182:     fn create_session(&self) -> CodeModeSessionProviderFuture<'_> {
+183:         self.create_session_with_limits(CodeModeSessionCellExecutionLimits::default())
+184:     }
+185: 
+186:     fn create_session_with_limits<'a>(
+187:         &'a self,
+188:         limits: CodeModeSessionCellExecutionLimits,
+189:     ) -> CodeModeSessionProviderFuture<'a> {
+190:         Box::pin(async move {
+191:             let session = Arc::new(reconnect::ReconnectableSession::new(self.clone(), limits));
+192:             session.initialize().await?;
+193:             Ok(session as _)
+194:         })
+195:     }
+196: }
+197: 
+198: struct GrpcCodeModeSession {
+199:     inner: Arc<SessionInner>,
+
+
+SOURCE codex-rs/code-mode-host/src/main.rs
+18: 
+19: #[derive(Debug, Parser)]
+20: struct Cli {
+21:     /// Transport endpoint: `stdio`, `stdio://`, or `grpc://IP:PORT`.
+22:     #[arg(
+23:         long,
+24:         value_name = "URL",
+25:         default_value = codex_code_mode_host::DEFAULT_LISTEN_URL
+26:     )]
+27:     listen: String,
+28: 
+
+
+SOURCE codex-rs/code-mode-runtime/src/runtime/globals.rs
+15: pub(super) fn install_globals(scope: &mut v8::PinScope<'_, '_>) -> Result<(), String> {
+16:     let global = scope.get_current_context().global(scope);
+17:     delete_global(scope, global, "console")?;
+18:     delete_global(scope, global, "Atomics")?;
+19:     delete_global(scope, global, "SharedArrayBuffer")?;
+20:     delete_global(scope, global, "WebAssembly")?;
+21: 
+22:     let tools = build_tools_object(scope)?;
+23:     let all_tools = build_all_tools_value(scope)?;
+24:     let clear_timeout = helper_function(scope, "clearTimeout", clear_timeout_callback)?;
+25:     let set_timeout = helper_function(scope, "setTimeout", set_timeout_callback)?;
+26:     let text = helper_function(scope, "text", text_callback)?;
+27:     let image = helper_function(scope, "image", image_callback)?;
+28:     let audio = helper_function(scope, "audio", audio_callback)?;
+29:     let generated_image = helper_function(scope, "generatedImage", generated_image_callback)?;
+30:     let store = helper_function(scope, "store", store_callback)?;
+31:     let load = helper_function(scope, "load", load_callback)?;
+32:     let notify = helper_function(scope, "notify", notify_callback)?;
+33:     let yield_control = helper_function(scope, "yield_control", yield_control_callback)?;
+34:     let exit = helper_function(scope, "exit", exit_callback)?;
+35: 
+36:     set_global(scope, global, "tools", tools.into())?;
+37:     set_global(scope, global, "ALL_TOOLS", all_tools)?;
+38:     set_global(scope, global, "clearTimeout", clear_timeout.into())?;
+39:     set_global(scope, global, "setTimeout", set_timeout.into())?;
+40:     set_global(scope, global, "text", text.into())?;
+41:     set_global(scope, global, "image", image.into())?;
+42:     set_global(scope, global, "audio", audio.into())?;
+43:     set_global(scope, global, "generatedImage", generated_image.into())?;
+44:     set_global(scope, global, "store", store.into())?;
+45:     set_global(scope, global, "load", load.into())?;
+46:     set_global(scope, global, "notify", notify.into())?;
+47:     set_global(scope, global, "yield_control", yield_control.into())?;
+48:     set_global(scope, global, "exit", exit.into())?;
+
+
+SOURCE codex-rs/code-mode-runtime/src/runtime/module_loader.rs
+225: fn resolve_module<'s>(
+226:     scope: &mut v8::PinScope<'s, '_>,
+227:     specifier: &str,
+228: ) -> Option<v8::Local<'s, v8::Module>> {
+229:     if let Some(message) =
+230:         v8::String::new(scope, &format!("Unsupported import in exec: {specifier}"))
+231:     {
+232:         scope.throw_exception(message.into());
+233:     } else {
+234:         scope.throw_exception(v8::undefined(scope).into());
+235:     }
+236:     None
+
+
+SOURCE codex-rs/code-mode-protocol/src/host/codec.rs
+42: 
+43:     /// Returns the complete length-prefixed representation of this frame.
+44:     pub fn into_framed_bytes(self) -> Vec<u8> {
+45:         let mut bytes = Vec::with_capacity(size_of::<u32>() + self.payload.len());
+46:         bytes.extend_from_slice(&(self.payload.len() as u32).to_le_bytes());
+47:         bytes.extend_from_slice(&self.payload);
+48:         bytes
+49:     }
+
+
+SOURCE codex-rs/code-mode-protocol/src/host/message.rs
+130: #[serde(deny_unknown_fields, tag = "type", rename_all_fields = "camelCase")]
+131: pub enum ClientToHost {
+132:     #[serde(rename = "connection/hello")]
+133:     ClientHello(ClientHello),
+134:     #[serde(rename = "operation/request")]
+135:     Request { id: RequestId, request: HostRequest },
+136:     #[serde(rename = "operation/cancel")]
+137:     CancelRequest { id: RequestId },
+138:     #[serde(rename = "delegate/response")]
+139:     DelegateResponse {
+140:         id: DelegateRequestId,
+141:         result: WireResult<DelegateResponse>,
+
+179: #[serde(deny_unknown_fields, tag = "method", rename_all_fields = "camelCase")]
+180: pub enum HostRequest {
+181:     #[serde(rename = "session/open")]
+182:     OpenSession {
+183:         session_id: SessionId,
+184:         #[serde(default, skip_serializing_if = "Option::is_none")]
+185:         cell_execution_limits: Option<WireSessionCellExecutionLimits>,
+186:     },
+187:     #[serde(rename = "session/execute")]
+188:     Execute {
+189:         session_id: SessionId,
+190:         request: WireExecuteRequest,
+191:     },
+192:     #[serde(rename = "session/wait")]
+193:     Wait {
+194:         session_id: SessionId,
+195:         request: WireWaitRequest,
+196:     },
+197:     #[serde(rename = "session/terminate")]
+198:     Terminate {
+199:         session_id: SessionId,
+200:         cell_id: WireCellId,
+201:     },
+202:     #[serde(rename = "session/shutdown")]
+203:     ShutdownSession { session_id: SessionId },
+204: }
+
+241: #[derive(Debug, Deserialize, PartialEq, Serialize)]
+242: #[serde(deny_unknown_fields, tag = "status", rename_all_fields = "camelCase")]
+243: pub enum WireResult<T> {
+244:     #[serde(rename = "ok")]
+245:     Ok { value: T },
+246:     #[serde(rename = "error")]
+247:     Err { message: String },
+248: }
+
+
+SOURCE codex-rs/code-mode-protocol/src/host/payload.rs
+174: /// The complete execute request shape supported by protocol V1.
+175: #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+176: #[serde(deny_unknown_fields)]
+177: pub struct WireExecuteRequest {
+178:     pub tool_call_id: String,
+179:     pub enabled_tools: Vec<WireToolDefinition>,
+180:     pub source: String,
+181:     pub yield_time_ms: Option<u64>,
+182:     pub max_output_tokens: Option<i32>,
+183: }
+
+316: /// Runtime output returned over the V1 host connection.
+317: ///
+318: /// Host time is required and covers this request, not the cell lifetime. The
+319: /// app-server and host run at the same version; no negotiation is needed.
+320: #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+321: #[serde(deny_unknown_fields)]
+322: pub enum WireRuntimeResponse {
+323:     Yielded {
+324:         cell_id: WireCellId,
+325:         content_items: Vec<WireContentItem>,
+326:         code_mode_host_duration_ns: u64,
+327:     },
+328:     Terminated {
+329:         cell_id: WireCellId,
+330:         content_items: Vec<WireContentItem>,
+331:         code_mode_host_duration_ns: u64,
+332:     },
+333:     Result {
+334:         cell_id: WireCellId,
+335:         content_items: Vec<WireContentItem>,
+336:         error_text: Option<String>,
+337:         code_mode_host_duration_ns: u64,
+338:     },
+
+
+SOURCE codex-rs/core/src/tools/spec_plan.rs
+786: fn register_code_mode_executors(
+787:     turn_context: &TurnContext,
+788:     model_info: &ModelInfo,
+789:     registry: &mut ToolRegistry,
+790: ) -> BTreeMap<String, ToolName> {
+791:     let tool_mode = effective_tool_mode(turn_context, model_info);
+792:     if !matches!(tool_mode, ToolMode::CodeMode | ToolMode::CodeModeOnly) {
+793:         return BTreeMap::new();
+794:     }
+795: 
+796:     let mut code_mode_tool_names = BTreeMap::new();
+797:     let mut code_mode_nested_tool_specs = Vec::new();
+798:     let mut exec_prompt_tool_specs = Vec::new();
+799:     let mut deferred_exec_prompt_tool_specs = Vec::new();
+800:     let mut included_deferred_mcp_output_schema = false;
+801:     let deferred_tools_guidance_enabled = search_tool_enabled(turn_context, model_info);
+802:     for tool in registry.entries() {
+803:         let exposure = tool.exposure;
+804:         if !exposure.is_available_in_code_mode() {
+805:             continue;
+806:         }
+807: 
+808:         let tool_name = tool.runtime.tool_name();
+809:         if is_excluded_from_code_mode(turn_context, &tool_name) {
+810:             continue;
+811:         }
+812: 
+813:         let immutable_spec = tool.runtime.immutable_spec();
+814:         let cached_runtime = immutable_spec.map(|_| Arc::clone(&tool.runtime));
+815:         let spec = immutable_spec
+816:             .map(Arc::clone)
+817:             .unwrap_or_else(|| Arc::new(tool.runtime.spec()));
+818:         // Derive the name without serializing and augmenting every tool schema.
+819:         let code_mode_name = match spec.as_ref() {
+820:             ToolSpec::Function(_) | ToolSpec::Freeform(_) => {
+821:                 codex_tools::code_mode_name_for_tool_name(&tool_name)
+822:             }
+823:             ToolSpec::Namespace(namespace) if !namespace.tools.is_empty() => {
+824:                 codex_tools::code_mode_name_for_tool_name(&tool_name)
+825:             }
+826:             ToolSpec::Namespace(_) | ToolSpec::ToolSearch { .. } | ToolSpec::WebSearch { .. } => {
+827:                 continue;
+828:             }
+829:         };
+830:         if !codex_code_mode::is_code_mode_nested_tool(&code_mode_name) {
+831:             continue;
+832:         }
+833:         match code_mode_tool_names.entry(codex_code_mode::normalize_code_mode_identifier(
+834:             &code_mode_name,
+835:         )) {
+836:             Entry::Vacant(entry) => {
+837:                 entry.insert(tool_name);
+
+1036: #[instrument(level = "trace", skip_all)]
+1037: fn add_shell_tools(context: &CoreToolPlanContext<'_>, registry: &mut ToolRegistry) {
+1038:     let turn_context = context.turn_context;
+1039:     let features = turn_context.config.features.get();
+1040:     let environment_mode = tool_environment_mode(context.environments);
+1041:     if !environment_mode.has_environment()
+1042:         || !features.enabled(Feature::ShellTool)
+1043:         || matches!(context.model_info.shell_type, ConfigShellToolType::Disabled)
+1044:     {
+1045:         return;
+1046:     }
+1047: 
+1048:     let allow_login_shell = any_environment_allows_login_shell(context.environments);
+1049:     if context.tool_policy.require_unified_exec && !features.enabled(Feature::UnifiedExec) {
+1050:         return;
+1051:     }
+1052:     let exec_permission_approvals_enabled = features.enabled(Feature::ExecPermissionApprovals)
+1053:         && context.tool_policy.expose_additional_permissions;
+1054:     let include_environment_id = matches!(environment_mode, ToolEnvironmentMode::Multiple);
+1055:     let options = ExecCommandHandlerOptions {
+1056:         allow_login_shell,
+1057:         allow_tty: features.enabled(Feature::UnifiedExecTty),
+1058:         exec_permission_approvals_enabled,
+1059:         include_environment_id,
+1060:         include_shell_parameter: unified_exec_should_include_shell_parameter(
+1061:             turn_context,
+1062:             context.environments,
+1063:         ),
+1064:         include_windows_shell_guidance: should_include_windows_shell_guidance(context.environments),
+1065:     };
+1066:     if features.enabled(Feature::UnifiedExec) {
+1067:         registry.add(ExecCommandHandler::new(options));
+1068:         registry.add(WriteStdinHandler);
+1069:     } else {
+1070:         // Managed requirements are the only configuration path that can keep
+1071:         // unified exec disabled. Preserve command execution without exposing a
+1072:         // resumable process or write_stdin authority prohibited by policy.
+1073:         registry.add(ExecCommandHandler::one_shot(options));
+1074:     }
+
+1089: #[instrument(level = "trace", skip_all)]
+1090: fn add_mcp_resource_tools(context: &CoreToolPlanContext<'_>, registry: &mut ToolRegistry) {
+1091:     if context.mcp.has_servers() {
+1092:         registry.add(ListMcpResourcesHandler);
+1093:         registry.add(ListMcpResourceTemplatesHandler);
+1094:         registry.add(ReadMcpResourceHandler);
+1095:     }
+
+1099: fn add_core_utility_tools(context: &CoreToolPlanContext<'_>, registry: &mut ToolRegistry) {
+1100:     let turn_context = context.turn_context;
+1101:     let features = turn_context.config.features.get();
+1102:     let environment_mode = tool_environment_mode(context.environments);
+1103: 
+1104:     if turn_context.config.update_plan_enabled {
+1105:         registry.add(PlanHandler);
+1106:     }
+1107: 
+1108:     if features.enabled(Feature::DeferredExecutor) {
+1109:         registry.add(
+1110:             context
+1111:                 .wait_for_environment_tool_config
+1112:                 .map(Arc::as_ref)
+1113:                 .map_or_else(
+1114:                     WaitForEnvironmentHandler::default,
+1115:                     WaitForEnvironmentHandler::new,
+1116:                 ),
+1117:         );
+1118:     }
+1119: 
+1120:     if turn_context.config.experimental_request_user_input_enabled {
+1121:         registry.add_with_exposure(
+1122:             RequestUserInputHandler {
+1123:                 available_modes: request_user_input_available_modes(features),
+1124:             },
+1125:             ToolExposure::DirectModelOnly,
+1126:         );
+1127:     }
+1128: 
+1129:     if !turn_context.session_source.is_non_root_agent()
+1130:         && context
+1131:             .model_info
+1132:             .experimental_supported_tools
+1133:             .iter()
+1134:             // Existing model catalogs still advertise the previous name.
+1135:             .any(|tool| {
+1136:                 matches!(
+1137:                     tool.as_str(),
+1138:                     "request_user_input_async" | "send_user_message_async"
+1139:                 )
+1140:             })
+1141:     {
+1142:         registry.add_with_exposure(
+1143:             RequestUserInputAsyncHandler {
+1144:                 description: ResolvedModelMessages::from_model(context.model_info)
+1145:                     .request_user_input_async_description()
+1146:                     .to_string(),
+1147:             },
+1148:             ToolExposure::DirectModelOnly,
+1149:         );
+1150:     }
+1151: 
+1152:     if !turn_context.session_source.is_non_root_agent()
+1153:         && (features.enabled(Feature::SendMessageToUserAsync)
+1154:             || context
+1155:                 .model_info
+1156:                 .experimental_supported_tools
+1157:                 .iter()
+1158:                 .any(|tool| tool == "send_message_to_user_async"))
+1159:     {
+1160:         registry.add_with_exposure(SendMessageToUserAsyncHandler, ToolExposure::DirectModelOnly);
+1161:     }
+1162: 
+1163:     if environment_mode.has_environment() && features.enabled(Feature::RequestPermissionsTool) {
+1164:         registry.add(RequestPermissionsHandler);
+1165:     }
+1166: 
+1167:     if features.enabled(Feature::TokenBudget) {
+1168:         registry.add_with_exposure(NewContextWindowHandler, ToolExposure::DirectModelOnly);
+1169:         registry.add(GetContextRemainingHandler);
+1170:     }
+1171: 
+1172:     let current_time_reminder_enabled = features.enabled(Feature::CurrentTimeReminder);
+1173:     let model_has_clock = context
+1174:         .model_info
+1175:         .experimental_supported_tools
+1176:         .iter()
+1177:         .any(|tool| tool == "clock");
+1178:     if current_time_reminder_enabled || model_has_clock {
+1179:         registry.add(CurrentTimeHandler);
+1180:     }
+1181:     if features.enabled(Feature::SleepTool)
+1182:         && match turn_context.config.sleep_tool_mode {
+1183:             SleepToolMode::AlwaysOn => true,
+1184:             SleepToolMode::ModelDriven => {
+1185:                 if current_time_reminder_enabled {
+1186:                     turn_context
+1187:                         .config
+1188:                         .current_time_reminder
+1189:                         .as_ref()
+1190:                         .is_some_and(|config| config.sleep_tool)
+1191:                 } else {
+1192:                     model_has_clock
+1193:                 }
+1194:             }
+1195:         }
+1196:     {
+1197:         registry.add(SleepHandler);
+1198:     }
+1199: 
+1200:     if tool_suggest_enabled(turn_context)
+1201:         && let Some(candidates) = context
+1202:             .tool_suggest_candidates
+1203:             .filter(|candidates| !candidates.tools.is_empty())
+1204:     {
+1205:         if candidates.presentation == crate::tools::router::ToolSuggestPresentation::ListTool {
+1206:             registry.add(ListAvailablePluginsToInstallHandler::new(
+1207:                 collect_request_plugin_install_entries(&candidates.tools),
+1208:             ));
+1209:         }
+1210:         registry.add(RequestPluginInstallHandler::new(
+1211:             candidates.tools.clone(),
+1212:             candidates.presentation,
+1213:         ));
+1214:     }
+1215: 
+1216:     if environment_mode.has_environment() && context.model_info.apply_patch_tool_type.is_some() {
+1217:         let include_environment_id = matches!(environment_mode, ToolEnvironmentMode::Multiple);
+1218:         registry.add(ApplyPatchHandler::new(include_environment_id));
+1219:     }
+1220: 
+1221:     if context
+1222:         .model_info
+1223:         .experimental_supported_tools
+1224:         .iter()
+1225:         .any(|tool| tool == "test_sync_tool")
+1226:     {
+1227:         registry.add(TestSyncHandler);
+1228:     }
+1229: 
+1230:     if environment_mode.has_environment() && features.enabled(Feature::ViewImage) {
+1231:         let include_environment_id = matches!(environment_mode, ToolEnvironmentMode::Multiple);
+1232:         registry.add(ViewImageHandler::new(ViewImageToolOptions {
+1233:             can_request_original_image_detail: can_request_original_image_detail(
+1234:                 context.model_info,
+1235:             ),
+1236:             unified_image_budget: unified_image_budget_enabled(
+1237:                 &turn_context.config.features,
+1238:                 context.model_info,
+1239:             ),
+1240:             include_environment_id,
+1241:         }));
+
+
+SOURCE codex-rs/core/src/tools/handlers/mod.rs
+159: fn resolve_tool_environment<'a>(
+160:     environments: &'a TurnEnvironmentSnapshot,
+161:     environment_id: Option<&str>,
+162: ) -> Result<Option<&'a TurnEnvironment>, FunctionCallError> {
+163:     environment_id.map_or_else(
+164:         || Ok(environments.primary()),
+165:         |environment_id| {
+166:             environments
+167:                 .turn_environments()
+168:                 .find(|environment| environment.selection.environment_id == environment_id)
+169:                 .map(Some)
+170:                 .ok_or_else(|| {
+171:                     FunctionCallError::RespondToModel(format!(
+172:                         "unknown turn environment id `{environment_id}`"
+173:                     ))
+174:                 })
+175:         },
+176:     )
+177: }
+
+
+SOURCE codex-rs/core/src/tools/handlers/unified_exec/exec_command.rs
+179:         let manager: &UnifiedExecProcessManager = &session.services.unified_exec_manager;
+180:         let context = UnifiedExecContext::new(
+181:             session.clone(),
+182:             step_context.clone(),
+183:             cancellation_token,
+184:             call_id.clone(),
+185:         );
+186:         let environment_args: ExecCommandEnvironmentArgs = parse_arguments(&arguments)?;
+187:         let Some(turn_environment) = resolve_tool_environment(
+188:             &step_context.environments,
+189:             environment_args.environment_id.as_deref(),
+190:         )?
+191:         else {
+192:             return Err(FunctionCallError::RespondToModel(
+193:                 "unified exec is unavailable in this session".to_string(),
+194:             ));
+195:         };
+196:         let native_environment_cwd = turn_environment.cwd().clone();
+197:         let cwd = environment_args
+198:             .workdir
+199:             .as_deref()
+200:             .filter(|workdir| !workdir.is_empty())
+201:             .map_or_else(
+202:                 || Ok(native_environment_cwd.clone()),
+203:                 |workdir| native_environment_cwd.join(workdir),
+204:             )
+205:             .map_err(|err| FunctionCallError::RespondToModel(err.to_string()))?;
+206:         let environment = Arc::clone(&turn_environment.environment);
+207:         let fs = environment.get_filesystem();
+208: 
+209:         // Remote executors enforce URI-native sandbox policy themselves. Only a host-local
+210:         // sandbox needs a native cwd for resolving paths nested in the permissions config.
+
+
+SOURCE codex-rs/core/src/tools/handlers/unified_exec/write_stdin.rs
+83:             UnifiedExecContext::new(session.clone(), step_context, cancellation_token, call_id);
+84:         let response = session
+85:             .services
+86:             .unified_exec_manager
+87:             .write_stdin(
+88:                 &context,
+89:                 WriteStdinRequest {
+90:                     process_id: args.session_id,
+91:                     input: &args.chars,
+92:                     yield_time_ms: args.yield_time_ms,
+93:                     max_output_tokens: args.max_output_tokens,
+94:                     truncation_policy: context
+95:                         .step_context
+
+130:         // `write_stdin` is transport for an existing exec session. Empty writes
+131:         // are background polls, and non-empty writes continue a command that
+132:         // already ran PreToolUse as Bash, so do not emit a second pre hook here.
+
+
+SOURCE codex-rs/core/src/tools/handlers/apply_patch.rs
+626: fn require_environment_id(
+627:     parsed_environment_id: Option<&str>,
+628:     allow_environment_id: bool,
+629: ) -> Result<Option<String>, FunctionCallError> {
+630:     match parsed_environment_id {
+631:         Some(_) if !allow_environment_id => Err(FunctionCallError::RespondToModel(
+632:             "apply_patch environment selection is unavailable for this turn".to_string(),
+633:         )),
+634:         Some(environment_id) => Ok(Some(environment_id.to_string())),
+635:         None => Ok(None),
+636:     }
+
+
+SOURCE codex-rs/core/src/tools/runtimes/apply_patch.rs
+169:         &mut self,
+170:         req: &ApplyPatchRequest,
+171:         attempt: &SandboxAttempt<'_>,
+172:         _ctx: &ToolCtx,
+173:     ) -> Result<ApplyPatchRuntimeOutput, ToolError> {
+174:         let started_at = Instant::now();
+175:         let fs = req.turn_environment.environment.get_filesystem();
+176:         let sandbox = Self::file_system_sandbox_context_for_attempt(req, attempt);
+177:         let mut stdout = Vec::new();
+178:         let mut stderr = Vec::new();
+179:         let result = codex_apply_patch::apply_patch_with_options(
+180:             &req.action.patch,
+181:             ApplyPatchOptions {
+182:                 update_file_mode: req.action.update_file_mode(),
+183:                 // Only reject links when an otherwise-required sandbox was bypassed.
+184:                 // Executor-managed sandboxes can have SandboxType::None.
+185:                 follow_symlinks: attempt.sandbox_requested
+186:                     || !attempt.manager.should_sandbox(
+187:                         attempt.permissions,
+188:                         self.sandbox_preference(),
+189:                         attempt.enforce_managed_network,
+190:                     ),
+191:             },
+192:             &req.action.cwd,
+193:             &mut stdout,
+194:             &mut stderr,
+195:             fs.as_ref(),
+196:             sandbox.as_ref(),
+197:         )
+
+
+SOURCE codex-rs/core/src/tools/registry.rs
+537:         let tool = match self.tool(&tool_name) {
+538:             Some(tool) => tool,
+539:             None => {
+540:                 let message = unsupported_tool_call_message(&invocation.payload, &tool_name);
+541:                 let log_payload = tool_log_payload(&invocation.payload, &invocation.source);
+542:                 let mut tool_result_tags = Vec::with_capacity(2);
+543:                 sandbox_tags.append_metric_tags(&mut tool_result_tags);
+544:                 otel.tool_result_with_tags(
+545:                     &tool_name,
+546:                     &call_id_owned,
+547:                     log_payload.as_ref(),
+548:                     Duration::ZERO,
+549:                     /*success*/ false,
+550:                     &message,
+551:                     &tool_result_tags,
+552:                     /*extra_trace_fields*/ &[],
+553:                 );
+554:                 let err = FunctionCallError::RespondToModel(message);
+555:                 dispatch_trace.record_failed(&err);
+556:                 return Err(err);
+

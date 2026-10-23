@@ -1,0 +1,36 @@
+{
+  "schema": "campaign002-owner-drain-development-check-1",
+  "phase": "pre-fix deterministic regression against unchanged parser",
+  "at": "2026-09-28T17:27:41.865032+00:00",
+  "argv": [
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "test_codehost_mux_protocol.H2Tests.test_retirement_rejects_new_stream_even_if_it_would_close_in_same_read",
+    "test_codehost_mux_protocol.H2Tests.test_retirement_cancel_fragmentation_and_original_frontier",
+    "test_codehost_mux_protocol.H2Tests.test_retirement_does_not_excuse_earlier_or_other_reset",
+    "test_codehost_mux_protocol.H2Tests.test_drain_controls_are_empty_owner_frames"
+  ],
+  "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness",
+  "sources": {
+    "codehost_mux_protocol.py": {
+      "sha256": "aefe018c5f2f9d8b8029d1007b134fef77e17c2c2cebc2d389e4fe1efd300409",
+      "bytes": 15123
+    },
+    "test_codehost_mux_protocol.py": {
+      "sha256": "d38f3aae949c9725f2c01240deddda76fbd332f31ea693571fd3593c72f6e3dc",
+      "bytes": 8117
+    },
+    "codehost_inside_v3.py": {
+      "sha256": "a85dca07824369714987abf27e495f738676b51f9dbec6870df85c1960ac2b43",
+      "bytes": 25899
+    }
+  },
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "EEEE\n======================================================================\nERROR: test_retirement_rejects_new_stream_even_if_it_would_close_in_same_read (test_codehost_mux_protocol.H2Tests.test_retirement_rejects_new_stream_even_if_it_would_close_in_same_read)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\test_codehost_mux_protocol.py\", line 121, in test_retirement_rejects_new_stream_even_if_it_would_close_in_same_read\n    w=self.ready();front=w.begin_retirement()\n                         ^^^^^^^^^^^^^^^^^^\nAttributeError: 'H2Witness' object has no attribute 'begin_retirement'\n\n======================================================================\nERROR: test_retirement_cancel_fragmentation_and_original_frontier (test_codehost_mux_protocol.H2Tests.test_retirement_cancel_fragmentation_and_original_frontier)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\test_codehost_mux_protocol.py\", line 129, in test_retirement_cancel_fragmentation_and_original_frontier\n    front=w.begin_retirement()\n          ^^^^^^^^^^^^^^^^^^\nAttributeError: 'H2Witness' object has no attribute 'begin_retirement'\n\n======================================================================\nERROR: test_retirement_does_not_excuse_earlier_or_other_reset (test_codehost_mux_protocol.H2Tests.test_retirement_does_not_excuse_earlier_or_other_reset)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\test_codehost_mux_protocol.py\", line 139, in test_retirement_does_not_excuse_earlier_or_other_reset\n    with self.assertRaises(ValueError):w.begin_retirement()\n                                       ^^^^^^^^^^^^^^^^^^\nAttributeError: 'H2Witness' object has no attribute 'begin_retirement'\n\n======================================================================\nERROR: test_drain_controls_are_empty_owner_frames (test_codehost_mux_protocol.H2Tests.test_drain_controls_are_empty_owner_frames)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\test_codehost_mux_protocol.py\", line 144, in test_drain_controls_are_empty_owner_frames\n    for kind in (m.DRAIN_BEGIN,m.DRAIN_ACK):\n                 ^^^^^^^^^^^^^\nAttributeError: module 'codehost_mux_protocol' has no attribute 'DRAIN_BEGIN'\n\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nFAILED (errors=4)\n",
+  "scope": "Synthetic parser tests only; no native/model/simulation launch. Expected missing retirement API and controls before prospective implementation."
+}

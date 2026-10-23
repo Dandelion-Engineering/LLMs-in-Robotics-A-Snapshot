@@ -1,0 +1,15 @@
+# Fixed insert pickup comparison 003
+
+Declared before computation following diagnostic 002: exactly four combinations compare the original and proposed insert A pickup locations with 120 and 480 IK iterations. There is no adaptive search or additional result-selected variant.
+
+All four paths start from the common HOME in archived physical-calibration-002 `Runtime/cell.py`. Each uses the same full public approach: orient/lift at HOME XY (phase 0), travel above A (phase 1), descend (phase 2), close at the same endpoint (phase 3), and lift above A (phase 4). All Cartesian target spacings are at most 10 mm. Phase/grip pairs remain 0/255, 1/255, 2/255, 3/0, 4/0. A retained closed finger position is used only to inspect static geometry, never to infer a successful grasp.
+
+The old A source XY and source height are the public observation from archived sensor event 874, capture 43.402 s. The proposed A source XY is the fixed public center (0.34, -0.43) m. It retains the old observed source height, 8 mm minimum half-height, 4 mm TCP offset, and 160 mm clearance. The above-source height calculation is unchanged. This is a proposed common home geometry, not a candidate-specific action. New parking centers (0.34, 0.04) and (0.46, 0.12) m are included only in declared region checks.
+
+Both iteration variants use the archived solver with its original damping, clipping, joint margins, 1 mm position tolerance and 0.01 cross-product orientation tolerance. The sole solver edit in the 480 variant replaces its one `range(120)` with `range(480)`. Reports separately require the true SO(3) orientation error to be less than 0.01 rad; a small cross-product residual at a reversed orientation cannot count as convergence. The source and generated solver hashes are retained.
+
+Every waypoint and failure retains q, joint-limit margins, position/orientation errors and iteration count. Eleven intermediate joint-interpolation samples per successful segment retain TCP pose, q, margins, true orientation, and original-scene hand contacts. All object poses remain frozen in the archived precontact scene; there are no physics steps or object translations. Original-location contact values are counterfactual sampled static geometry. For the relocated home, scene-object contacts are explicitly not applicable because its insert has not been relocated in this diagnostic. No sampled path establishes continuous collision freedom, force, grasp, lift, or physical success.
+
+The new A home region is checked against every other fixed region, the two new parking regions, and the conservative ten-part raw-stock envelope (21 mm part half-width plus 3 mm layout jitter). Region separation does not establish arm-path clearance.
+
+Root must require the official queued job receipt to report succeeded and exit status 0 before using outputs. Choosing any common geometry or iteration change still requires a fresh queued physical calibration under the unchanged independent predicates. Diagnostic 002 remains the separate evidence for the old retained approach branch; it is not silently substituted for these HOME-start comparisons.

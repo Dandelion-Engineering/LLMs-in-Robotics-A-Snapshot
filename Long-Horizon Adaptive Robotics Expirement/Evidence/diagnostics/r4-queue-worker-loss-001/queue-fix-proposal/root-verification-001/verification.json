@@ -1,0 +1,54 @@
+{
+  "schema_version": "queue-liveness-root-verification-1",
+  "recorded_at_utc": "2026-09-24T20:53:31.695440+00:00",
+  "proposal_manifest_sha256": "bbcdcfecc8d64b9349869da013deb3081a6626d3c90d14e1676afde57b1c9f1d",
+  "installed_sha256": "ca13faf55645df4050d918a745b183bebb967ae8f5b1dd180ff8212c0ed1d4bf",
+  "proposed_sha256": "31997fc851494df62c2466cf189b5e945a6a933464f5cd43e69b3d877c029829",
+  "source_delta_verified": "Only inserted Windows branch inside pid_alive; all original bytes outside insertion unchanged",
+  "tests": {
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 3.599,
+    "native_windows_cases": 5,
+    "mock_or_scope_cases": 7,
+    "suite_runs": 1
+  },
+  "records": [
+    {
+      "path": "root-verification-001\\execution.json",
+      "sha256": "f1acb514ff46a11f30a39ccfac76944515a082e2d8a7bbf75bf5c35e96a7af84"
+    },
+    {
+      "path": "root-verification-001\\post-test-observation.json",
+      "sha256": "e71a6b04d3dedc0c13bc5a1df9d85acde66920d8d41ea59f9c8b1b4bc2daefe2"
+    },
+    {
+      "path": "root-verification-001\\stderr.log",
+      "sha256": "cf7b458f46cf671ac1ff4f10ae6422d3344bd307b07c9ba7902c4c85504cc1ed"
+    },
+    {
+      "path": "root-verification-001\\stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "isolation": "Guarded proposal import; only explicitly scoped disposable queue stores and owned benign subprocesses. No production queue service, model or robot invoked.",
+  "cleanup_verified": true,
+  "root_review": "Approved as a narrow repair proposal after full source and fixture review; not adopted or installed.",
+  "approval_required": true,
+  "approval_basis": [
+    "Latest user heartbeat explicitly prohibits shared queue edits",
+    "Project Details/Project Details.md:121: Never bypass or modify the queue or another project's jobs."
+  ],
+  "application_scope_if_approved": "Replace only installed compute_queue.py with exact hash-bound proposed bytes after fresh source and idle checks; retain original snapshot and verify post-write identity. No runtime queue-state edits or episode retries.",
+  "limitations": [
+    "Does not establish historical causation of all disappeared descendants",
+    "Does not fix file-sharing races or GPU sampler failures",
+    "Does not solve PID reuse identity",
+    "Does not create a missing episode terminal or authorize r4 continuation"
+  ],
+  "verification_script_correction": "First metadata-only writer assumed CRLF and stopped before creating verification.json; byte inspection showed LF and the corrected structural assertion passed. Tests were not rerun.",
+  "applied": false,
+  "user_approval_received": false,
+  "frozen_experiment_files_unchanged": true
+}

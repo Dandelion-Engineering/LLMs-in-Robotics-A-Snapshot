@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-c",
+    "import hashlib,json,subprocess,sys\nfrom pathlib import Path\nroot=Path.cwd(); exp=root/'Long-Horizon Adaptive Robotics Expirement'\nindex=json.loads((exp/'Evidence/prepared-artifacts/batch01-eval-r2-final/environment.json').read_text(encoding='utf-8'))\nfor probe in index['probes']:\n    for repeat in range(2 if probe['name']=='candidate_python' else 1):\n        reply=subprocess.run(probe['argv'],stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=probe['timeout_s'],creationflags=subprocess.CREATE_NO_WINDOW)\n        sha=hashlib.sha256(reply.stdout).hexdigest()\n        print(json.dumps({'probe':probe['name'],'repeat':repeat,'returncode':reply.returncode,'expected_sha256':probe['stdout_sha256'],'actual_sha256':sha,'matches':sha==probe['stdout_sha256'],'stdout_utf8':reply.stdout.decode('utf-8','replace'),'stderr_utf8':reply.stderr.decode('utf-8','replace')}),flush=True)\nfor argv in ([r'C:\\Windows\\system32\\wsl.exe','--distribution','Ubuntu-24.04','--exec','/usr/bin/tail','-n','65','/var/log/apt/history.log'],[r'C:\\Windows\\system32\\wsl.exe','--distribution','Ubuntu-24.04','--exec','/usr/bin/tail','-n','65','/var/log/dpkg.log']):\n    reply=subprocess.run(argv,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)\n    print(json.dumps({'diagnostic_argv':argv,'returncode':reply.returncode,'stdout_utf8':reply.stdout.decode('utf-8','replace'),'stderr_utf8':reply.stderr.decode('utf-8','replace')}),flush=True)"
+  ],
+  "cancel_requested_at": null,
+  "child_pid": 13404,
+  "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics",
+  "ended_at": "2026-09-23T13:58:45.986962Z",
+  "error": null,
+  "exit_status": 0,
+  "id": "20260923T135841727773Z-faac8ed2",
+  "log_path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\runtime\\logs\\20260923T135841727773Z-faac8ed2.log",
+  "resolved_executable": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+  "started_at": "2026-09-23T13:58:42.178954Z",
+  "state": "succeeded",
+  "submitted_at": "2026-09-23T13:58:41.727773Z",
+  "submitting_project": "LLMs-in-Robotics",
+  "worker_pid": 27084
+}

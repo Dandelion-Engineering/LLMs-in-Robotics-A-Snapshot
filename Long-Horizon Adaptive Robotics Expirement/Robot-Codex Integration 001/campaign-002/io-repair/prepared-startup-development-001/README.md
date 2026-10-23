@@ -1,0 +1,9 @@
+# Prepared startup segment proof development
+
+The new adapter authenticates every declared literal child process, native lifecycle and raw call identity before attributing any complete initial fixed file. It preserves the actual shortened app projection. Prefix evidence never credits Continuity, live data, a partial file or a later child.
+
+Final focused check004 passed 23 tests. Check001 passed14; check002 retained a test-fixture failure: a duplicate native ID was correctly rejected by process_reads before the fixture reached its expected adapter-rejection block. Check003 passed22 after the fixture correction. The final check additionally rejects a shortened ASCII head that cannot arise from the declared UTF-8 rounding. Both exact check002 adapter/test sources are retained in baselines; the test was recovered from the known local edits and its SHA matches check002 exactly. No production relaxation fixed that test failure.
+
+Development replay002 uses an explicitly separate overlay archive with final parser and adapter source bindings. After a fresh official succeeded/integer-zero queue gate, it proves complete Tasks/Robot/Tools in the interruption prepared result and only Tasks/Robot in the resume prefix. The partial Tools prefix stays uncredited. Raw output/delivery completion upper bounds remain explicit. The original Smoke022 assessment stays byte-identical and failed61/62; this is helper development, not a new assessment or qualification.
+
+The original full-result reader is byte-identical to dev074. No runtime, model, simulator, queue job, method policy, official evidence or map was changed by this work. Complete prospective qualification remains required. See receipt.json for exact commands, hashes, source identities, failed checkpoints and final development evidence.

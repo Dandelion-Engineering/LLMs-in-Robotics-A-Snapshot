@@ -1,0 +1,508 @@
+{
+  "schema": "campaign002-smoke-transport-diagnosis-1",
+  "created_at": "2026-09-29T02:03:01.405765+00:00",
+  "run_id": "RCI001-C02-smoke-023",
+  "queue_job_id": "20260929T014234165833Z-cba1e8b0",
+  "framework_revision": "RCI001-C02-dev-078",
+  "scope": "Read-only interrupt-stage infrastructure diagnosis after fresh official succeeded/integer-zero authentication. No task outcome, official reassessment, retry, source edit or historical verdict change.",
+  "official_execution": {
+    "state": "succeeded",
+    "exit_status": 0,
+    "started_at": "2026-09-29T01:42:34.420834Z",
+    "ended_at": "2026-09-29T01:56:36.399739Z"
+  },
+  "original_assessment": {
+    "smoke_passed": false,
+    "checks_true": 59,
+    "checks_total": 62,
+    "focused_verification_error": "Unresolved transport failure: mirror-error.json",
+    "unchanged_sha256": "aa0b4ceb104e4cefd6d8bac1d0fca424ae555401e7d8a3dcd2846ab0b745c733"
+  },
+  "observed_failure": {
+    "receipt": {
+      "wall_unix_s": 1790646476.4855204,
+      "method": "GET",
+      "path": "/status",
+      "type": "RuntimeError",
+      "error": "Public mirror status failed",
+      "phase": "reply_validation",
+      "authority_revocation_established": false
+    },
+    "missing_authority_revocation_receipt": true,
+    "missing_nonfatal_mirror_closure_receipt": true,
+    "phase_implication": "HTTP read and JSON decoding returned; failure occurred at the status/ok validation, before publishing this reply to Linux mirror files. The receipt does not retain the status, error code/body, request start time, or response hash.",
+    "retirement_to_error_s": 0.010005474090576172,
+    "truncation_claim": "No truncation or JSON-decoding exception is recorded. This does not establish the missing HTTP response identity."
+  },
+  "supported_source_mechanism": {
+    "classification": "Concrete source path, consistent with observed chronology; actual Smoke023 response remains unproved.",
+    "steps": [
+      "The HTTP thread captures authenticated_epoch before enqueueing a Mail.",
+      "A preceding operator retirement increments epoch from3 to4 and rotates capability before a delayed queued robot request is processed.",
+      "HttpGateway.process checks stale authenticated_epoch before robot_enabled and returns409/stale_authentication without dispatching the queued GET.",
+      "Runtime._observe_revocation accepts only403 with unauthorized/invocation_retired (or completed handback); it does not latch409/stale_authentication.",
+      "The mirror then sees non200/okfalse, writes generic mirror-error and sets abort_event."
+    ],
+    "existing_regression": "Original host/test_http_gateway.py:75-85 asserts409/stale_authentication for queued old GET/status after epoch change; source inspected only, no test executed for this diagnosis.",
+    "actual_code_unknown": true,
+    "other_reply_failures_not_excluded": [
+      "429 queue_full",
+      "504 reply_timeout",
+      "400 invalid_request or another nonaccepted reply"
+    ]
+  },
+  "lifecycle_reported": {
+    "injected_interruption": true,
+    "all_namespaces_retired": true,
+    "old_token_denied_after_retirement": true,
+    "watchdog_errors": [],
+    "client_model_started": true,
+    "client_success": false,
+    "client_error": "Qualified execution transport failed; stopping invocation",
+    "client_abort_interpretation": "The planned interruption independently sets the same abort_event; generic client transport-failed text does not uniquely attribute abort to mirror failure.",
+    "native_quiescence_qualified": true,
+    "native_quiescence_failures": [],
+    "codehost_qualified": true,
+    "codehost_exit_code": 0,
+    "codehost_failures": [],
+    "runtime_cleanup": {
+      "clean": true,
+      "errors": []
+    },
+    "scope": "Retained diagnostic lifecycle receipts only; does not cure mirror provenance or imply full qualification/task success."
+  },
+  "timeline": [
+    {
+      "source": "broker_events",
+      "line": 15,
+      "trace_id": "ccb684919d9e428ba098264b6d88de7a",
+      "method": "GET",
+      "path": "/status",
+      "received_wall_unix_s": 1790646476.2395377,
+      "wall_unix_s": 1790646476.262662,
+      "status": 200,
+      "origin": "protected_host"
+    },
+    {
+      "source": "broker_events",
+      "line": 16,
+      "trace_id": "5785d4faba194b8db8989c0cdf4619bf",
+      "method": "GET",
+      "path": "/status",
+      "received_wall_unix_s": 1790646476.2672927,
+      "wall_unix_s": 1790646476.2698002,
+      "status": 200,
+      "origin": "protected_host"
+    },
+    {
+      "source": "public_history",
+      "line": 3219,
+      "event_id": 3219,
+      "kind": "command_admission",
+      "wall_unix_s": 1790646476.3066702,
+      "authority_epoch": 3,
+      "request_id": "smoke-open-001"
+    },
+    {
+      "source": "broker_events",
+      "line": 17,
+      "trace_id": "2671843994ba4e388f332ffe8223e9da",
+      "method": "POST",
+      "path": "/command",
+      "received_wall_unix_s": 1790646476.275092,
+      "wall_unix_s": 1790646476.3116317,
+      "status": 200,
+      "origin": "protected_host"
+    },
+    {
+      "source": "public_history",
+      "line": 3223,
+      "event_id": 3223,
+      "kind": "command_requested",
+      "wall_unix_s": 1790646476.46651,
+      "authority_epoch": 3,
+      "request_id": "operator-retire-invocation-ddd77eeb938d4580b1104f1f58ec67cf"
+    },
+    {
+      "source": "public_history",
+      "line": 3224,
+      "event_id": 3224,
+      "kind": "invocation_retire-invocation",
+      "wall_unix_s": 1790646476.475515,
+      "authority_epoch": 4,
+      "request_id": "operator-retire-invocation-ddd77eeb938d4580b1104f1f58ec67cf"
+    },
+    {
+      "source": "public_history",
+      "line": 3225,
+      "event_id": 3225,
+      "kind": "command_terminal",
+      "wall_unix_s": 1790646476.4855204,
+      "authority_epoch": 4,
+      "request_id": "smoke-open-001"
+    },
+    {
+      "source": "mirror_error",
+      "wall_unix_s": 1790646476.4855204,
+      "kind": "mirror_reply_validation_failure"
+    },
+    {
+      "source": "client_events",
+      "line": 480,
+      "kind": "native_quiescence",
+      "phase": "start",
+      "wall_unix_s": 1790646477.3288019,
+      "monotonic_s": 503956.781,
+      "qualified": null,
+      "exit_code": null
+    },
+    {
+      "source": "codehost_ledger",
+      "line": 217,
+      "sequence": 217,
+      "kind": "native_cleanup_begin",
+      "wall_unix_s": 1790646477.329806,
+      "qualified": null,
+      "failures": null
+    },
+    {
+      "source": "codehost_ledger",
+      "line": 220,
+      "sequence": 220,
+      "kind": "native_cleanup_ack",
+      "wall_unix_s": 1790646477.3338182,
+      "qualified": null,
+      "failures": null
+    },
+    {
+      "source": "client_events",
+      "line": 483,
+      "kind": "native_quiescence",
+      "phase": "request_sent",
+      "wall_unix_s": 1790646477.3363295,
+      "monotonic_s": 503956.796,
+      "qualified": null,
+      "exit_code": null
+    },
+    {
+      "source": "client_events",
+      "line": 490,
+      "kind": "native_quiescence",
+      "phase": "handshake_complete",
+      "wall_unix_s": 1790646477.3850114,
+      "monotonic_s": 503956.843,
+      "qualified": true,
+      "exit_code": null
+    },
+    {
+      "source": "client_events",
+      "line": 491,
+      "kind": "client_finishing_before_close",
+      "phase": null,
+      "wall_unix_s": 1790646477.3850114,
+      "monotonic_s": 503956.843,
+      "qualified": null,
+      "exit_code": null
+    },
+    {
+      "source": "codehost_ledger",
+      "line": 234,
+      "sequence": 234,
+      "kind": "client_eof",
+      "wall_unix_s": 1790646477.403736,
+      "qualified": null,
+      "failures": null
+    },
+    {
+      "source": "codehost_ledger",
+      "line": 236,
+      "sequence": 236,
+      "kind": "upload_drained",
+      "wall_unix_s": 1790646477.4057364,
+      "qualified": null,
+      "failures": null
+    },
+    {
+      "source": "client_events",
+      "line": 494,
+      "kind": "native_quiescence",
+      "phase": "native_exit",
+      "wall_unix_s": 1790646477.4067369,
+      "monotonic_s": 503956.859,
+      "qualified": null,
+      "exit_code": 0
+    },
+    {
+      "source": "client_events",
+      "line": 495,
+      "kind": "native_quiescence",
+      "phase": "completed",
+      "wall_unix_s": 1790646477.40774,
+      "monotonic_s": 503956.859,
+      "qualified": true,
+      "exit_code": null
+    },
+    {
+      "source": "codehost_ledger",
+      "line": 243,
+      "sequence": 243,
+      "kind": "owner_input_closed",
+      "wall_unix_s": 1790646477.4197385,
+      "qualified": null,
+      "failures": null
+    },
+    {
+      "source": "codehost_ledger",
+      "line": 248,
+      "sequence": 248,
+      "kind": "owner_drain_completed",
+      "wall_unix_s": 1790646477.7270787,
+      "qualified": null,
+      "failures": null
+    },
+    {
+      "source": "codehost_ledger",
+      "line": 250,
+      "sequence": 250,
+      "kind": "closed",
+      "wall_unix_s": 1790646477.9959571,
+      "qualified": true,
+      "failures": []
+    }
+  ],
+  "assessment_of_rejection": "Substantive unresolved provenance remains: the exact failing upstream reply was discarded. assess.py299-303 correctly rejects the existing mirror-error. A false rejection of this particular historical response cannot be established from available data.",
+  "supported_prospective_repair": {
+    "minimum_observability": "Retain a bounded capability-redacted per-request mirror receipt with pinned invocation/epoch, request and completion times, exact HTTP status, typed error code and response identity before classification; keep unknown/malformed/server/capacity errors fatal.",
+    "narrow_behavior_candidate": "Prospectively classify exact protected409/stale_authentication as loss of this pinned authority, with an explicit receipt and independent join to the protected epoch/retirement transition, then stop mirror publication. Preserve gateway denial and no post-revocation forwarding. No generic ignoring of mirror errors.",
+    "required_validation": [
+      "Deterministic queued GET across an epoch rotation: real gateway409 plus exact mirror denial receipt.",
+      "403 known revocation and normal200 mirror publication unchanged.",
+      "429/504/400/malformed/unbound409 remain fatal; no false retirement receipt.",
+      "Protected retirement join and original assessor fail-closed behavior for unresolved old artifacts."
+    ],
+    "historical_action": "None; original Smoke023 failed verdict remains unchanged."
+  },
+  "limitations": [
+    "No exact failing HTTP status/body/hash was retained;409 is a supported mechanism, not an observed response.",
+    "No conclusion about truncation, lost model-visible bytes, robot task performance or unrelated startup/canary failures.",
+    "No empirical reproduction, model/native launch, source mutation or independent reassessment performed."
+  ],
+  "inputs": {
+    "official_status": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/smoke-023-transport-diagnosis-receipts/official-status.json",
+      "bytes": 1940,
+      "sha256": "bb8a14a34243a5615f8fffe288523c4505c8e143a8294c7cc149e2072882042f"
+    },
+    "authentication": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/smoke-023-transport-diagnosis-receipts/authentication.json",
+      "bytes": 751,
+      "sha256": "9953989e456202fc7153c55b56a15504abad0aa7c181f2d2a07f4c861080fbd0"
+    },
+    "snapshot": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-078/snapshot.json",
+      "bytes": 230078,
+      "sha256": "13375ee3c4a252406ce00f18cc0d211775763d00e6eff4dbb477516afb879df6"
+    },
+    "archive": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-078/code.zip",
+      "bytes": 3476193,
+      "sha256": "fa31d9c8f8a0090304774c53d30dfe7631a7547e70e0b84e0ecf2538183629d4"
+    },
+    "manifest": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/qualification/smoke-023-manifest.json",
+      "bytes": 44010,
+      "sha256": "e0ba13f206c525adf8ea9bb5963f0e351731003c1cccc3da55c441a3dcf51166"
+    },
+    "original_assessment": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/qualification/smoke-023-assessment.json",
+      "bytes": 546668,
+      "sha256": "aa0b4ceb104e4cefd6d8bac1d0fca424ae555401e7d8a3dcd2846ab0b745c733"
+    },
+    "mirror_error": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/mirror-error.json",
+      "bytes": 233,
+      "sha256": "1b530c4bb1f43f761727031c91891d2c6b00cce5f133c30d7bcca95279365bb6"
+    },
+    "broker_requests": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/broker-requests.jsonl",
+      "bytes": 6803,
+      "sha256": "18f0c055cd3b73a5e3c6d1d664c5f0f4138c78d06c09d4d14232601a8985b970"
+    },
+    "broker_events": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/broker-events.jsonl",
+      "bytes": 272653,
+      "sha256": "0ed6ea59747620b6c80f9697a279fb76d7f8cd14153465304f5ca7bf2fc98d64"
+    },
+    "public_history": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/host/public-history.jsonl",
+      "bytes": 31253059,
+      "sha256": "59aaaf0023c5653621563f6e9c856911069599a4534236c27afe31f99fc0588f"
+    },
+    "command_registry": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/host/command-registry.json",
+      "bytes": 15773,
+      "sha256": "3aab12bd800b51e2ed2b7dbf474495f4bdf0dcf6f41bb509d813954b62ca5863"
+    },
+    "stage_result": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/stage-result.json",
+      "bytes": 17389,
+      "sha256": "3226ce54cf5b48e2623ee36b4f43d66349b0e6a76a854f599b2ee50855ef5288"
+    },
+    "client_result": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/client/result.json",
+      "bytes": 12774,
+      "sha256": "55ee42fc412e3fca6ac540090bec365a4c99dc25e5f47dce7c113ff9cdb077cd"
+    },
+    "client_events": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/client/events.jsonl",
+      "bytes": 836627,
+      "sha256": "4a73e342f31ceb1cb35a897073c1e3d16c5063211fc70e9d07ff8cd435ea6d54"
+    },
+    "native_quiescence": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/client/native-quiescence.json",
+      "bytes": 10847,
+      "sha256": "3d076abfdc20c6597c0ce59a5ff1c725c3de2a0beec5b3b897f947ef68b427e4"
+    },
+    "codehost_bridge": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/codehost-owner-bridge-v3.json",
+      "bytes": 207887,
+      "sha256": "da8ee768e33b5b872b578f681b095c6e4477fdd2bd1b66f8bff0a2f73c257618"
+    },
+    "codehost_ledger": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/codehost-transport-v3.jsonl",
+      "bytes": 148894,
+      "sha256": "0c9f854a7628d50d0d44175d4455c5ed6a455548829b9c20f8d040d0f9e259dc"
+    },
+    "codehost_retirement": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/codehost-owner-retirement-v3.json",
+      "bytes": 2689,
+      "sha256": "3508311f1c8d9db4014322236cdcdb4104023c2b5aeadf5a0c6a1add213dd636"
+    },
+    "cleanup": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-smoke-023/orchestrator/interrupt/cleanup.json",
+      "bytes": 40,
+      "sha256": "cdd05fb59455c976ade07316279fb7f15473db8b4ab22f541320b97ae10847de"
+    }
+  },
+  "sources": {
+    "runtime": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+      "bytes": 24681,
+      "sha256": "fac550bdd92e1ee35c98d21029408522c07ac8e956bdda24b8c5d4615c3d473b",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+      "source_lines": [
+        [
+          63,
+          75
+        ],
+        [
+          164,
+          198
+        ],
+        [
+          205,
+          239
+        ],
+        [
+          241,
+          282
+        ],
+        [
+          330,
+          368
+        ]
+      ],
+      "archived_and_current_equal": true
+    },
+    "host_gateway": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py",
+      "bytes": 34733,
+      "sha256": "141619e12bcecb33c1e90bc93dd0f1dc52760b497d443da412f816297dd94818",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py",
+      "source_lines": [
+        [
+          68,
+          112
+        ],
+        [
+          139,
+          172
+        ],
+        [
+          174,
+          201
+        ]
+      ],
+      "archived_and_current_equal": true
+    },
+    "physical": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+      "bytes": 11167,
+      "sha256": "e20030568bd5d0905092a1e76f38386e6bd463541b5ff291083867e5ec9da572",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+      "source_lines": [
+        [
+          40,
+          100
+        ]
+      ],
+      "archived_and_current_equal": true
+    },
+    "base_assessor": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess.py",
+      "bytes": 39038,
+      "sha256": "62b26c5c9c74eba50855218e28174c31684a197f1d005058bd7efce4b64b164f",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess.py",
+      "source_lines": [
+        [
+          299,
+          360
+        ],
+        [
+          382,
+          395
+        ]
+      ],
+      "archived_and_current_equal": true
+    },
+    "supervisor": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/supervisor.py",
+      "bytes": 39167,
+      "sha256": "404828636f43475dfcba38ef58db87737a218e1fd49e7204d5d637611c0fa958",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/supervisor.py",
+      "source_lines": [
+        [
+          609,
+          639
+        ]
+      ],
+      "archived_and_current_equal": true
+    },
+    "gateway_regression": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/test_http_gateway.py",
+      "bytes": 8669,
+      "sha256": "f06b7929193c555323e8a6fab7cd5b4d3061ee120e88c2807910f0d2943bffef",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/test_http_gateway.py",
+      "source_lines": [
+        [
+          75,
+          86
+        ]
+      ],
+      "archived_and_current_equal": true
+    },
+    "bootstrap": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v4.py",
+      "bytes": 23326,
+      "sha256": "a08f0b820c5ce30c0a68bc8ea7fc19102b29834a6b9b0dd447157568060706ad",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v4.py",
+      "source_lines": [
+        [
+          145,
+          160
+        ]
+      ],
+      "archived_and_current_equal": true
+    }
+  }
+}

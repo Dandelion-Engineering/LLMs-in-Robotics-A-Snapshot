@@ -1,0 +1,30 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\prepare_model_v23.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\prepare_model_v24.py
+@@ -8,14 +8,14 @@
+ CAMPAIGN=HERE.parent
+ RCI=CAMPAIGN.parent
+ REPO=RCI.parents[1]
+-spec=importlib.util.spec_from_file_location('model_inventory_v22',HERE/'prepare_model_v22.py')
++spec=importlib.util.spec_from_file_location('model_inventory_v23',HERE/'prepare_model_v23.py')
+ prior=importlib.util.module_from_spec(spec);spec.loader.exec_module(prior)
+ READER_INPUTS=(
+-    'qualification/prepare_model_v23.py','qualification/test_prepare_model_v23.py',
+-    'io-repair/COMPLETE_PROCESS_AND_LITERAL_READS_V1.md',
++    'qualification/prepare_model_v24.py','qualification/test_prepare_model_v24.py',
++    'io-repair/COMPLETE_PROCESS_AND_LITERAL_READS_V2.md',
+     'assessment/retained_reads.py','assessment/completion_chronology.py',
+     'assessment/canary_readback_proof.py','assessment/initial_read_composition.py',
+-    'assessment/test_smoke028_reader_forms.py',
++    'assessment/test_smoke030_print_recipe.py',
+ )
+ 
+ 
+@@ -23,7 +23,7 @@
+     paths=[CAMPAIGN/name for name in READER_INPUTS]
+     if any(not path.is_file() or path.is_symlink() for path in paths):
+         raise ValueError('Missing or linked complete-process/read source')
+-    return sorted(set(prior.process_drain_inputs())|{path.relative_to(REPO).as_posix() for path in paths})
++    return sorted(set(prior.reader_inputs())|{path.relative_to(REPO).as_posix() for path in paths})
+ 
+ def runtime_inputs():return sorted(set(prior.runtime_inputs())|set(reader_inputs()))
+ 

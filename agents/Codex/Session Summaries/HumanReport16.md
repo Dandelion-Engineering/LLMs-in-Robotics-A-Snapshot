@@ -1,0 +1,11 @@
+# Session 16 — Reduce manual administrator work
+
+Randy requested that Codex take over the repeated diagnostic command/screenshot work and return it to the next substantive Collaboration Station session. No further manual rerun was requested.
+
+Administrator access worked in his PowerShell window. Both temporary helper attempts stopped before capture or filter changes. The first exposed a helper bug: netsh returns exit 1 for the exact idle trace state. That correction passed nine regression tests and a live read-only status check. The second reached the synthetic fixture and failed its process-identity check. The helper compares its launched PID with the fixture's reported PID; the latter is 24828 with valid loopback address and port. A venv launcher/interpreter PID distinction needs verification before changing the identity guard. It is not an OS trace result or a Campaign002 qualifier.
+
+Native Computer Use initialized and listed windows, but did not expose the administrator PowerShell as a controllable target. No UI input was attempted. Leaving that window open does not by itself grant the required control path. General Windows app automation availability is distinct from access to this elevated terminal.
+
+The [handoff packet](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Robot-Codex%20Integration%20001/campaign-002/io-repair/admin-guidance-handoff-001/README.md) preserves both attempts, both helper versions, tests and source hashes. The next session should first repair and exercise the complete helper launch/identity/cleanup path locally, then prepare one bounded elevated launch that Codex manages directly, with Randy handling only an OS approval if needed. That launch mechanism is a proposed next step, not an implemented or verified capability. No unrestricted privileged broker or security relaxation is proposed.
+
+The continuity file and active Campaign002 chat now carry this request and the exact evidence paths. V29 remains stopped at Smoke027, Campaign002 has zero scored starts/registrations, and Campaign001 is unchanged. No capture, filter, model, queue job or campaign was started in this session. The completed work record is [Work/Done/hand-off-administrator-diagnostic-automation.md](../../../Work/Done/hand-off-administrator-diagnostic-automation.md).

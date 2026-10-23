@@ -1,0 +1,246 @@
+{
+  "kind": "no-model infrastructure coverage; not scientific qualification",
+  "collection_completed": true,
+  "coverage_adequate": false,
+  "coverage_failure": "No packet/provider events: only Header and two PartitionInfoExtensionV2 metadata rows. Neither control is observable in the OS trace.",
+  "checks": {
+    "helper_terminal_integer_zero": true,
+    "real_collection_completed": true,
+    "two_controls_passed": true,
+    "exact_port_both_filters": true,
+    "both_controls_within_capture_command_bracket": true,
+    "prefix_40_bytes": true,
+    "file_limit_16_MiB": true,
+    "capture_under_30_seconds": true,
+    "reported_no_event_or_buffer_loss": true,
+    "fixture_retired": true,
+    "owned_capture_stopped": true,
+    "owned_filters_removed": true,
+    "os_fin_and_rst_coverage": false,
+    "os_endpoint_and_clock_correlation": false
+  },
+  "fixture": {
+    "schema": "campaign002-tcp-trace-coverage-fixture-1",
+    "passed": true,
+    "cases": [
+      {
+        "case": "graceful_fin",
+        "client_port": 59912,
+        "server_port": 59911,
+        "close_requested_perf_counter_ns": 596521688781900,
+        "server_observed_perf_counter_ns": 596521688809300,
+        "genuine_read_eof": true,
+        "error": null,
+        "request_bytes": 51,
+        "response_bytes": 42,
+        "request_sha256": "f979e77d1cc8bda4f19d76bf72ae091c700d5df7e8b967f7ea6dc23af70424f3",
+        "response_sha256": "0279e96a6db37a719d4832fe56fcb38e75099cda195abf8d8f37ece2f8d5fe0e"
+      },
+      {
+        "case": "deliberate_rst",
+        "client_port": 59913,
+        "server_port": 59911,
+        "close_requested_perf_counter_ns": 596521689213100,
+        "server_observed_perf_counter_ns": 596521689307500,
+        "genuine_read_eof": false,
+        "error": {
+          "type": "ConnectionResetError",
+          "errno": 22,
+          "winerror": 64
+        },
+        "request_bytes": 51,
+        "response_bytes": 42,
+        "request_sha256": "f979e77d1cc8bda4f19d76bf72ae091c700d5df7e8b967f7ea6dc23af70424f3",
+        "response_sha256": "0279e96a6db37a719d4832fe56fcb38e75099cda195abf8d8f37ece2f8d5fe0e"
+      }
+    ],
+    "model_calls": 0,
+    "capture_started": false,
+    "trace_coverage_qualified": false,
+    "scope": "Socket controls only. An elevated trace must independently show both cases before any new native diagnostic can be proposed."
+  },
+  "capture_elapsed_s": 0.7343255,
+  "etl_bytes": 11960,
+  "trace_rows": 3,
+  "manifest_based_events": 0,
+  "wrap_assessment": "No wrap indication in this small metadata-only ETL; absence of packet events prevents complete measurement validation.",
+  "source_bindings": [
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-01.json",
+      "copy": "evidence\\command-01.json",
+      "bytes": 299,
+      "sha256": "51e25c62b9af2c9c20cdb7ea4415cae097265ce18edbacc577f6308a85ccd21f"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-02.json",
+      "copy": "evidence\\command-02.json",
+      "bytes": 305,
+      "sha256": "be1317079e5d67a7d8d6392221e31886606c6a06f54b3abd72c3afb6fa358fa7"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-03.json",
+      "copy": "evidence\\command-03.json",
+      "bytes": 342,
+      "sha256": "8dc40a5c084244ee24c700e572d7fb945ac41d453e6b30f13f89bddda676ad59"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-04.json",
+      "copy": "evidence\\command-04.json",
+      "bytes": 404,
+      "sha256": "0d7dfa0928a19fabe2f4d946a530272588bc6ff150fa0dd85896b99d9f00bf53"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-05.json",
+      "copy": "evidence\\command-05.json",
+      "bytes": 448,
+      "sha256": "bf4f19d667c2f34fcae8d68fc2b0e8149cebc33ee2eb718597934cbbdb5dd565"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-06.json",
+      "copy": "evidence\\command-06.json",
+      "bytes": 404,
+      "sha256": "3a46b452eab51511849fe867ca4d5d573a929009de35aa70eda6124b0bfc5363"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-07.json",
+      "copy": "evidence\\command-07.json",
+      "bytes": 499,
+      "sha256": "a2fcd5ff2fc2f0ea649b5d6d0fa5f23c4484ed5e7a8d79e3eb4535164f16287d"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-08.json",
+      "copy": "evidence\\command-08.json",
+      "bytes": 299,
+      "sha256": "9372e3cd91be3471a9101efd97639cfb359f689adbcca3e0a879d85c9f42bb0a"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-09.json",
+      "copy": "evidence\\command-09.json",
+      "bytes": 1179,
+      "sha256": "472f57c291829f10e32fd6c0b0b347cc1ef5de66e3ea0d5234d577c792c9b91d"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-10.json",
+      "copy": "evidence\\command-10.json",
+      "bytes": 1069,
+      "sha256": "73a0ba7ccb51b933fa3e66d59adbf46e059b28ae45379b0361719e60c6df4a08"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-11.json",
+      "copy": "evidence\\command-11.json",
+      "bytes": 426,
+      "sha256": "c0c01e2e5939baa3ea3d55113f01e87369ed708a3c0f30c74a4bcaad150e96e0"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-12.json",
+      "copy": "evidence\\command-12.json",
+      "bytes": 499,
+      "sha256": "2990bfa2cfaa973b839f033dd78e2f7d0ebaab9b31b73e5064516532224ac5ad"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-13.json",
+      "copy": "evidence\\command-13.json",
+      "bytes": 299,
+      "sha256": "75341d4fe5c787290a6df3d83e52c34f80efa8a092bcab748beaaa853d18fde8"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-14.json",
+      "copy": "evidence\\command-14.json",
+      "bytes": 302,
+      "sha256": "53db04db0b1b420fd589a9eca2dcf06718c8a4a5c4ef59f9200895dd5f8ab072"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-15.json",
+      "copy": "evidence\\command-15.json",
+      "bytes": 305,
+      "sha256": "626b5cd6a052766fc5a63f021e98178ebaa930018e1bbba8d69efe5a6577c9f6"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-16.json",
+      "copy": "evidence\\command-16.json",
+      "bytes": 623,
+      "sha256": "d4f3d7275e77e5dd21636e4843a1fbc5c816ddb251d905a9f48f30e1522edec1"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-17.json",
+      "copy": "evidence\\command-17.json",
+      "bytes": 686,
+      "sha256": "80cca6aed40a04e5bb89fb25589aad0a36f06e1fc6ee22dace624f25ca3cc3c8"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\command-18.json",
+      "copy": "evidence\\command-18.json",
+      "bytes": 299,
+      "sha256": "bdc8da979b9d318cab66d9b5dee69642cda2a3ea84f41df84fe65da63dc2f68e"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\coverage.etl",
+      "copy": "evidence\\coverage.etl",
+      "bytes": 11960,
+      "sha256": "4fd5f56b7df8dd1af200416db58eee3e45307543e9be4868669e3f3302a528c4"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\coverage.txt",
+      "copy": "evidence\\coverage.txt",
+      "bytes": 1970,
+      "sha256": "c89b2ed5116e34e3d9e062c49e305d14a3f8acf2d2d8c977e0a8f01a98c8c646"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\fixture\\ready.json",
+      "copy": "evidence\\fixture\\ready.json",
+      "bytes": 432,
+      "sha256": "dd90a75922364a3fe014a4f22072614ea9d9287c0cad031282e6cac447071c88"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\fixture\\release.json",
+      "copy": "evidence\\fixture\\release.json",
+      "bytes": 25,
+      "sha256": "b470a8560251db8ab77dd99eca9724d086c0cd742168b8d3d10dedba4fe30646"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\fixture\\result.json",
+      "copy": "evidence\\fixture\\result.json",
+      "bytes": 1464,
+      "sha256": "3d6e7dc4ac992972d4ed8efc6be28a7ce4f6878a130ec540e614cddf86680dd5"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\fixture-stderr.txt",
+      "copy": "evidence\\fixture-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\fixture-stdout.txt",
+      "copy": "evidence\\fixture-stdout.txt",
+      "bytes": 1626,
+      "sha256": "23bb9ff2a4ec7a8ebd3b13019b099222187affff97fb4f0a2b4dcb7261dcc469"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\identity.json",
+      "copy": "evidence\\identity.json",
+      "bytes": 1073,
+      "sha256": "013048e0bcedf78e3556b3be69cddd4fbbc91bb6340227d8cf75096dd782a359"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\intent.json",
+      "copy": "evidence\\intent.json",
+      "bytes": 695,
+      "sha256": "cf515c932c40b830d7dd35192e8543e245b382498bfa4be32639376c540883b3"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\launch.json",
+      "copy": "evidence\\launch.json",
+      "bytes": 201,
+      "sha256": "efdbab114ec6be0ae08e0d38e7bf23be1ec51342cadd58efd85bb7069e15fe1e"
+    },
+    {
+      "source": "C:\\Users\\cresp\\Documents\\Campaign002 TCP Trace\\coverage-managed-20260929-001\\receipt.json",
+      "copy": "evidence\\receipt.json",
+      "bytes": 685,
+      "sha256": "2b5e2db54602d30b7567edbb1c535e4e9d735c2420ce8bf1e7618ac7df577907"
+    }
+  ],
+  "model_calls": 0,
+  "scored_starts": 0,
+  "next_step": "Separate prospective event-trace scope; no unchanged pktmon repetition and no native/scored launch from this result."
+}

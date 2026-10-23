@@ -1,0 +1,51 @@
+import json, subprocess, sys, time
+
+def call(args):
+    r=subprocess.run(["python3","-B","robot.py",*args],capture_output=True,text=True)
+    try: d=json.loads(r.stdout)
+    except Exception:
+        print(r.stdout, r.stderr, flush=True)
+        raise SystemExit("Invalid reply; outcome must be reconciled")
+    if r.returncode:
+        print(json.dumps(d),flush=True)
+        raise SystemExit(r.returncode)
+    return d
+
+def terminal(rid, first):
+    d=first
+    until=time.monotonic()+10
+    while d.get("command",{}).get("phase")!="terminal":
+        if time.monotonic()>until:
+            print(json.dumps(d),flush=True)
+            raise SystemExit("No terminal receipt; query before any further action")
+        time.sleep(.2)
+        d=call(["query",rid])
+    print(json.dumps({"receipt":d}),flush=True)
+    if d.get("command",{}).get("status")!="completed":
+        raise SystemExit("Action did not complete; inspect before further action")
+    return d
+
+def status():
+    d=call(["status"])
+    p=d.get("packet",{})
+    print(json.dumps({**{k:d.get(k) for k in ["ok","owner","authority_epoch","order_version","observation_sequence","observation_age_s","active_command","robot_action_budget","history_high_water"]},"unresolved_commands":[{k:c.get(k) for k in ["request_id","phase","status","verification"]} for c in d.get("unresolved_commands",[])],"packet":{k:p.get(k) for k in ["capture_sim_time_s","sim_time","detections","gripper","tcp_position_m","joints","joint_velocities","station","arm","last_feedback","order"]}}),flush=True)
+    return d
+
+if __name__=="__main__":
+    args=sys.argv[1:]
+    if args==["status"]:
+        status()
+        raise SystemExit
+    if "--request-id" not in args:
+        raise SystemExit("Explicit request ID required")
+    before=call(["status"])
+    if (before.get("owner"),before.get("authority_epoch"),before.get("order_version"))!=("robot",3,1):
+        print(json.dumps(before),flush=True)
+        raise SystemExit("Authority/order changed")
+    if before.get("active_command") or any(c.get("phase")!="terminal" for c in before.get("unresolved_commands",[])):
+        raise SystemExit("Action pending; reconcile first")
+    rid=args[args.index("--request-id")+1]
+    terminal(rid,call(args))
+    oid=rid+"-view"
+    terminal(oid,call(["observe","--request-id",oid]))
+    status()

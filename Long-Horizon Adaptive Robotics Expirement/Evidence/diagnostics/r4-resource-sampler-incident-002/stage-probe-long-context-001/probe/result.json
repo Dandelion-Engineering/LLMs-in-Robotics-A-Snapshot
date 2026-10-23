@@ -1,0 +1,131 @@
+{
+  "schema_version": "resource-stage-probe-child-1",
+  "started_at": "2026-09-24T20:00:50.937243+00:00",
+  "ended_at": "2026-09-24T20:04:03.620409+00:00",
+  "scope": "One queue-owned infrastructure diagnostic. No robot, candidate, task episode, held-out manifest, scored retry, source change, or continuation decision.",
+  "queue_job_id": "20260924T200041535546Z-d5a173b5",
+  "child_authority": {
+    "job_id": "20260924T200041535546Z-d5a173b5",
+    "driver_pid": 31336,
+    "probe_launcher_pid": 28040,
+    "probe_pid": 30968,
+    "verified_chain": "installed queue -> verified driver -> immediate venv launcher -> base interpreter",
+    "process_creation_times": [
+      "2026-09-24T20:00:48.629410+00:00",
+      "2026-09-24T20:00:48.651514+00:00",
+      "2026-09-24T20:00:49.739795+00:00",
+      "2026-09-24T20:00:49.759803+00:00"
+    ]
+  },
+  "phases": [
+    {
+      "name": "idle_host",
+      "duration_requested_s": 30.0,
+      "started_monotonic_s": 137499.0093678,
+      "ended_monotonic_s": 137529.0245879,
+      "interrupted": false
+    },
+    {
+      "name": "loaded_model_idle",
+      "duration_requested_s": 30.0,
+      "started_monotonic_s": 137538.7707034,
+      "ended_monotonic_s": 137568.7775662,
+      "interrupted": false
+    },
+    {
+      "name": "generic_inference",
+      "duration_requested_s": 120.0,
+      "started_monotonic_s": 137568.7783062,
+      "ended_monotonic_s": 137688.7789908,
+      "interrupted": false
+    }
+  ],
+  "first_failure": null,
+  "unexpected_error": null,
+  "cleanup_errors": [],
+  "cleanup_observations": [],
+  "sampler_reports": [
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-resource-sampler-incident-002\\stage-probe-long-context-001\\probe\\host-resources.jsonl",
+      "sample_count": 7,
+      "period_s": 5.0,
+      "failure": null,
+      "sampler_stopped": true,
+      "sampled_peaks": {
+        "harness_sampled_peak_rss_bytes": 60215296
+      },
+      "peaks_are_lower_bounds": true,
+      "resource_caps_enforced": false,
+      "energy_joules": null,
+      "energy_missing_reason": "Unmeasured",
+      "limitations": [
+        "GPU metrics cover all applications",
+        "Windows RSS does not include candidate Linux process",
+        "Five-second sampling may miss transient peaks"
+      ]
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-resource-sampler-incident-002\\stage-probe-long-context-001\\probe\\model-resources.jsonl",
+      "sample_count": 31,
+      "period_s": 5.0,
+      "failure": null,
+      "sampler_stopped": true,
+      "sampled_peaks": {
+        "harness_sampled_peak_rss_bytes": 64270336,
+        "model_sampled_peak_rss_bytes": 9060950016
+      },
+      "peaks_are_lower_bounds": true,
+      "resource_caps_enforced": false,
+      "energy_joules": null,
+      "energy_missing_reason": "Unmeasured",
+      "limitations": [
+        "GPU metrics cover all applications",
+        "Windows RSS does not include candidate Linux process",
+        "Five-second sampling may miss transient peaks"
+      ]
+    }
+  ],
+  "model_calls_recorded": 17,
+  "sources_unchanged": true,
+  "resource_policy": {
+    "version": "robot-runtime-resource-policy-004",
+    "resource_caps_enforced": false,
+    "sampled_watchdog": {
+      "harness_rss_bytes": 4294967296,
+      "model_private_commit_bytes": 12884901888,
+      "whole_device_gpu_memory_bytes": 15032385536,
+      "target_supervisor_check_interval_s": 0.25,
+      "observation_period_s": 5.0,
+      "gpu_query_timeout_s": 2.0,
+      "initial_observation_grace_s": 7.0,
+      "maximum_sample_age_s": 7.0,
+      "observation_grace_origin": "sampler monotonic start; not episode or candidate-incarnation start",
+      "required_observations": "harness RSS, active model private commit with matching PID, and memory on every reported GPU",
+      "scope": "latest completed asynchronous sample; 5 s period plus up to 2 s GPU query; .25 s is a target poll cadence, not a measurement or detection bound; transient peaks can be missed",
+      "whole_gpu_attribution": "host/device total; never automatically attributed to the candidate"
+    },
+    "hard_cap_evidence": "Model manifest resource_enforcement and candidate_ready restrictions are separate authoritative declarations; sampled checks are not OS quotas",
+    "candidate_context": {
+      "checkpoint_bytes": 8388608,
+      "context_allowance_bytes": 268435456,
+      "bounded_fixed_code_estimate_bytes": 50331648,
+      "scope": "fixed candidate checkpoint/temp behavior and at most one restart; not a measured filesystem peak"
+    },
+    "candidate_cpu": "Single process/thread admitted by sandbox no-clone policy; aggregate observed CPU retains missing final interval",
+    "sampler_compatibility": "resources.jsonl budget_observations are descriptive; this versioned supervisor watchdog defines current stop thresholds",
+    "model_timeout": "Protected fixed-request-budget exhaustion is terminal model_request_timeout; caps and unexplained unavailable observations remain infrastructure failures. No restart or budget extension."
+  },
+  "all_phases_completed": true,
+  "no_failure_observed": true,
+  "continuation_authorized": false,
+  "nonrecurrence_established": false,
+  "notes": [
+    "Timing hooks and flushed stage logs add diagnostic overhead; this is not a timing-equivalence or scored-readiness test.",
+    "A timeout reproduced in a named stage can locate an observed delay, but does not alone establish the underlying Windows or GPU-driver cause.",
+    "One bounded nonreproduction cannot prove nonrecurrence or authorize scored continuation.",
+    "Generic service load is not a replay of A3, robot physics, sensing, policy prompts, or held-out scenarios; negative results do not exclude an interaction with the full workload.",
+    "The 30/30/120-second phases total 180 seconds; model startup, a final in-flight request and bounded cleanup are separately recorded outside those phase durations.",
+    "The unchanged Windows subprocess timeout path can spend time in process creation or post-kill drain outside its communicate timeout; the independent parent wall limit bounds only this diagnostic, not the frozen sampler.",
+    "Long-context synthetic prompts isolate a resource-load dimension; they do not reproduce the full physical workload or establish historical causation. Even a successful negative probe cannot alone resolve the hold."
+  ]
+}

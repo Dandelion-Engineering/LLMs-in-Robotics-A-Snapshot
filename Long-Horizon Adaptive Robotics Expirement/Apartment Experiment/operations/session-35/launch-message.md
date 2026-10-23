@@ -1,0 +1,5 @@
+The official apartment-v2 Maps worker was submitted exactly once at 10:50 PDT, queue `20261008T175026684677Z-eb210af9`, from the original pristine Maps root using the frozen source. A fresh independent Baseline audit passed all five gates with queue exit 0, and all launch prerequisites passed: checkpoint 36/all 21 Baseline assignments, original 19 Maps files, matched source/schedule/configuration/runtime, and no duplicate apartment run.
+
+Startup passed all eleven checks: native gpt-6-astra/max identity and isolation, advancing simulator, sensor/images and observable tool calls, protected filesystem activity, original replay, and unchanged Baseline identity. The live viewer visibly renders the apartment and current Maps activity at **http://127.0.0.1:57429**.
+
+Session 35 remains open with same-thread observations every 30 minutes until an authenticated endpoint or requested pause. Deferred hibernation remains available. Operator receipts are under `D:/Dandelion-Apartment-Experiment/official/apartment-v2/operator/maps-session35-001/`; `operations/session-35/STATUS.md` is the current handoff. No scientific condition comparison is being conducted.

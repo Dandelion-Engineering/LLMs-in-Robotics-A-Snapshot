@@ -1,0 +1,9 @@
+# RCI001-C02-home-03
+
+Family: blocked-insert-home. Seed 173, noise seed 23006. Original disposition: valid success.
+
+Read [metadata](metadata.json), [events](events.jsonl), [file versions](file-versions.jsonl), [complete file contents](contents.jsonl), and [final tree](workspace.json). Original bytes are under `workspace-final/`; `Continuity.md` aliases `.continuity/Continuity.md`. [Background observations](observations.jsonl) and [clock anchors](anchors.jsonl) are separate from actual agent receipts. [Source identities](sources.jsonl) resolve every provenance reference.
+
+760 event records, 3166 background observations, 19 retained final regular files, 73 evidenced/requested version records, 6 protected continuity commits.
+
+No exact intermediate filesystem reconstruction is claimed. `requested_content_only` is a literal request, not a witnessed file state. Redirected contents correlate surviving bytes with observed requests; exact mutation boundaries remain unknown. [Recovery gaps](recovery-gaps.json) preserve unsupported reads/writes.

@@ -1,0 +1,33 @@
+{
+  "schema": "campaign002-development-check-1",
+  "scope": "Deterministic independent verifier tests; no model/native/queue",
+  "utc": "2026-09-28T22:52:17.324649+00:00",
+  "argv": [
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "test_client_quiescence",
+    "test_transport_integrity_v3"
+  ],
+  "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "..................................E..................................F..........................................................F...\n======================================================================\nERROR: test_actual_begin_finishing_emits_one_original_frontier_and_gates_live_only (test_transport_integrity_v3.TransportV3Tests.test_actual_begin_finishing_emits_one_original_frontier_and_gates_live_only)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_integrity_v3.py\", line 594, in test_actual_begin_finishing_emits_one_original_frontier_and_gates_live_only\n    namespace['observe_finishing'](fake);namespace['observe_finishing'](fake)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\codehost_bridge_v3.py\", line 366, in observe_finishing\n    self.begin_finish()\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_integrity_v3.py\", line 593, in <lambda>\n    fake.begin_finish=lambda:namespace['begin_finish'](fake)\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\codehost_bridge_v3.py\", line 386, in begin_finish\n    channel.h2.validate_reset_scope()\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'types.SimpleNamespace' object has no attribute 'validate_reset_scope'\n\n======================================================================\nFAIL: test_fixture_covers_actual_source_emitted_parent_event_kinds (test_transport_integrity_v3.TransportV3Tests.test_fixture_covers_actual_source_emitted_parent_event_kinds)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_integrity_v3.py\", line 573, in test_fixture_covers_actual_source_emitted_parent_event_kinds\n    self.assertEqual({row['kind'] for row in self.f.parent} | {'client_eof'}, subject.PARENT_KINDS)\nAssertionError: {'owner_drain_ack', 'upload_drained', 'li[339 chars]sed'} != frozenset({'owner_drain_ack', 'upload_dra[422 chars]ed'})\n\n======================================================================\nFAIL: test_unknown_framing_type_not_silently_ignored (test_transport_integrity_v3.TransportV3Tests.test_unknown_framing_type_not_silently_ignored)\n----------------------------------------------------------------------\nValueError: Cleanup barrier lacks declared frozen method\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_integrity_v3.py\", line 911, in test_unknown_framing_type_not_silently_ignored\n    self.fails('Framing type')\n  File \"C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_integrity_v3.py\", line 521, in fails\n    with self.assertRaisesRegex(ValueError,phrase):self.verify()\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"Framing type\" does not match \"Cleanup barrier lacks declared frozen method\"\n\n----------------------------------------------------------------------\nRan 132 tests in 12.517s\n\nFAILED (failures=2, errors=1)\n",
+  "sources": {
+    "client_quiescence.py": {
+      "sha256": "5af29b04b045111baf3fc5ad507d0799a43e5a1f2435335620a246c88a6eef01",
+      "bytes": 22695
+    },
+    "transport_integrity_v3.py": {
+      "sha256": "ef69d4b82bdf814363f17b46abb15fe60e32df8a58ec48c603d4f3bab5df6817",
+      "bytes": 122616
+    },
+    "cleanup_transport.py": {
+      "sha256": "d5488d0bde1d96de0cd6297c7a9c42aeea4d1091cd2448d9806bdf94b4c877d8",
+      "bytes": 28568
+    }
+  }
+}

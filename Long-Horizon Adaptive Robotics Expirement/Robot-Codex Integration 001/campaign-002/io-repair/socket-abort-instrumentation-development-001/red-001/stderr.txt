@@ -1,0 +1,122 @@
+test_actual_pending_read_cancellation_still_is_not_eof (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_actual_pending_read_cancellation_still_is_not_eof) ... ok
+test_both_writer_sites_keep_original_error_and_release_queue (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_both_writer_sites_keep_original_error_and_release_queue) ... 
+  test_both_writer_sites_keep_original_error_and_release_queue (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_both_writer_sites_keep_original_error_and_release_queue) (site='write') ... ERROR
+  test_both_writer_sites_keep_original_error_and_release_queue (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_both_writer_sites_keep_original_error_and_release_queue) (site='drain') ... ERROR
+test_cancellation_and_non_socket_exception_are_not_socket_failures (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_cancellation_and_non_socket_exception_are_not_socket_failures) ... ok
+test_first_socket_failure_only_per_channel_even_across_operations (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_first_socket_failure_only_per_channel_even_across_operations) ... ERROR
+test_ledger_failure_never_replaces_original_socket_error (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_ledger_failure_never_replaces_original_socket_error) ... ERROR
+test_numeric_codes_are_genuine_bounded_integers_and_classes_closed (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_numeric_codes_are_genuine_bounded_integers_and_classes_closed) ... ERROR
+test_upload_error_is_same_object_metadata_detached_and_no_eof (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_upload_error_is_same_object_metadata_detached_and_no_eof) ... ERROR
+test_socket_abort_metadata_does_not_qualify_or_invent_eof (test_codehost_bridge_v3.BridgeTests.test_socket_abort_metadata_does_not_qualify_or_invent_eof) ... FAIL
+test_socket_write_error_metadata_keeps_paired_failure_and_retirement (test_codehost_bridge_v3.BridgeTests.test_socket_write_error_metadata_keeps_paired_failure_and_retirement) ... FAIL
+
+======================================================================
+ERROR: test_both_writer_sites_keep_original_error_and_release_queue (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_both_writer_sites_keep_original_error_and_release_queue) (site='write')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 1067, in test_both_writer_sites_keep_original_error_and_release_queue
+    self.assertEqual(self.records()[-1]['operation'], 'download_write')
+                     ~~~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_both_writer_sites_keep_original_error_and_release_queue (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_both_writer_sites_keep_original_error_and_release_queue) (site='drain')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 1067, in test_both_writer_sites_keep_original_error_and_release_queue
+    self.assertEqual(self.records()[-1]['operation'], 'download_write')
+                     ~~~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_first_socket_failure_only_per_channel_even_across_operations (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_first_socket_failure_only_per_channel_even_across_operations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 1088, in test_first_socket_failure_only_per_channel_even_across_operations
+    self.bridge.record_socket_failure(channel, 'upload_read', ConnectionResetError(10054, 'secret'))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Bridge' object has no attribute 'record_socket_failure'
+
+======================================================================
+ERROR: test_ledger_failure_never_replaces_original_socket_error (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_ledger_failure_never_replaces_original_socket_error)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 1104, in test_ledger_failure_never_replaces_original_socket_error
+    self.bridge.record_socket_failure(channel, 'download_write', BrokenPipeError())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Bridge' object has no attribute 'record_socket_failure'
+
+======================================================================
+ERROR: test_numeric_codes_are_genuine_bounded_integers_and_classes_closed (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_numeric_codes_are_genuine_bounded_integers_and_classes_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 1080, in test_numeric_codes_are_genuine_bounded_integers_and_classes_closed
+    self.bridge.record_socket_failure(channel, 'upload_read', injected)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Bridge' object has no attribute 'record_socket_failure'
+
+======================================================================
+ERROR: test_upload_error_is_same_object_metadata_detached_and_no_eof (test_codehost_bridge_v3.SocketFailureInstrumentationTests.test_upload_error_is_same_object_metadata_detached_and_no_eof)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 1035, in test_upload_error_is_same_object_metadata_detached_and_no_eof
+    row = self.records()[0]
+          ~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_socket_abort_metadata_does_not_qualify_or_invent_eof (test_codehost_bridge_v3.BridgeTests.test_socket_abort_metadata_does_not_qualify_or_invent_eof)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 979, in test_socket_abort_metadata_does_not_qualify_or_invent_eof
+    self.assertEqual(len(rows), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_socket_write_error_metadata_keeps_paired_failure_and_retirement (test_codehost_bridge_v3.BridgeTests.test_socket_write_error_metadata_keeps_paired_failure_and_retirement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\harness\test_codehost_bridge_v3.py", line 999, in test_socket_write_error_metadata_keeps_paired_failure_and_retirement
+    self.assertEqual(len(rows), 1)
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.527s
+
+FAILED (failures=2, errors=6)

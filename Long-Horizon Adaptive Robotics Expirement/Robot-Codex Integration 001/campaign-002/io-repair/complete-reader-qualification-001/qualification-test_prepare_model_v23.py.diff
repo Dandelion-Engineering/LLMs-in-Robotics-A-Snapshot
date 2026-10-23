@@ -1,0 +1,34 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_prepare_model_v22.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_prepare_model_v23.py
+@@ -7,7 +7,7 @@
+ import unittest
+ from unittest.mock import patch
+ 
+-import prepare_model_v22 as subject
++import prepare_model_v23 as subject
+ import prepare_native
+ import prepare_boundary_v3
+ import host_probe
+@@ -20,10 +20,10 @@
+             new=subject.prepare(kind,'test-revision','test-'+kind,24101,root/(kind+'-new.json'))
+             before=old.pop('runtime_input_files');after=new.pop('runtime_input_files')
+             self.assertEqual(old,new);self.assertTrue(set(before)<=set(after))
+-            self.assertTrue(set(subject.process_drain_inputs())<=set(after))
++            self.assertTrue(set(subject.reader_inputs())<=set(after))
+ 
+     def test_source_closure_in_native_boundary_host_and_raw_prerequisite(self):
+-        required=set(subject.process_drain_inputs())
++        required=set(subject.reader_inputs())
+         native={p.relative_to(subject.REPO).as_posix() for p in prepare_native.inventory()}
+         self.assertTrue(required<=native)
+         self.assertTrue(required<=set(prepare_boundary_v3.inventory()))
+@@ -42,7 +42,7 @@
+         output.write_bytes(b'original');original=subject.prior.runtime_inputs
+         with self.assertRaises(FileExistsError):subject.prepare('smoke','rev','id',24101,output)
+         self.assertEqual(output.read_bytes(),b'original');self.assertIs(subject.prior.runtime_inputs,original)
+-        with patch.object(subject,'PROCESS_DRAIN_INPUTS',subject.PROCESS_DRAIN_INPUTS+('missing-pre-exit.py',)):
+-            with self.assertRaises(ValueError):subject.process_drain_inputs()
++        with patch.object(subject,'READER_INPUTS',subject.READER_INPUTS+('missing-pre-exit.py',)):
++            with self.assertRaises(ValueError):subject.reader_inputs()
+ 
+ if __name__=='__main__':unittest.main()

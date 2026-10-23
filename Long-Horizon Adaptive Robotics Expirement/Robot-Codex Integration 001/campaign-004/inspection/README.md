@@ -1,0 +1,58 @@
+# Campaign 004 — completed block and observable continuity
+
+**Valid task success: all three C occurrences completed, each in its first fresh session.** Every session achieved protected placement, accepted handback, conventional resumption and clean native retirement. No safe-unresolved continuation was needed in the actual block. Six allowed session opportunities were unused; no occurrence was left unrun. Campaign 004 is complete and ready for human review.
+
+Open the local [synchronized replay](D:/Dandelion-Campaign004-Exports/inspection/replay-003/index.html). It contains public messages and completed tool results, original rendered frames, exact filesystem versions and fresh-session boundaries. The [desktop capture](qa/desktop.jpg), [mobile capture](qa/mobile.jpg), [browser QA](qa/browser-qa.json), [observable analysis](evidence/observable-analysis.json), [independent analysis verification](evidence/analysis-verification.json), and [actual experiment audit](evidence/actual-audit.json) are retained in Git. The large replay and original evidence remain local.
+
+## What ran
+
+The sole frozen block is `RCI001-C04-final-001-block-001`, revision `RCI001-C04-final-001`, snapshot SHA256 `a4b3f42120ef01e138cdc090adbf9b7c6d45ae277946ee235c5dea20d7323d83`. The [manifest and registered result](../../../Architecture%20Map/releases/RCI001-C04/RCI001-C04-final-001/) bind the source, seeds, schedule, limits and stopping rules before the actual launch. This is one descriptive persistent block, not three independent replicates.
+
+Robot-Codex remained GPT-6 Astra with max reasoning. Every fresh context received only “Follow the instructions in RobotAgentPrompt.md.” The task template and memory strategy are byte-identical to Campaign 003. C occurrences were orders 1, 5 and 8, separated by five successful ordinary A/B jobs. The same filesystem persisted throughout.
+
+| C occurrence / session | Model turn | Physical actions | Explicit observations | Image views | Completed shell items | Ending |
+|---|---:|---:|---:|---:|---:|---|
+| 1 / `9e416c14d1aa483c` | 408.00 s | 12 / 120 | 13 / 50 | 3 | 44 | Normal completion; accepted handback |
+| 2 / `fd858d9147984e8f` | 261.00 s | 12 / 120 | 2 / 50 | 3 | 55 | Normal completion; accepted handback |
+| 3 / `f9192689b8664bdc` | 339.24 s | 12 / 120 | 2 / 50 | 3 | 57 | Normal completion; accepted handback |
+
+Session directory names have the prefix `robot-session-`. Image views count actual completed native image deliveries; explicit observations count robot requests, not automatic public sensing. Shell items include errors and status queries, not just physical actions. Each session used 12 completed physical requests and ended with a safe, settled workcell and independently satisfied placement. Roughly 3192, 3339 and 3261 seconds remained from the 3600-second model allowance. None stopped unresolved or because an observed time/action cap was reached. Total coordinator wall time was 1137.22 s.
+
+Protected placement became accepted at simulation times 343.332, 655.244 and 991.418 s. This was distinct from later accepted handback and conventional resumption. The [session accounting](evidence/session-occurrence-accounting.json) preserves the exact terminal, authority, retirement, budget and physical-ending evidence.
+
+## What persisted and what later sessions used
+
+| Evidence level | Observation and limit |
+|---|---|
+| Artifact existence | Session 1 saved `programs/c_step.py`, a command/query/observation helper. It is not a stored sequence that autonomously places C. Its motion path is guarded to authority epoch 3 and order 1, so later execution would require adaptation. Sessions 2 and 3 saved final evidence and appended agent-authored continuity. |
+| Within-session execution | Session 1 executed its helper and repaired its subprocess invocation from `sys.executable` to `python3`. Forty-seven content-bearing helper reads were recorded in that session; this read count is not an execution count. |
+| Later program read or execution | Neither later session read `c_step.py`; there is no later execution evidence. Session 2's saved status JSON was also not read by session 3. Persistence alone was not reuse. |
+| Later continuity read | Session 2 read the 856-byte framework-only continuity at journal record 6816. Session 3 read the 3914-byte continuity at record 10376, containing session 2's agent note and both earlier framework terminal records. These reads join to the real model executor and successful public `cat /workspace/Continuity.md` items at session-2 events line 115 and session-3 line 117. |
+| Semantic reuse or adaptation | Session 3 used a twelve-motion structure and conservative placement-margin reasoning compatible with the prior note. The public evidence does not establish whether those decisions came from the note or were independently derived from current instructions and observations. Semantic reuse and independent rediscovery remain unresolved. |
+| Useful transfer and causal contribution | Later success after a read establishes exposure plus success, not a benefit caused by the artifact. No matched withholding or memory-ablation intervention was authorized. Useful transfer and causal contribution are not established. |
+
+All sessions checked current instructions, authority and observations, used a small test lift while C's mark was occluded by the gripper, released over the pad, cleared the arm and inspected public placement evidence before handback. Image use remained optional and occurred three times per session. Later sessions issued fewer explicit observations while inspecting automatic public status after motions. The physical action count stayed constant; model time decreased in session 2 and rose again in session 3. These descriptive differences do not establish a learning curve.
+
+The public shell record preserves 3, 2 and 3 nonzero command exits. Every session initially tried unavailable `rg` and `python` commands, then continued with available tools. Session 1's helper and session 3's final-assessment code both encountered `PermissionError` from an empty `sys.executable` subprocess target (public event lines 391 and 520 respectively). The corrected helper existed by session 3 but was not read. This is a concrete unconsumed artifact; it does not by itself prove that reading it would have changed performance.
+
+Framework terminal records were appended only after independently established accepted handback, resumption and retirement. There are three such records. Agent notes appear only for sessions 2 and 3 and distinguish their pre-handback evidence from later framework confirmation. Final canonical continuity is 7164 bytes, SHA256 `0bbe1f21b0e9e23e9e311fa069c350ce63487a54dea93a3ab52e44eb877e1b88`. [Exact final files and identities](evidence/final-workspace-manifest.json) preserve the helper, notes and canonical continuity; the public `Continuity.md` link resolves to that canonical file. Captured program text is inert evidence and is not invoked by the replay.
+
+## Qualification, validity and retained failures
+
+[The development record](development.md) preserves all twelve development revisions, including failed fixtures, the startup memory failure, the stale post-load camera race and the historical membership-reader failure. No Campaign 004 model ran during development. Deterministic qualification covered 432 rendered stable-face/yaw/location/noise cases, the unchanged physical model, same-world safe-unresolved continuation, hidden ceiling, truthful accepted/rejected handback accounting and invalid-stop behavior. The inherited byte-identical model client had already passed live qualification. The actual run did not exercise a model safe-unresolved ending; that path's evidence is deterministic qualification only.
+
+The original actual worker `20261004T183425636560Z-f4de8b8c` and independent audit `20261004T183653652649Z-07b0b6bf` both succeeded with integer exit 0. All eight independent experiment checks passed. The reader's legacy `qualification_complete` field means all three actual tasks completed in this report; it does not introduce a new pilot requirement. The journal has 14,164 records, including 10,554 mutations and 3,594 reads. Exact final state hash is `241c90ac282a703b5ffe35e1cdd1ba2c019f95a23577905562030867fd4990d7`. All 1113 full timing windows met the frozen tolerance; maximum lag was 0.011873 s and maximum timing sample gap 0.013356 s.
+
+Derived investigation attempts also remain visible. Analysis 001's mechanical checks passed, but its broad “isolated runtime after checkpoint” attribution included preflight canary reads. It is superseded for model-read claims. Analysis 002 stopped on a null request-parameter parser case. Analysis 003 excludes preflight by session, native executor namespace and process start identity, leaving exactly the two later continuity reads above; its independent checks passed. Original apparatus and evidence were not changed by these reader repairs.
+
+Replay 001 passed its byte checks but UI inspection found a request/acceptance jump mismatch and an oversized mobile selector. Replay 002 fixed those and removed later coordinator fields from time-gated ending detail; keyboard testing then found a fractional range endpoint that hid the final record. Replay 003 fixes endpoint reachability and final playback painting. Earlier builds remain retained. The final replay contains 562 meaningful public records, 211 original frames, 11,009 public observations and all 14,164 journal records. Its ten independent data checks passed; actual browser testing covered all 78 semantic jumps and 15 recorded filesystem boundaries, transport, event filters, images, exact file versions, creation/deletion, keyboard access and mobile layout. No console errors or warnings were observed.
+
+Browser QA used a temporary loopback preview because the browser forbids file URLs. JSON source-link clicks did not confirm a rendered document; final readback separately checks their HTTP status and exact bytes. Desktop viewport was 1280×720 with a 1265×2396 full-page raster; mobile viewport was 390×844 with a 375×812 raster. Sparse Linux/Windows checkpoints remain explicit: exact file states at journal records do not imply exact continuous simultaneity with world time. Recorded camera frames show their capture/publication times and held age. No hidden reasoning is reconstructed.
+
+## Evidence locations and review boundary
+
+Original actual evidence is under `campaign-004/scored-evidence/RCI001-C04-final-001-block-001`. Its independent reconstruction is `D:/Dandelion-Campaign004-Exports/inspection/audit-001`; corrected analysis is `analysis-003.json`; the current replay is `replay-003`. Live runtime and native journaling stayed on the supported C/Linux filesystem. D holds closed, hash-verified archives and derived exports. Original source manifests and Campaigns 001–003 remain immutable.
+
+The final preservation/export reader is documented by [its receipt](evidence/final-readback.json) and [official queue disposition](evidence/final-readback-official-status.json). Its first attempt incorrectly expected distinct public bridge token values across sessions; the fixed local facade was then checked directly, with endpoint object contents withheld. Exact retired host-token values are unavailable, so the corrected check makes no exhaustive exact-value claim about them. This post-run reader correction did not change the experimental validity result.
+
+Campaign 004 has reached the requested review boundary. No additional model invocation, replacement block, scientific policy change or performance promotion is authorized by this success alone.

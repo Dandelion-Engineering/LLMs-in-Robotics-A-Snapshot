@@ -1,0 +1,11 @@
+--- 
++++ 
+@@ -570,7 +570,7 @@
+     argv = job.get('argv', [])
+     script = schemas[detail['kind']][detail['result_schema']]
+     if (len(argv) != 13 or argv[1:4] != ['-X', 'utf8', '-B']
+-            or Path(argv[4]).resolve() != (Path(output).parent / 'harness' / script).resolve()
++            or Path(argv[4]).resolve() != (CAMPAIGN / 'harness' / script).resolve()
+             or Path(argv[0]).resolve() != Path(job.get('resolved_executable', '')).resolve()
+             or Path(argv[0]).resolve() != (Path(job.get('cwd', '')) / 'venv/Scripts/python.exe').resolve()
+             or argv[5:] != ['--run-id', row['run_id'], '--framework-revision', row['revision'],

@@ -1,0 +1,128 @@
+--- Long-Horizon Adaptive Robotics Expirement/Batch 01/Recovery Qualification/run_screen.py
++++ Long-Horizon Adaptive Robotics Expirement/Batch 01/Recovery Qualification/run_screen.py
+@@ -110,6 +110,25 @@
+     return loop
+ 
+ 
++def boundary_operation(loop, details, label, operation, *args, **kwargs):
++    """Observe an existing boundary call in place; no new timing pass gate."""
++    stage = details.get('stage')
++    start_wall = time.perf_counter() - loop.start
++    start_sim = float(loop.cells[0].data.time)
++    success = False
++    try:
++        value = operation(*args, **kwargs)
++        success = True
++        return value
++    finally:
++        end_wall = time.perf_counter() - loop.start
++        end_sim = float(loop.cells[0].data.time)
++        details['boundary_operation_timings'].append({
++            'stage': stage, 'label': label, 'wall_start_s': start_wall, 'wall_end_s': end_wall,
++            'wall_cost_s': end_wall - start_wall, 'sim_start_s': start_sim, 'sim_end_s': end_sim,
++            'success': success})
++
++
+ def trial_body(loop, trial, plan, details):
+     from restart_state import capture_restart_state, classify_restart
+     from geometry_trace import GeometryTrace
+@@ -129,7 +148,8 @@
+     if trial['expected_payload_id'] is not None and part_id != trial['expected_payload_id']:
+         raise base.CalibrationFailure('Fresh public selection differs from declared fixture payload; no protected substitution made')
+     loop.geometry_trace = GeometryTrace(loop, part_id, plan['geometry_interval_s'])
+-    loop.geometry_trace.sample(force=True)
++    boundary_operation(loop, details, 'GeometryTrace.sample:before_transport',
++                       loop.geometry_trace.sample, force=True)
+     rid = loop.submit({'operation': 'transport', 'part_id': part_id, 'destination': 'inspection'})
+     exposure = {'configured_cut': 'closed_grip_transfer', 'actual_cut': 'closed_grip_transfer',
+         'configured_milestone_exercised': True, 'fallback_used': False, 'active_request_id': rid,
+@@ -144,7 +164,8 @@
+         snapshot = loop.snapshot()
+         passed = retained_hold_check(snapshot, part_id) and .005 < float(sum(cell.data.qpos[7:9])) < .065
+         if passed:
+-            protected = capture_restart_state(cell, zones=loop.zones, zone_half=loop.zone_half,
++            protected = boundary_operation(loop, details, 'capture_restart_state:cut_candidate',
++                capture_restart_state, cell, zones=loop.zones, zone_half=loop.zone_half,
+                                                exposure=exposure, source_hashes=loop.physical_source_hashes)
+             bilateral = protected['contacts']['by_object'][part_id]['bilateral_force_bearing']
+             passed = cut_eligible(snapshot, part_id, phase=cell.segment['phase'],
+@@ -155,18 +176,21 @@
+         return passed
+     loop.until(carrying, plan['cut']['timeout_s'])
+     def capture(kind):
+-        value = capture_restart_state(cell, zones=loop.zones, zone_half=loop.zone_half,
++        value = boundary_operation(loop, details, 'capture_restart_state:' + kind,
++            capture_restart_state, cell, zones=loop.zones, zone_half=loop.zone_half,
+                                       exposure=exposure, source_hashes=loop.physical_source_hashes)
+         identity = loop.records.event(kind, value, float(cell.data.time))
+         return identity, value
+     protected = cut.pop('protected_restart_state')
+     event_id = loop.records.event('protected_carry_state_before_cut', protected, float(cell.data.time))
+     details.update(verified_cut=True, cut_event_id=event_id, cut_sim_time_s=float(cell.data.time),
+-                   cut_restart_admissibility=classify_restart(protected))
++                   cut_restart_admissibility=boundary_operation(
++                       loop, details, 'classify_restart:cut', classify_restart, protected))
+     loop.records.event('verified_carry_authority_cut', {'request_id': rid, 'part_id': part_id, **cut,
+         'rich_snapshot_event_id': event_id, 'intervention': 'Normal Cell.cancel; no candidate, weld or object-state intervention'}, float(cell.data.time))
+     loop.geometry_trace.phase = 'absence'
+-    loop.geometry_trace.sample(force=True)
++    boundary_operation(loop, details, 'GeometryTrace.sample:before_cancel',
++                       loop.geometry_trace.sample, force=True)
+     window = HoldWindow(part_id, float(cell.data.time), time.perf_counter() - loop.start)
+     window.record(loop.snapshot(), float(cell.data.time), time.perf_counter() - loop.start, tick=False)
+     loop.hold_window = window
+@@ -176,7 +200,8 @@
+     loop.incarnation += 1
+     start_sim, start_wall = float(cell.data.time), time.perf_counter()
+     capture('protected_state_immediately_after_cancel')
+-    loop.geometry_trace.sample(force=True)
++    boundary_operation(loop, details, 'GeometryTrace.sample:after_cancel',
++                       loop.geometry_trace.sample, force=True)
+     details['stage'] = 'authority_absence'
+     while float(cell.data.time) - start_sim < plan['absence_s'] - 1e-9:
+         loop.step()
+@@ -187,11 +212,13 @@
+     event_id, after = capture('protected_held_state_after_absence')
+     details.update(after_absence_event_id=event_id, held_at_absence_end=retained_hold_check(after['geometry'], part_id),
+         all_absence_tick_hold_checks_pass=absence['ticks_with_hold_predicate_false'] == 0)
+-    loop.geometry_trace.sample(force=True)
++    boundary_operation(loop, details, 'GeometryTrace.sample:after_absence',
++                       loop.geometry_trace.sample, force=True)
+     details['stage'] = 'fresh_sensing_before_recovery'
+     loop.until(loop.public_ready, 8.)
+     capture('protected_state_before_recovery_dispatch')
+-    loop.geometry_trace.sample(force=True)
++    boundary_operation(loop, details, 'GeometryTrace.sample:before_recovery_dispatch',
++                       loop.geometry_trace.sample, force=True)
+     details['stage'] = 'recover_held'
+     recovery = loop.submit({'operation': 'recover_held', 'destination': trial['destination']})
+     admission_event_id = loop.records.sequence
+@@ -202,7 +229,8 @@
+     details['all_cut_to_admission_hold_checks_pass'] = window.data['all_recorded_hold_checks_pass']
+     details['after_recovery_admission_event_id'] = capture('protected_state_after_recovery_admission')[0]
+     loop.geometry_trace.phase = 'recovery'
+-    loop.geometry_trace.sample(force=True)
++    boundary_operation(loop, details, 'GeometryTrace.sample:after_recovery_admission',
++                       loop.geometry_trace.sample, force=True)
+     details['recovery_request_id'] = recovery
+     loop.terminal(recovery, timeout=60.)
+     loop.geometry_trace.phase = 'settling'
+@@ -218,7 +246,8 @@
+     loop.records.event('independent_raw_placement_check', {'check': last_check, 'dwell_s': .5,
+         'stable_since_sim_s': stable.since, 'checked_every_physics_tick': True}, float(cell.data.time))
+     details['final_rich_state_event_id'] = capture('protected_state_after_settled_placement')[0]
+-    loop.geometry_trace.sample(force=True)
++    boundary_operation(loop, details, 'GeometryTrace.sample:after_settled_placement',
++                       loop.geometry_trace.sample, force=True)
+     details['physical_predicates_passed'] = details['all_cut_to_admission_hold_checks_pass'] and physical_trial_pass(
+         held_at_absence_end=details['held_at_absence_end'],
+         all_absence_tick_hold_checks_pass=details['all_absence_tick_hold_checks_pass'],
+@@ -244,7 +273,7 @@
+     records = base.Records(output)
+     loop = None
+     details = {'stage': 'construction', 'physical_predicates_passed': False, 'verified_cut': False,
+-               'qualification_granted': False, 'trial': trial}
++               'qualification_granted': False, 'trial': trial, 'boundary_operation_timings': []}
+     construction = {}
+     status, error, timing, geometry_report = 'failed', None, None, None
+     base.save(records.root / 'probe-manifest.json', {'schema_version': SCHEMA, 'trial': trial, 'queue': authority,

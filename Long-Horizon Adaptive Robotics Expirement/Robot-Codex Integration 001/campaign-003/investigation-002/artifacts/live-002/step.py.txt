@@ -1,0 +1,50 @@
+import json
+import sys
+import time
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from robot import Client, ClientError
+
+def summary(s):
+    p=s['packet']
+    return {'owner':s['owner'],'epoch':s['authority_epoch'],'version':s['order_version'], 'sequence':s['observation_sequence'],'age':s['observation_age_s'],'active':s['active_command'],'capture':p['capture_sim_time_s'],'sim_time':p['sim_time'],'tcp':p['tcp_position_m'],'joints':p['joints'],'gripper':p['gripper'],'detections':p['detections'],'station':p['station'],'budget':s['robot_action_budget']}
+
+request_id=sys.argv[1]
+client=Client()
+try:
+    s=client.status()
+    assert s['owner']=='robot' and s['authority_epoch']==3 and s['order_version']==1
+    assert s['active_command'] is None and not s['packet']['station']['busy']
+    if sys.argv[2]=='smooth':
+        target=json.loads(Path(sys.argv[3]).read_text())
+        assert target['epoch']==3 and target['version']==1
+        fraction=float(sys.argv[4])
+        assert 0 < fraction <= 1
+        q=s['packet']['joints']
+        goal=[a+fraction*(b-a) for a,b in zip(q,target['joints'])]
+        duration=1.5
+        assert max(abs(a-b) for a,b in zip(q,goal))*1.5/duration < 1.4
+        t0=s['packet']['sim_time']+0.35
+        waypoints=[]
+        for k in range(31):
+            u=k/30
+            blend=u*u*(3-2*u)
+            waypoints.append({'time_s':t0+duration*u,'positions':[a+blend*(b-a) for a,b in zip(q,goal)]})
+        action={'operation':'trajectory','waypoints':waypoints,'gripper':0}
+    else:
+        action=json.loads(sys.argv[2])
+    reply=client.command(request_id,action)
+    cmd=reply.get('command',{})
+    print(json.dumps({'request':request_id,'ok':reply.get('ok'),'phase':cmd.get('phase'),'status':cmd.get('status'),'error':reply.get('error'),'feedback':cmd.get('feedback'),'admission':cmd.get('admission')}),flush=True)
+    if cmd.get('phase') != 'terminal':
+        time.sleep(2.2)
+    receipt=client.query(request_id)
+    Path('notes/'+request_id+'-receipt.json').write_text(json.dumps(receipt))
+    cmd=receipt.get('command',{})
+    print(json.dumps({'request':request_id,'phase':cmd.get('phase'),'status':cmd.get('status'),'feedback':cmd.get('feedback'),'verification':cmd.get('verification')}),flush=True)
+    status=client.status()
+    Path('notes/'+request_id+'-status.json').write_text(json.dumps(status))
+    print(json.dumps(summary(status)),flush=True)
+except ClientError as exc:
+    print(json.dumps(exc.document()),flush=True)
+    sys.exit(4 if exc.unknown else 3)

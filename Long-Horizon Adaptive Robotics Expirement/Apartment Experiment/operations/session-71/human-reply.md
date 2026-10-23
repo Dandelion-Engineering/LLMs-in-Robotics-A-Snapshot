@@ -1,0 +1,9 @@
+At 16:03–16:04 PDT, the accepted Maps continuation had **27 accepted closed sessions and 18/21 advancements**: eleven household successes (five bedroom, six kitchen) and all seven timed throwing windows. Session 28 was active on a fresh bedroom assignment. Timed throwing advancement does not establish mastery.
+
+Checkpoints 25–27 passed content/event/replay-prefix verification, single-report closeout, complete journals and actual Windows/Linux/mount retirement. Session 25 preserved an incomplete bedroom attempt with yellow unplaced; session 26 completed the bedroom task after yellow placement and settling; session 27 advanced the timed throwing window. Reports 25–27 were read completely. Earlier incomplete attempts and session-15 timing uncertainty remain preserved for the endpoint audit.
+
+**29 native calls had started: five original accepted, one abandoned original session-6 call and twenty-three continuation calls.** All threads were distinct. Active session 28 used the qualified gpt-6-astra/max identity with growing native/journal activity.
+
+Actual rendered viewer checks showed battery 98.5%→97.0%, changed room-map read activity and robot location changing off the charger, with no visible fetch error. C:/D: retained 516.718063/133.811523 GiB, including full 50 GiB reserves. Frozen source/route/configuration/claim, full failed-parent inventory, pristine D: Maps and Baseline endpoint anchors passed.
+
+The continuation and its 30-minute monitor remain running/ACTIVE; five older monitors remain PAUSED and unchanged. No scientific intervention, retry, further recovery or comparison occurred. The complete independent endpoint audit remains pending, with recovery interruption, storage/host timing and Baseline drawer-persistence/+16-ms snapshot caveats retained. Evidence: `agents/Codex/Session Summaries/HumanReport71.md` and `operations/session-71/observation-summary.json` under the Apartment Experiment.

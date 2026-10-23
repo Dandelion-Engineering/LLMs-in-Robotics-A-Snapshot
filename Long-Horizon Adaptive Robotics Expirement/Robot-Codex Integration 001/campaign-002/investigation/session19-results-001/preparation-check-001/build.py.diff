@@ -1,0 +1,70 @@
+--- before/build.py
++++ after/build.py
+@@ -514,7 +514,7 @@
+             'scope':'Frozen exactly as ended: six valid successes, four infrastructure-invalid attempts, fourteen not-run slots.'}
+ 
+ 
+-def qualification_history(index_path,output):
++def qualification_history(index_path,output,companion_path=None):
+     if index_path is None:
+         return {'status':'not_supplied','attempts':[],
+                 'limitation':'Qualification history index not supplied. The report makes no independent requalification claim.'}
+@@ -522,7 +522,13 @@
+     if index.get('schema')!='campaign002-qualification-history-1':raise ValueError('Wrong qualification history schema')
+     rows=[]
+     for item in index.get('attempts',[]):
+-        if item.get('status') not in {'passed','failed','cancelled','not_run','superseded'}:
++        if item.get('status') == 'completed':
++            if (item.get('scorable') is not False or item.get('validity') != 'unknown'
++                    or item.get('task_outcome') != 'unknown' or item.get('assessment_state') != 'not_assessed'
++                    or item.get('queue_completion_contract', {}).get('schema')
++                    != 'campaign002-completed-unassessed-interrupt-queue-1'):
++                raise ValueError('Completed historical execution must remain explicitly unassessed')
++        elif item.get('status') not in {'passed','failed','cancelled','not_run','superseded'}:
+             raise ValueError('Qualification index contains an unresolved attempt')
+         if item.get('run_id')=='RCI001-C02-smoke-001' and item.get('status')!='failed':
+             raise ValueError('Original Smoke001 failure must remain failed in qualification history')
+@@ -533,9 +539,13 @@
+             # Links preserve failed qualifications without reading their outputs
+             # or converting execution completion into a qualification pass.
+             links.append({'label':artifact.get('label',path.name),'href':link(path,output)})
+-        rows.append({key:item.get(key) for key in ('run_id','revision','status','reason')}|{'links':links})
++        rows.append({key:item.get(key) for key in ('run_id','revision','status','reason',
++            'assessment_state','validity','task_outcome','scorable')}|{'links':links})
++    companion = Path(companion_path) if companion_path is not None else HERE/'qualification-report.html'
++    if companion_path is not None:
++        capture(companion, 'explicit qualification companion HTML; presentation only')
+     return {'status':'supplied','attempts':rows,'index_href':link(index_path,output),
+-            'companion_href':link(HERE/'qualification-report.html',output) if (HERE/'qualification-report.html').is_file() else None,
++            'companion_href':link(companion,output) if companion.is_file() else None,
+             'preserved_smoke001':any(row.get('run_id')=='RCI001-C02-smoke-001' for row in rows),
+             'limitation':'Status/reason are the retained qualification closeout index. This report does not re-run qualification or recategorize failed attempts.'}
+ 
+@@ -551,7 +561,7 @@
+     return result
+ 
+ 
+-def build(plan_path, output, qualification_index=None):
++def build(plan_path, output, qualification_index=None, qualification_companion=None):
+     READS.clear()
+     output.mkdir(parents=True, exist_ok=True)
+     plan = read(plan_path, 'fixed execution plan')
+@@ -566,7 +576,7 @@
+         'scope': 'Current Robot-Codex framework, GPT-6 Astra Max. Two known recovery fixtures; ten prospectively scheduled repeats each. '
+                  'Fresh invocations do not establish statistical independence or generalization.',
+         'previous':previous_campaign(output),'repairs':repair_summary(runs),
+-        'qualification':qualification_history(qualification_index,output),
++        'qualification':qualification_history(qualification_index,output,qualification_companion),
+         'framework_revisions':sorted({r['framework_revision'] for r in runs if r.get('framework_revision')}),
+         'timing_comparison':'Campaign001 classifications remain frozen. Earlier Campaign002 revisions measure a single supervisory loop using the common QueryPerformanceCounter clock. The prospective continuous-owner revision advances physics on one owner thread while a separate supervisory thread synchronously persists Journal and SQLite evidence. The owner ledger supplies complete physics timing; an independently bound supervisory ledger describes overlapping persistence work and is not a second timing verdict. Initialization and cleanup remain outside the declared interval. Exact frozen revisions and retained assessments govern each attempt, with unchanged strict numerical thresholds. This architecture description does not establish a timing pass or causal repair benefit.',
+         'complete': all(r['execution_status'] != 'pending' for r in runs),
+@@ -599,5 +609,8 @@
+     parser.add_argument('--plan', type=Path, default=CAMPAIGN / 'execution-plan.json')
+     parser.add_argument('--output', type=Path, default=HERE)
+     parser.add_argument('--qualification-index',type=Path)
++    parser.add_argument('--qualification-companion',type=Path,
++                        help='Explicit immutable companion HTML; legacy default is retained when omitted')
+     args = parser.parse_args()
+-    print(json.dumps(build(args.plan.resolve(), args.output.resolve(),args.qualification_index), indent=2))
++    print(json.dumps(build(args.plan.resolve(), args.output.resolve(),args.qualification_index,
++                           args.qualification_companion), indent=2))

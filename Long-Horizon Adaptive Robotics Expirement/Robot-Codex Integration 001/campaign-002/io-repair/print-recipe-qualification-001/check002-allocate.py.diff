@@ -1,0 +1,24 @@
+--- 
++++ 
+@@ -9,10 +9,10 @@
+ c=control.c;HERE=Path(__file__).resolve().parent
+ 
+ def main():
+-    submitted=c.read(HERE/'checks-submit-001.json');job_id=submitted['id']
++    submitted=c.read(HERE/'checks-submit-002.json');job_id=submitted['id']
+     job=c.admission.base.queue_gate(c.official(job_id),job_id)
+     c.require(job['argv']==submitted['argv'],'Official check command differs')
+-    c.save_exact(HERE/'checks-terminal-001.json',job)
++    c.save_exact(HERE/'checks-terminal-002.json',job)
+     c.require(c.read(control.LINEAGE_CHECKS)['passed'] is True,'Full lineage failed')
+     previous=control.IO/'boundary-import-qualification-001'
+     old=c.read(previous/'allocation-absence-001.json')
+@@ -41,7 +41,7 @@
+         development_checks=c.identity(control.CHECKS/'test-execution.json'),lineage_checks=c.identity(control.LINEAGE_CHECKS),
+         development_source_state=c.identity(control.SOURCE_STATE),allocation_absence=c.identity(HERE/'allocation-absence-001.json'),
+         prerequisites=runs[:3],stages=[[name,kind,rev,seed] for (name,kind,seed),rev in zip(c.STAGE_IDENTITIES,[revisions[1],revisions[2],revisions[3],revisions[3],revisions[3]])],
+-        development_official_queue=c.identity(HERE/'checks-terminal-001.json'),
++        development_official_queue=c.identity(HERE/'checks-terminal-002.json'),
+         print_recipe_method=c.identity(control.IO/'COMPLETE_PROCESS_AND_LITERAL_READS_V2.md'),
+         print_recipe_diagnosis=c.identity(control.IO/'smoke030-read-diagnosis-001/observations.json'),
+         print_recipe_replay=c.identity(HERE/'diagnostic-replay-001.json'))

@@ -1,0 +1,7 @@
+Maps is safely hibernated at your direct request. The frozen deferred command was issued at 15:11 PDT; Robot session 22 completed ordinary docking/closeout, and the original worker exited successfully at 15:13:23 PDT. Checkpoint 22 passed independent readback. The separate queued full-history audit `20261008T221352745327Z-f2b65b3d` exited 0 with all five gates passed.
+
+The preserved history contains 22 fresh native sessions, all normally closed, with 2/21 assignments advanced: one throwing-practice window and one bedroom assignment. The first kitchen assignment remains incomplete. No abandoned starts, failed native turns or recovery branches occurred. Manifest SHA-256: `6a965290aa9abf6bc8a0bf8908f8f920c806d90d8e92e583e664b85c576493be`.
+
+Native/filesystem/controller/viewer/transport retirement passed. Independent Windows/Linux process and queue inspection found no apartment runtime or active job, the running lock is absent and the former viewer port is closed. The monitoring heartbeat is PAUSED and the browser tab is closed. Original learning, physical state and recordings remain intact. The cup physics anomaly is unresolved; no fix, reset, retry, coaching, task skip or scientific condition comparison occurred.
+
+`operations/session-35/HIBERNATION.md`, `resume-handoff.json`, `CUP_DIAGNOSIS.md` and `agents/Codex/Session Summaries/HumanReport35.md` are the durable handoff. Development Session 35 is closing. I will wait for your next-session instructions; this handoff does not authorize any resume or repair.

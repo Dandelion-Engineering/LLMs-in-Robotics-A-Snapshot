@@ -1,0 +1,177 @@
+{
+  "schema": "campaign002-raw-event-source-parity-1",
+  "created_at": "2026-09-28T06:34:55.618621+00:00",
+  "scope": "Prospective observability-only bootstrap v3. Byte-exact reversal and synthetic Client/native-notification tests; no native preflight, empirical fixture, model call, source freeze, queue job or qualification verdict.",
+  "method": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\RAW_TOOL_RESULT_EVIDENCE_V1.md",
+    "sha256": "e96ac64f3f451ceb0b0470a66306b60462bab89c026a24d139ced969b30ec128",
+    "bytes": 5873
+  },
+  "baseline": {
+    "revision": "RCI001-C02-dev-037",
+    "archive": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-037\\code.zip",
+      "sha256": "0c8146287eaa5c06808cf0312bee95ff7fe9e247085760d553630b1eef837c01",
+      "bytes": 1682092
+    },
+    "bootstrap_member": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v2.py",
+      "sha256": "b3ffc5cbd3bf8d1b5417c9d2ffcb20eb5515030344174b154ccb6ae8c1aa6e25",
+      "bytes": 21281
+    },
+    "runtime_member": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+      "sha256": "fd90e3dff6268c848b2ee1f60ad3d7b077fea256145293ff199b51136b0fc243",
+      "bytes": 24541
+    }
+  },
+  "candidate": {
+    "bootstrap": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\bootstrap_client_v3.py",
+      "sha256": "a44db8031771c4ff380b52d2abc031a015eb0afcb6e06b13d486272ea3fb0e5d",
+      "bytes": 21489
+    },
+    "runtime": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\runtime.py",
+      "sha256": "2ec07c914a466074f8d85742524436e42a45177863b82d7468ff86ae362ee880",
+      "bytes": 24541
+    },
+    "tests": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\test_raw_event_capture.py",
+      "sha256": "2e66fa724313a381be650a555c8518670ca3ce55519d545ec6879b3df8cf16ae",
+      "bytes": 14819
+    }
+  },
+  "bootstrap_edits": [
+    {
+      "before": "        \"bootstrap_requested\": args.run_bootstrap, \"bootstrap\": BOOTSTRAP,\n",
+      "after": "        \"bootstrap_requested\": args.run_bootstrap, \"bootstrap\": BOOTSTRAP,\n        \"experimental_raw_events_requested\": True,\n",
+      "occurrences": 1
+    },
+    {
+      "before": "            \"allowProviderModelFallback\": False})",
+      "after": "            \"allowProviderModelFallback\": False, \"experimentalRawEvents\": True})",
+      "occurrences": 1
+    },
+    {
+      "before": "        LAUNCH.write_json(args.evidence / \"preflight.json\", result)",
+      "after": "        LAUNCH.write_json(args.evidence / \"preflight.json\", {**result,\n            \"experimental_raw_events_requested\": True,\n            \"experimental_raw_events_thread_start_accepted\": True})",
+      "occurrences": 1
+    }
+  ],
+  "runtime_edit": {
+    "before": "bootstrap = load('campaign002_bootstrap_v2', HERE / 'bootstrap_client_v2.py')",
+    "after": "bootstrap = load('campaign002_bootstrap_v3', HERE / 'bootstrap_client_v3.py')",
+    "occurrences": 1
+  },
+  "checks": {
+    "original_v2_equals_archive": true,
+    "bootstrap_three_edits_reversed_equals_archive": true,
+    "runtime_import_reversed_equals_archive": true,
+    "client_class_unchanged": true,
+    "runtime_class_unchanged": true,
+    "launch_and_preflight_only_receipt_fields_added": true,
+    "model_config_auth_environment_bootstrap_and_rpc_parity_mocked": true,
+    "preflight_no_model_start_mocked": true,
+    "authorized_bootstrap_exactly_one_turn_mocked": true,
+    "rejected_thread_no_fallback_or_preflight_receipt_mocked": true,
+    "native_notifications_retained_without_reconstruction": true,
+    "existing_capability_redaction_preserved": true,
+    "cumulative_and_single_message_byte_limits_fail_closed": true,
+    "raw_events_do_not_complete_turn_or_emit_extra_rpc": true
+  },
+  "class_parity": {
+    "Client": {
+      "whole_class_ast_equal": true,
+      "class_ast_sha256": "aff95266aa5d81960436cacc772b8447e75cf8ef651576d420c50f32e79b8a5d",
+      "methods": [
+        "__init__",
+        "_drain",
+        "log",
+        "send",
+        "receive",
+        "call",
+        "wait_turn",
+        "close"
+      ]
+    },
+    "Runtime": {
+      "whole_class_ast_equal": true,
+      "class_ast_sha256": "de8cf460cad53fe15b6bbc202f6b2d4e5a8ba9f0ff310fb8491954ba4ce240b8",
+      "methods": [
+        "__init__",
+        "_mirror_loop",
+        "_append_receipt",
+        "_observe_revocation",
+        "_broker_loop",
+        "argv",
+        "redact",
+        "export",
+        "qualify",
+        "model",
+        "close"
+      ]
+    }
+  },
+  "receipt_semantics": {
+    "experimental_raw_events_requested": "Requested native thread/start.experimentalRawEvents=true; not a claim an event was emitted.",
+    "experimental_raw_events_thread_start_accepted": "Written only after successful mocked/native thread-start and all existing preflight gates; successful RPC acceptance is not prepared-output delivery or model attention.",
+    "native_preflight_performed": false
+  },
+  "development_checks": [
+    {
+      "attempt": 1,
+      "test_source_sha256": "c0c6de5df47b13949604bb9c0fa781e009a9ededa718ef73fe1c76c67243e563",
+      "exit_status": 1,
+      "tests_run": 10,
+      "errors": 5,
+      "failure_type": "Windows PermissionError WinError32 during TemporaryDirectory cleanup with a still-open synthetic events.jsonl handle.",
+      "affected_test_class": "RawEventCaptureTests",
+      "retention": "Failure summary retained from the local test command; full transient traceback was not persisted as a separate artifact.",
+      "correction": "Use TestCase.enterContext for temporary-directory lifetime so the later registered log-handle cleanup runs first. Production code unchanged.",
+      "command_argv": [
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness",
+        "-p",
+        "test_raw_event_capture.py",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics"
+    },
+    {
+      "attempt": 2,
+      "test_source_sha256": "2e66fa724313a381be650a555c8518670ca3ce55519d545ec6879b3df8cf16ae",
+      "exit_status": 0,
+      "tests_run": 10,
+      "failures": 0,
+      "errors": 0,
+      "elapsed_s": 0.045,
+      "scope": "Deterministic synthetic requests/notifications, local temporary evidence files and archived-source parity only.",
+      "command_argv": [
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness",
+        "-p",
+        "test_raw_event_capture.py",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics"
+    }
+  ],
+  "model_calls": 0,
+  "empirical_launches": 0,
+  "original624_files_written_by_this_task": false
+}

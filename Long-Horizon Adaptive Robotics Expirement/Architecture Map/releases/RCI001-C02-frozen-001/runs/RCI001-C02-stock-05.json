@@ -1,0 +1,187 @@
+{
+  "schema_version": "architecture-map-1.0",
+  "id": "RCI001-C02-stock-05",
+  "recorded_at": "2026-09-30T21:38:44.324559+00:00",
+  "author": "Codex session 19",
+  "tags": [
+    "robot-codex-integration-001",
+    "campaign-002"
+  ],
+  "details": {
+    "certificate_sha256": "47e8430b60edd5289f318eaa9ed576e2d6d1ce59dda1b13505e15f6fca0f4244"
+  },
+  "revision_id": "RCI001-C02-frozen-001",
+  "stage": "evaluation",
+  "condition_id": "known-fixture-repeatability",
+  "protocol_id": "RCI001-Campaign002-v1",
+  "scenario_id": "misplaced-stock",
+  "paired_block_id": "unpaired-RCI001-C02-stock-05",
+  "replicate": 5,
+  "started_at": null,
+  "rerun_of_run_id": null,
+  "condition_details": {
+    "manifest": {
+      "schema": "robot-codex-development-manifest-1.0",
+      "stage": "development-only",
+      "run_id": "RCI001-C02-stock-05",
+      "family": "misplaced-stock",
+      "mode": "serve",
+      "seed": 173,
+      "noise_seed": 23009,
+      "sim_cap_s": 900,
+      "wall_cap_s": 1100,
+      "storage_cap_bytes": 536870912,
+      "physics_dt_s": 0.002,
+      "clock_mode": "wall-paced; physics continues independently of agent",
+      "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+      "operator_only_fixture": {
+        "part_count": 1,
+        "placements": [
+          {
+            "part_id": "A1",
+            "zone": "quarantine"
+          }
+        ],
+        "order": {
+          "version": 1,
+          "closed": true,
+          "requirements": [
+            {
+              "family": "A",
+              "recipe": "A",
+              "count": 1,
+              "tray": "tray1",
+              "max_rework_cycles": 0
+            }
+          ]
+        },
+        "reference_actions": [
+          {
+            "operation": "transport",
+            "part_id": "A1",
+            "destination": "parking1"
+          }
+        ],
+        "missing_rule": "Frozen baseline excludes quarantine from raw-stock eligibility; no failed inspection is present.",
+        "baseline_source": "Runtime 004/candidates.py:739-756"
+      },
+      "limitations": [
+        "Development fixture; not sampled performance evidence",
+        "No collision safety certificate",
+        "Reference solution is protected operator evidence",
+        "Agent process restart only; supervisor restart is not implemented"
+      ],
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "bootstrap": "Follow the instructions in RobotAgentPrompt.md.",
+      "model_turns_max": 1,
+      "invocation_wall_cap_s": 600,
+      "action_request_budget": 20,
+      "observation_request_budget": 50,
+      "interruption_trigger": null,
+      "prior_attempt": null,
+      "framework_revision": "RCI001-C02-dev-114",
+      "outer_campaign_protocol": "RCI001-Campaign002-v1",
+      "replicate": 5,
+      "scoring_scope": "Prospective known-fixture repeatability; no held-out geometry or causal infrastructure benefit",
+      "runtime_workspace": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Campaign002\\RCI001-C02-stock-05"
+    },
+    "manifest_sha256": "e66b80c157f9ff4fc3e1b1c4ec72ef3bacde72780e37845b8434c7455237479c"
+  },
+  "seeds": {
+    "state": "recorded",
+    "refs": [
+      {
+        "label": "Immutable attempt manifest",
+        "uri": "releases/RCI001-C02-frozen-001/map-local-inputs/RCI001-C02-stock-05.json",
+        "sha256": "e66b80c157f9ff4fc3e1b1c4ec72ef3bacde72780e37845b8434c7455237479c",
+        "state": "available",
+        "access": "evaluator_only",
+        "locator": null
+      }
+    ],
+    "reason": null
+  },
+  "frozen_refs": {
+    "code": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Frozen source archive",
+          "uri": "releases/RCI001-C02-frozen-001/code.zip",
+          "sha256": "74e9f48f914a8f270cd658f20a360802d0afe8457948b0b00a9af5566d672ec4",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "environment": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Exact source/environment snapshot",
+          "uri": "releases/RCI001-C02-frozen-001/snapshot.json",
+          "sha256": "7fe9c49414ecc988c6781b2a417fd4e489d505c476e2940be5213be3367cf91a",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "models": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Exact requested model",
+          "uri": "releases/RCI001-C02-frozen-001/snapshot.json",
+          "sha256": "7fe9c49414ecc988c6781b2a417fd4e489d505c476e2940be5213be3367cf91a",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "protocol": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Prospective plan",
+          "uri": "releases/RCI001-C02-frozen-001/map-local-inputs/PLAN.md",
+          "sha256": "505a6c9add61fe51c4dc05cb53485c091a22b8087007f95e8ccaba211fe6ed3a",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "scenario": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Immutable attempt manifest",
+          "uri": "releases/RCI001-C02-frozen-001/map-local-inputs/RCI001-C02-stock-05.json",
+          "sha256": "e66b80c157f9ff4fc3e1b1c4ec72ef3bacde72780e37845b8434c7455237479c",
+          "state": "available",
+          "access": "evaluator_only",
+          "locator": null
+        }
+      ],
+      "reason": null
+    }
+  },
+  "evidence": [
+    {
+      "label": "Immutable attempt manifest",
+      "uri": "releases/RCI001-C02-frozen-001/map-local-inputs/RCI001-C02-stock-05.json",
+      "sha256": "e66b80c157f9ff4fc3e1b1c4ec72ef3bacde72780e37845b8434c7455237479c",
+      "state": "available",
+      "access": "evaluator_only",
+      "locator": null
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Session 45 — v4 Baseline at checkpoint 9
+
+At October 9, 22:56–22:57 PDT, the original Baseline was running with nine native sessions closed and session 10 active. Checkpoint 9 records seven of 21 advancements: three timed throwing windows, one bedroom and three kitchen assignments. Four household task-success events are retained; independent physical scoring remains endpoint work. Throwing-window advancement does not establish mastery.
+
+Checkpoints 8 and 9 passed independent world/RNG/filesystem and event/replay-prefix readback using the existing Session 41 and 44 helpers. Checkpoint 9 contains 155 files, event sequence 2424 and 1,750 replay chunks. Its manifest SHA-256 is `dcb39c5de77c149e4a138885033deaca64998ba68fc05ae55d6420e11a40bd07`.
+
+Native sessions 8–9 completed normally with passed closeout/retirement receipts and exact Windows owner identities exited with code 0. Session 10 has a distinct `gpt-6-astra` / `max` thread, passed preflight and both namespace canaries, and its owner was alive. Live replay reached 1,829 chunks; the latest chunk and delivered camera frame matched their recorded hashes. The viewer responded, Maps remained pristine and unlaunched, and D: had 239.775 GiB free. No blocker was observed.
+
+The [observation summary](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Apartment%20Experiment/operations/session-45/observation-summary.json) binds the three immutable operator records and all 20 passed observation checks. Full journal/content replay, a new Linux process/mount census and a full source inventory rehash were not performed. Frozen manifest/certificate hashes match. No endpoint result is claimed.
+
+`main` was pulled first and current at `784c11d0`; the human inbox had no new direction and claims were clear. Architecture Map note `APARTMENT-v4-baseline-observation-session45` records this observation. V4 monitoring remains ACTIVE every 30 minutes and the older three monitors remain PAUSED with unchanged configuration hashes. Existing inspection helpers were reused unchanged. No robot command, coaching, repair, retry, recovery, source/settings/schedule change, replacement, Maps launch or comparison occurred. Closed-session artifacts remain unchanged.
+
+After this Git closeout, Session 46 should observe the same `D:/Dandelion-Apartment-Experiment/official/apartment-v4/baseline`, queue `20261010T035451057091Z-9b1fda10`, under the [monitoring protocol](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Apartment%20Experiment/operations/session-41/MONITORING-PROTOCOL.md). Viewer: <http://127.0.0.1:49645>. The scientific run and monitoring continue independently; no human action is needed for continued observation.

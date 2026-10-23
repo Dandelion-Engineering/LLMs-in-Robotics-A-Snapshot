@@ -1,0 +1,5 @@
+# Staging copy — not the r2 execution runtime
+
+This directory preserves the entrypoint-fix staging work and its focused synthetic test receipt3f58c2d6. The selected r2 runtime remains ../Runtime. Relocating physical modules would change the absolute compiler mesh directory in the protected physical class identity, even with identical mesh bytes. This staging directory was not used for a physical or scored episode.
+
+R1 is retired; its exact original Python sources remain in Evidence/prepared-artifacts/batch01-eval-r1-final/runtime.zip and Batch01/selection-evidence-final-001/current-runtime. The working original Runtime location now has the minimal canonical-module entrypoint fix and its regression test. See Batch01/Release Infrastructure Repair001/retirement-r1-and-r2-decision-001.json. Vendor hard links share immutable files; never modify either alias.

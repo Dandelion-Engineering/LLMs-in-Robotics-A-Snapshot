@@ -1,0 +1,27 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_prepare_native.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_prepare_native.py
+@@ -17,6 +17,7 @@
+ import prepare_model_v20 as model
+ import prepare_model_v21 as pre_exit
+ import prepare_model_v22 as process_drain
++import prepare_model_v23 as complete_reads
+ 
+ BASELINE_SOURCE_SHA256 = 'a5ac5185e5e53486899bd118bc1f63fe7578a5b65aeca1ab137848ab50f8e10c'
+ BASELINE_ARCHIVE = candidate.RCI.parent / 'Architecture Map/releases/RCI001-C02-dev-039/code.zip'
+@@ -46,6 +47,7 @@
+ ) + model.prior.prior.prior.prior.prior.CLEANUP_INPUTS + model.prior.prior.prior.prior.READ_EVIDENCE_INPUTS + model.prior.prior.prior.PREPARED_STARTUP_INPUTS + model.prior.prior.REVOCATION_READBACK_INPUTS + model.prior.INDEX_LABEL_INPUTS + model.PILOT_RETIREMENT_INPUTS
+ QUIESCENCE_CAMPAIGN_INPUTS += pre_exit.PRE_EXIT_INPUTS
+ QUIESCENCE_CAMPAIGN_INPUTS += process_drain.PROCESS_DRAIN_INPUTS
++QUIESCENCE_CAMPAIGN_INPUTS += complete_reads.READER_INPUTS
+ QUIESCENCE_SCHEMA_INPUTS = tuple('isolation-session-9/native/app-server-schema/v2/' + name for name in (
+     'ThreadUnsubscribeParams.json', 'ThreadUnsubscribeResponse.json', 'ThreadClosedNotification.json',
+     'TurnInterruptParams.json', 'TurnInterruptResponse.json', 'TurnCompletedNotification.json'))
+@@ -84,7 +86,7 @@
+         # The new inventory supplier is loaded dynamically by the actual
+         # preparer. Copy both real modules so this fixture exercises that import
+         # and the real source enumeration, rather than mocking its output.
+-        for name in ('prepare_model_v22.py', 'prepare_model_v21.py', 'prepare_model_v20.py', 'prepare_model_v19.py', 'prepare_model_v18.py', 'prepare_model_v17.py', 'prepare_model_v16.py', 'prepare_model_v15.py', 'prepare_model_v14.py', 'prepare_model_v13.py', 'prepare_model_v12.py', 'prepare_model_v11.py'):
++        for name in ('prepare_model_v23.py', 'prepare_model_v22.py', 'prepare_model_v21.py', 'prepare_model_v20.py', 'prepare_model_v19.py', 'prepare_model_v18.py', 'prepare_model_v17.py', 'prepare_model_v16.py', 'prepare_model_v15.py', 'prepare_model_v14.py', 'prepare_model_v13.py', 'prepare_model_v12.py', 'prepare_model_v11.py'):
+             (self.here / name).write_bytes((candidate.HERE / name).read_bytes())
+         for name in QUIESCENCE_SCHEMA_INPUTS:
+             path = self.rci / name

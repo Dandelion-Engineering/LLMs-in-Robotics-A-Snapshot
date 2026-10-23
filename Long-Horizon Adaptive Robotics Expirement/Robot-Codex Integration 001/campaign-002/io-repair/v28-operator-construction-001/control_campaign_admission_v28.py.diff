@@ -1,0 +1,133 @@
+--- control_campaign_admission_v27.py
++++ control_campaign_admission_v28.py
+@@ -1,4 +1,4 @@
+-"""One-shot downstream admission actions after all five V27 qualifiers pass.
++"""One-shot downstream admission actions after all five V28 qualifiers pass.
+ 
+ Outside the frozen runtime inventory. Every invocation requires the caller-held
+ readiness SHA256. There is no launch action, automatic next action or retry of an
+@@ -12,19 +12,19 @@
+ IO = Path(__file__).resolve().parent
+ C = IO.parent
+ Q = C / 'qualification'
+-spec = importlib.util.spec_from_file_location('campaign_admission_v27_coordinator',
+-                                            Q / 'run_final_qualification_v27.py')
++spec = importlib.util.spec_from_file_location('campaign_admission_v28_coordinator',
++                                            Q / 'run_final_qualification_v28.py')
+ c = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(c)
+-spec = importlib.util.spec_from_file_location('campaign_admission_v27_certificate',
++spec = importlib.util.spec_from_file_location('campaign_admission_v28_certificate',
+                                             C / 'admission/prepare_certificate.py')
+ certificate = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(certificate)
+ 
+-READINESS = Q / 'final-qualification-027-readiness.json'
++READINESS = Q / 'final-qualification-028-readiness.json'
+ PREFLIGHT = c.LEDGER / 'preflight.json'
+ COMPLETED = c.LEDGER / 'completed.json'
+-FINAL_REVISION = 'RCI001-C02-dev-086'
++FINAL_REVISION = 'RCI001-C02-dev-090'
+ SNAPSHOT = c.MAP / 'releases' / FINAL_REVISION / 'snapshot.json'
+ INDEX = C / 'admission/qualification-index.json'
+ PREDECLARED = C / 'predeclared-v1'
+@@ -35,7 +35,7 @@
+ SEAL = SEALED / 'seal.json'
+ CERTIFICATE = SEALED / 'certificate.json'
+ RELEASE = c.MAP / 'releases/RCI001-C02-frozen-001'
+-RECORDS = IO / 'campaign-admission-v27/records'
++RECORDS = IO / 'campaign-admission-v28/records'
+ ACTIONS = ('prepare-index', 'prepare-scored', 'seal', 'register-release')
+ 
+ 
+@@ -44,14 +44,14 @@
+     readiness = c.load_readiness(READINESS, expected_sha256)
+     preflight = c.read(PREFLIGHT)
+     c.require(preflight.get('schema') == 'campaign002-final-qualification-preflight-1'
+-              and preflight.get('coordinator') == c.identity(Q / 'run_final_qualification_v27.py')
++              and preflight.get('coordinator') == c.identity(Q / 'run_final_qualification_v28.py')
+               and preflight.get('readiness') == c.identity(READINESS)
+               and preflight.get('readiness_sha256') == expected_sha256,
+-              'V27 preflight does not bind current coordinator and exact readiness')
++              'V28 preflight does not bind current coordinator and exact readiness')
+     for field in ('source_snapshot', 'stages', 'diagnostic', 'repair_test_receipt',
+                   'transport_diagnostic', 'raw_event_preflight'):
+         c.require(preflight.get(field) == readiness.get(field) and field in readiness,
+-                  'V27 preflight differs from readiness: ' + field)
++                  'V28 preflight differs from readiness: ' + field)
+     jobs, paths = [], []
+     for name, kind, revision, seed in readiness['stages']:
+         expected = c.entry_for(name, kind, revision)
+@@ -67,16 +67,16 @@
+     completed = c.read(COMPLETED)
+     c.require(completed.get('schema') == 'campaign002-final-qualification-completed-1'
+               and isinstance(completed.get('pilots'), list) and len(completed['pilots']) == 2,
+-              'Complete ordered five-stage V27 ledger required')
++              'Complete ordered five-stage V28 ledger required')
+     entries = [completed.get(name) for name in ('native', 'boundary', 'smoke')] + completed['pilots']
+-    bindings = [Path(__file__), Q / 'run_final_qualification_v27.py', READINESS,
++    bindings = [Path(__file__), Q / 'run_final_qualification_v28.py', READINESS,
+                 PREFLIGHT, COMPLETED, SNAPSHOT, SNAPSHOT.with_name('code.zip')]
+     for stage, entry, expected in zip(readiness['stages'], entries, paths):
+         name, kind, revision, seed = stage
+         c.require(isinstance(entry, dict), 'Malformed completed entry: ' + name)
+         for key in ('manifest', 'snapshot', 'queue', 'assessment'):
+             c.require(entry.get(key) == c.identity(expected[key]),
+-                      'Completed entry differs from exact V27 path/bytes: ' + name + '/' + key)
++                      'Completed entry differs from exact V28 path/bytes: ' + name + '/' + key)
+             bindings.append(expected[key])
+         c.require(entry.get('evidence') == str(expected['evidence'].resolve()),
+                   'Completed evidence path differs: ' + name)
+@@ -101,14 +101,14 @@
+         c.require(disposition.get('run_id') == expected['run_id']
+                   and disposition.get('passed') is True and disposition.get('error') is None
+                   and disposition.get('entry') == entry,
+-                  'Original V27 admission is absent or unqualified: ' + name)
++                  'Original V28 admission is absent or unqualified: ' + name)
+         registered = c.admission.artifact(disposition['registered_result'])
+         c.require(registered == c.MAP / 'releases' / revision /
+                   ('result-' + expected['run_id']) / 'result-record.json',
+                   'Qualifier registration path differs: ' + name)
+         bindings.extend((disposition_path, registered))
+     frozen = c.read(SNAPSHOT)
+-    c.require(frozen.get('revision') == FINAL_REVISION, 'Wrong final V27 source revision')
++    c.require(frozen.get('revision') == FINAL_REVISION, 'Wrong final V28 source revision')
+     c.assert_sources(readiness, SNAPSHOT)
+     c.require(c.sha(READINESS) == expected_sha256, 'Readiness changed during admission gate')
+     return {'completed': completed, 'entries': entries, 'jobs': jobs,
+@@ -158,7 +158,7 @@
+     digest = seal.get('certificate_sha256')
+     c.require(isinstance(digest, str) and c.sha(CERTIFICATE) == digest
+               and seal.get('source_revision') == FINAL_REVISION
+-              and seal.get('release_revision') == RELEASE.name, 'Exact V27 certificate seal required')
++              and seal.get('release_revision') == RELEASE.name, 'Exact V28 certificate seal required')
+     outputs = [RELEASE / name for name in ('snapshot.json', 'code.zip', 'admission-certificate.json',
+                                           'revision-record.json', 'registration.json')]
+     outputs += [RELEASE / 'runs' / path.name for path in scored_manifests()]
+@@ -184,7 +184,7 @@
+               and index.get('final_source_snapshot') == c.identity(SNAPSHOT)
+               and all(index.get(key) == basis['completed'].get(key)
+                       for key in ('native', 'boundary', 'smoke', 'pilots')),
+-              'Prepared index differs from exact completed V27 ledger')
++              'Prepared index differs from exact completed V28 ledger')
+ 
+ 
+ def execute(action, expected_sha256):
+@@ -196,7 +196,7 @@
+     if action == 'register-release':
+         recorded('seal', basis)
+     official = {'schema': 'campaign002-admission-official-status-1',
+-                'readiness': c.identity(READINESS), 'coordinator': c.identity(Q / 'run_final_qualification_v27.py'),
++                'readiness': c.identity(READINESS), 'coordinator': c.identity(Q / 'run_final_qualification_v28.py'),
+                 'stage_jobs': basis['jobs']}
+     c.save_exact(RECORDS / (action + '-official-status.json'), official)
+     argv, inputs, outputs, absent = command_spec(action, basis)
+@@ -213,7 +213,7 @@
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('action', choices=ACTIONS)
+     parser.add_argument('--readiness-sha256', required=True,
+-                        help='Externally held SHA256 of the immutable V27 readiness declaration')
++                        help='Externally held SHA256 of the immutable V28 readiness declaration')
+     args = parser.parse_args()
+     execute(args.action, args.readiness_sha256)
+ 

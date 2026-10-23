@@ -1,0 +1,22 @@
+{
+  "schema_version": "physical-calibration-plan-1.0",
+  "attempt_id": "physical-calibration-001",
+  "registered_before_execution": true,
+  "purpose": "Measure shared physical prerequisites after the retained five-pilot failures; no scored architecture evaluation",
+  "driver": "Calibration Tools/physical_calibration.py",
+  "mode": "all",
+  "seed": 0,
+  "output": "../Evidence/calibration/physical-calibration-001",
+  "modes": ["insert-exchange", "held-recovery", "held-recovery-parking1", "adapters", "effort-equivalence", "raw-cameras", "static-sensors"],
+  "static_worlds": [[3, 0], [6, 1], [10, 2]],
+  "hard_child_wall_caps_s": [225, 225, 225, 105, 65, 90, 85],
+  "source_identity": "Exact Runtime and Calibration Tools sources plus pinned Panda files are recorded and bundled by the driver before any probe; those sources remain fixed until official queue completion",
+  "decision_rules": [
+    "Inspect every declared predicate and actual-host timing separately after official succeeded/exit0 receipt",
+    "Physical predicate failures are retained outcomes even if the parent queue job exits normally",
+    "A static sensor measurement pass means collection completed; visibility/error findings still govern readiness",
+    "A single successful held recovery does not establish broad calibration envelopes or all-seed admissibility",
+    "New attempts use fresh IDs/directories; no overwrite or threshold loosening after failure"
+  ],
+  "scored_ready_claimed": false
+}

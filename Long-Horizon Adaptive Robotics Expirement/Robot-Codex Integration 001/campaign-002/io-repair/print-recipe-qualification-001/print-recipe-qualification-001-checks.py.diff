@@ -1,0 +1,11 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\boundary-import-qualification-001\checks.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\print-recipe-qualification-001\checks.py
+@@ -21,7 +21,7 @@
+     paths={p for folder in ('harness','assessment','qualification','admission') for p in (control.C/folder).glob('*.py')}
+     paths.update(control.C.glob('*.py'))
+     before=[identity(p) for p in sorted(paths)]
+-    checked=[*HERE.glob('*.py'),HERE/'DECLARATION.md',control.IO/'COMPLETE_PROCESS_AND_LITERAL_READS_V1.md']
++    checked=[*HERE.glob('*.py'),HERE/'DECLARATION.md',control.IO/'COMPLETE_PROCESS_AND_LITERAL_READS_V2.md']
+     source_before={p.relative_to(control.C).as_posix():{'sha256':c.sha(p),'bytes':p.stat().st_size} for p in [*sorted(paths),*checked]}
+     result=subprocess.run(c.python(control.IO/'record_checks.py','run','--directory',control.CHECKS),cwd=c.REPO)
+     tests=c.read(control.CHECKS/'test-execution.json')

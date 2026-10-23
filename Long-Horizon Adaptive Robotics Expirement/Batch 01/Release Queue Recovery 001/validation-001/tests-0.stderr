@@ -1,0 +1,54 @@
+test_cannot_assert_success_failure_zero_metrics_or_historical_end (test_recovery_contract.DispositionTests.test_cannot_assert_success_failure_zero_metrics_or_historical_end) ... ok
+test_changed_partial_bytes_are_detected (test_recovery_contract.DispositionTests.test_changed_partial_bytes_are_detected) ... ok
+test_exact_single_admin_identity (test_recovery_contract.DispositionTests.test_exact_single_admin_identity) ... ok
+test_interrupted_receipt_cannot_be_successful_zero_or_null_missing (test_recovery_contract.DispositionTests.test_interrupted_receipt_cannot_be_successful_zero_or_null_missing) ... ok
+test_missing_required_unknown_field_is_not_inferred (test_recovery_contract.DispositionTests.test_missing_required_unknown_field_is_not_inferred) ... ok
+test_new_terminal_in_partial_tree_is_detected (test_recovery_contract.DispositionTests.test_new_terminal_in_partial_tree_is_detected) ... ok
+test_reconciliation_time_is_bound_but_is_not_physical_end (test_recovery_contract.DispositionTests.test_reconciliation_time_is_bound_but_is_not_physical_end) ... ok
+test_unknown_disposition_preserves_partial_inventory (test_recovery_contract.DispositionTests.test_unknown_disposition_preserves_partial_inventory) ... ok
+test_adoption_payload_cannot_change_partition_scoring_or_sources (test_recovery_contract.SourceTests.test_adoption_payload_cannot_change_partition_scoring_or_sources) ... ok
+test_adoption_requires_successful_exact_validation_output_and_source_identity (test_recovery_contract.SourceTests.test_adoption_requires_successful_exact_validation_output_and_source_identity) ... ok
+test_exact_archive_rejects_unreviewed_added_code_and_changed_bytes (test_recovery_contract.SourceTests.test_exact_archive_rejects_unreviewed_added_code_and_changed_bytes) ... ok
+test_unadopted_annex_cannot_authorize_execution (test_recovery_contract.SourceTests.test_unadopted_annex_cannot_authorize_execution) ... ok
+test_authorizer_uses_original_gate_and_exact_untouched_manifest (test_recovery_runner.AuthorityTests.test_authorizer_uses_original_gate_and_exact_untouched_manifest) ... ok
+test_canonical_note_is_exact_typed_separate_evidence (test_recovery_runner.AuthorityTests.test_canonical_note_is_exact_typed_separate_evidence) ... ok
+test_context_own_authority_exact_seeds_and_architecture_revision (test_recovery_runner.AuthorityTests.test_context_own_authority_exact_seeds_and_architecture_revision) ... ok
+test_queue_ownership_uses_safe_reader_and_actual_entrypoint (test_recovery_runner.AuthorityTests.test_queue_ownership_uses_safe_reader_and_actual_entrypoint) ... ok
+test_recovery_verification_retains_original_heavy_gate (test_recovery_runner.AuthorityTests.test_recovery_verification_retains_original_heavy_gate) ... ok
+test_changed_terminal_hash_rejected_before_canonical_append (test_recovery_runner.FinalizationTests.test_changed_terminal_hash_rejected_before_canonical_append) ... ok
+test_partial_append_resumes_exactly_without_episode_retry (test_recovery_runner.FinalizationTests.test_partial_append_resumes_exactly_without_episode_retry) ... ok
+test_saved_receipt_requires_actual_same_successful_queue_record (test_recovery_runner.FinalizationTests.test_saved_receipt_requires_actual_same_successful_queue_record) ... ok
+test_unlaunched_partition_missing_annex_and_interruption_are_not_success (test_recovery_runner.FinalizationTests.test_unlaunched_partition_missing_annex_and_interruption_are_not_success) ... ok
+test_valid_policy_failure_finalizes_once_and_resume_is_metadata_only (test_recovery_runner.FinalizationTests.test_valid_policy_failure_finalizes_once_and_resume_is_metadata_only) ... ok
+test_wrong_lineage_rejected_even_if_terminal_and_registration_agree (test_recovery_runner.FinalizationTests.test_wrong_lineage_rejected_even_if_terminal_and_registration_agree) ... ok
+test_current_batch_exception_is_exact_hash_bound (test_recovery_runner.SelectionTests.test_current_batch_exception_is_exact_hash_bound) ... ok
+test_exact_history_disposition_only_and_schedule_order (test_recovery_runner.SelectionTests.test_exact_history_disposition_only_and_schedule_order) ... ok
+test_invalid_or_integrity_terminal_stops_without_exact_review (test_recovery_runner.SelectionTests.test_invalid_or_integrity_terminal_stops_without_exact_review) ... ok
+test_partition_exact_disjoint_complete_original_order (test_recovery_runner.SelectionTests.test_partition_exact_disjoint_complete_original_order) ... ok
+test_registered_missing_evidence_never_retried (test_recovery_runner.SelectionTests.test_registered_missing_evidence_never_retried) ... ok
+test_scope_duplicate_and_boolean_limit_refused (test_recovery_runner.SelectionTests.test_scope_duplicate_and_boolean_limit_refused) ... ok
+test_unfinished_additional_batch_blocks (test_recovery_runner.SelectionTests.test_unfinished_additional_batch_blocks) ... ok
+test_only_authority_and_provenance_change_episode_functions (test_recovery_runner.SupervisorSourceTests.test_only_authority_and_provenance_change_episode_functions) ... ok
+test_atomic_replacement_succeeds_while_snapshot_handle_is_open (test_recovery_runner.WindowsSharedReaderTests.test_atomic_replacement_succeeds_while_snapshot_handle_is_open)
+Actual WinAPI/file IO on two owned temporary files, never queue state. ... ERROR
+
+======================================================================
+ERROR: test_atomic_replacement_succeeds_while_snapshot_handle_is_open (test_recovery_runner.WindowsSharedReaderTests.test_atomic_replacement_succeeds_while_snapshot_handle_is_open)
+Actual WinAPI/file IO on two owned temporary files, never queue state.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime Recovery 001\test_recovery_runner.py", line 372, in test_atomic_replacement_succeeds_while_snapshot_handle_is_open
+    self.assertEqual(rr.read_shared_json(path), {'generation': 1})
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime Recovery 001\recovery_runner.py", line 64, in read_shared_json
+    if not read(handle, buffer, len(buffer), ctypes.byref(count), None):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime Recovery 001\test_recovery_runner.py", line 366, in __call__
+    os.replace(replacement, path)  # Requires the reader's FILE_SHARE_DELETE.
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [WinError 5] Access is denied: 'C:\\Users\\cresp\\AppData\\Local\\Temp\\robot-recovery-unit-lyn17cba\\replacement.json' -> 'C:\\Users\\cresp\\AppData\\Local\\Temp\\robot-recovery-unit-lyn17cba\\snapshot.json'
+
+----------------------------------------------------------------------
+Ran 32 tests in 1.330s
+
+FAILED (errors=1)

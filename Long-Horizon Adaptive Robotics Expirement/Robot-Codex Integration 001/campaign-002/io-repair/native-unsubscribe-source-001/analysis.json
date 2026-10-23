@@ -1,0 +1,100 @@
+{
+  "schema": "campaign002-native-unsubscribe-source-analysis-1",
+  "created_at": "2026-09-28T20:25:59.731237+00:00",
+  "tag": "rust-v0.157.1",
+  "source_receipt": {
+    "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-unsubscribe-source-001/source-evidence.json",
+    "bytes": 4176,
+    "sha256": "32ca86a17d2e0c2b07ff6ab9b9fda756cac6d67aff5cfd41e469226c56441c6f"
+  },
+  "additional_retained_sources": [
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/codehost-channel-source-001/codex-rs__core__src__config__mod.rs",
+      "bytes": 197899,
+      "sha256": "0ca738441c0c0a3085e1d06da7606747f79f7d66f04cf363052c9b28a1abeaff"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__request_processors__thread_lifecycle.rs",
+      "bytes": 34305,
+      "sha256": "204a9b470a4ee86fbc7cdbc6737291a8dea678c562220153df4ccd57f4545ea4"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__thread_state.rs",
+      "bytes": 23440,
+      "sha256": "a3f9d252d61c9a78c50db119c87796cec92a734971762c1ba013791af2556e33"
+    }
+  ],
+  "findings": [
+    {
+      "id": "accepted_zero",
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-unsubscribe-source-001/codex-rs__config__src__config_toml.rs",
+      "lines": [
+        344,
+        346
+      ],
+      "finding": "Optional u64; documentation states60s default,0 immediate idle unload and restart required. Native source tests1063\u20131068 reject negative, fractional and quoted numeric input. No new binary test performed."
+    },
+    {
+      "id": "default",
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/codehost-channel-source-001/codex-rs__core__src__config__mod.rs",
+      "lines": [
+        3876,
+        3877
+      ],
+      "finding": "Duration::from_secs(cfg.thread_unload_delay_secs.unwrap_or(60)); startup override0 maps to Duration zero without a minimum clamp in this conversion."
+    },
+    {
+      "id": "unsubscribe_ack",
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-unsubscribe-source-001/codex-rs__app-server__src__request_processors__thread_processor.rs",
+      "lines": [
+        1018,
+        1043
+      ],
+      "finding": "Loaded-thread request removes requesting connection subscription and returns unsubscribed/notSubscribed; no cleanup join. Missing thread returns notLoaded after teardown bookkeeping."
+    },
+    {
+      "id": "eligibility",
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__request_processors__thread_lifecycle.rs",
+      "lines": [
+        34,
+        120
+      ],
+      "finding": "Unload is scheduled only when no subscribers AND inactive, at later transition plus delay; running recheck369\u2013371 defers. Zero delay changes eligibility scheduling only."
+    },
+    {
+      "id": "joined_notification",
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__request_processors__thread_lifecycle.rs",
+      "lines": [
+        408,
+        465
+      ],
+      "finding": "After trigger, await shutdown_and_wait with separate internal10s timeout. thread/closed emitted only on complete; timeout is not a successful closure. External5+5s gate remains stricter and unchanged."
+    },
+    {
+      "id": "broadcast",
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-unsubscribe-source-001/codex-rs__app-server__src__outgoing_message.rs",
+      "lines": [
+        741,
+        773
+      ],
+      "finding": "Unscoped send_server_notification queues OutgoingEnvelope::Broadcast."
+    },
+    {
+      "id": "recipient",
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-unsubscribe-source-001/codex-rs__app-server__src__transport.rs",
+      "lines": [
+        205,
+        241
+      ],
+      "finding": "Broadcast targets initialized connections passing notification opt-out/experimental checks, without thread subscription filter. Unsubscribe does not inherently suppress eventual thread/closed. Queue send is not proof of actual delivery; protected client must observe exact matching notification."
+    }
+  ],
+  "conclusion": "Startup exactint0 is a source-supported scheduling correction. Still require actual unsubscribe acknowledgment, same-thread closed notification, native exit within existing5s grace, complete controller within10s, and unchanged independent transport retirement. No empirical failure is reclassified.",
+  "limits": [
+    "Tagged source is not installed-binary equivalence.",
+    "thread/closed establishes completed native shutdown path, not success of every internal cleanup operation; unchanged independent transport gates remain mandatory.",
+    "Effective config/read must actually expose exact integer0; prospective native prerequisite must stop if missing or differently typed."
+  ],
+  "model_calls": 0,
+  "native_executions": 0
+}

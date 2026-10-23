@@ -1,0 +1,40 @@
+{
+  "schema": "campaign002-tcp-trace-coverage-fixture-1",
+  "passed": true,
+  "cases": [
+    {
+      "case": "graceful_fin",
+      "client_port": 54703,
+      "server_port": 54699,
+      "close_requested_perf_counter_ns": 597079417559800,
+      "server_observed_perf_counter_ns": 597079417589600,
+      "genuine_read_eof": true,
+      "error": null,
+      "request_bytes": 51,
+      "response_bytes": 42,
+      "request_sha256": "f979e77d1cc8bda4f19d76bf72ae091c700d5df7e8b967f7ea6dc23af70424f3",
+      "response_sha256": "0279e96a6db37a719d4832fe56fcb38e75099cda195abf8d8f37ece2f8d5fe0e"
+    },
+    {
+      "case": "deliberate_rst",
+      "client_port": 54705,
+      "server_port": 54699,
+      "close_requested_perf_counter_ns": 597079417993700,
+      "server_observed_perf_counter_ns": 597079418064100,
+      "genuine_read_eof": false,
+      "error": {
+        "type": "ConnectionResetError",
+        "errno": 22,
+        "winerror": 64
+      },
+      "request_bytes": 51,
+      "response_bytes": 42,
+      "request_sha256": "f979e77d1cc8bda4f19d76bf72ae091c700d5df7e8b967f7ea6dc23af70424f3",
+      "response_sha256": "0279e96a6db37a719d4832fe56fcb38e75099cda195abf8d8f37ece2f8d5fe0e"
+    }
+  ],
+  "model_calls": 0,
+  "capture_started": false,
+  "trace_coverage_qualified": false,
+  "scope": "Socket controls only. An elevated trace must independently show both cases before any new native diagnostic can be proposed."
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "campaign002-native-cleanup-discovery-fixture-correction-1",
+  "created_utc": "2026-09-28T23:15:17.979037+00:00",
+  "scope": "Test fixture module loading only; all production source and acceptance/deadline behavior preserved. No empirical invocation or historical verdict change.",
+  "cause": "Full harness discovery preloaded harness/test_client_quiescence.py under its basename. Assessment fixture imported that basename and failed to import make_records. Actual Controller rejected callback exception as cleanup_barrier_failed and retained forced cleanup; isolated fixture suite had no collision.",
+  "correction": "Load assessment fixture modules from exact file paths under unique internal spec names; temporarily supply and restore their mutual basename imports while defining the fixture, before running callback. Regression proves original foreign module identity is restored.",
+  "validation": {
+    "full_harness_tests": 407,
+    "exit_code": 0,
+    "sources_unchanged_during_test": true
+  },
+  "bindings": {
+    "original_full_discovery_failure": {
+      "path": "Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\checks-024\\harness.stderr",
+      "sha256": "38c98e860d1244366eee60a2fdcce337f8c43f6280a510adf7482f4348398344",
+      "bytes": 83010
+    },
+    "import_only_reproduction": {
+      "path": "Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-cleanup-verifier-development-001\\discovery-import-failure-001.json",
+      "sha256": "ff786de521d743e622f2764cb6d6d0aca36a19dbf8cbf6c5e3903539b7c36563",
+      "bytes": 2468
+    },
+    "fixed_full_discovery": {
+      "path": "Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-cleanup-verifier-development-001\\check-005-full-harness.json",
+      "sha256": "97d93a5acebd365e5b9245c71c5b972ebb8dfe96b14d92e08a8fbbdd0089011f",
+      "bytes": 72958
+    },
+    "only_changed_source": {
+      "path": "Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\test_raw_event_preflight_v2.py",
+      "sha256": "ca9e19273d14736e738ca6c82b534bf0532fce7cdfba8eed4b8aa7ef6c64289f",
+      "bytes": 17162
+    }
+  }
+}

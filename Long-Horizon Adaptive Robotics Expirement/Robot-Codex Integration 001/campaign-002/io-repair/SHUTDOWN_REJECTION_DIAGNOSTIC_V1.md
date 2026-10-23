@@ -1,0 +1,15 @@
+# One interruption diagnostic after Smoke016
+
+Declared prospectively on 2026-09-28 before instrumentation or submission. Smoke016 remains failed, unassessed, with unknown task outcome. Its immutable diagnosis is `smoke-016-shutdown-failure-analysis.json` (SHA256 fe1d7a6e69d005bdc8aaeaf862870e2e591c6c228cd80f8d5ff3f800fda68641).
+
+The observed parser rejected a complete upload HEADERS frame on a stream absent from its active map after retirement. The original stream ID, flags, frame length and RPC method were not retained. The 222-byte upload discrepancy is an unforwarded read size, not an identified frame. Retained native source contains cleanup RPC producers, but does not prove the installed binary or historical RPC. No opaque new request stream is authorized.
+
+## Fixed intervention
+
+Add bounded, secret-safe metadata at the existing rejection site: direction, HTTP/2 frame type, flags, stream ID, payload length, membership in the current active map and original retirement frontier, and original last-stream ID. Keep the first rejection only. Do not retain headers, payloads, capabilities, exception payload text or model reasoning. Preserve the same rejection, exception, failure disposition and forwarding behavior. This is instrumentation, not a transport repair or relaxed qualification gate.
+
+Use a new wrapper under `single-interrupt-diagnostic/` to call unchanged `physical.run_invocation('interrupt', ...)` exactly once, with unchanged smoke task files, sole RobotAgentPrompt bootstrap, GPT-6 Astra/Max ChatGPT configuration, isolation, canaries, 600-second invocation bound, `smoke-open-001` interruption trigger, authority retirement, export and cleanup. Stop after that invocation, whether it succeeds or fails. Never resume or start another invocation. Preserve host setup, continuous physics, stop and cleanup. Declare one maximum model invocation; other original smoke caps and policy fields remain unchanged.
+
+Use fresh run RCI001-C02-shutdown-diagnostic-001, revision RCI001-C02-dev-055 and a new complete source snapshot after meaningful development tests. Stage is campaign002-single-interrupt-diagnostic; protocol is RCI001-Campaign002-single-interrupt-diagnostic-v1. Preserve the normal guarded launcher pattern: exclusive immutable launch intent, exact frozen sources, storage monitor readiness and fresh liveness/stop-latch checks, shared compute queue, bounded host and model execution, and durable retention. No direct model launch bypass or successful qualification/certificate/scoring claim.
+
+Authenticate the official queue before reading outputs. A nonzero transport result stays nonzero. Failed outputs may be inspected solely for this declared infrastructure diagnosis; settlement remains diagnostic, unassessed and task unknown. If no relevant rejection is observed, retain an inconclusive result and do not automatically repeat it. Any actual repair requires a separately supported change, meaningful tests and complete fresh qualification before the fixed twenty-slot campaign.

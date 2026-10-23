@@ -1,0 +1,62 @@
+"""Replay a perception-aligned throw; see Playbooks/Learned/ThrowForward.md."""
+import argparse
+import json
+import sys
+import time
+
+sys.path.insert(0, "/")
+import robot_client
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--duration-scale", type=float, default=1.1)
+args = parser.parse_args()
+if not 0.9 <= args.duration_scale <= 1.15:
+    parser.error("duration scale must be between 0.9 and 1.15")
+
+status = robot_client.call("status", {})
+grip = status.get("gripper", {})
+encoders = status.get("joint_encoders", {})
+if (not status.get("ok") or status.get("action")
+        or "throw" not in status.get("assignment", "").lower()
+        or status["battery"]["docked"]
+        or status["battery"]["low_warning"]
+        or status["battery"]["work_seconds_remaining"] < 8
+        or not grip.get("bilateral_contact")
+        or not grip.get("secure_lift_confirmed")
+        or not 0.08 <= grip.get("width", 0) <= 0.105
+        or abs(encoders.get("reach", -1) - 0.32) > 0.04
+        or abs(encoders.get("lift", -1) - 0.72) > 0.04
+        or abs(encoders.get("lateral", 1)) > 0.03
+        or abs(encoders.get("wrist_pitch", 1)) > 0.03):
+    raise SystemExit("Throw preconditions failed; inspect current state.")
+
+print(json.dumps({"before": status}), flush=True)
+throw_start = status["sim_time"]
+points = [
+    {"x": 0.35, "y": 0, "z": 0.85, "width": 0.02, "duration": 1.2},
+    {"x": 0.75, "y": 0, "z": 1.05, "width": 0.02,
+     "duration": 0.2 * args.duration_scale},
+    {"x": 1.03, "y": 0, "z": 1.19, "width": 0.15,
+     "duration": 0.14 * args.duration_scale},
+]
+receipt = robot_client.call("command", {"kind": "trajectory", "parameters": {"points": points}})
+print(json.dumps({"receipt": receipt, "points": points}), flush=True)
+if not receipt.get("accepted"):
+    raise SystemExit("Throw rejected.")
+deadline = time.monotonic() + 15
+while True:
+    status = robot_client.call("status", {})
+    if not status.get("action"):
+        break
+    if time.monotonic() > deadline:
+        raise SystemExit("Action still active; inspect status before any further command.")
+    time.sleep(0.1)
+time.sleep(2)
+status = robot_client.call("status", {})
+feedback = status.get("throw_feedback")
+print(json.dumps({"after": status}), flush=True)
+last = status.get("last_action") or {}
+if last.get("request_id") != receipt["request_id"] or last.get("status") != "completed":
+    raise SystemExit("Trajectory completion unconfirmed; inspect current state.")
+if not feedback or feedback.get("landed_sim_time", 0) <= throw_start:
+    raise SystemExit("No fresh landing feedback; inspect before assuming an outcome.")

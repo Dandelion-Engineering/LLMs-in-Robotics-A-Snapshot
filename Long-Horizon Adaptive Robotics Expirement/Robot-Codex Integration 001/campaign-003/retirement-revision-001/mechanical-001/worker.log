@@ -1,0 +1,26 @@
+{"queue_job": {"argv": ["C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe", "-X", "utf8", "-B", "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-003/retirement-revision-001/mechanical.py", "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-003/retirement-revision-001/mechanical-001"], "cancel_requested_at": null, "child_pid": null, "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics", "ended_at": null, "error": null, "exit_status": null, "id": "20261004T040108923317Z-bc6b7cfa", "log_path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\runtime\\logs\\20261004T040108923317Z-bc6b7cfa.log", "resolved_executable": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe", "started_at": "2026-10-04T04:01:09.378557Z", "state": "running", "submitted_at": "2026-10-04T04:01:08.923317Z", "submitting_project": "LLMs-in-Robotics", "worker_pid": 32336}}
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-003\retirement-revision-001\mechanical.py", line 35, in case
+    response=json.loads(linux(CONTROL,block.run+'/journal/control.sock',identity))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-003\workspace_block.py", line 19, in linux
+    if p.returncode:raise RuntimeError(p.stderr[-3000:])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+  File "/usr/lib/python3.12/socket.py", line 707, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-003\retirement-revision-001\mechanical.py", line 68, in <module>
+    result={'ordinary':case(root/'ordinary',False),'retained_mount':case(root/'retained-mount',True)}
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-003\retirement-revision-001\mechanical.py", line 61, in case
+    if not block.close_attempted:block.close()
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'WorkspaceBlock' object has no attribute 'close_attempted'

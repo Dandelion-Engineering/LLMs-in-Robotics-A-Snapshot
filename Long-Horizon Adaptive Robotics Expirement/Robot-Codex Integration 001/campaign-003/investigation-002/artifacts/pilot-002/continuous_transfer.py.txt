@@ -1,0 +1,27 @@
+import math,json
+from recovery_step import cli,run_step,brief,EXPECTED
+
+def check(s,target,held=True):
+    p=s['packet']
+    if s['owner']!='robot' or (s['authority_epoch'],s['order_version'])!=EXPECTED or s['active_command'] or p['station']['busy']:
+        raise SystemExit('Stopped: authority or resource changed')
+    if math.dist(p['tcp_position_m'],target)>.01:
+        raise SystemExit('Stopped: TCP outside expected tolerance')
+    if held and not .038 <= p['gripper']['width'] <= .06:
+        raise SystemExit('Stopped: grip evidence lost')
+    if held and target[2]>.075:
+        for d in p['detections']:
+            if d['id']=='C1' and d['age_s']<.35 and d['pos'][2]<.027:
+                raise SystemExit('Stopped: C1 detected on table')
+
+code,s=cli(['status'])
+if code: raise SystemExit(code)
+check(s,[.351,-.252,.018])
+for name,target,duration in [('lift',[.351,-.252,.13],1.8),('across',[.523,-.131,.13],2),('lower',[.523,-.131,.018],1.8)]:
+    s=run_step('e6v5-continuous-'+name,['manual','cartesian-target','--position']+list(map(str,target))+['--duration',str(duration),'--gripper','0'])
+    check(s,target)
+s=run_step('e6v5-continuous-release',['manual','cartesian-target','--position','.523','-.131','.018','--duration','1','--gripper','255'])
+if s['packet']['gripper']['width']<.075: raise SystemExit('Stopped: jaws not open')
+s=run_step('e6v5-continuous-retreat',['manual','cartesian-target','--position','.523','-.131','.20','--duration','2','--gripper','255'])
+s=run_step('e6v5-continuous-clear',['skill','observe','--clear-view'])
+print(json.dumps({'sequence_terminal':True,'final':brief(s),'placement':'requires clear-view review'}),flush=True)

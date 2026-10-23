@@ -1,0 +1,40 @@
+--- compute_queue.original.py
++++ compute_queue.proposed.py
+@@ -48,6 +48,37 @@
+         return False
+     if pid == os.getpid():
+         return True
++    if os.name == "nt":
++        import ctypes
++        from ctypes import wintypes
++
++        # Windows os.kill(pid, 0) terminates a process; a zero-time handle wait
++        # queries its state without requesting termination rights.
++        if pid > 0xFFFFFFFF:
++            return True  # Do not truncate an unrepresentable PID to another PID.
++        try:
++            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
++            open_process = kernel32.OpenProcess
++            open_process.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
++            open_process.restype = wintypes.HANDLE
++            wait = kernel32.WaitForSingleObject
++            wait.argtypes = (wintypes.HANDLE, wintypes.DWORD)
++            wait.restype = wintypes.DWORD
++            close = kernel32.CloseHandle
++            close.argtypes = (wintypes.HANDLE,)
++            close.restype = wintypes.BOOL
++            handle = open_process(0x00100000, False, pid)  # SYNCHRONIZE only.
++        except (OSError, OverflowError):
++            return True  # Unknown is not permission to recover a live owner.
++        if not handle:
++            return ctypes.get_last_error() != 87  # ERROR_INVALID_PARAMETER: absent PID.
++        try:
++            try:
++                return wait(handle, 0) != 0  # Only WAIT_OBJECT_0 proves exit.
++            except (OSError, OverflowError):
++                return True
++        finally:
++            close(handle)
+     try:
+         os.kill(pid, 0)
+     except ProcessLookupError:

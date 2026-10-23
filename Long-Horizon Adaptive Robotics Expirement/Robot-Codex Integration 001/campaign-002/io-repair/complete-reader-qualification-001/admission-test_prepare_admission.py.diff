@@ -1,0 +1,149 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\admission\test_prepare_admission.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\admission\test_prepare_admission.py
+@@ -12,7 +12,7 @@
+ import prepare_index
+ 
+ REAL_VERIFIER = certificate.load_verifier()
+-with certificate.qualification_validator(certificate.CAMPAIGN / 'qualification/run_final_qualification_v30.py') as module:
++with certificate.qualification_validator(certificate.CAMPAIGN / 'qualification/run_final_qualification_v31.py') as module:
+     REAL_COORDINATOR = module
+ REAL_TRANSPORT_PROBE = REAL_COORDINATOR.verify_transport_probe
+ REAL_RAW_PREFLIGHT = REAL_COORDINATOR.verify_raw_preflight
+@@ -107,9 +107,9 @@
+         self.prepare(candidate_only=True)
+         value=json.loads(self.candidate.read_bytes())
+         for key,relative in (
+-            ('qualification_coordinator','qualification/run_final_qualification_v30.py'),
+-            ('qualification_readiness','qualification/final-qualification-030-readiness.json'),
+-            ('qualification_completion','qualification/final-qualification-030/completed.json'),
++            ('qualification_coordinator','qualification/run_final_qualification_v31.py'),
++            ('qualification_readiness','qualification/final-qualification-031-readiness.json'),
++            ('qualification_completion','qualification/final-qualification-031/completed.json'),
+             ('channel_startup_repair_method','io-repair/CHANNEL_TRANSPORT_STARTUP_REPAIR_V1.md'),
+             ('channel_startup_failure_diagnosis','io-repair/raw-preflight-002-failure-analysis.json'),
+             ('channel_probe_process_identity_method','io-repair/CHANNEL_PROBE_PROCESS_IDENTITY_V1.md'),
+@@ -300,15 +300,15 @@
+     def setUp(self):
+         super().setUp()
+         self.qualification = self.campaign / 'qualification'
+-        self.ledger = self.qualification / 'final-qualification-030'
++        self.ledger = self.qualification / 'final-qualification-031'
+         self.map = self.root / 'map'
+         self.raw = self.root / 'raw'
+-        self.snapshot = self.map / 'releases/RCI001-C02-dev-102/snapshot.json'
+-        self.anchor = self.map / 'releases/RCI001-C02-dev-099/snapshot.json'
+-        self.write(self.snapshot, {'revision': 'RCI001-C02-dev-102', 'sources': {}})
++        self.snapshot = self.map / 'releases/RCI001-C02-dev-106/snapshot.json'
++        self.anchor = self.map / 'releases/RCI001-C02-dev-103/snapshot.json'
++        self.write(self.snapshot, {'revision': 'RCI001-C02-dev-106', 'sources': {}})
+         self.write(self.snapshot.with_name('code.zip'), {'synthetic': True})
+-        self.write(self.anchor, {'revision': 'RCI001-C02-dev-099', 'sources': {}})
+-        plan = json.loads(self.plan.read_bytes()); plan['framework_revision'] = 'RCI001-C02-dev-102'
++        self.write(self.anchor, {'revision': 'RCI001-C02-dev-103', 'sources': {}})
++        plan = json.loads(self.plan.read_bytes()); plan['framework_revision'] = 'RCI001-C02-dev-106'
+         self.write(self.plan, plan)
+         for name, value in (('HERE', self.qualification), ('CAMPAIGN', self.campaign), ('RCI', self.root),
+                             ('REPO', self.root), ('LEDGER', self.ledger), ('MAP', self.map), ('RAW', self.raw),
+@@ -325,14 +325,14 @@
+         self.raw_check = context.start(); self.addCleanup(context.stop)
+         self.stages = [list(row[:2]) + [revision, row[2]] for row, revision in zip(
+             REAL_COORDINATOR.STAGE_IDENTITIES,
+-            ['RCI001-C02-dev-100', 'RCI001-C02-dev-101'] + ['RCI001-C02-dev-102'] * 3)]
++            ['RCI001-C02-dev-104', 'RCI001-C02-dev-105'] + ['RCI001-C02-dev-106'] * 3)]
+         self.paths = certificate.artifact_paths(self.snapshot, self.index, self.schedule)
+         self.readiness = {'schema': REAL_COORDINATOR.READINESS_SCHEMA, 'ledger_directory': str(self.ledger),
+             'source_snapshot': certificate.identity(self.anchor), 'stages': self.stages,
+-            'diagnostic': {'run_id': 'RCI001-C02-host-probe-030', 'job_id': 'host-job'},
++            'diagnostic': {'run_id': 'RCI001-C02-host-probe-031', 'job_id': 'host-job'},
+             'repair_test_receipt': {'path': 'synthetic-repair-receipt', 'sha256': '1' * 64},
+-            'transport_diagnostic': {'run_id': 'RCI001-C02-transport-probe-023', 'job_id': 'transport-job'},
+-            'raw_event_preflight': {'run_id': 'RCI001-C02-raw-preflight-020', 'job_id': 'raw-job'}}
++            'transport_diagnostic': {'run_id': 'RCI001-C02-transport-probe-024', 'job_id': 'transport-job'},
++            'raw_event_preflight': {'run_id': 'RCI001-C02-raw-preflight-021', 'job_id': 'raw-job'}}
+         self.write(self.paths['qualification_readiness'], self.readiness)
+         self.preflight = {'schema': 'campaign002-final-qualification-preflight-1',
+             'coordinator': certificate.identity(self.paths['qualification_coordinator']),
+@@ -367,7 +367,7 @@
+ 
+     def persist_entries(self):
+         self.write(self.paths['qualification_completion'], self.completed)
+-        self.index_value = {'schema': 'campaign002-qualification-index-1', 'source_revision': 'RCI001-C02-dev-102',
++        self.index_value = {'schema': 'campaign002-qualification-index-1', 'source_revision': 'RCI001-C02-dev-106',
+             'final_source_snapshot': certificate.identity(self.snapshot),
+             **{key: self.completed[key] for key in ('native', 'boundary', 'smoke', 'pilots')}}
+         self.write(self.index, self.index_value)
+@@ -448,7 +448,7 @@
+ 
+     def test_pilot_order_cannot_be_changed_even_in_both_records(self):
+         self.completed['pilots'].reverse(); self.persist_entries()
+-        self.assert_before_mutation('stage path differs: pilot-stock-027')
++        self.assert_before_mutation('stage path differs: pilot-stock-028')
+ 
+     def test_incomplete_completed_pilot_pair_is_rejected(self):
+         self.completed['pilots'].pop(); self.persist_entries()
+@@ -460,7 +460,7 @@
+                 original = self.entries[0][key]['path']
+                 self.entries[0][key]['path'] = str(self.root / 'substitute' / Path(original).name)
+                 self.persist_entries()
+-                self.assert_before_mutation('stage path differs: native-029/' + key)
++                self.assert_before_mutation('stage path differs: native-030/' + key)
+                 self.entries[0][key]['path'] = original
+ 
+     def test_stale_stage_names_and_seed_cannot_be_redeclared(self):
+@@ -512,23 +512,23 @@
+         self.raw_check.assert_not_called()
+ 
+     def test_mismatched_preflight_raw_binding_is_rejected_before_mutation(self):
+-        self.preflight['raw_event_preflight'] = {'run_id': 'RCI001-C02-raw-preflight-020', 'job_id': 'other-job'}
++        self.preflight['raw_event_preflight'] = {'run_id': 'RCI001-C02-raw-preflight-021', 'job_id': 'other-job'}
+         self.write(self.paths['qualification_preflight'], self.preflight)
+         self.assert_before_mutation('declared readiness: raw_event_preflight')
+         self.raw_check.assert_not_called()
+ 
+     def install_real_raw_preflight(self):
+-        output = self.campaign / 'io-repair/raw-preflight-020/evidence'
++        output = self.campaign / 'io-repair/raw-preflight-021/evidence'
+         record = self.readiness['raw_event_preflight']
+         queue_path = self.root / 'raw-queue.json'
+         script = self.campaign / 'harness/raw_event_preflight_v2.py'
+         job = {'id': record['job_id'], 'state': 'succeeded', 'exit_status': 0,
+             'argv': REAL_COORDINATOR.python(script, '--run-id', record['run_id'],
+-                '--framework-revision', 'RCI001-C02-dev-099', '--snapshot', self.anchor, '--output', output),
++                '--framework-revision', 'RCI001-C02-dev-103', '--snapshot', self.anchor, '--output', output),
+             'cwd': str(self.root), 'resolved_executable': str(REAL_COORDINATOR.PYTHON)}
+         self.write(queue_path, job)
+         result = {'schema': 'campaign002-raw-event-preflight-2', 'run_id': record['run_id'],
+-            'framework_revision': 'RCI001-C02-dev-099', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
++            'framework_revision': 'RCI001-C02-dev-103', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
+             'passed': True, 'model_calls': 0, 'physical_simulation': False}
+         self.write(output / 'result.json', result)
+         record.update(queue=certificate.identity(queue_path), result=certificate.identity(output / 'result.json'))
+@@ -601,16 +601,16 @@
+                 result[key] = original
+ 
+     def install_real_probe(self):
+-        output = self.campaign / 'io-repair/transport-probe-023/evidence'
++        output = self.campaign / 'io-repair/transport-probe-024/evidence'
+         record = self.readiness['transport_diagnostic']
+         queue_path = self.root / 'transport-queue.json'
+         job = {'id': record['job_id'], 'state': 'succeeded', 'exit_status': 0,
+             'argv': REAL_COORDINATOR.python(self.campaign / 'harness/codehost_transport_probe_v3.py', '--run-id', record['run_id'],
+-                '--framework-revision', 'RCI001-C02-dev-099', '--snapshot', self.anchor, '--output', output),
++                '--framework-revision', 'RCI001-C02-dev-103', '--snapshot', self.anchor, '--output', output),
+             'cwd': str(self.root), 'resolved_executable': str(REAL_COORDINATOR.PYTHON)}
+         self.write(queue_path, job)
+         result = {'schema': 'campaign002-codehost-channel-probe-3', 'run_id': record['run_id'],
+-            'framework_revision': 'RCI001-C02-dev-099', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
++            'framework_revision': 'RCI001-C02-dev-103', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
+             'passed': True, 'model_calls': 0, 'physical_simulation': False,
+             'cases': [{'case': kind, 'evidence': str(output / kind), 'transport_integrity': {'passed': True}}
+                       for kind in ('multi_channel', 'foreign_owner', 'in_flight_eof')]}
+@@ -658,7 +658,7 @@
+ class ValidatorImportTests(unittest.TestCase):
+     def test_coordinator_import_restores_sys_path_on_success_and_error(self):
+         original = sys.path[:]
+-        path = certificate.CAMPAIGN / 'qualification/run_final_qualification_v30.py'
++        path = certificate.CAMPAIGN / 'qualification/run_final_qualification_v31.py'
+         with certificate.qualification_validator(path) as coordinator:
+             self.assertTrue(callable(coordinator.load_readiness))
+             self.assertTrue(callable(coordinator.assert_sources))

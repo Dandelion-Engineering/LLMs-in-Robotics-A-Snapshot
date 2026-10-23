@@ -1,0 +1,440 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_run_final_qualification_v31.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_run_final_qualification_v32.py
+@@ -9,7 +9,7 @@
+ from unittest.mock import patch
+ 
+ HERE = Path(__file__).resolve().parent
+-spec = importlib.util.spec_from_file_location('final_coordinator_v31', HERE / 'run_final_qualification_v31.py')
++spec = importlib.util.spec_from_file_location('final_coordinator_v32', HERE / 'run_final_qualification_v32.py')
+ c = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(c)
+ 
+@@ -29,15 +29,15 @@
+     def declaration(self):
+         return {'schema': c.READINESS_SCHEMA, 'ledger_directory': str(c.LEDGER),
+                 'source_snapshot': {'path': str(self.root / 'snapshot.json'), 'sha256': 'a' * 64},
+-                'diagnostic': {'run_id': 'RCI001-C02-host-probe-031', 'job_id': 'fixed-job',
++                'diagnostic': {'run_id': 'RCI001-C02-host-probe-032', 'job_id': 'fixed-job',
+                     'manifest': {'path': str(self.root / 'manifest.json'), 'sha256': 'b' * 64},
+                     'queue': {'path': str(self.root / 'queue.json'), 'sha256': 'c' * 64},
+                     'assessment': {'path': str(self.root / 'assessment.json'), 'sha256': 'd' * 64},
+                     'assessor': {'path': str(c.HERE / 'assess_host_probe.py'), 'sha256': 'e' * 64},
+-                    'evidence': str(c.RAW / 'RCI001-C02-host-probe-031')},
++                    'evidence': str(c.RAW / 'RCI001-C02-host-probe-032')},
+                 'repair_test_receipt': {'path': str(self.root / 'tests.json'), 'sha256': 'f' * 64},
+                 'stages': [[name, kind, f'RCI001-C02-dev-{rev:03d}', seed]
+-                           for (name, kind, seed), rev in zip(c.STAGE_IDENTITIES, (104, 105, 106, 106, 106))]}
++                           for (name, kind, seed), rev in zip(c.STAGE_IDENTITIES, (108, 109, 110, 110, 110))]}
+ 
+     def job(self, state='succeeded', status=0):
+         return {'id': 'fixed-job', 'state': state, 'exit_status': status,
+@@ -57,7 +57,7 @@
+         methods=[v for k,v in vars(c).items() if k.endswith('_METHOD')]
+         sources={m.relative_to(c.REPO).as_posix():{'sha256':c.sha(m),'bytes':m.stat().st_size}
+                  for m in methods if m!=c.PRE_EXIT_DRAIN_METHOD}
+-        path=self.save('releases/RCI001-C02-dev-103/snapshot.json',{'revision':'RCI001-C02-dev-103','sources':sources})
++        path=self.save('releases/RCI001-C02-dev-107/snapshot.json',{'revision':'RCI001-C02-dev-107','sources':sources})
+         value['source_snapshot']=c.identity(path)
+         with patch.object(c,'MAP',self.root),patch.object(c.admission.base,'frozen_problems',return_value=[]),\
+                 patch.object(c.admission,'runtime_identities') as runtime:
+@@ -69,7 +69,7 @@
+         methods=[v for k,v in vars(c).items() if k.endswith('_METHOD')]
+         sources={m.relative_to(c.REPO).as_posix():{'sha256':c.sha(m),'bytes':m.stat().st_size}
+                  for m in methods if m!=c.COMPLETE_READER_METHOD}
+-        path=self.save('releases/RCI001-C02-dev-103/snapshot.json',{'revision':'RCI001-C02-dev-103','sources':sources})
++        path=self.save('releases/RCI001-C02-dev-107/snapshot.json',{'revision':'RCI001-C02-dev-107','sources':sources})
+         value['source_snapshot']=c.identity(path)
+         with patch.object(c,'MAP',self.root),patch.object(c.admission.base,'frozen_problems',return_value=[]),\
+                 patch.object(c.admission,'runtime_identities') as runtime:
+@@ -90,7 +90,7 @@
+         methods=[v for k,v in vars(c).items() if k.endswith('_METHOD')]
+         sources={m.relative_to(c.REPO).as_posix():{'sha256':c.sha(m),'bytes':m.stat().st_size}
+                  for m in methods if m!=c.GRACEFUL_PROCESS_DRAIN_METHOD}
+-        path=self.save('releases/RCI001-C02-dev-103/snapshot.json',{'revision':'RCI001-C02-dev-103','sources':sources})
++        path=self.save('releases/RCI001-C02-dev-107/snapshot.json',{'revision':'RCI001-C02-dev-107','sources':sources})
+         value['source_snapshot']=c.identity(path)
+         with patch.object(c,'MAP',self.root),patch.object(c.admission.base,'frozen_problems',return_value=[]),\
+                 patch.object(c.admission,'runtime_identities') as runtime:
+@@ -115,17 +115,17 @@
+             ['pilot-home-025','home','RCI001-C02-dev-090',24103]]
+         with self.assertRaisesRegex(ValueError,'Qualifier identities'):self.load(value)
+ 
+-    def test_declared_v31_identity_and_seed_allocation_is_exact(self):
+-        self.assertEqual(c.LEDGER.name, 'final-qualification-031')
++    def test_declared_v32_identity_and_seed_allocation_is_exact(self):
++        self.assertEqual(c.LEDGER.name, 'final-qualification-032')
+         plan = (c.CAMPAIGN / 'PLAN.md').read_text(encoding='utf-8')
+         self.assertIn('sensor seeds 24001–24006', plan)
+         self.assertIn('seeds 24101–24103', plan)
+         self.assertEqual(c.STAGE_IDENTITIES, (
+-            ('native-030', 'native', 24000), ('boundary-031', 'boundary', None),
+-            ('smoke-029', 'smoke', 24101), ('pilot-stock-028', 'stock', 24102),
+-            ('pilot-home-028', 'home', 24103)))
++            ('native-031', 'native', 24000), ('boundary-032', 'boundary', None),
++            ('smoke-030', 'smoke', 24101), ('pilot-stock-029', 'stock', 24102),
++            ('pilot-home-029', 'home', 24103)))
+         self.assertEqual([r[2] for r in self.declaration()['stages']],
+-                         ['RCI001-C02-dev-104', 'RCI001-C02-dev-105'] + ['RCI001-C02-dev-106'] * 3)
++                         ['RCI001-C02-dev-108', 'RCI001-C02-dev-109'] + ['RCI001-C02-dev-110'] * 3)
+ 
+     def test_preserved_v16_allocation_cannot_be_reused(self):
+         value=self.declaration()
+@@ -160,8 +160,8 @@
+                 name = c.NATIVE_THREAD_QUIESCENCE_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -181,8 +181,8 @@
+                 name = c.INITIAL_READ_EVIDENCE_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -202,8 +202,8 @@
+                 name = c.PREPARED_STARTUP_SEGMENTS_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -267,21 +267,21 @@
+ 
+     def test_other_fresh_probe_or_increasing_revision_allocation_is_not_this_declaration(self):
+         value = self.declaration()
+-        value['diagnostic']['run_id'] = 'RCI001-C02-host-probe-032'
++        value['diagnostic']['run_id'] = 'RCI001-C02-host-probe-033'
+         with self.assertRaisesRegex(ValueError, 'fresh repaired-host diagnostic'):
+             self.load(value)
+         value = self.declaration()
+         for row, revision in zip(value['stages'], (40, 41, 42, 42, 42)):
+             row[2] = f'RCI001-C02-dev-{revision:03d}'
+-        with self.assertRaisesRegex(ValueError, 'dev104, dev105 and shared final dev106'):
+-            self.load(value)
+-
+-    def test_anchor_must_be_exact_dev103_before_runtime_source_validation(self):
++        with self.assertRaisesRegex(ValueError, 'dev108, dev109 and shared final dev110'):
++            self.load(value)
++
++    def test_anchor_must_be_exact_dev107_before_runtime_source_validation(self):
+         value = self.declaration()
+         path = self.save('releases/RCI001-C02-dev-033/snapshot.json', {'revision': 'RCI001-C02-dev-033'})
+         value['source_snapshot'] = c.identity(path)
+         with patch.object(c, 'MAP', self.root), patch.object(c.admission, 'runtime_identities') as runtime:
+-            with self.assertRaisesRegex(ValueError, 'anchor must be dev103'):
++            with self.assertRaisesRegex(ValueError, 'anchor must be dev107'):
+                 c.assert_sources(value)
+             runtime.assert_not_called()
+ 
+@@ -313,9 +313,9 @@
+         value = self.declaration()
+         result = {'schema': 'campaign002-host-probe-assessment-1', 'diagnostic_passed': True,
+                   'errors': {}, 'run_id': value['diagnostic']['run_id'], 'queue_job_id': 'fixed-job',
+-                  'framework_revision': 'RCI001-C02-dev-103', 'model_calls': 0, 'scorable': False,
++                  'framework_revision': 'RCI001-C02-dev-107', 'model_calls': 0, 'scorable': False,
+                   'timing': {'passed': True}}
+-        values = {self.root / 'queue.json': self.job(), self.root / 'snapshot.json': {'revision': 'RCI001-C02-dev-103'},
++        values = {self.root / 'queue.json': self.job(), self.root / 'snapshot.json': {'revision': 'RCI001-C02-dev-107'},
+                   self.root / 'assessment.json': result if retained is None else retained}
+         stack = ExitStack()
+         self.addCleanup(stack.close)
+@@ -344,7 +344,7 @@
+         for state, status in [('running', None), ('failed', 1), ('succeeded', False), ('succeeded', 0.0)]:
+             with self.subTest(state=state, status=status), patch.object(c, 'official', return_value=self.job(state, status)), patch.object(c.admission, 'artifact') as artifact, patch.object(c, 'read') as read:
+                 with self.assertRaises(ValueError):
+-                    c.verify_raw_preflight({'run_id': 'RCI001-C02-raw-preflight-021', 'job_id': 'fixed-job'}, self.root / 'snapshot.json')
++                    c.verify_raw_preflight({'run_id': 'RCI001-C02-raw-preflight-022', 'job_id': 'fixed-job'}, self.root / 'snapshot.json')
+                 artifact.assert_not_called()
+                 read.assert_not_called()
+ 
+@@ -357,20 +357,20 @@
+ 
+     def raw_probe_fixture(self, mutate_result=None, mutate_job=None):
+         campaign = self.root / 'campaign-002'
+-        output = campaign / 'io-repair/raw-preflight-021/evidence'
+-        snapshot = self.save('raw-snapshot.json', {'revision': 'RCI001-C02-dev-103'})
++        output = campaign / 'io-repair/raw-preflight-022/evidence'
++        snapshot = self.save('raw-snapshot.json', {'revision': 'RCI001-C02-dev-107'})
+         result = {'schema': 'campaign002-raw-event-preflight-2', 'passed': True,
+-                  'run_id': 'RCI001-C02-raw-preflight-021', 'framework_revision': 'RCI001-C02-dev-103',
++                  'run_id': 'RCI001-C02-raw-preflight-022', 'framework_revision': 'RCI001-C02-dev-107',
+                   'snapshot_sha256': c.sha(snapshot), 'model_calls': 0, 'physical_simulation': False,
+                   'checks': {'synthetic': True}}
+         if mutate_result: mutate_result(result)
+-        result_path = self.save('campaign-002/io-repair/raw-preflight-021/evidence/result.json', result)
++        result_path = self.save('campaign-002/io-repair/raw-preflight-022/evidence/result.json', result)
+         job = self.job()
+         job['argv'] = c.python(campaign / 'harness/raw_event_preflight_v2.py', '--run-id', result['run_id'],
+-                               '--framework-revision', 'RCI001-C02-dev-103', '--snapshot', snapshot, '--output', output)
++                               '--framework-revision', 'RCI001-C02-dev-107', '--snapshot', snapshot, '--output', output)
+         if mutate_job: mutate_job(job)
+         queue = self.save('raw-queue.json', job)
+-        record = {'run_id': 'RCI001-C02-raw-preflight-021', 'job_id': job['id'],
++        record = {'run_id': 'RCI001-C02-raw-preflight-022', 'job_id': job['id'],
+                   'queue': c.identity(queue), 'result': c.identity(result_path)}
+         return campaign, output, snapshot, result, job, record
+ 
+@@ -425,7 +425,7 @@
+         value = self.declaration()
+         sources = {method.relative_to(c.REPO).as_posix(): {'sha256': c.sha(method), 'bytes': method.stat().st_size}
+                    for method in (c.STARTUP_REPAIR_METHOD,c.PROCESS_IDENTITY_METHOD,c.FINISH_FRONTIER_METHOD,c.SEQUENCE_SYNCHRONIZATION_METHOD,c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD, c.PILOT_RETIREMENT_INVENTORY_METHOD, c.PRE_EXIT_DRAIN_METHOD, c.GRACEFUL_PROCESS_DRAIN_METHOD, c.COMPLETE_READER_METHOD)}
+-        path = self.save('releases/RCI001-C02-dev-103/snapshot.json', {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++        path = self.save('releases/RCI001-C02-dev-107/snapshot.json', {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+         value['source_snapshot'] = c.identity(path)
+         with patch.object(c, 'MAP', self.root), patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+              patch.object(c.admission, 'runtime_identities', side_effect=ValueError('Original 624 omitted')) as runtime:
+@@ -439,8 +439,8 @@
+                 value=self.declaration()
+                 name=c.STARTUP_REPAIR_METHOD.relative_to(c.REPO).as_posix()
+                 sources={} if binding is None else {name:binding}
+-                path=self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                               {'revision':'RCI001-C02-dev-103','sources':sources})
++                path=self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                               {'revision':'RCI001-C02-dev-107','sources':sources})
+                 value['source_snapshot']=c.identity(path)
+                 with patch.object(c,'MAP',self.root), patch.object(c.admission.base,'frozen_problems',return_value=[]), \
+                      patch.object(c.admission,'runtime_identities') as runtime:
+@@ -456,8 +456,8 @@
+                 sources={method.relative_to(c.REPO).as_posix():{'sha256':c.sha(method),'bytes':method.stat().st_size}}
+                 name=c.PROCESS_IDENTITY_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:sources[name]=binding
+-                path=self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                               {'revision':'RCI001-C02-dev-103','sources':sources})
++                path=self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                               {'revision':'RCI001-C02-dev-107','sources':sources})
+                 value['source_snapshot']=c.identity(path)
+                 with patch.object(c,'MAP',self.root), patch.object(c.admission.base,'frozen_problems',return_value=[]), \
+                      patch.object(c.admission,'runtime_identities') as runtime:
+@@ -483,8 +483,8 @@
+                 name = c.FINISH_FRONTIER_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -503,8 +503,8 @@
+                 name = c.SEQUENCE_SYNCHRONIZATION_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -523,8 +523,8 @@
+                 name = c.OWNER_DRAIN_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -540,8 +540,8 @@
+         for method in (c.STARTUP_REPAIR_METHOD, c.PROCESS_IDENTITY_METHOD, c.FINISH_FRONTIER_METHOD, c.SEQUENCE_SYNCHRONIZATION_METHOD, c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD, c.PILOT_RETIREMENT_INVENTORY_METHOD, c.PRE_EXIT_DRAIN_METHOD, c.GRACEFUL_PROCESS_DRAIN_METHOD, c.COMPLETE_READER_METHOD):
+             sources[method.relative_to(c.REPO).as_posix()] = {
+                 'sha256': c.sha(method), 'bytes': method.stat().st_size}
+-        anchor = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                           {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++        anchor = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                           {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+         value['source_snapshot'] = c.identity(anchor)
+         name = c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD.relative_to(c.REPO).as_posix()
+         for missing in (False, True):
+@@ -550,8 +550,8 @@
+                 changed.pop(name)
+             else:
+                 changed[name] = {'sha256': '0' * 64, 'bytes': 1}
+-            later = self.save('releases/RCI001-C02-dev-104/snapshot.json',
+-                              {'revision': 'RCI001-C02-dev-104', 'sources': changed})
++            later = self.save('releases/RCI001-C02-dev-108/snapshot.json',
++                              {'revision': 'RCI001-C02-dev-108', 'sources': changed})
+             with self.subTest(missing=missing), patch.object(c, 'MAP', self.root), \
+                  patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+                  patch.object(c.admission, 'runtime_identities', return_value={}):
+@@ -565,8 +565,8 @@
+         for method in (c.STARTUP_REPAIR_METHOD, c.PROCESS_IDENTITY_METHOD, c.FINISH_FRONTIER_METHOD, c.SEQUENCE_SYNCHRONIZATION_METHOD, c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD, c.PILOT_RETIREMENT_INVENTORY_METHOD, c.PRE_EXIT_DRAIN_METHOD, c.GRACEFUL_PROCESS_DRAIN_METHOD, c.COMPLETE_READER_METHOD):
+             sources[method.relative_to(c.REPO).as_posix()] = {
+                 'sha256': c.sha(method), 'bytes': method.stat().st_size}
+-        anchor = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                           {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++        anchor = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                           {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+         value['source_snapshot'] = c.identity(anchor)
+         name = c.PREPARED_STARTUP_SEGMENTS_METHOD.relative_to(c.REPO).as_posix()
+         for missing in (False, True):
+@@ -575,8 +575,8 @@
+                 changed.pop(name)
+             else:
+                 changed[name] = {'sha256': '0' * 64, 'bytes': 1}
+-            later = self.save('releases/RCI001-C02-dev-104/snapshot.json',
+-                              {'revision': 'RCI001-C02-dev-104', 'sources': changed})
++            later = self.save('releases/RCI001-C02-dev-108/snapshot.json',
++                              {'revision': 'RCI001-C02-dev-108', 'sources': changed})
+             with self.subTest(missing=missing), patch.object(c, 'MAP', self.root), \
+                  patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+                  patch.object(c.admission, 'runtime_identities', return_value={}):
+@@ -585,7 +585,7 @@
+ 
+     def native_prepare_fixture(self, mutation=None):
+         name, kind, seed = c.STAGE_IDENTITIES[0]
+-        revision = 'RCI001-C02-dev-104'
++        revision = 'RCI001-C02-dev-108'
+         paths = c.entry_for(name, kind, revision)
+         paths['manifest'] = self.root / ((mutation or 'valid') + '-native-manifest.json')
+         paths['snapshot'] = self.root / 'release/snapshot.json'
+@@ -643,12 +643,12 @@
+ 
+     def test_model_stage_uses_inventory_v19_with_unchanged_seed(self):
+         name, kind, seed = c.STAGE_IDENTITIES[2]
+-        paths = c.entry_for(name, kind, 'RCI001-C02-dev-106')
+-        manifest = {'run_id': paths['run_id'], 'framework_revision': 'RCI001-C02-dev-106',
++        paths = c.entry_for(name, kind, 'RCI001-C02-dev-110')
++        manifest = {'run_id': paths['run_id'], 'framework_revision': 'RCI001-C02-dev-110',
+                     'seed': 173, 'noise_seed': seed}
+         with patch.object(c, 'command_once') as command, patch.object(c, 'read', return_value=manifest), \
+              patch.object(c, 'assert_sources'):
+-            self.assertEqual(c.prepare_stage(self.root, name, kind, 'RCI001-C02-dev-106', seed,
++            self.assertEqual(c.prepare_stage(self.root, name, kind, 'RCI001-C02-dev-110', seed,
+                                             paths, self.declaration()), manifest)
+         prepare = command.call_args_list[0].args[2]
+         self.assertEqual(Path(prepare[4]), c.HERE / 'prepare_model_v23.py')
+@@ -662,13 +662,13 @@
+             sources[method.relative_to(c.REPO).as_posix()] = {'sha256':c.sha(method),'bytes':method.stat().st_size}
+         runtime_name = (c.CAMPAIGN / 'harness/run_host.py').relative_to(c.REPO).as_posix()
+         sources[runtime_name] = {'sha256': 'b' * 64, 'bytes': 1}
+-        path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                         {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++        path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                         {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+         value['source_snapshot'] = c.identity(path)
+         changed = dict(sources)
+         changed[runtime_name] = {'sha256': 'c' * 64, 'bytes': 1}
+-        later = self.save('releases/RCI001-C02-dev-104/snapshot.json',
+-                         {'revision': 'RCI001-C02-dev-104', 'sources': changed})
++        later = self.save('releases/RCI001-C02-dev-108/snapshot.json',
++                         {'revision': 'RCI001-C02-dev-108', 'sources': changed})
+         with patch.object(c, 'MAP', self.root), patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+              patch.object(c.admission, 'runtime_identities', return_value={runtime_name: sources[runtime_name]}):
+             with self.assertRaisesRegex(ValueError, 'runtime sources differ'):
+@@ -810,14 +810,14 @@
+ 
+ 
+     def transport_fixture(self):
+-        snapshot = self.save('snapshot.json', {'revision': 'RCI001-C02-dev-103'})
+-        output = self.root / 'io-repair/transport-probe-024/evidence'
+-        result = {'schema': 'campaign002-codehost-channel-probe-3', 'run_id': 'RCI001-C02-transport-probe-024',
+-                  'framework_revision': 'RCI001-C02-dev-103', 'snapshot_sha256': c.sha(snapshot),
++        snapshot = self.save('snapshot.json', {'revision': 'RCI001-C02-dev-107'})
++        output = self.root / 'io-repair/transport-probe-025/evidence'
++        result = {'schema': 'campaign002-codehost-channel-probe-3', 'run_id': 'RCI001-C02-transport-probe-025',
++                  'framework_revision': 'RCI001-C02-dev-107', 'snapshot_sha256': c.sha(snapshot),
+                   'model_calls': 0, 'physical_simulation': False, 'passed': True,
+                   'cases': [{'case': kind, 'evidence': str(output / kind),
+                              'transport_integrity': {'passed': True}} for kind in ('multi_channel','foreign_owner','in_flight_eof')]}
+-        result_path = self.save('io-repair/transport-probe-024/evidence/result.json', result)
++        result_path = self.save('io-repair/transport-probe-025/evidence/result.json', result)
+         job = self.job()
+         job['argv'] = c.python(self.root / 'harness/codehost_transport_probe_v3.py', '--run-id', result['run_id'],
+                                '--framework-revision', result['framework_revision'], '--snapshot', snapshot,
+@@ -829,7 +829,7 @@
+ 
+     def test_failed_transport_queue_is_rejected_before_any_output_read(self):
+         for state, code in [('failed',1), ('running',None), ('succeeded',False)]:
+-            record = {'run_id':'RCI001-C02-transport-probe-024','job_id':'fixed-job'}
++            record = {'run_id':'RCI001-C02-transport-probe-025','job_id':'fixed-job'}
+             with self.subTest(state=state,code=code), patch.object(c, 'official', return_value=self.job(state,code)), \
+                  patch.object(c.admission, 'artifact') as artifact, patch.object(c, 'read') as read:
+                 with self.assertRaisesRegex(ValueError, 'Official queue'):
+@@ -885,8 +885,8 @@
+                 name = c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                snapshot = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                snapshot = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value = self.declaration()
+                 value['source_snapshot'] = c.identity(snapshot)
+                 with patch.object(c, 'MAP', self.root), \
+@@ -951,8 +951,8 @@
+                            {'sha256': c.sha(p), 'bytes': p.stat().st_size} for p in methods}
+                 name = c.NORMAL_CLOSED_CANCEL_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None: sources[name] = binding
+-                snapshot = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                snapshot = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(snapshot)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -983,8 +983,8 @@
+                            {'sha256': c.sha(p), 'bytes': p.stat().st_size} for p in methods}
+                 if binding is not None:
+                     sources[c.NATIVE_CLEANUP_CANCELLATION_METHOD.relative_to(c.REPO).as_posix()] = binding
+-                snapshot = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                snapshot = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                 value['source_snapshot'] = c.identity(snapshot)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -1017,8 +1017,8 @@
+                     if bad is None: sources.pop(name)
+                     else: sources[name] = bad
+                     value = self.declaration()
+-                    path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-103', 'sources': sources})
++                    path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-107', 'sources': sources})
+                     value['source_snapshot'] = c.identity(path)
+                     with patch.object(c, 'MAP', self.root), \
+                          patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -1027,12 +1027,12 @@
+                             c.assert_sources(value)
+                         runtime.assert_not_called()
+             value = self.declaration()
+-            path = self.save('releases/RCI001-C02-dev-103/snapshot.json',
+-                             {'revision': 'RCI001-C02-dev-103', 'sources': originals})
++            path = self.save('releases/RCI001-C02-dev-107/snapshot.json',
++                             {'revision': 'RCI001-C02-dev-107', 'sources': originals})
+             value['source_snapshot'] = c.identity(path)
+             changed = dict(originals); changed[name] = {'sha256': '0'*64, 'bytes': 1}
+-            later = self.save('releases/RCI001-C02-dev-104/snapshot.json',
+-                              {'revision': 'RCI001-C02-dev-104', 'sources': changed})
++            later = self.save('releases/RCI001-C02-dev-108/snapshot.json',
++                              {'revision': 'RCI001-C02-dev-108', 'sources': changed})
+             with patch.object(c, 'MAP', self.root), \
+                  patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+                  patch.object(c.admission, 'runtime_identities', return_value={}), \
+@@ -1049,7 +1049,7 @@
+                     q = base / 'qualification'
+                     q.mkdir()
+                     with patch.object(c, 'HERE', q), patch.object(c, 'RAW', base / 'raw'):
+-                        paths = c.entry_for(name, kind, 'RCI001-C02-dev-106')
++                        paths = c.entry_for(name, kind, 'RCI001-C02-dev-110')
+                         paths['manifest'].write_text('{}', encoding='utf-8')
+                         paths['snapshot'] = base / 'snapshot.json'
+                         paths['snapshot'].write_text('{}', encoding='utf-8')

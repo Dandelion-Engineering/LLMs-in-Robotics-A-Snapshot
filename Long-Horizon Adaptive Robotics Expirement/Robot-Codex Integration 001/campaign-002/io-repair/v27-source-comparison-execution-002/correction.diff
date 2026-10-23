@@ -1,0 +1,75 @@
+--- execution001/failed-helper.py
++++ compare_v27_sources.py
+@@ -35,6 +35,10 @@
+ LINEAGE_NEW = {'qualification/prepare_model_v19.py', 'qualification/test_prepare_model_v19.py',
+               'qualification/run_final_qualification_v27.py',
+               'qualification/test_run_final_qualification_v27.py'}
++DIAGNOSIS_EXECUTABLES = {
++    'io-repair/smoke-024-read-diagnosis-001/diagnose.py',
++    'io-repair/smoke-024-read-diagnosis-001/execution-001/diagnose-failed.py',
++}
+ 
+ 
+ def utilities():
+@@ -55,6 +59,40 @@
+ def relative(source):
+     prefix = C.relative_to(REPO).as_posix() + '/'
+     return source[len(prefix):] if source.startswith(prefix) else None
++
++
++def declared_diagnosis_sources(u, snapshot, archive, lineage_path):
++    """Join only two retained diagnostic scripts; never execute their code."""
++    lineage, lineage_binding = u.document(Path(lineage_path).resolve())
++    u.require(lineage.get('schema') == 'campaign002-index-label-lineage-final-checks-1'
++              and lineage.get('passed') is True, 'Unknown/unpassed lineage receipt')
++    supplier = 'qualification/prepare_model_v19.py'
++    with zipfile.ZipFile(archive['identity']['path']) as frozen:
++        source = frozen.read(name(supplier))
++        u.require(u.source_identity(source) == snapshot['sources'][name(supplier)]
++                  == lineage['source_bindings'].get(supplier), 'Frozen supplier identity differs')
++        assignments = [node for node in ast.parse(source.decode('utf-8-sig')).body
++                       if isinstance(node, ast.Assign) and any(
++                           isinstance(t, ast.Name) and t.id == 'INDEX_LABEL_INPUTS' for t in node.targets)]
++        u.require(len(assignments) == 1 and isinstance(assignments[0].value, ast.Tuple)
++                  and all(isinstance(x, ast.Constant) and isinstance(x.value, str)
++                          for x in assignments[0].value.elts), 'Nonliteral/ambiguous index-label inputs')
++        inputs = [x.value for x in assignments[0].value.elts]
++        u.require(len(inputs) == len(set(inputs)), 'Duplicate index-label inputs')
++        declared = {x for x in inputs if x.startswith('io-repair/') and x.endswith('.py')}
++        u.require(declared == DIAGNOSIS_EXECUTABLES, 'Unexpected diagnostic executable inventory')
++        members = {}
++        for rel in sorted(declared):
++            key = name(rel)
++            observed = u.source_identity(frozen.read(key))
++            u.require(observed == snapshot['sources'].get(key)
++                      == lineage['provenance_bindings'].get(rel),
++                      'Diagnostic snapshot/archive/provenance identity differs: ' + rel)
++            members[key] = observed
++    return {'supplier': {'path': name(supplier), **snapshot['sources'][name(supplier)]},
++            'literal_inventory_name': 'INDEX_LABEL_INPUTS', 'lineage_receipt': lineage_binding,
++            'exact_diagnostic_executable_members': members,
++            'scope': 'Declared historical diagnostic code retained as source input only; never executed.'}
+ 
+ 
+ def supplier_parity(u, old, prior, new, archives):
+@@ -240,9 +278,11 @@
+         omitted[key] = {'before': a[key], 'current': item, 'still_present_and_byte_identical': True}
+     allowed = ASSESSMENT | LINEAGE_EXISTING
+     u.require(all(relative(k) in allowed for k in changed), 'Undeclared shared source change')
++    diagnosis = declared_diagnosis_sources(u, new, archives['083'], args.lineage_checks)
+     for key, item in added.items():
+         if key.endswith('.py'):
+             u.require(relative(key) in LINEAGE_NEW or
++                      key in diagnosis['exact_diagnostic_executable_members'] or
+                       (item['prior_host_binding'] is not None and
+                        (item['prior_host_binding'] == item['after'] or relative(key) in LINEAGE_EXISTING)),
+                       'Undeclared added executable source: ' + key)
+@@ -307,7 +347,7 @@
+                          'supplier_ast_parity': suppliers, 'template_sources_unchanged': templates,
+                          'requested_policy': policy,
+                          'environment_metadata_equal': old['environment'] == new['environment']},
+-        'development_checks': checks,
++        'development_checks': checks, 'declared_diagnosis_executable_join': diagnosis,
+         'limitations': ['Inventory addition/omission is not evidence of file creation/deletion.',
+                        'Supplier AST parity excludes only the exact declared inventory rewrites.',
+                        'Other lineage/certificate behavior is covered by bound development receipts, not a blanket AST-equivalence claim.',

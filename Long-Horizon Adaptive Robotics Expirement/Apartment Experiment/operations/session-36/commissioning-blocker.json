@@ -1,0 +1,17 @@
+{
+  "commissioning_attempt": "APARTMENT-cup-commissioning001",
+  "failed_gate": "Exact final retained timestamp within 10 microseconds of planned duration",
+  "failures": [
+    {
+      "case": "recorded_long",
+      "target_seconds": 7200,
+      "last_retained_sample_seconds": 7199.963999857391,
+      "gap_seconds": 0.036000142608827446,
+      "samples": 180000,
+      "median_sample_dt": 0.039999999999054126
+    }
+  ],
+  "cause": "Diagnostic sampler stores rows on a 40 ms floating-point schedule and does not force final state retention; the 7200-second test stops with its last retained sample one nominal sample interval earlier. The independent audit rejects the incomplete endpoint sample, before source/environment/preservation gates.",
+  "qualification_retried": false,
+  "official_prepared_or_launched": false
+}

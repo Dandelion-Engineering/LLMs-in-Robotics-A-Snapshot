@@ -1,0 +1,31 @@
+{
+  "schema": "campaign002-runtime-producer-parity-1",
+  "old_archive": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-027\\code.zip",
+    "sha256": "b981ec5f9641f6133f0abd3a7188257a0f75b5971ba846bc142c20ab9d2ffe3d"
+  },
+  "old_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+  "old_runtime_sha256": "3aac168bc3aec1a63168b73eada2d9031d8f91c5b626896e8233ed33aafefec1",
+  "candidate": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\runtime.py",
+    "sha256": "fd90e3dff6268c848b2ee1f60ad3d7b077fea256145293ff199b51136b0fc243"
+  },
+  "changed_runtime_methods": [
+    "argv"
+  ],
+  "unchanged_methods": [
+    "__init__",
+    "_mirror_loop",
+    "_append_receipt",
+    "_observe_revocation",
+    "_broker_loop",
+    "redact",
+    "export",
+    "qualify",
+    "model",
+    "close"
+  ],
+  "mirror_and_serialization_unchanged": true,
+  "diff": "--- dev027 runtime\n+++ candidate runtime\n@@ -36,9 +36,9 @@\n     return module\n \n prior = load('session9_qualification', S9 / 'wsl/qualification.py')\n-bootstrap = load('session10_bootstrap', SESSION / 'orchestrator/bootstrap_client.py')\n+bootstrap = load('campaign002_bootstrap_v2', HERE / 'bootstrap_client_v2.py')\n captured_executor = load('campaign002_executor_capture', HERE / 'executor_capture.py')\n-from codehost_bridge import run as with_codehost\n+with_codehost = load('campaign002_codehost_bridge_v2', HERE / 'codehost_bridge_v2.py').run\n \n def write_json(path, value):\n     path = Path(path)\n@@ -282,7 +282,8 @@\n                 break\n \n     def argv(self,mode):\n-        return ['wsl.exe','-d',DISTRO,'--','python3','-B',prior.wsl_path(BOUNDARY/'linux_entry.py'),mode,\n+        entry = HERE / 'codehost_entry_v2.py' if mode == 'codehost' else BOUNDARY / 'linux_entry.py'\n+        return ['wsl.exe','-d',DISTRO,'--','python3','-B',prior.wsl_path(entry),mode,\n             '--workspace',self.workspace,'--socket',self.socket,'--codex',prior.LINUX_CODEX,'--codehost',prior.LINUX_CODEHOST]\n \n     def redact(self,value):\n",
+  "scope": "Static source parity; transport imports/argv routing changed. No runtime or scientific outcome inferred."
+}

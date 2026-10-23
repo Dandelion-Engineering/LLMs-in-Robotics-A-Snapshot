@@ -1,0 +1,52 @@
+{
+  "schema": "robot-codex-development-manifest-1.0",
+  "stage": "development-only",
+  "run_id": "RCI001-stock-reference-001",
+  "family": "misplaced-stock",
+  "mode": "reference",
+  "seed": 173,
+  "noise_seed": 13,
+  "sim_cap_s": 240,
+  "wall_cap_s": 420,
+  "storage_cap_bytes": 209715200,
+  "physics_dt_s": 0.002,
+  "clock_mode": "wall-paced; physics continues independently of agent",
+  "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+  "operator_only_fixture": {
+    "part_count": 1,
+    "placements": [
+      {
+        "part_id": "A1",
+        "zone": "quarantine"
+      }
+    ],
+    "order": {
+      "version": 1,
+      "closed": true,
+      "requirements": [
+        {
+          "family": "A",
+          "recipe": "A",
+          "count": 1,
+          "tray": "tray1",
+          "max_rework_cycles": 0
+        }
+      ]
+    },
+    "reference_actions": [
+      {
+        "operation": "transport",
+        "part_id": "A1",
+        "destination": "parking1"
+      }
+    ],
+    "missing_rule": "Frozen baseline excludes quarantine from raw-stock eligibility; no failed inspection is present.",
+    "baseline_source": "Runtime 004/candidates.py:739-756"
+  },
+  "limitations": [
+    "Development fixture; not sampled performance evidence",
+    "No collision safety certificate",
+    "Reference solution is protected operator evidence",
+    "Agent process restart only; supervisor restart is not implemented"
+  ]
+}

@@ -1,0 +1,301 @@
+{
+  "schema": "campaign002-native-build-feasibility-1",
+  "created_at": "2026-09-28T06:26:53.990940+00:00",
+  "scope": "Read-only bounded comparison. No installation, clone, package fetch, build, source patch, model launch, queue job, credential/config-file read or production change.",
+  "conclusion": "A minimal display-source patch cannot presently be built or tested with the discovered native Windows tools: Rust/Cargo and the native MSVC/SDK build environment were not found. This is a contingent environment-setup gap, not permanent impossibility. Do not pursue installation while the existing-native output-observability path is being evaluated.",
+  "original_run_scope": "Smoke008 remains failed; downloaded source explains a compatible display-transcript mechanism but does not attest installed binary source or prove actual model-visible bytes.",
+  "upstream_identity": {
+    "repository": "https://github.com/openai/codex",
+    "tag": "rust-v0.157.1",
+    "annotated_tag_object": "ac0e23e5232692b95268583c8278c50b8c436d2b",
+    "commit": "36650394c5b38c2990ccf2a3457165ca3e9d9726",
+    "workspace_version": "0.157.1",
+    "rust_toolchain": "1.95.0",
+    "edition": "2024",
+    "tag_correspondence_is_installed_binary_attestation": false
+  },
+  "requirements": [
+    {
+      "item": "Rust compiler, Cargo and rustup toolchain",
+      "required_or_supported_by_source": "Pinned codex-rs/rust-toolchain.toml lines1-3 requires Rust1.95.0 plus clippy/rustfmt/rust-src; workspace uses edition2024.",
+      "observed": "Not found on PATH; standard or explicitly configured .cargo/.rustup roots absent.",
+      "status": "not_available_in_checked_locations"
+    },
+    {
+      "item": "Native Windows C/C++ and MSVC SDK environment",
+      "required_or_supported_by_source": "Pinned Windows release workflow targets x86_64-pc-windows-msvc and invokes setup-msvc-env before Cargo. Cargo target config uses static CRT and a larger stack.",
+      "observed": "cl/link/clang-cl absent on PATH; standard VisualStudio, vswhere, Windows10 SDK Lib and C:/BuildTools locations absent.",
+      "status": "not_available_in_checked_locations"
+    },
+    {
+      "item": "Dependency source/cache",
+      "required_or_supported_by_source": "Workspace Cargo.lock contains1468 package entries:1297 registry and16 git-sourced entries. This is the full workspace, not a resolved minimal binary dependency count.",
+      "observed": "Cargo registry cache/src and git/db roots absent. No full source checkout or dependency fetch was attempted.",
+      "status": "offline_build_not_supported_by_observed_cache"
+    },
+    {
+      "item": "Native dependency build helpers",
+      "required_or_supported_by_source": "Workspace lock includes cc, cmake, aws-lc-sys and openssl-sys. Exact minimal target transitive requirements remain unresolved because no Cargo metadata/build ran.",
+      "observed": "cmake/ninja/clang absent on PATH and known CMake/LLVM paths absent.",
+      "status": "unavailable_if_required_by_selected_target"
+    },
+    {
+      "item": "Protocol compiler",
+      "required_or_supported_by_source": "code-mode-protocol/build.rs selects protoc_bin_vendored::protoc_bin_path, rather than requiring a standalone PATH protoc.",
+      "observed": "protoc absent on PATH; vendored dependency would still require fetching/compilation.",
+      "status": "standalone_protoc_not_established_as_blocker"
+    },
+    {
+      "item": "Build/test convenience tools",
+      "required_or_supported_by_source": "docs/install.md recommends just, dotslash and cargo-nextest; direct Cargo build/tests are distinct from these convenience helpers.",
+      "observed": "just/dotslash/cargo-nextest absent.",
+      "status": "missing_helpers_not_primary_blocker"
+    },
+    {
+      "item": "Existing utilities and capacity",
+      "required_or_supported_by_source": "Official build guide recommends Git and at least8GB RAM; this is not a measured build budget.",
+      "observed": "Git, Node and Python found. Windows11 x64;8physical cores/16logical threads; approximately31.67GiB visible RAM and current free capacity recorded separately.",
+      "status": "hardware_capacity_appears_adequate_without_build_measurement"
+    }
+  ],
+  "resources": {
+    "observed_at": "2026-09-28T06:24:49.5907356Z",
+    "cpu_cores": 8,
+    "logical_processors": 16,
+    "visible_memory_KiB": 33203628,
+    "free_memory_KiB": 16525876,
+    "C_free_bytes": 423401377792,
+    "C_free_GiB": 394.3232612609863,
+    "build_time_estimate": null,
+    "peak_build_storage_estimate": null,
+    "scope": "Momentary host metadata only. Native release workflow notes Windows builds can exceed an hour, but no local estimate, performance claim or workload reservation is made."
+  },
+  "build_binding_requirements_if_later_declared": [
+    "Pin the resolved upstream commit, exact source archive, Cargo.lock and all dependency revisions; retain hashes for every source and resulting binary. A version label alone is insufficient.",
+    "Retain the exact compiler/linker/SDK/tool versions, target triple, build flags, features, environment and build/test logs. Lock dependency resolution; any later build must explicitly account for dependencies unavailable in cache.",
+    "Keep the patch confined to display transcript correctness plus focused tests; prove instruction templates, model selection/reasoning/bootstrap, permissions, isolated executor/codehost routing, canaries and admission criteria unchanged.",
+    "Use a distinct local variant identity while retaining upstream0.157.1 provenance; do not present an unsigned custom binary as the original signed release. Requalification must bind the actual replacement executable and any paired helper binaries.",
+    "Target the same launcher form used in the campaign. codex-cli produces the codex executable and depends on codex-app-server; a standalone codex-app-server executable is a separate official target and is not automatically a drop-in invocation replacement.",
+    "Dependency build scripts execute code; a prospective build needs an explicit bounded build environment without run credentials, automatic model launches or weakened isolation. No privilege or signing-policy bypass is implied.",
+    "Meaningful tests would reproduce early output before display subscription, complete fallback with short nonempty transcript, full/equal transcript, output truncation and terminal ordering; then run isolated remote-route/no-model parity before complete fresh campaign qualification. A source-level unit test alone would not qualify the replacement."
+  ],
+  "license_and_packaging": {
+    "workspace_license": "Apache-2.0",
+    "retained_license": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-output-source-001\\LICENSE",
+    "retained_notice": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\NOTICE",
+    "notice_observation": "Upstream NOTICE retains OpenAI copyright and Ratatui-derived MIT attribution.",
+    "constraint": "Preserve applicable LICENSE/NOTICE and mark modifications in any packaged derivative; inspect transitive notices if redistribution is proposed. MSVC/SDK licensing and official signing provenance are separate inputs, not conferred by the repository license. No redistribution or legal compatibility determination is made here."
+  },
+  "alternatives": [
+    {
+      "option": "Continue existing-native raw output observability investigation",
+      "current_feasibility": "No new native build toolchain needed; parent is evaluating experimentalRawEvents and binding prepared tool outputs.",
+      "scope": "Must authenticate output to the exact tool call and code-mode result and preserve original byte forwarding. Availability of raw events does not yet prove a complete qualifying read; no criterion relaxation or historical pass."
+    },
+    {
+      "option": "Later source-bound native Windows display repair",
+      "current_feasibility": "Technically plausible from pinned source but requires substantial missing toolchain/dependency setup and new declared build/test/qualification evidence.",
+      "scope": "Comparison only; not implemented or authorized by this feasibility record."
+    },
+    {
+      "option": "Later trusted build environment/CI artifact",
+      "current_feasibility": "Could avoid installing on the campaign host, if explicitly declared with reproducible source/toolchain/artifact provenance.",
+      "scope": "No CI launch or third-party artifact trust is assumed; unsigned/signed identity and helper compatibility still need verification."
+    },
+    {
+      "option": "WSL/Linux build or newer prebuilt release",
+      "current_feasibility": "Not assessed as an equivalent replacement.",
+      "scope": "Linux executable changes the Windows app-server deployment; newer binary broadens source/version changes. Neither establishes the requested same-version one-fix Windows candidate."
+    }
+  ],
+  "search_limits": [
+    "Only named PATH commands and standard or explicitly configured tool/cache locations were checked; no broad disk scan. Nonstandard or remote tools may exist but are unverified.",
+    "No WSL compiler inspection, dependency resolution, source checkout or full target graph measurement was performed.",
+    "Official docs/install is generic and lists Windows viaWSL2; the pinned Windows release workflow is the stronger native-target evidence.",
+    "No machine capability claim exceeds current read-only observations. Existing local tools could change later."
+  ],
+  "actions_taken": {
+    "source_file_fetches_only": true,
+    "native_builds": 0,
+    "installs": 0,
+    "source_clones": 0,
+    "model_calls": 0,
+    "queue_jobs": 0
+  },
+  "inputs": [
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\.github__actions__setup-msvc-env__action.yml",
+      "sha256": "05cdb8c607174b9bb81f93657a96d8983642ea4c7d9d91881b8d403f738e2e75",
+      "bytes": 631
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\.github__workflows__rust-ci.yml",
+      "sha256": "9bb6d1e103e35932fa81c0187f0577e8e19b8e0d04d78614f7071e04813bd3fd",
+      "bytes": 11268
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\.github__workflows__rust-release-windows.yml",
+      "sha256": "0d06bd45febdbe79bc4b0b57a84efe3f2416db7beb8897f4556820ff15ed8703",
+      "bytes": 28066
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\.github__workflows__rust-release.yml",
+      "sha256": "bcf10d2aa174908d2ffdc7565ae935d889df2acd9f18fe413cc2fa028239f804",
+      "bytes": 81969
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__.cargo__config.toml",
+      "sha256": "b8ae1cea341beb2d4a3c8fb81f97a96f4aee1fd53f769c57f140dfe949806a80",
+      "bytes": 634
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__app-server__Cargo.toml",
+      "sha256": "fc4c938f1dbe246080f5bb0445eca8800d2d03fc62c33e7573869a72a8d5b87e",
+      "bytes": 5080
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__Cargo.lock",
+      "sha256": "72efa81ed947d07ed4fbb3e10b094715ff00626126d758aaed56733c97887e5f",
+      "bytes": 404795
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__Cargo.toml",
+      "sha256": "fc578c2b218effa6a5dc11c83ca7cde07ff90a50d7f6c0805160e270ecb2cf4b",
+      "bytes": 20312
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__cli__Cargo.toml",
+      "sha256": "965c5ac84e6be6019eb8b980ec3e5b8fd3d759343ab25260fdb9649de3d7ad42",
+      "bytes": 4474
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__code-mode-protocol__build.rs",
+      "sha256": "92171dbc25135066d8a17dbdab947566f56e44d8ff39629de67842fa01856658",
+      "bytes": 609
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__README.md",
+      "sha256": "5b059ff5ce6c2252ddaeb52d466ef41f331e0e3abcad6f7ce204314b92be9294",
+      "bytes": 84
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__rust-toolchain.toml",
+      "sha256": "570656042681cfd8795403a455baf9a33035331a07db0645e866bbcea89a3d64",
+      "bytes": 78
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\codex-rs__windows-sandbox-rs__Cargo.toml",
+      "sha256": "04455d3957b1f34ece5488c7be75c23b51cb589f5d38d247654554358c792eca",
+      "bytes": 2673
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\docs__contributing.md",
+      "sha256": "205b46a2a743aaec47ea46ef7787dfae72eaa9dee4529fba4c635109c8cada9a",
+      "bytes": 2622
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\docs__install.md",
+      "sha256": "1126ec733921878a40720e139ba7be88e325ecf9fa5b113de2cc636bc71a1f5a",
+      "bytes": 2732
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\local-path-observations.json",
+      "sha256": "69476057ea870a375115db3042440e2c419cb2cf100fa6a662e37e9f275ee3f4",
+      "bytes": 2059
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\machine-observations.json",
+      "sha256": "129a5e4906c9ecbf54097b8ee7d3305ee5ccb6933d621336e1bef5f427a47a6c",
+      "bytes": 2157
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\NOTICE",
+      "sha256": "9d71575ecfd9a843fc1677b0efb08053c6ba9fd686a0de1a6f5382fd3c220915",
+      "bytes": 242
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\source-receipt-002.json",
+      "sha256": "66fd28b47e058ed21c811b1590039cd24ea610d7110e76e51b305da2420ac167",
+      "bytes": 4331
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\source-receipt-003.json",
+      "sha256": "7bcf05e4cd448ae58f44589da893300d15e9fa2fa71851290fe5de764792a5e4",
+      "bytes": 728
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\source-receipt-004.json",
+      "sha256": "fafd8c6799b86214c1e81702cf4910ac4343360027384482456bd4a4e2ca9bcd",
+      "bytes": 724
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\source-receipt.json",
+      "sha256": "abed8240ad3ba0f4b2693fd4d987b072d944b0e29d99521afe362d294a062f5d",
+      "bytes": 6157
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\tag-object-receipt.json",
+      "sha256": "0a5cd67b5b7b71d9d120ae16001a743403c2c9f34b26cd09b423d5f4870ae25d",
+      "bytes": 461
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\tag-object.json",
+      "sha256": "1bfdac9ad74bdf25689f5636db2afed320aede781891c2938d44e6626ae481de",
+      "bytes": 655
+    },
+    {
+      "label": "Retained read-only requirement or environment evidence",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-build-feasibility\\tag-ref.json",
+      "sha256": "2af1fba1ea09da29ef17fb286dfd6719a8836af8c69b9789e9370aa6095e331a",
+      "bytes": 343
+    },
+    {
+      "label": "Existing source diagnosis",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-output-path-analysis.json",
+      "sha256": "812ce27cded096b95f8f830d8acff7872d470ec67619fd1b0b7586b6235de711",
+      "bytes": 7013
+    },
+    {
+      "label": "Existing source diagnosis narrative",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-output-path-analysis.md",
+      "sha256": "1b083681e3beb20565fffd052789f72239315e8139ca489a2470f77f874454ed",
+      "bytes": 3182
+    },
+    {
+      "label": "Pinned upstream Apache-2.0 license",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-output-source-001\\LICENSE",
+      "sha256": "d17f227e4df5da1600391338865ce0f3055211760a36688f816941d58232d8dc",
+      "bytes": 10926
+    },
+    {
+      "label": "Pinned completion-selection source",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-output-source-001\\codex-rs__core__src__unified_exec__async_watcher.rs",
+      "sha256": "f6c98e8a515f0cc5e5e714658a2eacf35f7365f5b08367553a7c0c152a909f25",
+      "bytes": 16035
+    }
+  ]
+}

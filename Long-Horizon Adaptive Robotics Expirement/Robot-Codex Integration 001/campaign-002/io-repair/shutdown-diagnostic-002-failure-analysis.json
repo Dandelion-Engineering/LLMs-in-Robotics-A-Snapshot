@@ -1,0 +1,128 @@
+{
+  "schema": "campaign002-shutdown-diagnostic002-failure-analysis-1",
+  "run_id": "RCI001-C02-shutdown-diagnostic-002",
+  "queue_job_id": "20260928T212544481369Z-1e380c95",
+  "framework_revision": "RCI001-C02-dev-062",
+  "scope": "Failed-queue infrastructure diagnosis only. No task, performance or timing assessment; no replay or new attempt. Smoke019 remains separate and its reset identity remains unknown.",
+  "official_authentication": {
+    "tool": "compute_queue.py status",
+    "freshly_authenticated_before_output_reads": true,
+    "state": "failed",
+    "exit_status": 1,
+    "exit_status_type": "integer",
+    "started_at": "2026-09-28T21:25:44.752356Z",
+    "ended_at": "2026-09-28T21:26:26.298879Z"
+  },
+  "first_failure": {
+    "parent_ledger_sequence": 69,
+    "wall_unix_s": 1790630783.547947,
+    "monotonic_s": 488263.0,
+    "reason": "channel_ValueError",
+    "parser_error": "HTTP/2 reset on unavailable stream",
+    "channel_id": 1,
+    "first_rejection": {
+      "schema": "campaign002-h2-reset-rejection-1",
+      "direction": "upload",
+      "frame_type": 3,
+      "flags": 0,
+      "stream_id": 27,
+      "payload_length": 4,
+      "error_code": 8,
+      "active_at_rejection": false,
+      "retiring": false,
+      "in_original_frontier": null,
+      "original_last_stream_id": null,
+      "last_stream_id": 33,
+      "observed_normal_close": true,
+      "observed_reset": false,
+      "normal_close_history_evicted": false
+    },
+    "active_stream_ids": [1, 3],
+    "normally_closed_streams": 15,
+    "accepted_reset_count": 0
+  },
+  "byte_evidence": {
+    "client_read": {"bytes": 81416, "sha256": "86f187e642cfe2022dec87bb837f24fb0f963ef878436abe9d982e14942b1a23"},
+    "parent_forwarded_upload": {"bytes": 81403, "sha256": "841e483d01f64666f86ffa27edce8477ae32e12def6cd9baf462f687d1db14d5"},
+    "namespace_upload_bytes": 81403,
+    "download_and_client_written": {"bytes": 47788, "sha256": "ab316c15486cf7a88a2a89f8eb99b48176bb7a1d112f831ea8fbee49213d3133"},
+    "rejected_unforwarded_upload_bytes": 13,
+    "exact_reset_read_hash_retained": false,
+    "identification_basis": "Source-bound structural metadata, not raw reset retention or digest reconstruction."
+  },
+  "original_disposition": {
+    "assessed": false,
+    "task_outcome": "unknown",
+    "model_started": true,
+    "stage_success": false,
+    "injected_interruption": false,
+    "resume_attempted": false,
+    "cleanup_clean": true,
+    "durable_retention_verified": true,
+    "bridge_qualified": false,
+    "bridge_exit_code": 1,
+    "bridge_failures": ["channel_ValueError", "retirement_frontier_invalid", "drain_invalid", "namespace_finished_unqualified", "namespace_wrapper_nonzero", "namespace_receipt_ValueError"],
+    "client_error": "Qualified execution transport failed; stopping invocation",
+    "sequence_error": "Interruption stage failed its gate; diagnostic ends without restart"
+  },
+  "cleanup": {
+    "start_client_line": 145,
+    "start_wall_unix_s": 1790630784.5621727,
+    "start_monotonic_s": 488264.015,
+    "handshake_complete_client_line": 154,
+    "handshake_qualified": true,
+    "finishing_marker_client_line": 155,
+    "finishing_marker_wall_unix_s": 1790630784.5691721,
+    "finishing_marker_monotonic_s": 488264.031,
+    "native_exit_code": 0,
+    "native_exit_monotonic_s": 488264.046,
+    "completed_monotonic_s": 488264.046,
+    "qualified": true,
+    "forced_job_close": false,
+    "failures": []
+  },
+  "interpretation": [
+    "The first failed RST gate checked active membership and retained stream27/CANCEL8 before raising the original unavailable-stream error. It did not accept or forward the frame.",
+    "The diagnostic normal-close tombstone is inserted only after both directional END_STREAM states and complete header continuation boundaries. Positive membership for27 with no eviction proves this passive witness previously completed that stream normally; it does not identify an application RPC.",
+    "The reset rejection precedes native cleanup by approximately1.014 seconds on parent wall observations. Existing parser error then prevents retirement qualification. Successful cleanup does not repair the failed transport.",
+    "A narrowly declared known-normal-closed CANCEL control path is supported for prospective investigation, retaining unknown-ID and active-reset rejection, exact byte forwarding, resource bounds and new-work/retirement restrictions. No repair is implemented or qualified by this analysis."
+  ],
+  "limits": [
+    "No application header, RPC, tool operation, or reason native sent the reset is identified.",
+    "No task, robot behavior, timing or successful qualification inference.",
+    "Smoke019 reset ID/code/state remain unknown; Diagnostic002 does not retrospectively identify them.",
+    "Namespace and Windows clock origins are not compared."
+  ],
+  "primary_protocol_reference": {
+    "url": "https://www.rfc-editor.org/rfc/rfc9113.html",
+    "sections": ["5.1", "6.4"],
+    "summary": "Closed-stream control races can occur; idle-stream resets remain prohibited. Actual metadata now proves this witness normally completed stream27."
+  },
+  "binding_base": "C:/Users/cresp/Documents/Dandelion Engineering/LLMs in Robotics",
+  "artifact_base": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/io-repair/RCI001-C02-shutdown-diagnostic-002/orchestrator",
+  "artifact_bindings": [
+    {"path": "sequence-result.json", "bytes": 12859, "sha256": "53584dac294e910a17a8b57fb6e4c5df9f2e38e6afa360327f69c24390b3b833"},
+    {"path": "interrupt/stage-result.json", "bytes": 11388, "sha256": "9ad4ef64480e9da244384e9dc49e83988b2859dc2ba327b2ec76aa9b8f04c8f2"},
+    {"path": "interrupt/codehost-transport-v3.jsonl", "bytes": 44958, "sha256": "20ead2f1c6e87b510aa0f3c50f4b985d5b0fb9ee6b6d77955225b131db908278"},
+    {"path": "interrupt/codehost-owner-bridge-v3.json", "bytes": 50782, "sha256": "1fd311dae626e5dadfe1e44f3275950c797594a5b0c086150cfdec985ed919f2"},
+    {"path": "interrupt/codehost-owner-stderr-v3.txt", "bytes": 26907, "sha256": "f130aa71cb85067d2438b6db06f1c193574f1993f65ed597f938ae562ae3f217"},
+    {"path": "interrupt/codehost-owner-retirement-v3.json", "bytes": 2689, "sha256": "95518045e00f9709c7c2011a61835471883e2101e825f62f55445cb44bde6d72"},
+    {"path": "interrupt/client/events.jsonl", "bytes": 177755, "sha256": "8de7ee467ea57083840da09763633df89eef4d54c6a62f8eb296a1662e4cff9b"},
+    {"path": "interrupt/client/result.json", "bytes": 8703, "sha256": "8748f39f7cec006fd0b16ce3e33e6a034857d4c3f22a9e47a4ac26394942fe5f"},
+    {"path": "interrupt/client/native-quiescence.json", "bytes": 6928, "sha256": "a63a533cf29f6576fa9cc3e3f17b65bcd344db1dfcc1fbb05308080371b965c7"}
+  ],
+  "input_bindings": [
+    {"path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/shutdown-diagnostic-002/manifest.json", "bytes": 37034, "sha256": "29527d98638a1400479cc8e5cd3fc72cee63af1f2757fe003e7ba5813bd73ec3"},
+    {"path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/shutdown-diagnostic-002/records/queue-submit.json", "bytes": 2127, "sha256": "b712c2d89e05afbb9d86061b6a56d6e77b162ab8dcfd4e80e7677b1e4395d50d"},
+    {"path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-062/snapshot.json", "bytes": 217681, "sha256": "75d2367555ca9e57b6587035b02eb46450057f49fe18299203f1fd934ec70320"},
+    {"path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-062/code.zip", "bytes": 3299374, "sha256": "f9b53b2fb088c737e252165dec4dbb5315af8cedc3e7600b9732eab5b539df96"}
+  ],
+  "source_archive_member_base": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness",
+  "frozen_sources_verified_byte_exact_to_archive_and_snapshot": [
+    {"name": "codehost_mux_protocol.py", "bytes": 20280, "sha256": "f3e80e370242254b03b748e4bcc4690242a8229f57aeac08900a723cf814b5c6"},
+    {"name": "codehost_bridge_v3.py", "bytes": 43362, "sha256": "5fb47c6cb083b510e5d7f7b965612c7426c132ea262f12ae44044a4448b4353b"},
+    {"name": "codehost_inside_v3.py", "bytes": 30797, "sha256": "44906afa4691cf52c7aa9f2e12dea7233827f6a2b75bb0960de6d80ff09123f2"},
+    {"name": "bootstrap_client_v4.py", "bytes": 23326, "sha256": "a08f0b820c5ce30c0a68bc8ea7fc19102b29834a6b9b0dd447157568060706ad"},
+    {"name": "native_quiescence.py", "bytes": 17208, "sha256": "6a43907863e50a62bb652a82ebce143ff86cd84cd1da86d510a3c86f5ca389bc"}
+  ]
+}

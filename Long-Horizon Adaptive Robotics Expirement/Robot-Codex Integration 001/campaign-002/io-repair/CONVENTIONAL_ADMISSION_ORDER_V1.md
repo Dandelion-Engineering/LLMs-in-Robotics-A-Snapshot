@@ -1,0 +1,17 @@
+# Prospective conventional admission ordering repair
+
+Declared after native008/dev033 failed and before implementation or another qualification attempt. Five native references succeeded; home-1 reached the simulation cap with B2 processed but uninspected. Its independent failure remains unchanged. No model participated in that suite.
+
+The retained home-1 timeline records inspection requested at simulation time 86.954 and rejected as resource_busy at 86.958. The supervisor processed the previous transport's terminal feedback at 86.964, although the native completion time was 86.932. A fresh public observation had already let the conventional controller resolve the visible transport effect. The continuous worker's idle snapshot therefore permitted another controller decision while the supervisor still had an outstanding command. The protected original rejection path did not deliver that rejection to the controller, whose inspection checkpoint remained pending with null feedback. This is a scheduling and admission integration defect; the evaluator correctly reports failure. Native007 with the same seeds retired the transport before inspection admission.
+
+## Bounded correction
+
+At the Campaign 002 host's conventional decision boundary, defer calling the original supervisor's conventional_step while supervisor.active_command is nonempty. Keep the existing owner, physical-busy, observation-age and decision-cadence checks. Continue draining and durably recording observations and native feedback; physics continues independently throughout. Once terminal feedback has retired the outstanding supervisor command, the next eligible conventional decision may proceed through the unchanged controller and command-admission rules.
+
+Do not change the original supervisor, baseline controller, recovery actions, evaluator, timeouts, observation age, physics, action semantics, reference recipes, model instructions, transport or timing thresholds. Do not synthesize feedback, replay the rejected inspection, resubmit a recovery, or add a retry. Do not redefine adapter.busy globally: model and lifecycle interfaces retain their current meaning. A missing terminal receipt continues to be an apparatus failure under existing deadlines rather than being hidden by clearing active_command.
+
+## Verification and fresh adoption
+
+Reproduce the worker-idle/supervisor-pending boundary deterministically using the original supervisor and a conventional decision stub: the old scheduling path advances the baseline and produces resource_busy. Under the new boundary, no controller decision or command is issued until real terminal feedback is processed; afterward the original next decision is admitted exactly once. Also check physical-busy, authority, cadence/freshness and missing-terminal behavior. Retain a bounded test receipt and exact source bindings. Synthetic tests establish this ordering property, not six-reference qualification or campaign performance.
+
+After implementation and tests settle, freeze a new source archive containing this method. Run fresh no-model host and transport diagnostics and the complete fresh qualification lineage: native references, isolated boundary/lifecycle, actual-model interruption/resume smoke and both pilots. Bind the original failure diagnosis, this method and the complete new lineage in certificate preparation. Preserve all prior archives and failed verdicts. Only then run the already authorized fixed twenty-slot campaign under its unchanged stop rules.

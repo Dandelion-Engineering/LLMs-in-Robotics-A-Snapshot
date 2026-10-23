@@ -1,0 +1,1163 @@
+--- before/qualification/prepare_native.py
++++ qualification/prepare_native.py
+@@ -25,10 +25,11 @@
+               'io-repair/READ_EVIDENCE_V3.md',
+               'io-repair/PREPARED_STARTUP_SEGMENTS_V1.md',
+               'io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md',
+-              'io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md')
++              'io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md',
++              'io-repair/PREPARED_INDEX_LABELS_V1.md')
+ 
+ def inventory():
+-    spec=importlib.util.spec_from_file_location('native_quiescence_inventory',HERE/'prepare_model_v18.py')
++    spec=importlib.util.spec_from_file_location('native_quiescence_inventory',HERE/'prepare_model_v19.py')
+     extra=importlib.util.module_from_spec(spec);spec.loader.exec_module(extra)
+     sources=(list((CAMPAIGN/'harness').glob('*.py'))
+              +list((CAMPAIGN/'assessment').glob('*.py'))
+@@ -36,7 +37,7 @@
+              +[HERE/'native_suite.py', HERE/'assess_native.py', Path(__file__),
+                HERE/'test_prepare_native.py']
+              +[CAMPAIGN/name for name in METHOD_FILES]
+-             +[REPO/name for name in extra.revocation_readback_inputs()])
++             +[REPO/name for name in extra.index_label_inputs()])
+     if any(not path.is_file() or path.is_symlink() for path in sources):
+         raise ValueError('Native inventory contains a missing or linked source')
+     return sorted(set(sources))
+--- before/qualification/test_prepare_native.py
++++ qualification/test_prepare_native.py
+@@ -14,7 +14,7 @@
+ 
+ import prepare_native as candidate
+ import prepare_boundary_v3 as boundary
+-import prepare_model_v18 as model
++import prepare_model_v19 as model
+ 
+ BASELINE_SOURCE_SHA256 = 'a5ac5185e5e53486899bd118bc1f63fe7578a5b65aeca1ab137848ab50f8e10c'
+ BASELINE_ARCHIVE = candidate.RCI.parent / 'Architecture Map/releases/RCI001-C02-dev-039/code.zip'
+@@ -41,7 +41,7 @@
+     'io-repair/native-shutdown-source-001/codex-rs__core__src__session__handlers.rs',
+     'io-repair/native-shutdown-source-001/source-evidence.json',
+     'io-repair/native-shutdown-source-001/analysis.md',
+-) + model.prior.prior.prior.CLEANUP_INPUTS + model.prior.prior.READ_EVIDENCE_INPUTS + model.prior.PREPARED_STARTUP_INPUTS + model.REVOCATION_READBACK_INPUTS
++) + model.prior.prior.prior.prior.CLEANUP_INPUTS + model.prior.prior.prior.READ_EVIDENCE_INPUTS + model.prior.prior.PREPARED_STARTUP_INPUTS + model.prior.REVOCATION_READBACK_INPUTS + model.INDEX_LABEL_INPUTS
+ QUIESCENCE_SCHEMA_INPUTS = tuple('isolation-session-9/native/app-server-schema/v2/' + name for name in (
+     'ThreadUnsubscribeParams.json', 'ThreadUnsubscribeResponse.json', 'ThreadClosedNotification.json',
+     'TurnInterruptParams.json', 'TurnInterruptResponse.json', 'TurnCompletedNotification.json'))
+@@ -80,7 +80,7 @@
+         # The new inventory supplier is loaded dynamically by the actual
+         # preparer. Copy both real modules so this fixture exercises that import
+         # and the real source enumeration, rather than mocking its output.
+-        for name in ('prepare_model_v18.py', 'prepare_model_v17.py', 'prepare_model_v16.py', 'prepare_model_v15.py', 'prepare_model_v14.py', 'prepare_model_v13.py', 'prepare_model_v12.py', 'prepare_model_v11.py'):
++        for name in ('prepare_model_v19.py', 'prepare_model_v18.py', 'prepare_model_v17.py', 'prepare_model_v16.py', 'prepare_model_v15.py', 'prepare_model_v14.py', 'prepare_model_v13.py', 'prepare_model_v12.py', 'prepare_model_v11.py'):
+             (self.here / name).write_bytes((candidate.HERE / name).read_bytes())
+         for name in QUIESCENCE_SCHEMA_INPUTS:
+             path = self.rci / name
+@@ -144,7 +144,7 @@
+                 raw = path.read_bytes(); path.unlink()
+                 output = self.here / 'missing.json'
+                 try:
+-                    with self.assertRaisesRegex(ValueError, 'missing or linked source|Missing or linked quiescence input|Missing or linked unload scheduling input|Missing or linked terminal control input|Missing or linked native cleanup input|Missing or linked (initial-read evidence|prepared-startup|revocation/readback) input'):
++                    with self.assertRaisesRegex(ValueError, 'missing or linked source|Missing or linked quiescence input|Missing or linked unload scheduling input|Missing or linked terminal control input|Missing or linked native cleanup input|Missing or linked (initial-read evidence|prepared-startup|revocation/readback|prepared-index-label) input'):
+                         self.run_preparer(candidate, output)
+                     self.assertFalse(output.exists())
+                 finally:
+@@ -154,7 +154,7 @@
+         selected = self.campaign / candidate.METHOD_FILES[-1]
+         original = Path.is_symlink
+         with patch.object(Path, 'is_symlink', lambda p: p == selected or original(p)):
+-            with self.assertRaisesRegex(ValueError, 'missing or linked source|Missing or linked quiescence input|Missing or linked unload scheduling input|Missing or linked terminal control input|Missing or linked native cleanup input|Missing or linked (initial-read evidence|prepared-startup|revocation/readback) input'):
++            with self.assertRaisesRegex(ValueError, 'missing or linked source|Missing or linked quiescence input|Missing or linked unload scheduling input|Missing or linked terminal control input|Missing or linked native cleanup input|Missing or linked (initial-read evidence|prepared-startup|revocation/readback|prepared-index-label) input'):
+                 candidate.inventory()
+ 
+     def test_existing_manifest_bytes_are_never_replaced(self):
+@@ -166,14 +166,14 @@
+ 
+ 
+ class ActualSourceClosureTests(unittest.TestCase):
+-    def test_v26_method_core_is_measured_and_frozen_by_every_stage_preparer(self):
+-        tree = ast.parse((candidate.HERE / 'run_final_qualification_v26.py').read_bytes())
++    def test_v27_method_core_is_measured_and_frozen_by_every_stage_preparer(self):
++        tree = ast.parse((candidate.HERE / 'run_final_qualification_v27.py').read_bytes())
+         methods = {candidate.CAMPAIGN / node.value.right.value for node in tree.body
+                    if isinstance(node, ast.Assign) and isinstance(node.value, ast.BinOp)
+                    and any(isinstance(t, ast.Name) and t.id.endswith('_METHOD')
+                            for t in node.targets)}
+         count = len(methods)
+-        self.assertIn(candidate.CAMPAIGN / 'io-repair/PREPARED_STARTUP_SEGMENTS_V1.md', methods)
++        self.assertIn(candidate.CAMPAIGN / 'io-repair/PREPARED_INDEX_LABELS_V1.md', methods)
+         methods.add(candidate.CAMPAIGN / 'io-repair/CODEHOST_CHANNEL_TRANSPORT_V3.md')
+         self.assertEqual(methods, {candidate.CAMPAIGN / name for name in candidate.METHOD_FILES})
+         self.assertEqual(len(methods), count + 1)
+--- before/qualification/host_probe.py
++++ qualification/host_probe.py
+@@ -42,9 +42,9 @@
+                + list((RCI / 'readiness-session-10/assessment').glob('*.py'))
+                + [Path(__file__), HERE / 'assess_host_probe.py'])
+     if args.purpose == 'continuous-physics-during-durable-io':
+-        spec = importlib.util.spec_from_file_location('host_quiescence_inventory', HERE / 'prepare_model_v18.py')
++        spec = importlib.util.spec_from_file_location('host_quiescence_inventory', HERE / 'prepare_model_v19.py')
+         extra = importlib.util.module_from_spec(spec); spec.loader.exec_module(extra)
+-        sources.extend(REPO / name for name in extra.revocation_readback_inputs())
++        sources.extend(REPO / name for name in extra.index_label_inputs())
+         sources.append(CAMPAIGN / 'io-repair/DESIGN.md')
+         sources.append(CAMPAIGN / 'io-repair/READ_EVIDENCE_V2.md')
+         sources.append(CAMPAIGN / 'io-repair/TRANSPORT_EVIDENCE_V2.md')
+--- before/qualification/boundary_suite_v3.py
++++ qualification/boundary_suite_v3.py
+@@ -107,7 +107,7 @@
+ 
+ 
+ def sources():
+-    spec=importlib.util.spec_from_file_location('boundary_quiescence_inventory',Path(__file__).with_name('prepare_model_v18.py'))
++    spec=importlib.util.spec_from_file_location('boundary_quiescence_inventory',Path(__file__).with_name('prepare_model_v19.py'))
+     extra=importlib.util.module_from_spec(spec);spec.loader.exec_module(extra)
+     roots=[HARNESS,INTEGRATION/'host',INTEGRATION/'readiness-session-10/boundary',
+            INTEGRATION/'readiness-session-10/orchestrator',INTEGRATION/'isolation-session-9/wsl',
+@@ -121,7 +121,7 @@
+            CAMPAIGN/'io-repair/CHANNEL_FINISH_FRONTIER_VALIDATION_V1.md',
+            CAMPAIGN/'io-repair/CHANNEL_PROBE_SEQUENCE_SYNCHRONIZATION_V1.md',
+            CAMPAIGN/'io-repair/CHANNEL_OWNER_DRAIN_V1.md'}
+-    paths.update(REPO/name for name in extra.revocation_readback_inputs())
++    paths.update(REPO/name for name in extra.index_label_inputs())
+     for root in roots:
+         paths.update(p for p in root.rglob('*') if p.is_file() and p.suffix in ('.py','.md'))
+     paths.add(REPO/'Robot Agent Filesystem v0.1/workspace/RobotAgentPrompt.md')
+--- before/harness/raw_event_preflight_v2.py
++++ harness/raw_event_preflight_v2.py
+@@ -80,9 +80,9 @@
+         'codex-rs__app-server__src__bespoke_event_handling.rs',
+         'codex-rs__app-server__src__request_processors__thread_lifecycle.rs',
+         'codex-rs__core__src__session__session.rs')]
+-    spec = importlib.util.spec_from_file_location('raw_quiescence_inventory', CAMPAIGN / 'qualification/prepare_model_v18.py')
++    spec = importlib.util.spec_from_file_location('raw_quiescence_inventory', CAMPAIGN / 'qualification/prepare_model_v19.py')
+     extra = importlib.util.module_from_spec(spec); spec.loader.exec_module(extra)
+-    return sorted({path.relative_to(REPO).as_posix() for path in paths} | set(extra.revocation_readback_inputs()))
++    return sorted({path.relative_to(REPO).as_posix() for path in paths} | set(extra.index_label_inputs()))
+ 
+ 
+ def validate_snapshot(snapshot, revision=None):
+--- before/admission/prepare_certificate.py
++++ admission/prepare_certificate.py
+@@ -60,12 +60,12 @@
+         'admission_verifier': CAMPAIGN / 'admission.py', 'operator': CAMPAIGN / 'operate.py',
+         'registry': CAMPAIGN / 'registry.py', 'settlement': CAMPAIGN / 'settle.py',
+         'campaign_coordinator': CAMPAIGN / 'run_campaign.py',
+-        'qualification_coordinator': CAMPAIGN / 'qualification/run_final_qualification_v26.py',
++        'qualification_coordinator': CAMPAIGN / 'qualification/run_final_qualification_v27.py',
+         'boundary_inventory_preparer': CAMPAIGN / 'qualification/prepare_boundary_v3.py',
+         'continuous_physics_method': CAMPAIGN / 'io-repair/DESIGN.md',
+-        'qualification_readiness': CAMPAIGN / 'qualification/final-qualification-026-readiness.json',
+-        'qualification_preflight': CAMPAIGN / 'qualification/final-qualification-026/preflight.json',
+-        'qualification_completion': CAMPAIGN / 'qualification/final-qualification-026/completed.json',
++        'qualification_readiness': CAMPAIGN / 'qualification/final-qualification-027-readiness.json',
++        'qualification_preflight': CAMPAIGN / 'qualification/final-qualification-027/preflight.json',
++        'qualification_completion': CAMPAIGN / 'qualification/final-qualification-027/completed.json',
+         'storage_policy': HERE / 'storage-policy.json',
+         'storage_monitor': RCI / 'campaign-001/admission/storage-guard/storage_guard.py',
+         'storage_baseline': HERE / 'storage-baseline-001.json',
+@@ -120,6 +120,9 @@
+         'prepared_startup_segments_method': CAMPAIGN / 'io-repair/PREPARED_STARTUP_SEGMENTS_V1.md',
+         'epoch_revocation_index_shorthand_method': CAMPAIGN / 'io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md',
+         'canary_readback_exclusivity_method': CAMPAIGN / 'io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md',
++        'prepared_index_labels_method': CAMPAIGN / 'io-repair/PREPARED_INDEX_LABELS_V1.md',
++        'smoke024_read_diagnosis': CAMPAIGN / 'io-repair/smoke-024-read-diagnosis-001/analysis.json',
++        'smoke024_read_diagnosis_report': CAMPAIGN / 'io-repair/smoke-024-read-diagnosis-001/analysis.md',
+         'smoke023_read_proof_diagnosis': CAMPAIGN / 'io-repair/smoke-023-read-proof-diagnosis.json',
+         'smoke023_read_proof_diagnosis_report': CAMPAIGN / 'io-repair/smoke-023-read-proof-diagnosis.md',
+         'smoke023_transport_diagnosis': CAMPAIGN / 'io-repair/smoke-023-transport-diagnosis.json',
+--- before/admission/test_prepare_admission.py
++++ admission/test_prepare_admission.py
+@@ -12,7 +12,7 @@
+ import prepare_index
+ 
+ REAL_VERIFIER = certificate.load_verifier()
+-with certificate.qualification_validator(certificate.CAMPAIGN / 'qualification/run_final_qualification_v26.py') as module:
++with certificate.qualification_validator(certificate.CAMPAIGN / 'qualification/run_final_qualification_v27.py') as module:
+     REAL_COORDINATOR = module
+ REAL_TRANSPORT_PROBE = REAL_COORDINATOR.verify_transport_probe
+ REAL_RAW_PREFLIGHT = REAL_COORDINATOR.verify_raw_preflight
+@@ -107,9 +107,9 @@
+         self.prepare(candidate_only=True)
+         value=json.loads(self.candidate.read_bytes())
+         for key,relative in (
+-            ('qualification_coordinator','qualification/run_final_qualification_v26.py'),
+-            ('qualification_readiness','qualification/final-qualification-026-readiness.json'),
+-            ('qualification_completion','qualification/final-qualification-026/completed.json'),
++            ('qualification_coordinator','qualification/run_final_qualification_v27.py'),
++            ('qualification_readiness','qualification/final-qualification-027-readiness.json'),
++            ('qualification_completion','qualification/final-qualification-027/completed.json'),
+             ('channel_startup_repair_method','io-repair/CHANNEL_TRANSPORT_STARTUP_REPAIR_V1.md'),
+             ('channel_startup_failure_diagnosis','io-repair/raw-preflight-002-failure-analysis.json'),
+             ('channel_probe_process_identity_method','io-repair/CHANNEL_PROBE_PROCESS_IDENTITY_V1.md'),
+@@ -133,6 +133,9 @@
+             ('prepared_startup_segments_method','io-repair/PREPARED_STARTUP_SEGMENTS_V1.md'),
+             ('epoch_revocation_index_shorthand_method','io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md'),
+             ('canary_readback_exclusivity_method','io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md'),
++            ('prepared_index_labels_method','io-repair/PREPARED_INDEX_LABELS_V1.md'),
++            ('smoke024_read_diagnosis','io-repair/smoke-024-read-diagnosis-001/analysis.json'),
++            ('smoke024_read_diagnosis_report','io-repair/smoke-024-read-diagnosis-001/analysis.md'),
+             ('smoke023_read_proof_diagnosis','io-repair/smoke-023-read-proof-diagnosis.json'),
+             ('smoke023_read_proof_diagnosis_report','io-repair/smoke-023-read-proof-diagnosis.md'),
+             ('smoke023_transport_diagnosis','io-repair/smoke-023-transport-diagnosis.json'),
+@@ -153,7 +156,10 @@
+                 self.assertEqual(value['artifacts'][key],certificate.identity(self.campaign/relative))
+ 
+     def test_missing_repair_declaration_or_failed_diagnosis_prevents_candidate(self):
+-        for relative in ('io-repair/PREPARED_STARTUP_SEGMENTS_V1.md',
++        for relative in ('io-repair/PREPARED_INDEX_LABELS_V1.md',
++                         'io-repair/smoke-024-read-diagnosis-001/analysis.json',
++                         'io-repair/smoke-024-read-diagnosis-001/analysis.md',
++                         'io-repair/PREPARED_STARTUP_SEGMENTS_V1.md',
+                          'io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md',
+                          'io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md',
+                          'io-repair/smoke-023-read-proof-diagnosis.json',
+@@ -279,15 +285,15 @@
+     def setUp(self):
+         super().setUp()
+         self.qualification = self.campaign / 'qualification'
+-        self.ledger = self.qualification / 'final-qualification-026'
++        self.ledger = self.qualification / 'final-qualification-027'
+         self.map = self.root / 'map'
+         self.raw = self.root / 'raw'
+-        self.snapshot = self.map / 'releases/RCI001-C02-dev-082/snapshot.json'
+-        self.anchor = self.map / 'releases/RCI001-C02-dev-079/snapshot.json'
+-        self.write(self.snapshot, {'revision': 'RCI001-C02-dev-082', 'sources': {}})
++        self.snapshot = self.map / 'releases/RCI001-C02-dev-086/snapshot.json'
++        self.anchor = self.map / 'releases/RCI001-C02-dev-083/snapshot.json'
++        self.write(self.snapshot, {'revision': 'RCI001-C02-dev-086', 'sources': {}})
+         self.write(self.snapshot.with_name('code.zip'), {'synthetic': True})
+-        self.write(self.anchor, {'revision': 'RCI001-C02-dev-079', 'sources': {}})
+-        plan = json.loads(self.plan.read_bytes()); plan['framework_revision'] = 'RCI001-C02-dev-082'
++        self.write(self.anchor, {'revision': 'RCI001-C02-dev-083', 'sources': {}})
++        plan = json.loads(self.plan.read_bytes()); plan['framework_revision'] = 'RCI001-C02-dev-086'
+         self.write(self.plan, plan)
+         for name, value in (('HERE', self.qualification), ('CAMPAIGN', self.campaign), ('RCI', self.root),
+                             ('REPO', self.root), ('LEDGER', self.ledger), ('MAP', self.map), ('RAW', self.raw),
+@@ -304,14 +310,14 @@
+         self.raw_check = context.start(); self.addCleanup(context.stop)
+         self.stages = [list(row[:2]) + [revision, row[2]] for row, revision in zip(
+             REAL_COORDINATOR.STAGE_IDENTITIES,
+-            ['RCI001-C02-dev-080', 'RCI001-C02-dev-081'] + ['RCI001-C02-dev-082'] * 3)]
++            ['RCI001-C02-dev-084', 'RCI001-C02-dev-085'] + ['RCI001-C02-dev-086'] * 3)]
+         self.paths = certificate.artifact_paths(self.snapshot, self.index, self.schedule)
+         self.readiness = {'schema': REAL_COORDINATOR.READINESS_SCHEMA, 'ledger_directory': str(self.ledger),
+             'source_snapshot': certificate.identity(self.anchor), 'stages': self.stages,
+-            'diagnostic': {'run_id': 'RCI001-C02-host-probe-026', 'job_id': 'host-job'},
++            'diagnostic': {'run_id': 'RCI001-C02-host-probe-027', 'job_id': 'host-job'},
+             'repair_test_receipt': {'path': 'synthetic-repair-receipt', 'sha256': '1' * 64},
+-            'transport_diagnostic': {'run_id': 'RCI001-C02-transport-probe-019', 'job_id': 'transport-job'},
+-            'raw_event_preflight': {'run_id': 'RCI001-C02-raw-preflight-016', 'job_id': 'raw-job'}}
++            'transport_diagnostic': {'run_id': 'RCI001-C02-transport-probe-020', 'job_id': 'transport-job'},
++            'raw_event_preflight': {'run_id': 'RCI001-C02-raw-preflight-017', 'job_id': 'raw-job'}}
+         self.write(self.paths['qualification_readiness'], self.readiness)
+         self.preflight = {'schema': 'campaign002-final-qualification-preflight-1',
+             'coordinator': certificate.identity(self.paths['qualification_coordinator']),
+@@ -346,7 +352,7 @@
+ 
+     def persist_entries(self):
+         self.write(self.paths['qualification_completion'], self.completed)
+-        self.index_value = {'schema': 'campaign002-qualification-index-1', 'source_revision': 'RCI001-C02-dev-082',
++        self.index_value = {'schema': 'campaign002-qualification-index-1', 'source_revision': 'RCI001-C02-dev-086',
+             'final_source_snapshot': certificate.identity(self.snapshot),
+             **{key: self.completed[key] for key in ('native', 'boundary', 'smoke', 'pilots')}}
+         self.write(self.index, self.index_value)
+@@ -427,7 +433,7 @@
+ 
+     def test_pilot_order_cannot_be_changed_even_in_both_records(self):
+         self.completed['pilots'].reverse(); self.persist_entries()
+-        self.assert_before_mutation('stage path differs: pilot-stock-023')
++        self.assert_before_mutation('stage path differs: pilot-stock-024')
+ 
+     def test_incomplete_completed_pilot_pair_is_rejected(self):
+         self.completed['pilots'].pop(); self.persist_entries()
+@@ -439,7 +445,7 @@
+                 original = self.entries[0][key]['path']
+                 self.entries[0][key]['path'] = str(self.root / 'substitute' / Path(original).name)
+                 self.persist_entries()
+-                self.assert_before_mutation('stage path differs: native-025/' + key)
++                self.assert_before_mutation('stage path differs: native-026/' + key)
+                 self.entries[0][key]['path'] = original
+ 
+     def test_stale_stage_names_and_seed_cannot_be_redeclared(self):
+@@ -491,23 +497,23 @@
+         self.raw_check.assert_not_called()
+ 
+     def test_mismatched_preflight_raw_binding_is_rejected_before_mutation(self):
+-        self.preflight['raw_event_preflight'] = {'run_id': 'RCI001-C02-raw-preflight-016', 'job_id': 'other-job'}
++        self.preflight['raw_event_preflight'] = {'run_id': 'RCI001-C02-raw-preflight-017', 'job_id': 'other-job'}
+         self.write(self.paths['qualification_preflight'], self.preflight)
+         self.assert_before_mutation('declared readiness: raw_event_preflight')
+         self.raw_check.assert_not_called()
+ 
+     def install_real_raw_preflight(self):
+-        output = self.campaign / 'io-repair/raw-preflight-016/evidence'
++        output = self.campaign / 'io-repair/raw-preflight-017/evidence'
+         record = self.readiness['raw_event_preflight']
+         queue_path = self.root / 'raw-queue.json'
+         script = self.campaign / 'harness/raw_event_preflight_v2.py'
+         job = {'id': record['job_id'], 'state': 'succeeded', 'exit_status': 0,
+             'argv': REAL_COORDINATOR.python(script, '--run-id', record['run_id'],
+-                '--framework-revision', 'RCI001-C02-dev-079', '--snapshot', self.anchor, '--output', output),
++                '--framework-revision', 'RCI001-C02-dev-083', '--snapshot', self.anchor, '--output', output),
+             'cwd': str(self.root), 'resolved_executable': str(REAL_COORDINATOR.PYTHON)}
+         self.write(queue_path, job)
+         result = {'schema': 'campaign002-raw-event-preflight-2', 'run_id': record['run_id'],
+-            'framework_revision': 'RCI001-C02-dev-079', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
++            'framework_revision': 'RCI001-C02-dev-083', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
+             'passed': True, 'model_calls': 0, 'physical_simulation': False}
+         self.write(output / 'result.json', result)
+         record.update(queue=certificate.identity(queue_path), result=certificate.identity(output / 'result.json'))
+@@ -580,16 +586,16 @@
+                 result[key] = original
+ 
+     def install_real_probe(self):
+-        output = self.campaign / 'io-repair/transport-probe-019/evidence'
++        output = self.campaign / 'io-repair/transport-probe-020/evidence'
+         record = self.readiness['transport_diagnostic']
+         queue_path = self.root / 'transport-queue.json'
+         job = {'id': record['job_id'], 'state': 'succeeded', 'exit_status': 0,
+             'argv': REAL_COORDINATOR.python(self.campaign / 'harness/codehost_transport_probe_v3.py', '--run-id', record['run_id'],
+-                '--framework-revision', 'RCI001-C02-dev-079', '--snapshot', self.anchor, '--output', output),
++                '--framework-revision', 'RCI001-C02-dev-083', '--snapshot', self.anchor, '--output', output),
+             'cwd': str(self.root), 'resolved_executable': str(REAL_COORDINATOR.PYTHON)}
+         self.write(queue_path, job)
+         result = {'schema': 'campaign002-codehost-channel-probe-3', 'run_id': record['run_id'],
+-            'framework_revision': 'RCI001-C02-dev-079', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
++            'framework_revision': 'RCI001-C02-dev-083', 'snapshot_sha256': certificate.identity(self.anchor)['sha256'],
+             'passed': True, 'model_calls': 0, 'physical_simulation': False,
+             'cases': [{'case': kind, 'evidence': str(output / kind), 'transport_integrity': {'passed': True}}
+                       for kind in ('multi_channel', 'foreign_owner', 'in_flight_eof')]}
+@@ -637,7 +643,7 @@
+ class ValidatorImportTests(unittest.TestCase):
+     def test_coordinator_import_restores_sys_path_on_success_and_error(self):
+         original = sys.path[:]
+-        path = certificate.CAMPAIGN / 'qualification/run_final_qualification_v26.py'
++        path = certificate.CAMPAIGN / 'qualification/run_final_qualification_v27.py'
+         with certificate.qualification_validator(path) as coordinator:
+             self.assertTrue(callable(coordinator.load_readiness))
+             self.assertTrue(callable(coordinator.assert_sources))
+--- before/qualification/prepare_model_v18.py
++++ qualification/prepare_model_v19.py
+@@ -1,4 +1,4 @@
+-"""Preserve model policy; bind epoch revocation and canary readback evidence."""
++"""Preserve model policy; bind literal prepared-result index labels."""
+ import argparse
+ import importlib.util
+ import json
+@@ -8,35 +8,47 @@
+ CAMPAIGN = HERE.parent
+ RCI = CAMPAIGN.parent
+ REPO = RCI.parents[1]
+-spec = importlib.util.spec_from_file_location('model_inventory_v17', HERE / 'prepare_model_v17.py')
++spec = importlib.util.spec_from_file_location('model_inventory_v18', HERE / 'prepare_model_v18.py')
+ prior = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(prior)
+ 
+-REVOCATION_READBACK_INPUTS = (
+-    'qualification/prepare_model_v18.py',
+-    'qualification/test_prepare_model_v18.py',
+-    'io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md',
+-    'io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md',
+-    'io-repair/smoke-023-read-proof-diagnosis.json',
+-    'io-repair/smoke-023-read-proof-diagnosis.md',
+-    'io-repair/smoke-023-transport-diagnosis.json',
+-    'io-repair/smoke-023-transport-diagnosis.md',
+-    'io-repair/smoke-023-canary-diagnosis.json',
+-    'assessment/canary_readback_proof.py',
+-    'assessment/test_canary_readback_proof.py',
++INDEX_LABEL_INPUTS = (
++    'qualification/prepare_model_v19.py',
++    'qualification/test_prepare_model_v19.py',
++    'io-repair/PREPARED_INDEX_LABELS_V1.md',
++    'io-repair/smoke-024-read-diagnosis-001/analysis.json',
++    'io-repair/smoke-024-read-diagnosis-001/analysis.md',
++    'io-repair/smoke-024-read-diagnosis-001/authentication.json',
++    'io-repair/smoke-024-read-diagnosis-001/diagnose.py',
++    'io-repair/smoke-024-read-diagnosis-001/execution-001/diagnose-failed.py',
++    'io-repair/smoke-024-read-diagnosis-001/execution-001/intent.json',
++    'io-repair/smoke-024-read-diagnosis-001/execution-001/receipt.json',
++    'io-repair/smoke-024-read-diagnosis-001/execution-001/stderr.txt',
++    'io-repair/smoke-024-read-diagnosis-001/execution-001/stdout.txt',
++    'io-repair/smoke-024-read-diagnosis-001/execution-002/intent.json',
++    'io-repair/smoke-024-read-diagnosis-001/execution-002/receipt.json',
++    'io-repair/smoke-024-read-diagnosis-001/execution-002/stderr.txt',
++    'io-repair/smoke-024-read-diagnosis-001/execution-002/stdout.txt',
++    'io-repair/smoke-024-read-diagnosis-001/official-status.json',
++    'io-repair/smoke-024-read-diagnosis-001/official-status.stderr',
++    'io-repair/smoke-024-read-diagnosis-001/official-status.stdout',
++    'assessment/prepared_result_segments.py',
++    'assessment/test_prepared_result_segments.py',
++    'assessment/prepared_startup_segments.py',
++    'assessment/test_prepared_startup_segments.py',
+ )
+ 
+ 
+-def revocation_readback_inputs():
+-    sources = [CAMPAIGN / name for name in REVOCATION_READBACK_INPUTS]
++def index_label_inputs():
++    sources = [CAMPAIGN / name for name in INDEX_LABEL_INPUTS]
+     for path in sources:
+         if not path.is_file() or path.is_symlink():
+-            raise ValueError('Missing or linked revocation/readback input: ' + str(path))
+-    return sorted(set(prior.prepared_startup_inputs()) | {p.relative_to(REPO).as_posix() for p in sources})
++            raise ValueError('Missing or linked prepared-index-label input: ' + str(path))
++    return sorted(set(prior.revocation_readback_inputs()) | {p.relative_to(REPO).as_posix() for p in sources})
+ 
+ 
+ def runtime_inputs():
+-    return sorted(set(prior.runtime_inputs()) | set(revocation_readback_inputs()))
++    return sorted(set(prior.runtime_inputs()) | set(index_label_inputs()))
+ 
+ 
+ def prepare(kind, revision, run_id, seed, output):
+--- before/qualification/test_prepare_model_v18.py
++++ qualification/test_prepare_model_v19.py
+@@ -16,71 +16,71 @@
+     return module
+ 
+ 
+-V18 = load('quiescence_model_v18_test', HERE / 'prepare_model_v18.py')
++V19 = load('quiescence_model_v19_test', HERE / 'prepare_model_v19.py')
+ 
+ 
+ class InventoryTests(unittest.TestCase):
+-    def test_all_model_policies_equal_v17_except_additive_inventory(self):
++    def test_all_model_policies_equal_v18_except_additive_inventory(self):
+         with tempfile.TemporaryDirectory(prefix='rci-quiescence-policy-') as folder:
+             root = Path(folder).resolve()
+             for kind in ('smoke', 'stock', 'home'):
+-                old = V18.prior.prepare(kind, 'RCI001-test', 'fixture-' + kind, 24101, root / (kind + '-old.json'))
+-                new = V18.prepare(kind, 'RCI001-test', 'fixture-' + kind, 24101, root / (kind + '-new.json'))
++                old = V19.prior.prepare(kind, 'RCI001-test', 'fixture-' + kind, 24101, root / (kind + '-old.json'))
++                new = V19.prepare(kind, 'RCI001-test', 'fixture-' + kind, 24101, root / (kind + '-new.json'))
+                 before, after = old.pop('runtime_input_files'), new.pop('runtime_input_files')
+                 self.assertEqual(old, new)
+                 self.assertTrue(set(before) <= set(after))
+-                self.assertTrue(set(V18.revocation_readback_inputs()) <= set(after))
++                self.assertTrue(set(V19.index_label_inputs()) <= set(after))
+ 
+     def test_constructor_refuses_overwrite_and_restores_prior_supplier(self):
+-        original = V18.prior.runtime_inputs
++        original = V19.prior.runtime_inputs
+         with tempfile.TemporaryDirectory(prefix='rci-quiescence-exclusive-') as folder:
+             path = Path(folder).resolve() / 'manifest.json'; path.write_text('retained', encoding='utf-8')
+             with self.assertRaises(FileExistsError):
+-                V18.prepare('smoke', 'test', 'fixture', 24101, path)
++                V19.prepare('smoke', 'test', 'fixture', 24101, path)
+             self.assertEqual(path.read_text(encoding='utf-8'), 'retained')
+-            self.assertIs(V18.prior.runtime_inputs, original)
++            self.assertIs(V19.prior.runtime_inputs, original)
+ 
+-    def test_revocation_readback_inputs_and_prior_lifecycle_contract_are_required(self):
+-        names = V18.revocation_readback_inputs()
+-        for name in ('EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md', 'CANARY_READBACK_EXCLUSIVITY_V1.md', 'smoke-023-read-proof-diagnosis.json', 'smoke-023-canary-diagnosis.json', 'smoke-023-transport-diagnosis.json'):
+-            self.assertIn((V18.CAMPAIGN / 'io-repair' / name).relative_to(V18.REPO).as_posix(), names)
+-        self.assertIn((V18.CAMPAIGN / 'io-repair/NATIVE_THREAD_QUIESCENCE_V1.md').relative_to(V18.REPO).as_posix(), names)
+-        self.assertIn((V18.CAMPAIGN / 'io-repair/NATIVE_THREAD_UNLOAD_SCHEDULING_V1.md').relative_to(V18.REPO).as_posix(), names)
++    def test_index_label_inputs_and_prior_lifecycle_contract_are_required(self):
++        names = V19.index_label_inputs()
++        for name in ('PREPARED_INDEX_LABELS_V1.md', 'EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md', 'CANARY_READBACK_EXCLUSIVITY_V1.md', 'smoke-023-read-proof-diagnosis.json', 'smoke-023-canary-diagnosis.json', 'smoke-023-transport-diagnosis.json'):
++            self.assertIn((V19.CAMPAIGN / 'io-repair' / name).relative_to(V19.REPO).as_posix(), names)
++        self.assertIn((V19.CAMPAIGN / 'io-repair/NATIVE_THREAD_QUIESCENCE_V1.md').relative_to(V19.REPO).as_posix(), names)
++        self.assertIn((V19.CAMPAIGN / 'io-repair/NATIVE_THREAD_UNLOAD_SCHEDULING_V1.md').relative_to(V19.REPO).as_posix(), names)
+         self.assertEqual(6, sum('/app-server-schema/v2/' in name for name in names))
+         self.assertEqual(2, sum('/native-shutdown-source-001/' in name and name.endswith('.rs') for name in names))
+         self.assertEqual(names, sorted(set(names)))
+ 
+     def test_missing_method_or_schema_is_rejected(self):
+         original = Path.is_file
+-        for name in ('canary_readback_proof.py', 'test_canary_readback_proof.py', 'EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md', 'CANARY_READBACK_EXCLUSIVITY_V1.md', 'prepared_result_segments.py', 'prepared_startup_segments.py', 'test_prepared_result_segments.py', 'PREPARED_STARTUP_SEGMENTS_V1.md', 'smoke-022-read-proof-diagnosis.json', 'smoke-022-read-proof-diagnosis.md', 'source-evidence-003.json', 'native_cleanup_protocol.py', 'ThreadClosedNotification.json'):
++        for name in ('PREPARED_INDEX_LABELS_V1.md', 'analysis.md', 'canary_readback_proof.py', 'test_canary_readback_proof.py', 'EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md', 'CANARY_READBACK_EXCLUSIVITY_V1.md', 'prepared_result_segments.py', 'prepared_startup_segments.py', 'test_prepared_result_segments.py', 'PREPARED_STARTUP_SEGMENTS_V1.md', 'smoke-022-read-proof-diagnosis.json', 'smoke-022-read-proof-diagnosis.md', 'source-evidence-003.json', 'native_cleanup_protocol.py', 'ThreadClosedNotification.json'):
+             with self.subTest(name=name), patch.object(Path, 'is_file', lambda path: False if path.name == name else original(path)):
+                 with self.assertRaises(ValueError):
+-                    V18.revocation_readback_inputs()
++                    V19.index_label_inputs()
+ 
+     def test_each_new_input_is_bound_and_symlink_is_rejected(self):
+-        names = set(V18.revocation_readback_inputs())
+-        for relative in V18.REVOCATION_READBACK_INPUTS:
+-            self.assertIn((V18.CAMPAIGN / relative).relative_to(V18.REPO).as_posix(), names)
+-        target = V18.CAMPAIGN / 'assessment/canary_readback_proof.py'
++        names = set(V19.index_label_inputs())
++        for relative in V19.INDEX_LABEL_INPUTS:
++            self.assertIn((V19.CAMPAIGN / relative).relative_to(V19.REPO).as_posix(), names)
++        target = V19.CAMPAIGN / 'io-repair/smoke-024-read-diagnosis-001/analysis.json'
+         original = Path.is_symlink
+         with patch.object(Path, 'is_symlink', lambda path: path == target or original(path)):
+-            with self.assertRaisesRegex(ValueError, 'Missing or linked revocation/readback input'):
+-                V18.revocation_readback_inputs()
++            with self.assertRaisesRegex(ValueError, 'Missing or linked prepared-index-label input'):
++                V19.index_label_inputs()
+ 
+     def test_complete_native_packet_and_prior_inventory_are_bound(self):
+-        names = set(V18.revocation_readback_inputs())
+-        packet = V18.CAMPAIGN / 'io-repair/native-output-source-003'
+-        declared = {V18.CAMPAIGN / name for name in V18.prior.PREPARED_STARTUP_INPUTS
++        names = set(V19.index_label_inputs())
++        packet = V19.CAMPAIGN / 'io-repair/native-output-source-003'
++        declared = {V19.CAMPAIGN / name for name in V19.prior.prior.PREPARED_STARTUP_INPUTS
+                     if name.startswith('io-repair/native-output-source-003/')}
+         self.assertEqual(declared, {p for p in packet.iterdir() if p.is_file()})
+         self.assertEqual(len(declared), 18)
+-        self.assertTrue(set(V18.prior.prepared_startup_inputs()) <= names)
+-        self.assertTrue({p.relative_to(V18.REPO).as_posix() for p in declared} <= names)
++        self.assertTrue(set(V19.prior.revocation_readback_inputs()) <= names)
++        self.assertTrue({p.relative_to(V19.REPO).as_posix() for p in declared} <= names)
+ 
+     def test_native_inventory_binds_complete_quiescence_inputs(self):
+         native = load('quiescence_native_inventory_test', HERE / 'prepare_native.py')
+-        names = {p.relative_to(V18.REPO).as_posix() for p in native.inventory()}
+-        self.assertTrue(set(V18.revocation_readback_inputs()) <= names)
++        names = {p.relative_to(V19.REPO).as_posix() for p in native.inventory()}
++        self.assertTrue(set(V19.index_label_inputs()) <= names)
+ 
+     def test_host_inventory_binds_inputs_without_changing_original_caps(self):
+         host = load('quiescence_host_inventory_test', HERE / 'host_probe.py')
+@@ -89,22 +89,30 @@
+             host.prepare(SimpleNamespace(manifest=path, run_id='fixture-host', revision='test', sim_cap_s=240,
+                 purpose='continuous-physics-during-durable-io'))
+             value = json.loads(path.read_text(encoding='utf-8'))
+-            self.assertTrue(set(V18.revocation_readback_inputs()) <= set(value['runtime_input_files']))
++            self.assertTrue(set(V19.index_label_inputs()) <= set(value['runtime_input_files']))
+             self.assertEqual((240, 300, 0, 24201), (value['sim_cap_s'], value['wall_cap_s'], value['model_turns_max'], value['noise_seed']))
+ 
+     def test_raw_and_boundary_inventory_include_declared_method_and_inputs(self):
+         import sys
+         previous = sys.path[:]
+         try:
+-            sys.path.insert(0, str(V18.CAMPAIGN / 'harness')); sys.path.insert(0, str(HERE))
+-            raw = load('quiescence_raw_inventory_test', V18.CAMPAIGN / 'harness/raw_event_preflight_v2.py')
++            sys.path.insert(0, str(V19.CAMPAIGN / 'harness')); sys.path.insert(0, str(HERE))
++            raw = load('quiescence_raw_inventory_test', V19.CAMPAIGN / 'harness/raw_event_preflight_v2.py')
+             boundary = load('quiescence_boundary_inventory_test', HERE / 'boundary_suite_v3.py')
+-            required = set(V18.revocation_readback_inputs())
++            required = set(V19.index_label_inputs())
+             self.assertTrue(required <= set(raw.required_sources()))
+             self.assertTrue(required <= set(boundary.sources()))
+         finally:
+             sys.path[:] = previous
+ 
+ 
++    def test_complete_frozen_diagnosis_packet_is_enumerated(self):
++        packet = V19.CAMPAIGN / 'io-repair/smoke-024-read-diagnosis-001'
++        expected = {p.relative_to(V19.REPO).as_posix() for p in packet.rglob('*') if p.is_file()}
++        selected = {name for name in V19.index_label_inputs() if '/smoke-024-read-diagnosis-001/' in name}
++        self.assertEqual(selected, expected)
++        self.assertIn((packet / 'analysis.json').relative_to(V19.REPO).as_posix(), selected)
++        self.assertIn((packet / 'analysis.md').relative_to(V19.REPO).as_posix(), selected)
++
+ if __name__ == '__main__':
+     unittest.main()
+--- before/qualification/run_final_qualification_v26.py
++++ qualification/run_final_qualification_v27.py
+@@ -1,4 +1,4 @@
+-"""Run five fresh qualifiers after epoch-revocation, index-shorthand and canary-readback repairs.
++"""Run five fresh qualifiers with source-bound prepared-result index labels.
+ 
+ This external coordinator is deliberately outside the runtime source inventory.
+ It invokes the existing preparers, registry, direct shared queue and assessors.
+@@ -31,7 +31,7 @@
+ REPO = RCI.parents[1]
+ MAP = RCI.parent / 'Architecture Map'
+ RAW = RCI / 'local-evidence/campaign002/qualification'
+-LEDGER = HERE / 'final-qualification-026'
++LEDGER = HERE / 'final-qualification-027'
+ STARTUP_REPAIR_METHOD = CAMPAIGN / 'io-repair/CHANNEL_TRANSPORT_STARTUP_REPAIR_V1.md'
+ PROCESS_IDENTITY_METHOD = CAMPAIGN / 'io-repair/CHANNEL_PROBE_PROCESS_IDENTITY_V1.md'
+ FINISH_FRONTIER_METHOD = CAMPAIGN / 'io-repair/CHANNEL_FINISH_FRONTIER_VALIDATION_V1.md'
+@@ -45,13 +45,14 @@
+ PREPARED_STARTUP_SEGMENTS_METHOD = CAMPAIGN / 'io-repair/PREPARED_STARTUP_SEGMENTS_V1.md'
+ EPOCH_REVOCATION_INDEX_METHOD = CAMPAIGN / 'io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md'
+ CANARY_READBACK_EXCLUSIVITY_METHOD = CAMPAIGN / 'io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md'
++PREPARED_INDEX_LABELS_METHOD = CAMPAIGN / 'io-repair/PREPARED_INDEX_LABELS_V1.md'
+ PYTHON = REPO / 'venv/Scripts/python.exe'
+ QUEUE = Path('C:/Users/cresp/Documents/Dandelion Engineering/tools/compute_queue/compute_queue.py')
+-STAGE_IDENTITIES = (('native-025', 'native', 24000),
+-                    ('boundary-026', 'boundary', None),
+-                    ('smoke-024', 'smoke', 24101),
+-                    ('pilot-stock-023', 'stock', 24102),
+-                    ('pilot-home-023', 'home', 24103))
++STAGE_IDENTITIES = (('native-026', 'native', 24000),
++                    ('boundary-027', 'boundary', None),
++                    ('smoke-025', 'smoke', 24101),
++                    ('pilot-stock-024', 'stock', 24102),
++                    ('pilot-home-024', 'home', 24103))
+ READINESS_SCHEMA = 'campaign002-final-qualification-readiness-1'
+ TEST_RECEIPT_SCHEMA = 'campaign002-repair-test-receipt-1'
+ POLL_SECONDS = 15
+@@ -138,10 +139,10 @@
+     require(all(type(row[3]) is int if expected[2] is not None else row[3] is None
+                 for row, expected in zip(stages, STAGE_IDENTITIES)), 'Qualifier seeds must be exact integers')
+     revisions = [revision_number(row[2]) for row in stages]
+-    require(revisions == [80, 81, 82, 82, 82],
+-            'Qualifier revisions must be dev080, dev081 and shared final dev082')
++    require(revisions == [84, 85, 86, 86, 86],
++            'Qualifier revisions must be dev084, dev085 and shared final dev086')
+     diagnostic = value.get('diagnostic', {})
+-    require(diagnostic.get('run_id') == 'RCI001-C02-host-probe-026',
++    require(diagnostic.get('run_id') == 'RCI001-C02-host-probe-027',
+             'Readiness requires a fresh repaired-host diagnostic')
+     require(isinstance(diagnostic.get('job_id'), str) and bool(diagnostic['job_id'].strip()),
+             'Missing diagnostic official job identity')
+@@ -154,8 +155,8 @@
+     require(anchor == MAP / 'releases' / frozen['revision'] / 'snapshot.json',
+             'Repaired source anchor is outside its canonical release')
+     anchor_number = revision_number(frozen['revision'])
+-    require(anchor_number == 79 and revision_number(readiness['stages'][0][2]) == 80,
+-            'Repaired source anchor must be dev079 before native dev080')
++    require(anchor_number == 83 and revision_number(readiness['stages'][0][2]) == 84,
++            'Repaired source anchor must be dev083 before native dev084')
+     require(not admission.base.frozen_problems(anchor, frozen, frozen['revision']),
+             'Frozen repaired source/archive identity changed')
+     require(frozen['sources'].get(STARTUP_REPAIR_METHOD.relative_to(REPO).as_posix()) == {
+@@ -197,9 +198,12 @@
+     require(frozen['sources'].get(CANARY_READBACK_EXCLUSIVITY_METHOD.relative_to(REPO).as_posix()) == {
+                 'sha256': sha(CANARY_READBACK_EXCLUSIVITY_METHOD), 'bytes': CANARY_READBACK_EXCLUSIVITY_METHOD.stat().st_size},
+             'Repaired source anchor must bind the exact canary-readback-exclusivity declaration')
++    require(frozen['sources'].get(PREPARED_INDEX_LABELS_METHOD.relative_to(REPO).as_posix()) == {
++                'sha256': sha(PREPARED_INDEX_LABELS_METHOD), 'bytes': PREPARED_INDEX_LABELS_METHOD.stat().st_size},
++            'Repaired source anchor must bind the exact prepared-index-labels declaration')
+     core = admission.runtime_identities(frozen)
+     core.update({method.relative_to(REPO).as_posix(): frozen['sources'][method.relative_to(REPO).as_posix()]
+-                 for method in (STARTUP_REPAIR_METHOD, PROCESS_IDENTITY_METHOD, FINISH_FRONTIER_METHOD, SEQUENCE_SYNCHRONIZATION_METHOD, OWNER_DRAIN_METHOD, NATIVE_THREAD_QUIESCENCE_METHOD, NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, NORMAL_CLOSED_CANCEL_METHOD, NATIVE_CLEANUP_CANCELLATION_METHOD, INITIAL_READ_EVIDENCE_METHOD, PREPARED_STARTUP_SEGMENTS_METHOD, EPOCH_REVOCATION_INDEX_METHOD, CANARY_READBACK_EXCLUSIVITY_METHOD)})
++                 for method in (STARTUP_REPAIR_METHOD, PROCESS_IDENTITY_METHOD, FINISH_FRONTIER_METHOD, SEQUENCE_SYNCHRONIZATION_METHOD, OWNER_DRAIN_METHOD, NATIVE_THREAD_QUIESCENCE_METHOD, NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, NORMAL_CLOSED_CANCEL_METHOD, NATIVE_CLEANUP_CANCELLATION_METHOD, INITIAL_READ_EVIDENCE_METHOD, PREPARED_STARTUP_SEGMENTS_METHOD, EPOCH_REVOCATION_INDEX_METHOD, CANARY_READBACK_EXCLUSIVITY_METHOD, PREPARED_INDEX_LABELS_METHOD)})
+     prefix = (CAMPAIGN / 'assessment').relative_to(REPO).as_posix() + '/'
+     assessor_names = {name for name in frozen['sources'] if name.startswith(prefix)}
+     current_names = {path.relative_to(REPO).as_posix() for path in (CAMPAIGN / 'assessment').rglob('*.py')}
+@@ -288,13 +292,13 @@
+ 
+ 
+ def verify_transport_probe(record, snapshot):
+-    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-transport-probe-019',
++    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-transport-probe-020',
+             'A fresh fixed no-model transport probe is required')
+     # Authenticate before reading any probe outcome, including its hash.
+     job = admission.base.queue_gate(official(record['job_id']), record['job_id'])
+     retained_queue = admission.artifact(record['queue'])
+     require(read(retained_queue) == job, 'Transport probe queue receipt differs from official status')
+-    output = CAMPAIGN / 'io-repair/transport-probe-019/evidence'
++    output = CAMPAIGN / 'io-repair/transport-probe-020/evidence'
+     script = CAMPAIGN / 'harness/codehost_transport_probe_v3.py'
+     frozen = read(snapshot)
+     expected = python(script, '--run-id', record['run_id'], '--framework-revision', frozen['revision'],
+@@ -321,20 +325,20 @@
+ 
+ 
+ def replay_raw_preflight(script, output, snapshot):
+-    spec = importlib.util.spec_from_file_location('final_raw_preflight_v26', script)
++    spec = importlib.util.spec_from_file_location('final_raw_preflight_v27', script)
+     probe = importlib.util.module_from_spec(spec)
+     spec.loader.exec_module(probe)
+     return probe.assess(output, snapshot)
+ 
+ 
+ def verify_raw_preflight(record, snapshot):
+-    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-raw-preflight-016',
++    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-raw-preflight-017',
+             'A fresh fixed no-model raw-event preflight is required')
+     # Authenticate before reading any empirical result or result hash.
+     job = admission.base.queue_gate(official(record['job_id']), record['job_id'])
+     require(read(admission.artifact(record['queue'])) == job,
+             'Raw-event preflight queue receipt differs from official status')
+-    output = CAMPAIGN / 'io-repair/raw-preflight-016/evidence'
++    output = CAMPAIGN / 'io-repair/raw-preflight-017/evidence'
+     script = CAMPAIGN / 'harness/raw_event_preflight_v2.py'
+     frozen = read(snapshot)
+     expected = python(script, '--run-id', record['run_id'], '--framework-revision', frozen['revision'],
+@@ -455,7 +459,7 @@
+     elif kind == 'boundary':
+         prepare = python(HERE / 'prepare_boundary_v3.py', *args)
+     else:
+-        prepare = python(HERE / 'prepare_model_v18.py', *args, '--kind', kind, '--seed', seed)
++        prepare = python(HERE / 'prepare_model_v19.py', *args, '--kind', kind, '--seed', seed)
+     command_once(folder, 'prepare', prepare, outputs=[manifest])
+     value = read(manifest)
+     require(value['run_id'] == paths['run_id'] and value['framework_revision'] == revision,
+@@ -596,12 +600,12 @@
+             'transport_diagnostic': readiness['transport_diagnostic'],
+             'raw_event_preflight': readiness['raw_event_preflight'],
+             'orchestration_sources': [identity(path) for path in (
+-                HERE / 'prepare_native.py', HERE / 'prepare_boundary_v3.py', HERE / 'prepare_model_v18.py',
++                HERE / 'prepare_native.py', HERE / 'prepare_boundary_v3.py', HERE / 'prepare_model_v19.py',
+                 HERE / 'launch.py', HERE / 'assess_native.py', HERE / 'boundary_suite_v3.py',
+                 HERE / 'native_suite.py', CAMPAIGN / 'registry.py', CAMPAIGN / 'admission.py',
+                 CAMPAIGN / 'operate.py', QUEUE, operate.GUARD,
+                 CAMPAIGN / 'admission/storage-policy.json', CAMPAIGN / 'admission/storage-baseline-001.json',
+-                STARTUP_REPAIR_METHOD, PROCESS_IDENTITY_METHOD, FINISH_FRONTIER_METHOD, SEQUENCE_SYNCHRONIZATION_METHOD, OWNER_DRAIN_METHOD, NATIVE_THREAD_QUIESCENCE_METHOD, NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, NORMAL_CLOSED_CANCEL_METHOD, NATIVE_CLEANUP_CANCELLATION_METHOD, INITIAL_READ_EVIDENCE_METHOD, PREPARED_STARTUP_SEGMENTS_METHOD, EPOCH_REVOCATION_INDEX_METHOD, CANARY_READBACK_EXCLUSIVITY_METHOD)],
++                STARTUP_REPAIR_METHOD, PROCESS_IDENTITY_METHOD, FINISH_FRONTIER_METHOD, SEQUENCE_SYNCHRONIZATION_METHOD, OWNER_DRAIN_METHOD, NATIVE_THREAD_QUIESCENCE_METHOD, NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, NORMAL_CLOSED_CANCEL_METHOD, NATIVE_CLEANUP_CANCELLATION_METHOD, INITIAL_READ_EVIDENCE_METHOD, PREPARED_STARTUP_SEGMENTS_METHOD, EPOCH_REVOCATION_INDEX_METHOD, CANARY_READBACK_EXCLUSIVITY_METHOD, PREPARED_INDEX_LABELS_METHOD)],
+             'stages': readiness['stages']})
+         entries = []
+         for name, kind, revision, seed in readiness['stages']:
+--- before/qualification/test_run_final_qualification_v26.py
++++ qualification/test_run_final_qualification_v27.py
+@@ -9,7 +9,7 @@
+ from unittest.mock import patch
+ 
+ HERE = Path(__file__).resolve().parent
+-spec = importlib.util.spec_from_file_location('final_coordinator_v26', HERE / 'run_final_qualification_v26.py')
++spec = importlib.util.spec_from_file_location('final_coordinator_v27', HERE / 'run_final_qualification_v27.py')
+ c = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(c)
+ 
+@@ -29,15 +29,15 @@
+     def declaration(self):
+         return {'schema': c.READINESS_SCHEMA, 'ledger_directory': str(c.LEDGER),
+                 'source_snapshot': {'path': str(self.root / 'snapshot.json'), 'sha256': 'a' * 64},
+-                'diagnostic': {'run_id': 'RCI001-C02-host-probe-026', 'job_id': 'fixed-job',
++                'diagnostic': {'run_id': 'RCI001-C02-host-probe-027', 'job_id': 'fixed-job',
+                     'manifest': {'path': str(self.root / 'manifest.json'), 'sha256': 'b' * 64},
+                     'queue': {'path': str(self.root / 'queue.json'), 'sha256': 'c' * 64},
+                     'assessment': {'path': str(self.root / 'assessment.json'), 'sha256': 'd' * 64},
+                     'assessor': {'path': str(c.HERE / 'assess_host_probe.py'), 'sha256': 'e' * 64},
+-                    'evidence': str(c.RAW / 'RCI001-C02-host-probe-026')},
++                    'evidence': str(c.RAW / 'RCI001-C02-host-probe-027')},
+                 'repair_test_receipt': {'path': str(self.root / 'tests.json'), 'sha256': 'f' * 64},
+                 'stages': [[name, kind, f'RCI001-C02-dev-{rev:03d}', seed]
+-                           for (name, kind, seed), rev in zip(c.STAGE_IDENTITIES, (80, 81, 82, 82, 82))]}
++                           for (name, kind, seed), rev in zip(c.STAGE_IDENTITIES, (84, 85, 86, 86, 86))]}
+ 
+     def job(self, state='succeeded', status=0):
+         return {'id': 'fixed-job', 'state': state, 'exit_status': status,
+@@ -52,17 +52,17 @@
+         self.assertEqual(self.load(value), value)
+         self.assertEqual([p.name for p in self.root.iterdir()], ['readiness.json'])
+ 
+-    def test_declared_v26_identity_and_seed_allocation_is_exact(self):
+-        self.assertEqual(c.LEDGER.name, 'final-qualification-026')
++    def test_declared_v27_identity_and_seed_allocation_is_exact(self):
++        self.assertEqual(c.LEDGER.name, 'final-qualification-027')
+         plan = (c.CAMPAIGN / 'PLAN.md').read_text(encoding='utf-8')
+         self.assertIn('sensor seeds 24001–24006', plan)
+         self.assertIn('seeds 24101–24103', plan)
+         self.assertEqual(c.STAGE_IDENTITIES, (
+-            ('native-025', 'native', 24000), ('boundary-026', 'boundary', None),
+-            ('smoke-024', 'smoke', 24101), ('pilot-stock-023', 'stock', 24102),
+-            ('pilot-home-023', 'home', 24103)))
++            ('native-026', 'native', 24000), ('boundary-027', 'boundary', None),
++            ('smoke-025', 'smoke', 24101), ('pilot-stock-024', 'stock', 24102),
++            ('pilot-home-024', 'home', 24103)))
+         self.assertEqual([r[2] for r in self.declaration()['stages']],
+-                         ['RCI001-C02-dev-080', 'RCI001-C02-dev-081'] + ['RCI001-C02-dev-082'] * 3)
++                         ['RCI001-C02-dev-084', 'RCI001-C02-dev-085'] + ['RCI001-C02-dev-086'] * 3)
+ 
+     def test_preserved_v16_allocation_cannot_be_reused(self):
+         value=self.declaration()
+@@ -97,8 +97,8 @@
+                 name = c.NATIVE_THREAD_QUIESCENCE_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -118,8 +118,8 @@
+                 name = c.INITIAL_READ_EVIDENCE_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -139,8 +139,8 @@
+                 name = c.PREPARED_STARTUP_SEGMENTS_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -204,21 +204,21 @@
+ 
+     def test_other_fresh_probe_or_increasing_revision_allocation_is_not_this_declaration(self):
+         value = self.declaration()
+-        value['diagnostic']['run_id'] = 'RCI001-C02-host-probe-027'
++        value['diagnostic']['run_id'] = 'RCI001-C02-host-probe-028'
+         with self.assertRaisesRegex(ValueError, 'fresh repaired-host diagnostic'):
+             self.load(value)
+         value = self.declaration()
+         for row, revision in zip(value['stages'], (40, 41, 42, 42, 42)):
+             row[2] = f'RCI001-C02-dev-{revision:03d}'
+-        with self.assertRaisesRegex(ValueError, 'dev080, dev081 and shared final dev082'):
+-            self.load(value)
+-
+-    def test_anchor_must_be_exact_dev079_before_runtime_source_validation(self):
++        with self.assertRaisesRegex(ValueError, 'dev084, dev085 and shared final dev086'):
++            self.load(value)
++
++    def test_anchor_must_be_exact_dev083_before_runtime_source_validation(self):
+         value = self.declaration()
+         path = self.save('releases/RCI001-C02-dev-033/snapshot.json', {'revision': 'RCI001-C02-dev-033'})
+         value['source_snapshot'] = c.identity(path)
+         with patch.object(c, 'MAP', self.root), patch.object(c.admission, 'runtime_identities') as runtime:
+-            with self.assertRaisesRegex(ValueError, 'anchor must be dev079'):
++            with self.assertRaisesRegex(ValueError, 'anchor must be dev083'):
+                 c.assert_sources(value)
+             runtime.assert_not_called()
+ 
+@@ -250,9 +250,9 @@
+         value = self.declaration()
+         result = {'schema': 'campaign002-host-probe-assessment-1', 'diagnostic_passed': True,
+                   'errors': {}, 'run_id': value['diagnostic']['run_id'], 'queue_job_id': 'fixed-job',
+-                  'framework_revision': 'RCI001-C02-dev-079', 'model_calls': 0, 'scorable': False,
++                  'framework_revision': 'RCI001-C02-dev-083', 'model_calls': 0, 'scorable': False,
+                   'timing': {'passed': True}}
+-        values = {self.root / 'queue.json': self.job(), self.root / 'snapshot.json': {'revision': 'RCI001-C02-dev-079'},
++        values = {self.root / 'queue.json': self.job(), self.root / 'snapshot.json': {'revision': 'RCI001-C02-dev-083'},
+                   self.root / 'assessment.json': result if retained is None else retained}
+         stack = ExitStack()
+         self.addCleanup(stack.close)
+@@ -281,7 +281,7 @@
+         for state, status in [('running', None), ('failed', 1), ('succeeded', False), ('succeeded', 0.0)]:
+             with self.subTest(state=state, status=status), patch.object(c, 'official', return_value=self.job(state, status)), patch.object(c.admission, 'artifact') as artifact, patch.object(c, 'read') as read:
+                 with self.assertRaises(ValueError):
+-                    c.verify_raw_preflight({'run_id': 'RCI001-C02-raw-preflight-016', 'job_id': 'fixed-job'}, self.root / 'snapshot.json')
++                    c.verify_raw_preflight({'run_id': 'RCI001-C02-raw-preflight-017', 'job_id': 'fixed-job'}, self.root / 'snapshot.json')
+                 artifact.assert_not_called()
+                 read.assert_not_called()
+ 
+@@ -294,20 +294,20 @@
+ 
+     def raw_probe_fixture(self, mutate_result=None, mutate_job=None):
+         campaign = self.root / 'campaign-002'
+-        output = campaign / 'io-repair/raw-preflight-016/evidence'
+-        snapshot = self.save('raw-snapshot.json', {'revision': 'RCI001-C02-dev-079'})
++        output = campaign / 'io-repair/raw-preflight-017/evidence'
++        snapshot = self.save('raw-snapshot.json', {'revision': 'RCI001-C02-dev-083'})
+         result = {'schema': 'campaign002-raw-event-preflight-2', 'passed': True,
+-                  'run_id': 'RCI001-C02-raw-preflight-016', 'framework_revision': 'RCI001-C02-dev-079',
++                  'run_id': 'RCI001-C02-raw-preflight-017', 'framework_revision': 'RCI001-C02-dev-083',
+                   'snapshot_sha256': c.sha(snapshot), 'model_calls': 0, 'physical_simulation': False,
+                   'checks': {'synthetic': True}}
+         if mutate_result: mutate_result(result)
+-        result_path = self.save('campaign-002/io-repair/raw-preflight-016/evidence/result.json', result)
++        result_path = self.save('campaign-002/io-repair/raw-preflight-017/evidence/result.json', result)
+         job = self.job()
+         job['argv'] = c.python(campaign / 'harness/raw_event_preflight_v2.py', '--run-id', result['run_id'],
+-                               '--framework-revision', 'RCI001-C02-dev-079', '--snapshot', snapshot, '--output', output)
++                               '--framework-revision', 'RCI001-C02-dev-083', '--snapshot', snapshot, '--output', output)
+         if mutate_job: mutate_job(job)
+         queue = self.save('raw-queue.json', job)
+-        record = {'run_id': 'RCI001-C02-raw-preflight-016', 'job_id': job['id'],
++        record = {'run_id': 'RCI001-C02-raw-preflight-017', 'job_id': job['id'],
+                   'queue': c.identity(queue), 'result': c.identity(result_path)}
+         return campaign, output, snapshot, result, job, record
+ 
+@@ -361,8 +361,8 @@
+     def test_anchor_is_checked_against_original_source_inventory(self):
+         value = self.declaration()
+         sources = {method.relative_to(c.REPO).as_posix(): {'sha256': c.sha(method), 'bytes': method.stat().st_size}
+-                   for method in (c.STARTUP_REPAIR_METHOD,c.PROCESS_IDENTITY_METHOD,c.FINISH_FRONTIER_METHOD,c.SEQUENCE_SYNCHRONIZATION_METHOD,c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD)}
+-        path = self.save('releases/RCI001-C02-dev-079/snapshot.json', {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                   for method in (c.STARTUP_REPAIR_METHOD,c.PROCESS_IDENTITY_METHOD,c.FINISH_FRONTIER_METHOD,c.SEQUENCE_SYNCHRONIZATION_METHOD,c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD)}
++        path = self.save('releases/RCI001-C02-dev-083/snapshot.json', {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+         value['source_snapshot'] = c.identity(path)
+         with patch.object(c, 'MAP', self.root), patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+              patch.object(c.admission, 'runtime_identities', side_effect=ValueError('Original 624 omitted')) as runtime:
+@@ -376,8 +376,8 @@
+                 value=self.declaration()
+                 name=c.STARTUP_REPAIR_METHOD.relative_to(c.REPO).as_posix()
+                 sources={} if binding is None else {name:binding}
+-                path=self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                               {'revision':'RCI001-C02-dev-079','sources':sources})
++                path=self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                               {'revision':'RCI001-C02-dev-083','sources':sources})
+                 value['source_snapshot']=c.identity(path)
+                 with patch.object(c,'MAP',self.root), patch.object(c.admission.base,'frozen_problems',return_value=[]), \
+                      patch.object(c.admission,'runtime_identities') as runtime:
+@@ -393,8 +393,8 @@
+                 sources={method.relative_to(c.REPO).as_posix():{'sha256':c.sha(method),'bytes':method.stat().st_size}}
+                 name=c.PROCESS_IDENTITY_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:sources[name]=binding
+-                path=self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                               {'revision':'RCI001-C02-dev-079','sources':sources})
++                path=self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                               {'revision':'RCI001-C02-dev-083','sources':sources})
+                 value['source_snapshot']=c.identity(path)
+                 with patch.object(c,'MAP',self.root), patch.object(c.admission.base,'frozen_problems',return_value=[]), \
+                      patch.object(c.admission,'runtime_identities') as runtime:
+@@ -420,8 +420,8 @@
+                 name = c.FINISH_FRONTIER_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -440,8 +440,8 @@
+                 name = c.SEQUENCE_SYNCHRONIZATION_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -460,8 +460,8 @@
+                 name = c.OWNER_DRAIN_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                 {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                 {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(path)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -474,11 +474,11 @@
+         value = self.declaration()
+         sources = {p.relative_to(c.REPO).as_posix(): {'sha256': 'a' * 64, 'bytes': 1}
+                    for p in (c.CAMPAIGN / 'assessment').rglob('*.py')}
+-        for method in (c.STARTUP_REPAIR_METHOD, c.PROCESS_IDENTITY_METHOD, c.FINISH_FRONTIER_METHOD, c.SEQUENCE_SYNCHRONIZATION_METHOD, c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD):
++        for method in (c.STARTUP_REPAIR_METHOD, c.PROCESS_IDENTITY_METHOD, c.FINISH_FRONTIER_METHOD, c.SEQUENCE_SYNCHRONIZATION_METHOD, c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD):
+             sources[method.relative_to(c.REPO).as_posix()] = {
+                 'sha256': c.sha(method), 'bytes': method.stat().st_size}
+-        anchor = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                           {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++        anchor = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                           {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+         value['source_snapshot'] = c.identity(anchor)
+         name = c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD.relative_to(c.REPO).as_posix()
+         for missing in (False, True):
+@@ -487,8 +487,8 @@
+                 changed.pop(name)
+             else:
+                 changed[name] = {'sha256': '0' * 64, 'bytes': 1}
+-            later = self.save('releases/RCI001-C02-dev-080/snapshot.json',
+-                              {'revision': 'RCI001-C02-dev-080', 'sources': changed})
++            later = self.save('releases/RCI001-C02-dev-084/snapshot.json',
++                              {'revision': 'RCI001-C02-dev-084', 'sources': changed})
+             with self.subTest(missing=missing), patch.object(c, 'MAP', self.root), \
+                  patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+                  patch.object(c.admission, 'runtime_identities', return_value={}):
+@@ -499,11 +499,11 @@
+         value = self.declaration()
+         sources = {p.relative_to(c.REPO).as_posix(): {'sha256': 'a' * 64, 'bytes': 1}
+                    for p in (c.CAMPAIGN / 'assessment').rglob('*.py')}
+-        for method in (c.STARTUP_REPAIR_METHOD, c.PROCESS_IDENTITY_METHOD, c.FINISH_FRONTIER_METHOD, c.SEQUENCE_SYNCHRONIZATION_METHOD, c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD):
++        for method in (c.STARTUP_REPAIR_METHOD, c.PROCESS_IDENTITY_METHOD, c.FINISH_FRONTIER_METHOD, c.SEQUENCE_SYNCHRONIZATION_METHOD, c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD):
+             sources[method.relative_to(c.REPO).as_posix()] = {
+                 'sha256': c.sha(method), 'bytes': method.stat().st_size}
+-        anchor = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                           {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++        anchor = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                           {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+         value['source_snapshot'] = c.identity(anchor)
+         name = c.PREPARED_STARTUP_SEGMENTS_METHOD.relative_to(c.REPO).as_posix()
+         for missing in (False, True):
+@@ -512,8 +512,8 @@
+                 changed.pop(name)
+             else:
+                 changed[name] = {'sha256': '0' * 64, 'bytes': 1}
+-            later = self.save('releases/RCI001-C02-dev-080/snapshot.json',
+-                              {'revision': 'RCI001-C02-dev-080', 'sources': changed})
++            later = self.save('releases/RCI001-C02-dev-084/snapshot.json',
++                              {'revision': 'RCI001-C02-dev-084', 'sources': changed})
+             with self.subTest(missing=missing), patch.object(c, 'MAP', self.root), \
+                  patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+                  patch.object(c.admission, 'runtime_identities', return_value={}):
+@@ -522,7 +522,7 @@
+ 
+     def native_prepare_fixture(self, mutation=None):
+         name, kind, seed = c.STAGE_IDENTITIES[0]
+-        revision = 'RCI001-C02-dev-080'
++        revision = 'RCI001-C02-dev-084'
+         paths = c.entry_for(name, kind, revision)
+         paths['manifest'] = self.root / ((mutation or 'valid') + '-native-manifest.json')
+         paths['snapshot'] = self.root / 'release/snapshot.json'
+@@ -578,34 +578,34 @@
+                 self.assertFalse(paths['snapshot'].parent.exists())
+                 sources.assert_not_called()
+ 
+-    def test_model_stage_uses_inventory_v18_with_unchanged_seed(self):
++    def test_model_stage_uses_inventory_v19_with_unchanged_seed(self):
+         name, kind, seed = c.STAGE_IDENTITIES[2]
+-        paths = c.entry_for(name, kind, 'RCI001-C02-dev-082')
+-        manifest = {'run_id': paths['run_id'], 'framework_revision': 'RCI001-C02-dev-082',
++        paths = c.entry_for(name, kind, 'RCI001-C02-dev-086')
++        manifest = {'run_id': paths['run_id'], 'framework_revision': 'RCI001-C02-dev-086',
+                     'seed': 173, 'noise_seed': seed}
+         with patch.object(c, 'command_once') as command, patch.object(c, 'read', return_value=manifest), \
+              patch.object(c, 'assert_sources'):
+-            self.assertEqual(c.prepare_stage(self.root, name, kind, 'RCI001-C02-dev-082', seed,
++            self.assertEqual(c.prepare_stage(self.root, name, kind, 'RCI001-C02-dev-086', seed,
+                                             paths, self.declaration()), manifest)
+         prepare = command.call_args_list[0].args[2]
+-        self.assertEqual(Path(prepare[4]), c.HERE / 'prepare_model_v18.py')
++        self.assertEqual(Path(prepare[4]), c.HERE / 'prepare_model_v19.py')
+         self.assertEqual(prepare[-4:], ['--kind', 'smoke', '--seed', '24101'])
+ 
+     def test_later_qualifier_changed_source_cannot_share_repaired_lineage(self):
+         value = self.declaration()
+         source_names = [p.relative_to(c.REPO).as_posix() for p in (c.CAMPAIGN / 'assessment').rglob('*.py')]
+         sources = {name: {'sha256': 'a' * 64, 'bytes': 1} for name in source_names}
+-        for method in (c.STARTUP_REPAIR_METHOD,c.PROCESS_IDENTITY_METHOD,c.FINISH_FRONTIER_METHOD,c.SEQUENCE_SYNCHRONIZATION_METHOD,c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD):
++        for method in (c.STARTUP_REPAIR_METHOD,c.PROCESS_IDENTITY_METHOD,c.FINISH_FRONTIER_METHOD,c.SEQUENCE_SYNCHRONIZATION_METHOD,c.OWNER_DRAIN_METHOD, c.NATIVE_THREAD_QUIESCENCE_METHOD, c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD, c.NORMAL_CLOSED_CANCEL_METHOD, c.NATIVE_CLEANUP_CANCELLATION_METHOD, c.INITIAL_READ_EVIDENCE_METHOD, c.PREPARED_STARTUP_SEGMENTS_METHOD, c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD):
+             sources[method.relative_to(c.REPO).as_posix()] = {'sha256':c.sha(method),'bytes':method.stat().st_size}
+         runtime_name = (c.CAMPAIGN / 'harness/run_host.py').relative_to(c.REPO).as_posix()
+         sources[runtime_name] = {'sha256': 'b' * 64, 'bytes': 1}
+-        path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                         {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++        path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                         {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+         value['source_snapshot'] = c.identity(path)
+         changed = dict(sources)
+         changed[runtime_name] = {'sha256': 'c' * 64, 'bytes': 1}
+-        later = self.save('releases/RCI001-C02-dev-080/snapshot.json',
+-                         {'revision': 'RCI001-C02-dev-080', 'sources': changed})
++        later = self.save('releases/RCI001-C02-dev-084/snapshot.json',
++                         {'revision': 'RCI001-C02-dev-084', 'sources': changed})
+         with patch.object(c, 'MAP', self.root), patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+              patch.object(c.admission, 'runtime_identities', return_value={runtime_name: sources[runtime_name]}):
+             with self.assertRaisesRegex(ValueError, 'runtime sources differ'):
+@@ -747,14 +747,14 @@
+ 
+ 
+     def transport_fixture(self):
+-        snapshot = self.save('snapshot.json', {'revision': 'RCI001-C02-dev-079'})
+-        output = self.root / 'io-repair/transport-probe-019/evidence'
+-        result = {'schema': 'campaign002-codehost-channel-probe-3', 'run_id': 'RCI001-C02-transport-probe-019',
+-                  'framework_revision': 'RCI001-C02-dev-079', 'snapshot_sha256': c.sha(snapshot),
++        snapshot = self.save('snapshot.json', {'revision': 'RCI001-C02-dev-083'})
++        output = self.root / 'io-repair/transport-probe-020/evidence'
++        result = {'schema': 'campaign002-codehost-channel-probe-3', 'run_id': 'RCI001-C02-transport-probe-020',
++                  'framework_revision': 'RCI001-C02-dev-083', 'snapshot_sha256': c.sha(snapshot),
+                   'model_calls': 0, 'physical_simulation': False, 'passed': True,
+                   'cases': [{'case': kind, 'evidence': str(output / kind),
+                              'transport_integrity': {'passed': True}} for kind in ('multi_channel','foreign_owner','in_flight_eof')]}
+-        result_path = self.save('io-repair/transport-probe-019/evidence/result.json', result)
++        result_path = self.save('io-repair/transport-probe-020/evidence/result.json', result)
+         job = self.job()
+         job['argv'] = c.python(self.root / 'harness/codehost_transport_probe_v3.py', '--run-id', result['run_id'],
+                                '--framework-revision', result['framework_revision'], '--snapshot', snapshot,
+@@ -766,7 +766,7 @@
+ 
+     def test_failed_transport_queue_is_rejected_before_any_output_read(self):
+         for state, code in [('failed',1), ('running',None), ('succeeded',False)]:
+-            record = {'run_id':'RCI001-C02-transport-probe-019','job_id':'fixed-job'}
++            record = {'run_id':'RCI001-C02-transport-probe-020','job_id':'fixed-job'}
+             with self.subTest(state=state,code=code), patch.object(c, 'official', return_value=self.job(state,code)), \
+                  patch.object(c.admission, 'artifact') as artifact, patch.object(c, 'read') as read:
+                 with self.assertRaisesRegex(ValueError, 'Official queue'):
+@@ -822,8 +822,8 @@
+                 name = c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None:
+                     sources[name] = binding
+-                snapshot = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                snapshot = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value = self.declaration()
+                 value['source_snapshot'] = c.identity(snapshot)
+                 with patch.object(c, 'MAP', self.root), \
+@@ -851,7 +851,7 @@
+         receipt = save.call_args_list[0].args[1]
+         self.assertIn({'path': str(c.NATIVE_THREAD_UNLOAD_SCHEDULING_METHOD)}, receipt['orchestration_sources'])
+         self.assertIn({'path': str(c.NORMAL_CLOSED_CANCEL_METHOD)}, receipt['orchestration_sources'])
+-        self.assertIn({'path': str(c.HERE / 'prepare_model_v18.py')}, receipt['orchestration_sources'])
++        self.assertIn({'path': str(c.HERE / 'prepare_model_v19.py')}, receipt['orchestration_sources'])
+         self.assertIn({'path': str(c.NATIVE_CLEANUP_CANCELLATION_METHOD)}, receipt['orchestration_sources'])
+         self.assertIn({'path': str(c.INITIAL_READ_EVIDENCE_METHOD)}, receipt['orchestration_sources'])
+         self.assertIn({'path': str(c.PREPARED_STARTUP_SEGMENTS_METHOD)}, receipt['orchestration_sources'])
+@@ -888,8 +888,8 @@
+                            {'sha256': c.sha(p), 'bytes': p.stat().st_size} for p in methods}
+                 name = c.NORMAL_CLOSED_CANCEL_METHOD.relative_to(c.REPO).as_posix()
+                 if binding is not None: sources[name] = binding
+-                snapshot = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                snapshot = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(snapshot)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -920,8 +920,8 @@
+                            {'sha256': c.sha(p), 'bytes': p.stat().st_size} for p in methods}
+                 if binding is not None:
+                     sources[c.NATIVE_CLEANUP_CANCELLATION_METHOD.relative_to(c.REPO).as_posix()] = binding
+-                snapshot = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                snapshot = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                 value['source_snapshot'] = c.identity(snapshot)
+                 with patch.object(c, 'MAP', self.root), \
+                      patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -942,11 +942,11 @@
+         with self.assertRaisesRegex(ValueError, 'Qualifier identities'):
+             self.load(value)
+ 
+-    def test_both_new_methods_are_required_and_remain_exact_in_later_stages(self):
++    def test_new_and_inherited_methods_are_required_and_remain_exact_in_later_stages(self):
+         methods = [value for name, value in vars(c).items() if name.endswith('_METHOD')]
+         originals = {p.relative_to(c.REPO).as_posix(): {'sha256': c.sha(p), 'bytes': p.stat().st_size}
+                      for p in methods}
+-        for method in (c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD):
++        for method in (c.EPOCH_REVOCATION_INDEX_METHOD, c.CANARY_READBACK_EXCLUSIVITY_METHOD, c.PREPARED_INDEX_LABELS_METHOD):
+             name = method.relative_to(c.REPO).as_posix()
+             for bad in (None, {'sha256': '0'*64, 'bytes': 1}):
+                 with self.subTest(method=method.name, bad=bad):
+@@ -954,8 +954,8 @@
+                     if bad is None: sources.pop(name)
+                     else: sources[name] = bad
+                     value = self.declaration()
+-                    path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                                     {'revision': 'RCI001-C02-dev-079', 'sources': sources})
++                    path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                                     {'revision': 'RCI001-C02-dev-083', 'sources': sources})
+                     value['source_snapshot'] = c.identity(path)
+                     with patch.object(c, 'MAP', self.root), \
+                          patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+@@ -964,12 +964,12 @@
+                             c.assert_sources(value)
+                         runtime.assert_not_called()
+             value = self.declaration()
+-            path = self.save('releases/RCI001-C02-dev-079/snapshot.json',
+-                             {'revision': 'RCI001-C02-dev-079', 'sources': originals})
++            path = self.save('releases/RCI001-C02-dev-083/snapshot.json',
++                             {'revision': 'RCI001-C02-dev-083', 'sources': originals})
+             value['source_snapshot'] = c.identity(path)
+             changed = dict(originals); changed[name] = {'sha256': '0'*64, 'bytes': 1}
+-            later = self.save('releases/RCI001-C02-dev-080/snapshot.json',
+-                              {'revision': 'RCI001-C02-dev-080', 'sources': changed})
++            later = self.save('releases/RCI001-C02-dev-084/snapshot.json',
++                              {'revision': 'RCI001-C02-dev-084', 'sources': changed})
+             with patch.object(c, 'MAP', self.root), \
+                  patch.object(c.admission.base, 'frozen_problems', return_value=[]), \
+                  patch.object(c.admission, 'runtime_identities', return_value={}), \
+@@ -986,7 +986,7 @@
+                     q = base / 'qualification'
+                     q.mkdir()
+                     with patch.object(c, 'HERE', q), patch.object(c, 'RAW', base / 'raw'):
+-                        paths = c.entry_for(name, kind, 'RCI001-C02-dev-082')
++                        paths = c.entry_for(name, kind, 'RCI001-C02-dev-086')
+                         paths['manifest'].write_text('{}', encoding='utf-8')
+                         paths['snapshot'] = base / 'snapshot.json'
+                         paths['snapshot'].write_text('{}', encoding='utf-8')
+@@ -1007,5 +1007,15 @@
+                         self.assertFalse((folder / 'launch-intent.json').exists())
+                         self.assertEqual(target.read_text(encoding='utf-8'), '{"previous":true}')
+ 
++    def test_preserved_v26_allocation_cannot_be_reused(self):
++        value = self.declaration()
++        value['stages'] = [['native-025', 'native', 'RCI001-C02-dev-080', 24000],
++                           ['boundary-026', 'boundary', 'RCI001-C02-dev-081', None],
++                           ['smoke-024', 'smoke', 'RCI001-C02-dev-082', 24101],
++                           ['pilot-stock-023', 'stock', 'RCI001-C02-dev-082', 24102],
++                           ['pilot-home-023', 'home', 'RCI001-C02-dev-082', 24103]]
++        with self.assertRaisesRegex(ValueError, 'Qualifier identities'):
++            self.load(value)
++
+ if __name__ == '__main__':
+     unittest.main()

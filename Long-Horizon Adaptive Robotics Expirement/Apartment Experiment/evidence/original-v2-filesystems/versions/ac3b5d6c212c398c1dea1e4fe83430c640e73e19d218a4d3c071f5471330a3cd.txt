@@ -1,0 +1,150 @@
+# Session 019 — Cup acquired and returned to kitchen; grip lost; safely docked
+
+## Session identity
+
+- Session ID: 019.
+- Start time: 2026-10-08; first live observation at sim 13018.948. Exact wall-clock start not recorded.
+- End time: Dock completed at sim 13456.964; final status at 13456.980. Filesystem closeout followed the 2026-10-08 21:37:28 UTC clock reading.
+- Agent / model: Codex, GPT-6-based agent; exact revision not exposed.
+- Runtime / configuration: Apartment robot, Maps Edition, public primitive client, noisy sensing and dead reckoning.
+- Project revision: Supplied ProjectDetails.md, unchanged; revision identifier unavailable.
+- Robot configuration revision: Supplied RobotDetails.md, unchanged; revision identifier unavailable.
+
+## Startup context consulted
+
+Read RobotAgentPrompt.md and the prescribed startup files: README.md, RobotDetails.md, Playbooks/Index.md, ProjectDetails.md, Maps/Apartment.md, SummaryOfOnlyNecessaryContext.md and LongTermMemory.md. Combined startup output omitted part of the map/summary; reread those completely. Read reports 018, 017 and 016 newest to oldest. Retrieved report 010 for its successful cup pickup/carry and placement loss. Read the PositionGrasp playbook/default program and SessionReportTemplate.md; read Maps/Rooms/README.md during closeout. The default positioning capability was considered but not invoked: the successful trial used reviewed ordinary arm/gripper primitives.
+
+Observation 401 showed only nearby charger/walls and did not establish room identity. Head scan 402 showed the marked cabinet and refrigerator; 403 corroborated the kitchen counter, faucet and mats. Loaded Kitchen.md after 402 and before base navigation. Loaded Bathroom.md as a relevant destination, then reloaded it on entry in 406 after identifying toilet, sink and bathtub. Reidentified the kitchen from counter and cabinet in return observation 417 and reloaded Kitchen.md before further navigation. No unrelated detailed maps were loaded.
+
+All head images 401–421 were actually displayed through robot_image, extracting the returned image data URI without printing its base64. No wrist observation was taken. Inline Python sequenced public controls and polled completion. No hidden simulator state, object identifiers, simulator code, external interface or image archive was accessed.
+
+## Objective on entry
+
+Live assignment: “Find the cup on one of the three kitchen countertop mats and put it inside drawer B.” Continue the incomplete normal assignment, respect the warning, dock and complete filesystem closeout. Historical throwing feedback did not define this assignment.
+
+## Starting state
+
+At sim 13018.948: undocked, no active action, low_warning false, 318.13 work seconds remaining, task_success false, empty/open gripper and retracted arm. Head pan zero/tilt 0.55. Dead-reckoned pose approximately (4.094,-0.958) m, yaw 3.6351, not surveyed localization. Historical bathroom cup location and drawer opening required current inspection.
+
+## Work performed
+
+1. Identified the kitchen, loaded its map and backed off the charger through observed clear floor. Inspected the cabinet/aisle and preserved the visible drawer extension.
+2. Traversed the rear passage in bounded segments with intervening observations. Identified the bathroom and reloaded its map.
+3. Located the cup on its side near the far wall. Approached with it laterally offset in the base frame to improve head-camera visibility of the cup and fingers.
+4. Sampled the cup and visible tool surfaces, approached above the cup with open fingers, lowered, inspected alignment and closed. Verified bilateral contact, then secure lift.
+5. Returned through the bathroom to the kitchen with the arm retracted within the driving reach limit. Continued contact and images verified actual cup transport.
+6. After the low-battery warning, continued only direct charger return and alignment. Contact was lost across a turn/head-recentering interval. Inspected return clearance, stowed/opened the empty arm and docked.
+7. Reviewed fixed-map observations, updated existing map verification and the cup memory, refreshed the summary and created this immutable report.
+
+## Results and evidence
+
+**Cup-to-B remains incomplete.** A floor acquisition, secure lift and transport from bathroom to kitchen succeeded. The cup was subsequently lost before docking, without a release command. No drawer placement or containment was attempted. Public task_success stayed false.
+
+### Navigation and room identity
+
+Images 402–405 showed the marked drawer cabinet, refrigerator, rear counter/mats and passage to bathroom fixtures. B appeared extended in the cabinet-side views; the visible orange fixture and extended handle/front were corroborated during charger alignment in 418–420. No deliberate drawer, handle or orange-fixture operation occurred. Usable insertion clearance was not measured.
+
+After leaving the charger, proceeded through the kitchen aisle at approximately dead-reckoned x=6.18 m while facing about +1.57 radians. Observation 405 showed the rear doorway. A 1.25 m advance produced **406**, sim **13120.744**, from approximately (6.185,2.885) m: toilet, sink and bathtub established bathroom identity. Reloaded Bathroom.md before continuing. These are episode estimates, not a surveyed route.
+
+Two 1.50 m segments brought the pale cylindrical cup into clear view near the far wall in **408**. Pixel (187,228) projected (1.9688,0.4873,0.0343) m. Turned +0.06 rad and advanced 1.10 m, leaving the cup to the left of the forward axis. Tilted the head to 0.85 and moved the empty arm to short reach with negative lateral offset for visibility. No base action was reported blocked or rejected.
+
+### Fresh cup geometry and visible staged approach
+
+In **409**, sim **13190.324**, base dead reckoning was approximately (6.132,7.016) m, yaw 1.6206. The cup was clearly on its side near the wall. Samples were:
+
+- Pixel (175,192): (0.8548,0.3845,0.0460) m.
+- Pixel (169,194): (0.8380,0.4167,0.0483) m.
+- Pixel (181,190): (0.8692,0.3508,0.0472) m.
+
+These are visible surfaces, not object centers or dimensions. The cup was not subjected to a separate stationary stability test.
+
+Commanded the open arm to **(0.855,0.384,0.22) m, pitch zero, over 2 s**, request `f4379835195546f9b4a106313b9f88d7`. Image **410**, sim **13215.152**, showed the cup beneath the open fingers, with better visibility than prior centered approaches. Pixel (173,193) on the cup projected (0.8464,0.3947,0.0471) m. Two visible finger-region samples, (153,175) and (184,175), projected about (0.8131,0.4546,0.2422) and (0.8102,0.2907,0.2455) m. Other tool samples were also reviewed. These noisy surface samples supported lateral alignment; they do not calibrate the tool or establish precise fingertip geometry.
+
+Lowered to **commanded (0.86,0.385,0.025) m, pitch zero, over 2.5 s**, request `74163d89d01049168b5bcaffdecc179e`. Image **411**, sim **13245.216**, still exposed a pale portion of the cup below/between the fingers. Measured lift was about **-0.3691 m**, reach 0.7797 and lateral 0.3855. Those are joint encoders, not achieved Cartesian pose. The low commanded z does not establish a correspondingly low achieved tool position; similarly low lift encoders were recorded in earlier failed trials.
+
+### Verified acquisition, lift and transport
+
+Closed to width **0.005 m over 1 s**, request **`02d399a937fd4e14bd20268729a25bb8`**. Status at **13258.776** showed bilateral_contact **true**, measured aperture **0.1038 m**, effort **29.723**, and secure_lift_confirmed false. Viewed image **412** before lifting.
+
+Commanded a 3-second lift/retract to **(0.4,0.35,1.18) m**, request **`df24cb6d714c4c758a10eb7c34611ac7`**. At **413**, sim **13270.556**, both bilateral_contact and secure_lift_confirmed were **true**, measured aperture about **0.0896 m**, effort **25.366**. Measured reach was 0.3194, lateral 0.3500 and lift 0.7467. Cup was above the downward head view, so 413 alone was not visual carry confirmation.
+
+Backed 0.65 m, turned +3.09 rad toward the exit and raised the head view. **414–417 visibly showed the cup between the fingers at the left edge**, and both contact/lift flags remained true throughout the sampled return statuses. Arm target stayed (0.4,0.35,1.18), pitch zero, desired width 0.005. Reach remained within the 0.48 m driving limit.
+
+The first return segment ended in 415 with 29.72 work seconds remaining. Another bounded segment produced 416 with 5.99 seconds remaining. First observed **low_warning true** was **417 at sim 13349.556**, after a 1.20 m return segment. Image 417 showed kitchen counter/mats and cabinet beside the robot, at approximately (6.157,2.240) m, yaw 4.7109. Reidentified the kitchen and reloaded its map before continuing. No further task manipulation occurred after the warning.
+
+### Loss during charger alignment
+
+Advanced through the aisle and turned the head toward the charger. In **418**, sim **13373.260**, contact and secure-lift flags were still true, aperture about 0.0897 m, effort 25.368. Base estimate was (6.154,0.695) m, yaw 4.7109. The cup was outside this head view, but prior images plus continued feedback support retention through this observation. The station's green pad, yellow marking and backstop were visible. Stripe pixel (215,154) projected (1.6949,-2.1385,0.0083) m.
+
+Commanded a **-0.9005-radian base turn**, request `064af31a66ca488592ad7f55bc1386db`, then recentered the head, request `75ba9f64dba24cd3942882574e31b4b7`. At **419**, sim **13400.104**, bilateral_contact and secure_lift_confirmed were **false**, aperture **0.0045 m**, effort **0.00218**. Base estimate was (6.155,0.697) m, yaw 3.8104. Arm target and desired gripper width had not changed. No release was commanded before contact loss.
+
+Thus the grasp was lost between 418 and 419, across the base-turn/head-recentering interval. No intermediate contact sample isolates which submotion coincided with loss. Fixture contact, head motion and inertial effects are unresolved possibilities, not findings. The user-facing progress description referred to the turn; this report preserves the actual temporal uncertainty.
+
+Image 419 did not identify the cup. Stowed the empty arm to (0.25,0,0.45) over 2 s, opened to 0.15 and inspected floor/return clearance in **420**. No identifiable cup appeared there either. **Final cup position is unknown.** The last visually confirmed carried cup was in kitchen image 417; last secure-grip feedback was 418. Prioritize fresh kitchen localization around the cabinet/charger-alignment area if this assignment continues. Do not return directly to the old bathroom target or claim a precise resting location.
+
+### Successful docking
+
+With the empty arm stowed, advanced 1.50 m along the observed clear charger approach and inspected **421**. Stripe pixel (242,228) projected (1.2142,-0.0174,0.0075) m. Advanced 1.06 m, waited 0.8 s, then issued dock request **`6134738f6e1d47e9a745231c3d0cfce6`**. It completed at **13456.964**. Final status at **13456.980** confirmed **docked true**, **no active action**, **empty/open gripper**, and **task_success false**. First dock request succeeded. No physical commands followed docking.
+
+## Robot / world state at exit
+
+- Robot: Stationary and docked in the kitchen; dead-reckoned pose approximately (4.145,-0.891) m, yaw 3.8104, not surveyed localization.
+- Arm/gripper: Empty/open, commanded (0.25,0,0.45), pitch zero. Final reach encoder about 0.1699, lift 0.0196, lateral near zero, aperture 0.1496 m. Head pan zero/tilt 0.55.
+- Environment/object state: Cup carried from bathroom into kitchen, then lost across charger-alignment motions. Final resting location unobserved. B appeared extended; no intentional operation or insertion-clearance measurement.
+- Active/pending actions: None.
+- Authority/control: Physical control closed by docking; filesystem closeout complete.
+- Safety state: Stationary on charger, nothing held, arm retracted.
+- Important uncertainty: Cup's new resting pose, loss cause, repeatable acquisition/retention, drawer clearance and complete placement behavior.
+
+## Spatial map use and updates
+
+Used Apartment.md throughout. Loaded Kitchen.md after startup identification and again after return identification; loaded Bathroom.md as a destination and again on entry. Reidentified rooms from current pixels plus topology. No unrelated room maps were loaded.
+
+Refreshed the existing kitchen–bathroom connection with 405–406 and 416–417. Refreshed kitchen/bathroom room-identity evidence and kitchen charger verification with 418–421/docking. No new fixed landmark, surveyed geometry or topology correction was established. Coverage remains partial. Cup locations, current drawer extension, grasp targets and motion procedures were excluded from Maps.
+
+## Durable artifacts created or materially changed
+
+- `Maps/Apartment.md`, `Maps/Rooms/Kitchen.md`, `Maps/Rooms/Bathroom.md`: Refreshed verification of existing structure, traversal and charger.
+- `LongTermMemory.md`: Updated the existing cup entry to reflect two verified acquisitions/carries, scoped session-019 visibility and staged-approach evidence, and a second no-release grip loss. Preserved lack of causal isolation and failed prior approaches.
+- `SummaryOfOnlyNecessaryContext.md`: Safe docking, successful transport into kitchen, subsequent loss and final-location uncertainty, successful grasp evidence and exact unresolved work.
+- This immutable report: Episode evidence, including temporal limits on the grip-loss claim.
+
+No new collection, image archive, learned program or playbook was created. README.md already describes the established report wildcard, map collection and scoped cup acquisition/carry memory; its filesystem map remains accurate without modification. Protected contracts, defaults and earlier reports were unchanged.
+
+## Learned constraints, procedures, or reusable knowledge
+
+The lateral-offset approach exposed the cup beneath the fingers before closure, unlike many earlier centered/occluded attempts. One staged arm trial from that geometry succeeded. This is useful narrow evidence, but lateral visibility, low commanded target, pose and other differences were not independently tested; no single remedy is validated. Joint encoders do not prove that the low commanded Cartesian z was achieved.
+
+Verified grip persisted across the bathroom exit turn and multiple straight segments, but was later lost across another turn/head interval in the kitchen. A reach within the driving limit and previously successful motion do not certify retention. There is no isolated slip cause or tested prevention.
+
+Retained these qualifications in the existing cup memory. Inline sequencing was ordinary session work and did not warrant a learned executable. A reusable general grasp/carry playbook was not promoted from this single new success with subsequent loss.
+
+## Failures and negative results
+
+- rg unavailable; used find. Recovered truncated map/summary startup output with separate reads.
+- The first backward/turn sequence exceeded the initial exec wait; polled its session to completion and inspected the resulting state. No physical action was inferred complete from receipt alone.
+- No grasp failure occurred in the single closure trial, but initial aperture/contact still required a lift check.
+- Successful acquisition/carry did not establish end-to-end task completion. Grip was lost during return alignment without commanded release.
+- The exact loss submotion/cause and final cup resting position were not observed.
+- No insertion-clearance test, drawer placement or containment occurred.
+- No physical action was reported blocked/rejected, and docking succeeded first try.
+- After warning, controls served direct return, alignment and empty-arm stow only.
+
+## Unresolved work
+
+If cup-to-B remains assigned: verify live state and room; inspect B's current opening; localize the cup afresh, prioritizing the kitchen near the cabinet/charger-alignment area; establish a verified grip/lift and secure transport; inspect collision-free drawer insertion clearance; place and release inside B; verify physical task_success. Bathroom coordinates are stale after verified transport. Session-019 grasp coordinates are evidence, not replay targets. No required session-019 docking or filesystem-closeout work remains.
+
+## Corrections / supersessions of earlier reports
+
+No prior report was edited. Session 018's last bathroom floor location was initially corroborated, then superseded by verified pickup and transport into the kitchen. Final position is now unknown following return-alignment grip loss. Session 010's successful acquisition/carry is now complemented by a second such episode; its placement slip and all intervening failed approaches retain their scoped validity. No reliable general grasp or retention procedure has been established.
+
+## Summary update
+
+Marks the task incomplete; records safe kitchen docking/control closure; replaces the old bathroom search priority with current kitchen localization; records the successful visible staged acquisition and later no-release loss; links the relevant map, memory and report evidence. Future sensing must replace historical targets.
+
+## Session ending
+
+- Task status: Incomplete — cup acquired and transported to kitchen, then lost; no containment, task_success false.
+- Reason: Ordinary warning, direct return, successful docking and completed filesystem closeout.
+- Robot left in safe, unambiguous state: Yes — stationary on charger, empty/open gripper, retracted arm, no active action.
+- Future startup must verify: Live assignment/status, room/map, current B opening and fresh kitchen cup location/retention strategy. Physical control remains closed for this invocation.

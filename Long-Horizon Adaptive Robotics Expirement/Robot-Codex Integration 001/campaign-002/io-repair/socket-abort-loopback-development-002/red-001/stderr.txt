@@ -1,0 +1,97 @@
+test_cancellation_remains_distinct_from_eof (__main__.LoggingRegression.test_cancellation_remains_distinct_from_eof) ... ERROR
+test_case_error_call_site_preserves_nested_failure (__main__.LoggingRegression.test_case_error_call_site_preserves_nested_failure) ... ERROR
+test_data_retains_exact_counts_hash_and_nested_schema (__main__.LoggingRegression.test_data_retains_exact_counts_hash_and_nested_schema) ... ERROR
+test_eof_keeps_outer_event_kind_and_nested_observation_kind (__main__.LoggingRegression.test_eof_keeps_outer_event_kind_and_nested_observation_kind) ... ERROR
+test_every_emit_call_has_fixed_event_kind_and_no_expanded_fields (__main__.LoggingRegression.test_every_emit_call_has_fixed_event_kind_and_no_expanded_fields) ... FAIL
+test_four_cases_and_original_bounds_unchanged (__main__.LoggingRegression.test_four_cases_and_original_bounds_unchanged) ... ok
+test_os_error_retains_safe_metadata_without_message (__main__.LoggingRegression.test_os_error_retains_safe_metadata_without_message) ... ERROR
+test_type_error_is_finite_safe_class (__main__.LoggingRegression.test_type_error_is_finite_safe_class) ... FAIL
+
+======================================================================
+ERROR: test_cancellation_remains_distinct_from_eof (__main__.LoggingRegression.test_cancellation_remains_distinct_from_eof)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 82, in test_cancellation_remains_distinct_from_eof
+    value=self.observe(error=FIXTURE.asyncio.CancelledError())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 54, in observe
+    coroutine.send(None)
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-001\fixture.py", line 147, in observe_pending
+    recorder.emit("receive_terminal", case=name, **value)
+TypeError: Recorder.emit() got multiple values for argument 'kind'
+
+======================================================================
+ERROR: test_case_error_call_site_preserves_nested_failure (__main__.LoggingRegression.test_case_error_call_site_preserves_nested_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 92, in test_case_error_call_site_preserves_nested_failure
+    exec(compile(code,str(SOURCE/'fixture.py'),'exec'),self.environment)
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-001\fixture.py", line 223, in <module>
+    recorder.emit("case_error", case=name, **observation)
+TypeError: Recorder.emit() got multiple values for argument 'kind'
+
+======================================================================
+ERROR: test_data_retains_exact_counts_hash_and_nested_schema (__main__.LoggingRegression.test_data_retains_exact_counts_hash_and_nested_schema)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 68, in test_data_retains_exact_counts_hash_and_nested_schema
+    value=self.observe(b'fixed synthetic bytes')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 54, in observe
+    coroutine.send(None)
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-001\fixture.py", line 147, in observe_pending
+    recorder.emit("receive_terminal", case=name, **value)
+TypeError: Recorder.emit() got multiple values for argument 'kind'
+
+======================================================================
+ERROR: test_eof_keeps_outer_event_kind_and_nested_observation_kind (__main__.LoggingRegression.test_eof_keeps_outer_event_kind_and_nested_observation_kind)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 59, in test_eof_keeps_outer_event_kind_and_nested_observation_kind
+    value=self.observe()
+          ^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 54, in observe
+    coroutine.send(None)
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-001\fixture.py", line 147, in observe_pending
+    recorder.emit("receive_terminal", case=name, **value)
+TypeError: Recorder.emit() got multiple values for argument 'kind'
+
+======================================================================
+ERROR: test_os_error_retains_safe_metadata_without_message (__main__.LoggingRegression.test_os_error_retains_safe_metadata_without_message)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 75, in test_os_error_retains_safe_metadata_without_message
+    value=self.observe(error=ConnectionAbortedError(1236,'PRIVATE-TEXT'))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 54, in observe
+    coroutine.send(None)
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-001\fixture.py", line 147, in observe_pending
+    recorder.emit("receive_terminal", case=name, **value)
+TypeError: Recorder.emit() got multiple values for argument 'kind'
+
+======================================================================
+FAIL: test_every_emit_call_has_fixed_event_kind_and_no_expanded_fields (__main__.LoggingRegression.test_every_emit_call_has_fixed_event_kind_and_no_expanded_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 109, in test_every_emit_call_has_fixed_event_kind_and_no_expanded_fields
+    self.assertTrue(all(keyword.arg is not None and keyword.arg!='kind' for keyword in node.keywords))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_type_error_is_finite_safe_class (__main__.LoggingRegression.test_type_error_is_finite_safe_class)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\socket-abort-loopback-development-002\no_socket_regression.py", line 99, in test_type_error_is_finite_safe_class
+    self.assertEqual(value,{'class':'TypeError','errno':None,'winerror':None})
+AssertionError: {'class': 'UnknownException', 'errno': None, 'winerror': None} != {'class': 'TypeError', 'errno': None, 'winerror': None}
+- {'class': 'UnknownException', 'errno': None, 'winerror': None}
+?            ^^^^ ^^^^^^^^^^^
+
++ {'class': 'TypeError', 'errno': None, 'winerror': None}
+?            ^^^^^^^ ^
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.020s
+
+FAILED (failures=2, errors=5)

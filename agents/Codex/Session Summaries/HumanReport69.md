@@ -1,0 +1,26 @@
+# Session 69 — recovered Maps through checkpoint 21
+
+At **15:04–15:05 PDT on October 10**, the accepted checkpoint-5 Maps continuation remained running with **21 accepted closed sessions and 14/21 advancements**: nine household success latches (four bedroom, five kitchen) and five timed throwing windows. Session 22 was docked while native/filesystem closeout remained pending. Throwing advancement does not establish mastery.
+
+Pulled `main` first (already current), followed AgentPrompt/Codex-only rules, and checked continuity, human inbox, claims and Architecture Map. No new human direction was present. The unchanged Session 63 observer ran with `--label session-69 --checkpoints`; its immutable observation passed all seven checks. Every new or changed field was read, with complete unchanged values structurally compared against the previously read Session 68 followup. Reports 20–21 were read completely. [Bound evidence](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Apartment%20Experiment/operations/session-69/observation-summary.json) includes the observation, lifecycle supplement, reports, rendered checks and route/protocol hashes.
+
+| Checkpoint | Files | Event prefix | Replay chunks | Disposition |
+|---|---:|---:|---:|---|
+| 20 | 95 | 5344 | 3279 | Kitchen household success; advancement |
+| 21 | 97 | 5913 | 3475 | Timed throwing window; advancement |
+
+Both checkpoints passed manifest/content and event/replay-prefix verification. Single-report closeout and complete journals passed (276 and 533 records). Exact gpt-6-astra/max native results completed with integer-zero exit; Windows owners, Linux processes and mounts retired, with matching normal journal/service shutdown evidence. Checkpoint 21 manifest SHA is `a41309bce4e45bcc75d5ca81853da1af7c50756c4964def7f742ff812075e7f4`; state SHA is `e2ddacc96bfe03da7c92c2a774a69361070676c18ee4c70a5f2359d3218f79bc`.
+
+Report 20 describes fresh reacquisition of the staged cup, release into open drawer B and sustained public success through withdrawal and docking. Final containment was visually occluded; the controller household latch is authenticated. Report 21 records thirteen inside-bin landings, scoped timing/lateral variation, final occlusion and short lateral lidar clearances. These remain reported behavioral observations alongside controller evidence; complete independent physical rescoring remains endpoint work. The earlier session-15 release/work-window uncertainty and incomplete household attempts remain preserved.
+
+Session 22 used fresh qualified gpt-6-astra/max thread `01a127cf-aaaf-7052-8f9f-9e0cdbef4235`, with both exact Windows owner records matching live PID 38784. Native records grew **1075→1129** and journal records **388→415**. Canary checks passed. The sampled event prefix contained 682 sensor captures and 673 image-delivery events (527/517 after the accepted prefix threshold); frame 682 matched its recorded image hash. Session 22 had 36 native public-image results. The latest 128-sample replay chunk authenticated, and simulation/monotonic clocks were ordered within both epochs. Complete transport correlation was not performed.
+
+**23 calls had started: five original accepted + one original abandoned session-6 call + seventeen continuation calls.** All twenty-three native threads are distinct: twenty-one accepted closed sessions, one active call and one abandoned call. The abandoned original kitchen latch remains excluded. Session 22's docking and refreshed work counters were not counted as accepted closeout.
+
+All 266 frozen sources and route/configuration/claim/schedule identities passed. The full failed parent's 3,802-file inventory and pristine 19-file D: Maps start remained unchanged. Baseline endpoint anchors matched; its full inventory, installed environment and complete recording inventory were not re-audited. C:/D: free space at 15:04 was **517.170616 / 133.811523 GiB**, preserving both full 50 GiB reserves and the unchanged planning basis.
+
+Actual rendered checks at **15:05:03 and 15:05:54** showed session 22 at 100%, its living-room scene and throwing assignment, with activity changing from learned-playbook writes to continuity/README/map writes. No fetch error was visible. Scene motion is not claimed. [Viewer](http://127.0.0.1:57835/) tab 1 remains open; screenshots remain in the conversation and durable metadata does not claim locally saved images.
+
+Queue `20261010T185932431096Z-5e6874a0` and the dedicated 30-minute monitor remain running/ACTIVE; all five older monitors remain PAUSED and byte-unchanged. No scientific intervention, source/prompt/recording change, operator retry, replacement, further recovery or comparison occurred. The failed C: parent, pristine D: Maps and qualification fixtures must never be launched.
+
+Healthy scientific execution continues across Development closeout. At the fixed endpoint, use the shared queue for the complete independent accepted-history/abandoned-work/retirement audit, separating fourteen household successes from seven timed throwing advancements. Preserve the recovery interruption, storage/host timing and Baseline drawer-persistence/+16-ms snapshot caveats. The Architecture Map records this ongoing observation, not a terminal scientific result.

@@ -1,0 +1,52 @@
+"""Declare absent V33 identities after authentic full regression success."""
+from datetime import datetime,timezone
+import json
+import os
+from pathlib import Path
+import build
+import control
+
+c=control.c;HERE=Path(__file__).resolve().parent
+
+def main():
+    submitted=c.read(HERE/'checks-submit-001.json');job_id=submitted['id']
+    job=c.admission.base.queue_gate(c.official(job_id),job_id)
+    c.require(job['argv']==submitted['argv'],'Official check command differs')
+    c.save_exact(HERE/'checks-terminal-001.json',job)
+    c.require(c.read(control.LINEAGE_CHECKS)['passed'] is True,'Full lineage failed')
+    previous=control.IO/'boundary-import-qualification-001'
+    old=c.read(previous/'allocation-absence-001.json')
+    paths=[Path(build.changed(p).replace('boundary-import-qualification-001','print-recipe-qualification-001')) for p in old['absent_paths']]
+    revisions=['RCI001-C02-dev-'+str(n).zfill(3) for n in (111,112,113,114)]
+    runs=['RCI001-C02-'+name for name in ('raw-preflight-023','transport-probe-026','host-probe-033',
+        'native-032','boundary-033','smoke-031','pilot-stock-030','pilot-home-030')]
+    for base in {Path(os.environ['LOCALAPPDATA']),Path.home()/'AppData/Local'}:
+        paths += [base/'RobotCodex/Campaign002/qualification'/name for name in runs]
+    paths=sorted(set(p.resolve() for p in paths))
+    existing=[str(p) for p in paths if p.exists()]
+    c.require(not existing,'Prospective path already exists: '+str(existing))
+    ids=set();stores={}
+    for name in ('architectures','revisions','runs','results','notes'):
+        p=c.MAP/(name+'.jsonl');stores[name]=c.identity(p)
+        ids.update(json.loads(line)['id'] for line in p.read_text(encoding='utf-8').splitlines() if line.strip())
+    c.require(not ids.intersection([*revisions,*runs]),'Prospective identity already registered')
+    c.save(HERE/'allocation-absence-001.json',{'schema':'campaign002-prospective-allocation-absence-1',
+        'checked_at':datetime.now(timezone.utc).isoformat(),'absent_paths':[str(p) for p in paths],
+        'absent_ids':[*revisions,*runs],'canonical_stores':stores})
+    value=c.read(previous/'qualification-declaration.json')
+    value.update(created_at=datetime.now(timezone.utc).isoformat(),
+        purpose='Qualify exact two-root plain-print initial Continuity proof under unchanged byte-origin and runtime requirements.',
+        anchor_revision=control.REV,repair_checks=control.CHECKS.name,
+        coordinator=c.identity(control.Q/'run_final_qualification_v33.py'),
+        development_checks=c.identity(control.CHECKS/'test-execution.json'),lineage_checks=c.identity(control.LINEAGE_CHECKS),
+        development_source_state=c.identity(control.SOURCE_STATE),allocation_absence=c.identity(HERE/'allocation-absence-001.json'),
+        prerequisites=runs[:3],stages=[[name,kind,rev,seed] for (name,kind,seed),rev in zip(c.STAGE_IDENTITIES,[revisions[1],revisions[2],revisions[3],revisions[3],revisions[3]])],
+        development_official_queue=c.identity(HERE/'checks-terminal-001.json'),
+        print_recipe_method=c.identity(control.IO/'COMPLETE_PROCESS_AND_LITERAL_READS_V2.md'),
+        print_recipe_diagnosis=c.identity(control.IO/'smoke030-read-diagnosis-001/observations.json'),
+        print_recipe_replay=c.identity(HERE/'diagnostic-replay-001.json'))
+    value['preservation']+=' V32 stopped at original Smoke03061/62 invalid/unknown; bothPilot029 unstarted. V33 requires all fresh stages; no prior success substitutes and no historical promotion.'
+    c.save(control.DECLARATION,value);control.bound_declaration()
+    print(json.dumps({'declared':c.identity(control.DECLARATION),'absent_paths':len(paths),'absent_ids':len(revisions)+len(runs)}))
+
+if __name__=='__main__':main()

@@ -1,0 +1,5 @@
+Agent note: outcome unknown.
+
+
+<!-- Machine-authored terminal record -->
+{"accepted_event_id":6,"accepted_sim_time_s":1.0,"appended_wall_unix_ns":1791066962419750400,"author":"framework","authority_epoch":3,"claim":"Handback accepted; conventional control resumed. This is framework evidence, not an agent claim.","handback_request_id":"accepted","record_id":"5ceface974ebcfe1d82d1a289c3359621160741270910cd93602cc3c5801651f","resumed_sim_time_s":1.0,"resumed_wall_unix_ns":1791066962419750400,"resumption_event_id":11,"resumption_evidence_sha256":"11d2bc8382c4b1294ab91abcdec2a881d758f856177c5f6191d6fe1a78f4b73a","retirement_evidence_sha256":"1cbd59d395c80df5500925d340e290495cb660f8fe69074fab4f2244b33862a4","run_id":"synthetic-only","schema":"campaign003-framework-terminal-1","session_id":"session-1"}

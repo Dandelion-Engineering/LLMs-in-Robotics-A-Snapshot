@@ -1,0 +1,51 @@
+{
+  "schema_version": "root-managed-queue-admission-decision-1",
+  "recorded_at_utc": "2026-09-24T01:24:32.794424+00:00",
+  "decision": "Separate installed queue admission from worker startup: import installed compute_queue, call production_paths(), construct QueueService(home,script), call submit with exact unchanged workload argv and auto_start=False while idle; let that invocation finish and preserve its queued response; then start unchanged documented compute_queue.py worker CLI.",
+  "authority": "Existing user authorization to complete experiments and necessary prerequisites, with no shared queue/frozen source edits. Root operational decision uses existing queue API rather than editing queue state or running a workload outside its worker.",
+  "operational_departure": "README prescribes CLI submit; auto_start=False is an existing Python API, not a documented CLI flag. This narrowly changes admission orchestration to avoid ensure_worker startup polling. It is not a shared queue repair or claim of complete documented alternative workflow.",
+  "why": "Repeated pre-acceptance worker_start_failed and denied state replacement. Source audit proves ensure_worker can probe/terminate a fresh worker or contend with its state update before acceptance. Actual lock owner for individual failures remains unknown.",
+  "installed_queue": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\compute_queue.py",
+    "sha256": "ca13faf55645df4050d918a745b183bebb967ae8f5b1dd180ff8212c0ed1d4bf"
+  },
+  "installed_queue_readme": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\README.md",
+    "sha256": "ca986a9ffb502e0cde6e657b3209d6362d618575badd2f683da08b30b0cd5a16"
+  },
+  "last_failed_submission": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T012126601597Z-fd396e53.json",
+    "sha256": "69e3f3ace31880d2042ab928ca99feb242de531004d7ac8c7ae127361e4b604f"
+  },
+  "previous_finalizer_incident": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\batch-013-finalize-incident-001.json",
+    "sha256": "8729a3bfda405ce7d999585adc0d01af1fe590b0fd5b917d65bbb5a568411953"
+  },
+  "observed_at_decision": {
+    "canonical_r4_results": 48,
+    "current_batch_terminal_dispositions": 4,
+    "current_batch_canonical_results": 0,
+    "no_finalization_marker": true,
+    "no_last_job_log": true
+  },
+  "controls": [
+    "Use production_paths to bind exact installed queue/store; never copy or patch queue",
+    "Confirm no active queue jobs/workers/children/leases before admission",
+    "submit return is queued, not accepted or complete",
+    "Start documented worker only after admission process exits; normal worker lease, scheduling, execution and receipt publication remain active",
+    "No status/list/submit/doctor calls while workers or descendants live",
+    "Read live state with delete sharing only; no immediate polling",
+    "Worker exit zero is not job success; require official per-job status succeeded and integer0 after natural exit",
+    "Same release, full caps, stored order, limit4, preflight capacity and no explicit IDs for physical work",
+    "No automatic episode retries or changes to outcomes, source, readiness or seeds",
+    "Preserve and inspect each failure; resumable metadata finalization does not rerun experiments"
+  ],
+  "limitations": [
+    "Runner internal ordinary state readers and unrelated Windows readers can still deny replacement",
+    "Other projects may introduce concurrent contention",
+    "No claim that every Windows queue defect is repaired"
+  ],
+  "shared_queue_bytes_changed": false,
+  "manual_runtime_state_edit": false,
+  "policy_episode_retry": false
+}

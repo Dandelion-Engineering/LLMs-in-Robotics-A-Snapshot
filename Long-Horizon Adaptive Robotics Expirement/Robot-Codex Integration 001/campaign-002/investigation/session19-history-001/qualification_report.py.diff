@@ -1,0 +1,127 @@
+--- qualification_report.py.before
++++ qualification_report.py
+@@ -137,6 +137,10 @@
+ COMPLETED_INTERRUPT_SCHEMA = 'campaign002-completed-unassessed-interrupt-queue-1'
+ ORDERED_INTERRUPT_SOURCES = {'io-repair/single-interrupt-diagnostic-v4/run.py': {'sha256': '3ec098c7aaee147adf3c6228e3330eb9322fdbf20f3738dca3af668db417c3ec', 'bytes': 4959}, 'io-repair/single-interrupt-diagnostic-v4/common.py': {'sha256': 'cf19bff9747bc2f3a1a5580522f64a53d295a5ed6810d89721f01dbfacdf11b1', 'bytes': 12503}, 'io-repair/single-interrupt-diagnostic-v4/launch.py': {'sha256': '63af0d5c9e1383c7e51d52c30dab38043c707b9df42ba5dc01a247ce742cf79d', 'bytes': 4074}, 'io-repair/native-shutdown-order-001/DECLARATION.md': {'sha256': '972723405658a32d8e76cdbdeca6fa6f4b49d64bd7ba9738615c94d57f4d9478', 'bytes': 3097}}
+ 
++
++FAILED_BOUNDARY_SCHEMA = 'campaign002-failed-boundary-queue-1'
++OBSERVED_INTERRUPT_SOURCES = {'io-repair/single-interrupt-diagnostic-v5/run.py': {'sha256': '7cf447ae94899c683480c79d9e37d06eb13e6680abf463c831864de02505f7f1', 'bytes': 6079}, 'io-repair/single-interrupt-diagnostic-v5/common.py': {'sha256': '9b0d37f59a314ce87355a1b00fc706a9b98a231a1ba95d078b2bdc007813dbfa', 'bytes': 8058}, 'io-repair/single-interrupt-diagnostic-v5/launch.py': {'sha256': '3d4642ede248dc52f64cb16f4b4c5af63c0070e71e7a1ad969a9fb7e1fdeb43a', 'bytes': 5468}, 'io-repair/native-os-closure-001/DECLARATION.md': {'sha256': '0fe341930da190aeeae00004a2d7a817d98091e2c4f52eac938ae318a664c1dc', 'bytes': 4951}}
++GRACEFUL_INTERRUPT_SOURCES = {'io-repair/single-interrupt-diagnostic-v6/run.py': {'sha256': '674ff933dd390f1fd05f9b6abda39919a09fa7e4f8be21938778aa65fa34e8bc', 'bytes': 5096}, 'io-repair/single-interrupt-diagnostic-v6/common.py': {'sha256': 'd3b2f9cbe447576c1c306c98871c1b37031c04ed6a24c456d16f06317a6defb3', 'bytes': 7179}, 'io-repair/single-interrupt-diagnostic-v6/launch.py': {'sha256': '63af0d5c9e1383c7e51d52c30dab38043c707b9df42ba5dc01a247ce742cf79d', 'bytes': 4074}, 'io-repair/graceful-process-drain-001/DECLARATION.md': {'sha256': '91feac74d47b3ad94769462ce9a727187fe5b891aa2ff1d72a85d894e9028b63', 'bytes': 2347}}
+ 
+ def failed_single_interrupt_dispatch(row, job, paths, manifest, snapshot, manifest_hash):
+     """Recognize fixed dispatch metadata only, without opening failed outputs."""
+@@ -165,6 +169,20 @@
+         script = CAMPAIGN / 'io-repair/single-interrupt-diagnostic-v4/run.py'
+         protocol = 'RCI001-Campaign002-single-interrupt-diagnostic-v4'
+         required_sources = ORDERED_INTERRUPT_SOURCES
++    elif row.get('run_id') == 'RCI001-C02-shutdown-diagnostic-005':
++        run, revision = 'RCI001-C02-shutdown-diagnostic-005', 'RCI001-C02-dev-097'
++        root = CAMPAIGN / 'io-repair/shutdown-diagnostic-005'
++        script = CAMPAIGN / 'io-repair/single-interrupt-diagnostic-v5/run.py'
++        protocol = 'RCI001-Campaign002-single-interrupt-diagnostic-v5'
++        required_sources = OBSERVED_INTERRUPT_SOURCES
++    elif row.get('run_id') == 'RCI001-C02-shutdown-diagnostic-006':
++        if row.get('queue_completion_contract', row.get('queue_completion', {})).get('schema') != COMPLETED_INTERRUPT_SCHEMA:
++            raise ValueError('Native006 requires the separate completed unassessed contract')
++        run, revision = 'RCI001-C02-shutdown-diagnostic-006', 'RCI001-C02-dev-098'
++        root = CAMPAIGN / 'io-repair/shutdown-diagnostic-006'
++        script = CAMPAIGN / 'io-repair/single-interrupt-diagnostic-v6/run.py'
++        protocol = 'RCI001-Campaign002-single-interrupt-diagnostic-v6'
++        required_sources = GRACEFUL_INTERRUPT_SOURCES
+     manifest_path = root / 'manifest.json'
+     snapshot_path = CAMPAIGN.parent.parent / 'Architecture Map/releases' / revision / 'snapshot.json'
+     evidence = CAMPAIGN.parent / 'local-evidence/campaign002/io-repair' / run
+@@ -173,6 +191,8 @@
+     expected = [str(executable), '-X', 'utf8', '-B', str(script), '--manifest', str(manifest_path),
+                 '--snapshot', str(snapshot_path), '--evidence', str(evidence / 'orchestrator'),
+                 '--host-evidence', str(evidence / 'host'), '--workspace', str(workspace)]
++    if run == 'RCI001-C02-shutdown-diagnostic-005':
++        expected += ['--observer-config-sha256', '33948458d956c920ed1a24dd3f262f115b220dc0b3e113bf487ecb269ee1212c']
+     if (row.get('run_id') != run or row.get('revision') != revision
+             or Path(paths['Frozen attempt manifest']).resolve() != manifest_path.resolve()
+             or Path(paths['Frozen source snapshot']).resolve() != snapshot_path.resolve()
+@@ -208,6 +228,37 @@
+             raise ValueError('Single-interrupt frozen wrapper or method source differs')
+ 
+ 
++def failed_boundary_dispatch(row, job, paths, manifest, snapshot, manifest_hash):
++    """Bind the no-model boundary command without opening its failed outputs."""
++    run = row['run_id']; short = run.removeprefix('RCI001-C02-')
++    if re.fullmatch(r'RCI001-C02-boundary-\d{3}', run) is None:
++        raise ValueError('Failed boundary run identity differs')
++    script = CAMPAIGN/'qualification/boundary_suite_v3.py'
++    mp = CAMPAIGN/'qualification'/(short+'-manifest.json')
++    sp = CAMPAIGN.parent.parent/'Architecture Map/releases'/row['revision']/'snapshot.json'
++    destination = CAMPAIGN.parent/'local-evidence/campaign002/qualification'/run
++    executable = REPO/'venv/Scripts/python.exe'
++    expected = [str(executable),'-X','utf8','-B',str(script),'--output',str(destination)]
++    if (Path(paths['Frozen attempt manifest']).resolve()!=mp.resolve()
++            or Path(paths['Frozen source snapshot']).resolve()!=sp.resolve()
++            or job.get('argv')!=expected or job.get('cwd')!=str(REPO)
++            or job.get('resolved_executable')!=str(executable)):
++        raise ValueError('Failed boundary exact dispatch differs')
++    fields={'run_id':run,'framework_revision':row['revision'],'stage':'diagnostic',
++            'mode':'boundary-suite','qualification_stage':'no-model-isolation-control-continuity','model_turns_max':0}
++    if any(type(manifest.get(k)) is not type(v) or manifest[k]!=v for k,v in fields.items()):
++        raise ValueError('Failed boundary manifest scope differs')
++    if (snapshot.get('revision')!=row['revision'] or snapshot.get('run_id')!=run
++            or snapshot.get('manifest_sha256')!=manifest_hash
++            or snapshot.get('schema')!='robot-codex-readiness-source-1'):
++        raise ValueError('Failed boundary snapshot binding differs')
++    name=script.relative_to(REPO).as_posix(); binding=(snapshot.get('sources') or {}).get(name)
++    if (name not in manifest.get('runtime_input_files',[]) or not isinstance(binding,dict)
++            or set(binding)!={'sha256','bytes'} or type(binding.get('bytes')) is not int or binding['bytes']<=0
++            or re.fullmatch('[0-9a-f]{64}',str(binding.get('sha256'))) is None):
++        raise ValueError('Failed boundary source identity unavailable')
++
++
+ def failed_queue_row(row, artifacts, output):
+     """Terminal execution failure metadata only; never open attempt outputs.
+ 
+@@ -215,7 +266,7 @@
+     parsed into verdicts, checks, measurements, canaries or scientific outcomes.
+     """
+     contract = row.get('queue_failure_contract', {})
+-    if (contract.get('schema') not in ('campaign002-failed-queue-diagnostic-1', 'campaign002-failed-diagnostic-queue-1', SINGLE_INTERRUPT_SCHEMA)
++    if (contract.get('schema') not in ('campaign002-failed-queue-diagnostic-1', 'campaign002-failed-diagnostic-queue-1', SINGLE_INTERRUPT_SCHEMA, FAILED_BOUNDARY_SCHEMA)
+             or row.get('status') != 'failed' or row.get('validity') != 'unknown'
+             or row.get('assessment_state') != 'not_assessed' or row.get('scorable') is not False
+             or row.get('task_outcome') != 'unknown' or row.get('model_calls') is not None
+@@ -253,12 +304,13 @@
+     manifest_item, snapshot_item = indexed['Frozen attempt manifest'], indexed['Frozen source snapshot']
+     direct = contract['schema'] == 'campaign002-failed-diagnostic-queue-1'
+     single = contract['schema'] == SINGLE_INTERRUPT_SCHEMA
++    boundary = contract['schema'] == FAILED_BOUNDARY_SCHEMA
+     if ((Path(manifest_item['path']).name != 'manifest.json' if direct or single
+          else not Path(manifest_item['path']).name.endswith('-manifest.json'))
+             or Path(snapshot_item['path']).name != 'snapshot.json'):
+         raise ValueError('Failed queue manifest/snapshot filenames are not explicit metadata')
+     argv = job.get('argv', [])
+-    if not direct:
++    if not direct and not boundary:
+         if (not isinstance(argv, list) or argv.count('--manifest') != 1
+                 or argv.index('--manifest') + 1 >= len(argv)):
+             raise ValueError('Failed queue exact manifest dispatch is unavailable')
+@@ -274,7 +326,9 @@
+     if (manifest.get('run_id') != row['run_id'] or manifest.get('framework_revision') != row['revision']
+             or snapshot.get('revision') != row['revision']):
+         raise ValueError('Failed queue manifest/snapshot run or revision mismatch')
+-    if direct:
++    if boundary:
++        failed_boundary_dispatch(row, job, {label: Path(item['path']) for label, item in indexed.items()}, manifest, snapshot, manifest_item['sha256'])
++    elif direct:
+         failed_diagnostic_dispatch(row, job, manifest_item, snapshot_item, manifest, snapshot)
+     elif single:
+         failed_single_interrupt_dispatch(row, job, {label: Path(item['path']) for label, item in indexed.items()},
+@@ -308,8 +362,8 @@
+     Diagnostic documents are separate hash-only links. Their contents are not
+     parsed into verdicts, checks, measurements, canaries or scientific outcomes.
+     """
+-    if row.get('run_id') != 'RCI001-C02-shutdown-diagnostic-004':
+-        raise ValueError('Only the declared Native004 completion is supported')
++    if row.get('run_id') not in ('RCI001-C02-shutdown-diagnostic-004','RCI001-C02-shutdown-diagnostic-006'):
++        raise ValueError('Only declared Native004/006 completions are supported')
+     contract = row.get('queue_completion_contract', {})
+     if (contract.get('schema') != COMPLETED_INTERRUPT_SCHEMA
+             or row.get('status') != 'completed' or row.get('validity') != 'unknown'

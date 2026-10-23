@@ -1,0 +1,130 @@
+{
+  "schema": "native-output-truncation-source-findings-1",
+  "tag": "rust-v0.157.1",
+  "created_at_utc": "2026-09-29T00:56:07.993050+00:00",
+  "scope": "Primary source/code-review foundation only. No runtime, model, queue or assessor execution; no installed-binary/source equivalence attestation; no Smoke022 reclassification.",
+  "sources": {
+    "nested_result": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__context.rs",
+      "bytes": 20351,
+      "sha256": "9a9acc6daab2112bd9ca1a07a1e1f2105b20a7f565878157c726ee0d7a3e00cc",
+      "line_start": 448,
+      "line_end": 518
+    },
+    "nested_wire_json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__code-mode__src__grpc_session__completion.rs",
+      "bytes": 1863,
+      "sha256": "3784c8bfc0c1b883103937a10c6370f46b059ea88a33653039469941dc20171d",
+      "line_start": 16,
+      "line_end": 37
+    },
+    "text_contract": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__code-mode-protocol__src__description.rs",
+      "bytes": 38384,
+      "sha256": "2dbd58a3210c05fab918dca4426c3947a6732ec48e80a05344d432e314546c95",
+      "line_start": 22,
+      "line_end": 39
+    },
+    "text_adapter": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__core__src__tools__code_mode__response_adapter.rs",
+      "bytes": 1934,
+      "sha256": "702b85e1a50baf24470f5018c355f27d7630134a2a9ea7b9a938c292702568f7",
+      "line_start": 11,
+      "line_end": 47
+    },
+    "outer_order": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__mod.rs",
+      "bytes": 19667,
+      "sha256": "13b5bda6e93a65fe999a3f07b3c5ee4a05850bfca57e4090876d70b310d8ba9e",
+      "line_start": 265,
+      "line_end": 327
+    },
+    "status_header": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__output.rs",
+      "bytes": 2600,
+      "sha256": "071a30e1811bb43939e59f910c180b5377e9aa2f99f5e2bc658032bf1d319c77",
+      "line_start": 20,
+      "line_end": 69
+    },
+    "join_and_warning": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__utils__output-truncation__src__lib.rs",
+      "bytes": 8219,
+      "sha256": "e2e23cc1b3c9153bef0855cb3c7c91c68e6e43117647c3e97feefda92026a38e",
+      "line_start": 18,
+      "line_end": 104
+    },
+    "exact_slices": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__utils__string__src__truncate.rs",
+      "bytes": 4502,
+      "sha256": "d5755286344f10d10b4bd9f93bb3bff6f1b85270a15df378254051b147ad38ad",
+      "line_start": 4,
+      "line_end": 152
+    },
+    "outer_default": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__core__src__unified_exec__mod.rs",
+      "bytes": 8167,
+      "sha256": "b44a827c63f6906f4b76e69f2095cb207b4989e67a8a5fcd521a1150443ad240",
+      "line_start": 227,
+      "line_end": 228
+    },
+    "default_value": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__core__src__unified_exec__mod.rs",
+      "bytes": 8167,
+      "sha256": "b44a827c63f6906f4b76e69f2095cb207b4989e67a8a5fcd521a1150443ad240",
+      "line_start": 79,
+      "line_end": 81
+    }
+  },
+  "pipeline": [
+    "Nested exec produces structured JSON with output optionally already truncated by its own max_output_tokens; serde_json transports this value to code-mode host.",
+    "Public text(value) description promises JSON.stringify for non-string values when possible. Actual host text implementation was not located in inspected Rust adapter/protocol files; no broader source search undertaken.",
+    "Host RuntimeResponse content items are adapted; text strings pass unchanged. Errors append Script error text. All-text outer results take formatted-truncation path after adaptation and before the separate status/timing header.",
+    "All-text segments concatenate in order. Before each segment, LF is appended iff combined-so-far is nonempty; then segment text is appended. Under budget, original separate items are returned. Over budget, one warning-bearing text item replaces their text content."
+  ],
+  "truncation": {
+    "resolved_tokens": "explicit Option<usize> value, otherwise10000",
+    "budget": "tokens.saturating_mul(4)",
+    "unchanged_when": "combined UTF8 bytes <= budget",
+    "original_count": "ceil(original UTF8 bytes/4), saturating arithmetic; not tokenizer output",
+    "line_count": "Rust str.lines().count(), not escaped JSON newline count",
+    "warning": "Warning: truncated output (original token count: N)\nTotal output lines: L\n\n",
+    "prefix": "largest original UTF8 prefix whose bytes <= floor(budget/2)",
+    "suffix": "original suffix starting at first UTF8 scalar boundary at/after len-ceil(budget/2)",
+    "middle_marker": "…N tokens truncated…",
+    "marker_count": "ceil((original_bytes-budget)/4); Unicode boundary rounding can omit additional bytes, so N is not exact omitted byte/token measurement",
+    "assembly": "warning + unchanged_prefix + literal_marker + unchanged_suffix; no extra separator at marker",
+    "overhead": "warning and marker bytes are additional to retained head/tail byte budget",
+    "zero_budget": "marker only after warning for nonempty content"
+  },
+  "supported_bounded_inference": "A complete, independently known file represented entirely inside the source-derived unchanged prefix may have all its bytes delivered despite later outer truncation. This requires exact authenticated call/result/serialization/position joins and complete representation of that file. It does not prove omitted files, whole command output or model attention.",
+  "fail_closed_limits": [
+    "Do not treat the output as original complete JSON: a marker inserted inside a JSON string can leave syntactically valid but modified JSON.",
+    "Do not search for the first marker/warning text to establish the cut: genuine source output may contain those literals. Use bound policy and source-derived UTF8 slice positions.",
+    "Do not claim every file in a concatenated command was shown merely because earlier complete files were preserved.",
+    "Do not equate escaped JSON representation length with original file bytes, split an escape, or use later mutable source bytes.",
+    "Do not apply the all-text joining rule to mixed image/audio/encrypted content: the source uses a separate item-budget path.",
+    "A nested exec truncation/omission marker is an independent earlier loss; the outer preserved prefix cannot restore omitted bytes.",
+    "Neither source tag nor text API documentation proves this installed binary executed the same implementation or a model attended to the bytes."
+  ],
+  "counterexample_shapes": [
+    {
+      "case": "valid_spliced_json",
+      "source": "{\"output\":\"abcdefghijklmno\"}",
+      "description": "If the native marker falls between ordinary characters inside this string, JSON parsing may still succeed; the parsed value contains manufactured marker text rather than original omitted content."
+    },
+    {
+      "case": "marker_in_original",
+      "source": "file bytes may themselves include …1 tokens truncated…",
+      "description": "Untrusted literal marker location alone cannot define native truncation boundary."
+    },
+    {
+      "case": "multifile_boundary",
+      "description": "Complete file A before the known prefix cut does not prove file B that crosses the cut; no union with tail may fill the missing middle without separate authenticated proof."
+    },
+    {
+      "case": "unicode_and_escaping",
+      "description": "UTF8 prefix boundary and JSON escape boundary differ; source budget is UTF8 of the already serialized text, not file characters/tokens."
+    }
+  ],
+  "actual_output_scope": "This artifact did not read Smoke022 raw output. io_repair_review separately owns exact retained output spans and diagnosis. Numeric observed79/20000/27/20000 layout is reported separately, not treated here as independent empirical verification."
+}

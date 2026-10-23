@@ -1,0 +1,88 @@
+
+  Provider: Microsoft-Windows-TCPIP
+	TCP.AnyPort=<PORT>, TCP.SourcePort=<PORT>, TCP.DestinationPort=<PORT>
+	 Allows traces to be collected on ports specified by rules.  Any
+	 combination of the above filters can be applied.  TCP.AnyPort will
+	 allow traces to be collected if either the source or destination port
+	 match.
+	 Note: These provider filters support lists, ranges, and negations.
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes
+	     TCP.SourcePort=80 TCP.DestinationPort=1234 
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes TCP.AnyPort=(80,443)
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes  TCP.SourcePort=!(900-1000)
+ 
+	ProcessId=<Process ID>
+	 Enables ETW traces for the described process IDs.
+	 Note: This provider filter supports ranges, lists, and negations.
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes ProcessId=987
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes ProcessId=(1,5,8,9)
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes ProcessId=!(100-200)
+ 
+	IPv4.Address=<IPv4 Address>
+	IPv4.SourceAddress=<IPv4 Address>
+	IPv4.DestinationAddress=<IPv4 Address>
+	 Enables ETW traces for the described IPv4 address or addresses.
+	 IPv4.Address will allow traces if either the source or destination
+	 address match the filter.  Source and destination filters can be used
+	 simultaneously.
+	 Note: These provider filters support lists, ranges, and negations.
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes IPv4.Address=(2.0.0.0-3.0.0.0)
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes IPv4.SourceAddress=(2.0.0.0,3.0.0.0)
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes IPv4.DestinationAddress=!(2.0.0.0)
+ 
+	IPv6.Address=<IPv6 Address>
+	IPv6.SourceAddress=<IPv6 Address>
+	IPv6.DestinationAddress=<IPv6 Address>
+	 Enables ETW traces for the described IPv6 address or addresses.
+	 IPv6.Address will allow traces if either the source or destination
+	 address match the filter.  Source and destination filters can be used
+	 simultaneously.
+	 Note: These provider filters support lists, ranges, and negations.
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes IPv6.Address=(2001::1-2001::ffff)
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes IPv6.SourceAddress=(2001::1-2001::ffff)
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes IPv6.DestinationAddress=!(2001::ffff)
+ 
+	RoutingDomain=<GUID>
+	 Enables packet capture for the specified routing domain.
+	 Use 'Get-NetCompartment' to list available routing domains.
+	 Note: This provider filter supports lists and negations.
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes
+	     RoutingDomain="{B1062982-2B18-4B4F-B3D5-A78DDB9CDD49}"
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes RoutingDomain="(<GUID1>,<GUID2>)"
+	e.g.netsh trace start
+	     provider=Microsoft-Windows-TCPIP
+	     providerFilter=Yes RoutingDomain=!"(<GUID1>,<GUID2>)"
+
+Note:
+	Provider filters usage is similar to Capture filters unless
+	stated otherwise. Use 'netsh trace show CaptureFilterHelp'
+	to display the capture filters' usage
+

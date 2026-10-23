@@ -1,0 +1,143 @@
+# Session 022 — Cup found at bathroom far wall; safely docked
+
+## Session identity
+
+- Session ID: 022.
+- Start time: 2026-10-08; first live status at sim 14969.048 and observation 464 at 14969.160. Exact wall-clock start not recorded.
+- End time: Dock completed at sim 15415.376; final status at 15415.392. Closeout clock reading: 2026-10-08 22:10:15 UTC.
+- Agent / model: Codex, GPT-6-based agent; exact revision unavailable.
+- Runtime / configuration: Apartment robot, Maps Edition, public primitive client, noisy sensing and dead reckoning.
+- Project revision: Supplied ProjectDetails.md, unchanged; revision identifier unavailable.
+- Robot configuration revision: Supplied RobotDetails.md, unchanged; revision identifier unavailable.
+
+## Startup context consulted
+
+Read RobotAgentPrompt.md, then the required README.md, RobotDetails.md, Playbooks/Index.md, ProjectDetails.md, Maps/Apartment.md, SummaryOfOnlyNecessaryContext.md and LongTermMemory.md in order. Read reports 021, 020 and 019 newest to oldest; combined output truncated part of 020, recovered by reading that report separately. Read the PositionGrasp default playbook/program and SessionReportTemplate.md. Considered positioning but did not invoke it because localization consumed the available work window. No drawer playbook was required: the drawers were already visibly extended and no operation was attempted.
+
+Observation 464 showed the charger and nearby walls, insufficient to identify the room alone. Head scan 465 showed the marked cabinet beside an opening containing the living-room television, stand and sofa. Identified the kitchen against Apartment.md, then loaded Kitchen.md before base navigation. Counter/mats in 466 corroborated this identification.
+
+After crossing the rear opening, observation 474 showed the toilet, sink and bathtub from inside the bathroom. Explicitly identified the bathroom and loaded Bathroom.md before further movement. On return, 483 showed the kitchen counter and cabinet beside the robot; explicitly reidentified the kitchen and reloaded Kitchen.md before continuing. No bedroom or living-room entry occurred, and no unrelated room map was loaded.
+
+Displayed all head images 464–486 using robot_image with exact public observation sequences. The first image adapter did not display its string result; a diagnostic printed excessive string-index output, then extracting the data URI displayed 464 and all subsequent images correctly. No wrist image was taken. Inline Python used only public commands, observations, point projections and status polling. No hidden simulator state, object identifiers, simulator source, image archive or external interface was accessed. Read Maps/README.md and Maps/Rooms/README.md during closeout.
+
+## Objective on entry
+
+Live assignment: “Find the cup on one of the three kitchen countertop mats and put it inside drawer B.” Continue the incomplete normal assignment, honor the work warning, return and dock, then complete filesystem closeout. Historical throwing feedback did not define the current task.
+
+## Starting state
+
+At sim 14969.048: undocked, no active action, low_warning false, 304.50 work seconds remaining, task_success false, empty/open gripper and retracted arm. Head pan zero/tilt 0.55. Dead-reckoned pose approximately (4.099,-0.929) m, yaw 9.9585, not surveyed localization. Historical cup location was unknown after two sessions of unsuccessful relocalization; current drawer state required sensing.
+
+## Work performed
+
+1. Identified the kitchen, loaded its map, backed from the charger and turned toward the counter through sensed clear floor.
+2. Inspected the countertop mats, counter-end floor and wall, charger-side floor, drawer cabinet and kitchen aisle. No cup was identified in these views.
+3. Entered and identified the bathroom, loaded its map, and investigated a small pale feature beyond the toilet.
+4. Changed the lateral viewpoint around the toilet's left side, confirmed a cup on its side near the far wall, and approached to obtain a close RGB-D surface sample.
+5. With only 11.61 work seconds remaining at the next status, left the cup untouched, stowed the empty arm and began returning. The next observation showed the warning; all remaining physical work served return and docking.
+6. Returned through the kitchen, reidentified it and reloaded its map, approached the visible station, waited 0.8 seconds and docked successfully on the first request.
+7. Updated map verification and observed fixed boundary structure, reviewed memory/capability candidates, refreshed README/summary and created this immutable report.
+
+## Results and evidence
+
+**Cup-to-B remains incomplete.** A fresh bathroom cup location was established. No closure, grasp, lift, loaded carry, drawer manipulation, release or containment occurred. Public task_success remained false through docking.
+
+### Kitchen search and drawer observations
+
+After 465, backed 0.85 m, turned about pi and recentered the head. Observation 466 at sim 15005.704 showed all three countertop mats with no identifiable cup. Advanced 1.15 m, then inspected the counter-facing and counter-end floor in 467–468. Observation 469 showed the charger-side wall and exposed floor. These are bounded negative observations, not proof that all hidden kitchen space was empty.
+
+Observation 470 at sim 15055.676 clearly showed both A and B extended, including B's orange fixture and black handle. The cabinet remained extended in 471 and charger-return views 484–485. No intentional contact or drawer operation occurred. The images did not establish precise insertion clearance.
+
+Moved into the kitchen aisle with the arm retracted. Observation 472 showed the sink end of the counter and nearby floor; 473 showed the cabinet rear/side, doorway boundary and bathroom beyond. No cup was identified there. Counter, floor and cabinet occlusions remained a search limitation.
+
+### Bathroom localization and confirmation
+
+Entered the bathroom in **474**, sim **15141.456**, at approximately **(6.093,2.913) m, yaw 14.1384** in dead reckoning. The toilet, sink and blue-interior bathtub established room identity. A small pale feature was visible left of the toilet, near the distant wall. Pixel **(120,126)** projected approximately **(4.9390,2.4155,0.0320) m** in the base frame. It was initially treated as an unconfirmed candidate.
+
+Advanced 1.50 m through clear central floor. In 475 the candidate region was hidden behind the toilet. Head scan 476 exposed the sink, toilet and bedroom opening but did not resolve the target. Turned +1.10 rad and advanced 1.30 m onto the toilet's left side. Observation **477**, sim **15197.440**, exposed the pale cylinder again near the far-wall corner, with the bedroom opening and wooden chest to the left. Pixel **(416,154)** projected **(2.4304,-1.9463,0.0395) m** from base estimate **(4.968,5.019) m, yaw 15.2384**.
+
+Turned -0.675 rad and advanced 1.50 m. Image **478**, sim **15228.596**, clearly showed a pale cup-shaped cylinder on its side against the far wall. Pixel **(249,197)** projected **(1.6120,-0.0779,0.0432) m**. Base estimate was **(4.300,6.362) m, yaw 14.5823**. The left/right wall intersection was visible beyond it.
+
+Turned -0.20 rad and advanced 0.68 m, tilted the head to 0.85 and moved the short-reach empty arm laterally for visibility. The closer image **479**, sim **15248.784**, confirmed the cup on its side at the wall. Its visible surface at pixel **(205,186)** projected **(0.8957,0.2088,0.0528) m**. Base estimate was **(4.109,7.047) m, yaw about 14.4024**. This is the **last confirmed cup view**. The spatial description is the bathroom far wall, left of the toilet as seen from kitchen entry, near the wall return beside the bedroom opening.
+
+The progressively closer views and surface projections are consistent with this same location during the observed approach. They are not surveyed object centers, an exact size measurement or proof that the cup will remain there. No physical interaction with the cup was intended or observed. Its route from the previously reported kitchen location was not observed. This finding does not establish an autonomous movement law or explain earlier loss of visibility.
+
+### Time boundary and return
+
+Observation 479 had 24.77 work seconds remaining. After displaying it and projecting the cup, status at **15261.940** had **11.61 seconds remaining**. A complete checked grasp and lift could not be established within that remaining interval, so no task manipulation began. Centered the empty arm at **(0.25,0,0.45) m**, backed 0.65 m along the recently traversed approach, turned toward the exit and set head tilt 0.55.
+
+First warning shown in a retained observation was **480 at sim 15288.800**. Public status was polled internally during motions, but those intermediate samples were not retained. All commands after the 15261.940 status served return, stow, navigation or docking; no cup work continued into the warning reserve.
+
+Observations 480–482 checked clearance around the toilet and toward the kitchen opening. Used bounded straight segments. Image **483**, sim **15342.128**, from approximately **(6.200,2.425) m, yaw 11.4426**, showed the kitchen counter and cabinet alongside the robot. Explicitly reidentified the kitchen and reloaded Kitchen.md before continuing.
+
+### Successful docking
+
+Continued down the kitchen aisle, then inspected the green pad, yellow stripe and dark backstop in **484**, sim **15359.628**. Stripe pixel **(240,141)** projected **(1.7662,-2.3326,0.0072) m**. Turned -0.9227 rad toward it, recentered the head and inspected 485, then advanced 1.50 m along visible clear floor.
+
+In **486**, sim **15395.720**, stripe pixel **(239,212)** projected **(1.4619,0.0039,0.0077) m**. Advanced **1.30 m**, waited **0.8 seconds**, then docked. Request **`66dff3d37d6948a2ae26c8109defc423`** completed at **15415.376**. Final status at **15415.392** confirmed **docked true**, **no active action**, **empty/open gripper**, and **task_success false**. First docking request succeeded. No physical command followed docking.
+
+## Robot / world state at exit
+
+- Robot: Stationary, safely docked in the kitchen. Dead-reckoned pose approximately (4.108,-0.882) m, yaw 10.1115; not surveyed localization.
+- Arm/gripper: Empty/open, commanded (0.25,0,0.45) m, pitch zero. Final reach encoder about 0.1706, lift 0.0200, lateral near zero, aperture 0.1507 m. Head pan zero/tilt 0.55.
+- Environment/object state: Cup last confirmed on its side against the bathroom far wall in 479; no acquisition or deliberate contact. Both kitchen drawers appeared extended; no manipulation or insertion-clearance measurement.
+- Active/pending actions: None.
+- Authority/control: Physical control closed by successful docking; filesystem closeout complete.
+- Safety: Stationary on charger, arm retracted, nothing held.
+- Important uncertainty: Cup's later state, repeatable grasp/retention, drawer insertion clearance and containment. Cup transfer from the prior kitchen sighting was not observed.
+
+## Spatial map use and updates
+
+Used Apartment.md throughout; loaded Kitchen.md after startup identification, Bathroom.md immediately after bathroom identification, and Kitchen.md again immediately after return identification. The bedroom was seen through its opening but not entered.
+
+- **Apartment.md:** Refreshed kitchen–bathroom traversal evidence with 473–474 and 482–483. No new connection was discovered.
+- **Bathroom.md:** Added the visibly observed wall return meeting the far wall beside the bedroom opening, left of the toilet, supported by 477–479. Refreshed room, doorway and bedroom-opening evidence. No dimensions or surveyed corner coordinates were invented.
+- **Kitchen.md:** Refreshed current room identification, direct bathroom traversal and successful station/docking evidence.
+
+The fixed wall addition was recorded during closeout after the prompt charger return. Cup position, current drawer extension, approach targets and procedures were excluded from Maps. Bathroom–bedroom passage remains visually confirmed but untraversed; correspondence to the historical bedroom-side opening remains unresolved. Coverage remains partial.
+
+## Durable artifacts created or materially changed
+
+- `Maps/Apartment.md`, `Maps/Rooms/Kitchen.md`, `Maps/Rooms/Bathroom.md`: Refreshed verified structure and added the observed bathroom boundary relation.
+- `README.md`: Refreshed bathroom-map description to include the far-wall corner beside the bedroom opening. Established report wildcard and runtime tree remain accurate.
+- `SummaryOfOnlyNecessaryContext.md`: Records safe docking, confirmed bathroom cup location, latest evidence, absence of manipulation, and remaining acquisition/placement work.
+- This immutable report: Preserves search limits, cup confirmation, time boundary, return and docking evidence.
+
+No program, learned playbook, image archive or directory was created. Defaults, protected contracts and prior reports were unchanged.
+
+## Learned constraints, procedures, or reusable knowledge
+
+The toilet hid the candidate far-wall floor region from central views 475–476, while lateral view 477 and closer views 478–479 exposed it. This is useful episode evidence for resolving occlusion, not a validated search or grasp procedure. The fixed wall relation belongs in Maps; current cup location belongs in the summary/report.
+
+Reviewed candidates against LongTermMemory.md and canonical maps/capabilities. No new acquisition, retention or placement result was obtained, and one renewed location does not justify a durable cup-location regularity. LongTermMemory.md and Playbooks/Index.md were left unchanged. Ordinary inline command sequencing did not warrant program promotion.
+
+## Failures and negative results
+
+- rg was unavailable; used find. Recovered truncated recent-report material with a separate read.
+- The first image adapter assumed a structured response; the tool returned a string. Corrected extraction before relying on the images. Diagnostic output was unnecessarily large.
+- Kitchen search did not locate the cup. Negative views did not exclude occluded regions.
+- Central bathroom views hid the distant candidate behind the toilet. The later lateral view resolved it.
+- No grasp was attempted before the work window expired; localization and approach did not complete the assignment.
+- No drawer manipulation, insertion-clearance test or physical containment occurred.
+- All physical commands shown were accepted and polled to completion; effects were checked with observations/status. No blocked action or docking rejection was reported.
+
+## Unresolved work
+
+If cup-to-B remains assigned: verify live state and room, reacquire the cup near the bathroom far wall from fresh images, establish reachable finger alignment and verified acquisition/lift, retain the cup during transport, inspect B's current opening and insertion clearance, release inside it and verify physical task_success. Session-022 projections are historical surfaces, not replay targets. Earlier successful acquisitions and later losses remain relevant scoped evidence in reports 010 and 019 and LongTermMemory.md.
+
+The newly confirmed bathroom location replaces an unknown current location, but does not explain how the cup arrived there. No required session-022 docking or closeout work remains.
+
+## Corrections / supersessions of earlier reports
+
+No prior report was edited. Session 021's absence of an identifiable cup was a bounded negative result, not proof that the bathroom was empty. The old kitchen surface in session 020 observation 432 is superseded as the latest confirmed location by bathroom observations 478–479. No unobserved transport or exact motion path is asserted.
+
+## Summary update
+
+Marks cup-to-B incomplete and robot safely docked with physical control closed. Replaces unknown cup location/search priority with the fresh bathroom far-wall sighting, records precise last-view evidence and timing, and keeps fixed geometry in maps. Preserves grasp/retention and insertion-clearance uncertainties.
+
+## Session ending
+
+- Task status: Incomplete — cup found, no acquisition or containment, task_success false.
+- Reason for ending: Ordinary warning, prompt return, successful docking and completed filesystem closeout.
+- Robot left in safe unambiguous state: Yes — stationary on kitchen charger, empty/open retracted gripper, no active action.
+- Future startup must verify: Live assignment/status, current room/map, fresh bathroom cup position and current drawer B opening. Physical control is closed for this invocation.

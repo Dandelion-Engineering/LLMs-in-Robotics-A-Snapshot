@@ -1,0 +1,125 @@
+# Session 001 — Living-room throwing practice
+
+## Session identity
+
+- Session ID: 001, first deployment session.
+- Start time: 2026-10-08; exact wall-clock start not captured. First status at simulated time 31.880 s.
+- End time: docking at simulated time 708.256 s; filesystem closeout 2026-10-08, approximately 18:09 UTC.
+- Agent / model: Codex, GPT-6-based agent; exact model revision not exposed.
+- Runtime / configuration: apartment robot, Maps Edition, noisy sensing and dead reckoning; public robot-client primitives.
+- Project revision: supplied `ProjectDetails.md`, no revision identifier, unchanged.
+- Robot configuration revision: supplied `RobotDetails.md`, no revision identifier, unchanged.
+
+## Startup context consulted
+
+Read `RobotAgentPrompt.md`, then the required startup files in order: `README.md`, `RobotDetails.md`, `Playbooks/Index.md`, `ProjectDetails.md`, `Maps/Apartment.md`, `SummaryOfOnlyNecessaryContext.md`, and `LongTermMemory.md`. No prior immutable reports existed; `SessionReports/` held only its template.
+
+Also read `Maps/RoomMapTemplate.md`, `SessionReports/SessionReportTemplate.md`, `Playbooks/Default/PositionGrasp.md`, and its program. After visual room identification, created and immediately read `Maps/Rooms/LivingRoom.md`. Later read the playbook template and learned-directory READMEs before capability promotion. No hidden simulator data or unrelated detailed room maps were loaded.
+
+## Objective on entry
+
+Status assigned bounded practice to learn to throw the orange object into the living-room bin. Use ordinary arm/gripper controls and authorized reset; work usefully until the battery warning, then return to a charger and dock.
+
+## Starting state
+
+Base at dead-reckoned initial origin, yaw approximately zero; open gripper, no contact/acquisition, no active action. Battery 99.25%, about 568.52 working seconds remaining at first status. No prior maps or learned world knowledge.
+
+Observation 1 showed the blue bin and an opening toward cabinetry. Observation 3 showed sofa, television/stand, coffee table, and a bed beyond another doorway. These pixels established the current room as the living room.
+
+## Work performed
+
+1. Scanned with the head and inspected RGB-D/status. Located orange sphere on gray pedestal (observation 4) and charger with green pad, yellow stripe, and backstop beside sofa (5).
+2. Created apartment topology and living-room map. Registered the remotely visible bedroom and created a minimal map from that view; never entered it.
+3. Turned toward pedestal, projected visible sphere surfaces, invoked default open-gripper positioning, and adjusted alignment using ordinary arm controls.
+4. Recovered from unilateral contact. A 0.06 m closure then gave bilateral contact and confirmed lift but later lost the sphere before the intended throw.
+5. Reset the exercise object. Reacquired at commanded width 0.02 m; measured aperture near 0.089 m and effort near 20.66. Verified lift before subsequent throws.
+6. Made four actual throws with fresh inside-bin feedback and independent RGB confirmation. Tested two duration settings twice each.
+7. Promoted the trajectory to a learned program/playbook. Used remaining practice time for repetition and artifact review. Left the final sphere in the bin.
+8. Retracted the arm. Observed warning at sim time 605.068, re-perceived charger, turned toward it, drove 0.9, 1.0, and 0.3 m segments with intermediate observations, then docked. No room transition occurred.
+
+## Results and evidence
+
+Displacements below are public landing feedback in the target-bin frame: forward along room throwing axis, left perpendicular. They are not agent-inferred ground-truth poses.
+
+| Trial | Grip command | Fast durations | Landing sim time | Forward (m) | Left (m) | Inside | Evidence |
+|---|---|---|---|---|---|---|---|
+| Weak-grip preparatory loss | 0.06 m | Object fell before trajectory | 246.212 | -1.337 | +0.500 | No | Lift confirmed at 223.304, contact at 235.288; intended trajectory ended only at 265.408 |
+| Successful throw 1 | 0.02 m | 0.200 / 0.140 s | 325.692 | +0.230 | -0.029 | Yes | Fresh feedback at 326.680; RGB 14 |
+| Successful throw 2 | 0.02 m | 0.200 / 0.140 s | 448.224 | +0.214 | -0.024 | Yes | Saved program; RGB 17 |
+| Successful throw 3 | 0.02 m | 0.220 / 0.154 s | 483.820 | +0.091 | +0.018 | Yes | Program scale 1.1; RGB 20 |
+| Successful throw 4 | 0.02 m | 0.220 / 0.154 s | 523.248 | +0.088 | +0.019 | Yes | Program scale 1.1; RGB 23 |
+
+Trajectory: windup (x=0.35,y=0,z=0.85,width=0.02,duration=1.2); acceleration to (0.75,0,1.05,width=0.02); opening follow-through to (1.03,0,1.19,width=0.15). Pitch approximately zero. Scale 1.1 became the saved default after its two successes. The slower setting reduced forward landing offset in both trials; generalization remains untested.
+
+Throwing pose was roughly odometry (0.097,0.024) m, yaw -0.325 rad. Perception placed bin approximately 1.8–1.9 m forward, near centerline. At repeated pickup heading -1.425 rad near that base position, fresh projections supported grasp (0.605,-0.195,0.955) m. Approach at z=1.10, descend, close, then lift/retract to (0.40,0,1.15). These are episode-specific estimates, not coordinates to reuse without sensing.
+
+Dock request `634602f118aa46368b7d847122c23eb1` completed at 708.256 s. Status at 708.380 showed docked true, no active action, battery 100%.
+
+Generic `task_success` remained false, including after throwing and docking. The completed task is bounded practice, supported by landing results and the warning/docking protocol; no household-task success flag is claimed.
+
+## Robot / world state at exit
+
+- Robot: stationary and docked in living room; odometry approximately (-1.869,-0.965) m, yaw -2.675 rad.
+- Arm: commanded (0.25,0,0.45) m, pitch 0; measured reach about 0.170, lift 0.021, lateral near zero. Gripper open about 0.150 m, no held object. Head pan near zero, tilt 1.0 rad.
+- Environment/object: orange sphere last seen inside blue bin (RGB 23), consistent with retained inside-bin feedback. No reset after final success.
+- Active/pending actions: none.
+- Authority/control: docking closed physical control; filesystem closeout only. Next assignment unknown until fresh startup.
+- Safety: safe, unambiguous docked state confirmed.
+- Uncertainty: future assignment, localization and object state must be reconciled from current sensing.
+
+## Spatial map use and updates
+
+- Current room throughout: living room, initially identified by sofa, TV, and coffee table. Return stayed within the room to the charger beside the same sofa.
+- Active detailed map loaded: `Maps/Rooms/LivingRoom.md`. Apartment topology retained throughout.
+- Added living room, remotely identified bedroom, and observed connecting doorway. Minimal `Bedroom.md` contains only bed and doorway; interior not explored.
+- Living-room landmarks added: sofa, TV/stand, coffee table, blue target bin, gray practice pedestal, charger.
+- Charger stripe projected from observation 5 near (-1.977,-1.005,0.008) m in the initial base/odometry frame. Observation 27 projected it 1.415 m forward from odometry (-0.708,-0.380), yaw -2.675, consistent with the first estimate. Docking confirmed its function.
+- Another doorway shows cabinetry, but its destination is unconfirmed. No connection invented beyond the observed bedroom connection.
+- No transient sphere positions or procedures were stored in maps. No prior-map corrections needed; maps began empty.
+
+## Durable artifacts created or materially changed
+
+- `Maps/Apartment.md`: first observed topology; partial.
+- `Maps/Rooms/LivingRoom.md`: active fixed-structure map used for charger return; approximate coordinates grounded in projections.
+- `Maps/Rooms/Bedroom.md`: minimal remote-view map, no claim of exploration.
+- `Programs/Learned/throw_forward.py`: ordinary-primitive throw replay, physically used for three successes after first inline success. At closeout default changed to tested scale 1.1; dock, initial-pose, completion-ID and feedback-freshness guards tightened. Motion parameters physically tested; final guard changes statically reviewed against recorded successful states and Python syntax checked, without post-dock physical trial.
+- `Playbooks/Learned/ThrowForward.md`: scope, preconditions, invocation, evidence, failure modes. Registered in `Playbooks/Index.md`.
+- `README.md`: updated tree/descriptions for maps, learned capability and report collection.
+- `SummaryOfOnlyNecessaryContext.md`: replaced launch state with completed practice, docked state and next-start obligations.
+- This immutable report: episode evidence. Observation numbers refer to public images viewed during session; images were not copied to persistent files.
+
+## Learned constraints, procedures, or reusable knowledge
+
+- Stronger 0.02 m closure retained orange sphere over four successful trials, measured opening around 0.089 m. Weaker 0.06 m closure confirmed lift but failed to retain it until throwing. Scope preserved in playbook.
+- Landing freshness matters: first landing preceded the intended throw. Saved program requires landing after invocation.
+- Surface projection requires center/height reasoning. Base motion changed grasp alignment; unilateral effort did not prove acquisition.
+- Default positioning appeared above final grasp in this episode. Explicit final approach/descent and contact/lift verification succeeded. No universal fixed offset inferred.
+- Long-term memory review: no separate entry added. Reusable findings are represented in playbook and maps; pose-specific details stay here. Duplication in `LongTermMemory.md` would add no value.
+
+## Failures and negative results
+
+- `rg` unavailable; used filesystem fallback.
+- Image tool returned a string containing a data URI, not a `content` object. Initial display handling failed and one raw text call was excessively large; extracting the data URI correctly displayed subsequent images. No physical effect.
+- Initial -1.57 rad base command yielded observed yaw -1.3865 with x=0.150,y=0.033. Later stabilized near x=0.098,y=0.023,yaw=-1.4258. Contact/servo effects are possible; cause unconfirmed. Refreshed perception instead of assuming command target.
+- Initial closure gave high unilateral effort and no lift. Opened and realigned before proceeding.
+- Weak-grip loss made the intended first trajectory move an empty gripper; this was failed preparation, not a ballistic miss.
+- Two batch artifact patches were rejected before applying: one README context mismatch, one invalid duplicate-file operation. Corrected and reapplied during docked closeout; no prior reports were modified.
+
+## Unresolved work
+
+No required work remains for this practice assignment or session closeout. Throw generalization to other poses/objects is untested. Final defensive guard edits have only static review/syntax validation. Apartment exploration is partial; bedroom and cabinetry opening need fresh sensing if future work requires them. Next assignment unknown.
+
+## Corrections / supersessions of earlier reports
+
+None; this is the first report.
+
+## Summary update
+
+Summary now states practice complete, four successes, safe living-room docking, last object state, capability pointers and next-start sensing/assignment requirements.
+
+## Session ending
+
+- Task status: complete — bounded throwing practice, useful work through warning, physical return/docking and persistent closeout.
+- Reason: normal battery-warning/docking boundary.
+- Robot safe/unambiguous: yes, docked with no action and empty retracted gripper.
+- Next session must immediately verify current assignment/status and perceptual room identity, then load current-room map. Do not reuse episode-specific throw pose or object positions without sensing.

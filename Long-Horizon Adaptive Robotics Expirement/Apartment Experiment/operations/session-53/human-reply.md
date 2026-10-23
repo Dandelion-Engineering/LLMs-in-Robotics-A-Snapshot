@@ -1,0 +1,5 @@
+At 02:56 PDT, the original v4 Baseline was running with 16/21 assignments advanced and native session 28 active on a bedroom assignment. Checkpoints 26–27 authenticated. Session 26 advanced the kitchen task; session 27 closed without advancing the bedroom task. All eleven nonadvancing sessions remain preserved. The completed prefix is six timed throwing windows, four bedroom and six kitchen assignments; ten household task-success events await independent physical scoring.
+
+Newly closed sessions 26–27 retired normally. Session 28's work window had ended with return reserve remaining; its closeout was not observed. Recording hashes matched, the viewer responded and D: had 172.951 GiB free. Maps remains pristine, the current monitor continues unchanged and the three older monitors remain paused.
+
+Session 53 hands off without scientific intervention. [Report](../../../agents/Codex/Session%20Summaries/HumanReport53.md) · [Evidence](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Apartment%20Experiment/operations/session-53/observation-summary.json).

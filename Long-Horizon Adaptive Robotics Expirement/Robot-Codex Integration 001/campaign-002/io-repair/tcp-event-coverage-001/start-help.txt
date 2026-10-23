@@ -1,0 +1,79 @@
+
+start
+  Starts tracing.
+
+  Usage: trace start [sessionname=<sessionname>]
+	[[scenario=]<scenario1,scenario2>] 
+	[[globalKeywords=]keywords] [[globalLevel=]level]
+	[[capture=]yes|no] [[capturetype=]physical|vmswitch|both] 
+	[[report=]yes|no|disabled] [[persistent=]yes|no] 
+	[[traceFile=]path\filename] [[maxSize=]filemaxsize] 
+	[[fileMode=]single|circular|append] [[overwrite=]yes|no] 
+	[[correlation=]yes|no|disabled] [capturefilters] 
+	[[provider=]providerIdOrName] [[keywords=]keywordMaskOrSet]  
+	[[level=]level] [bufferSize=<bufferSize>]
+	[[[provider=]provider2IdOrName] [[providerFilter=]yes|no]]
+	[[keywords=]keyword2MaskOrSet] [[perfMerge=]yes|no] 
+	[[level=]level2] ... 
+
+Defaults:
+	capture=no (specifies whether packet capture is enabled
+		in addition to trace events)
+	capturetype=physical (specifies whether packet capture needs to be
+		enabled for physical network adapters only, virtual switch
+		only, or both physical network adapters and virtual switch)
+	report=no (specifies whether a complementing report will be generated
+		along with the trace file)
+	persistent=no (specifies whether the tracing session continues
+		across reboots, and is on until netsh trace stop is issued)
+	maxSize=250 MB (specifies the maximum trace file size, 0=no maximum)
+	bufferSize=512 (specifies trace buffer size in KB, min 4, max 16384)
+	fileMode=circular
+	overwrite=yes (specifies whether an existing trace output file will
+		be overwritten)
+	correlation=disabled (specifies whether related events will be
+		correlated and grouped together)
+	perfMerge=yes (specifies whether performance metadata is merged
+		into trace)
+	traceFile=%LOCALAPPDATA%\Temp\NetTraces\[sessionname]NetTrace.etl
+		(specifies location of the output file)
+	providerFilter=no (specifies whether provider filter is enabled)
+	sessionname='' (specifies a name for the trace session so that
+		simultaneous traces can be collected.
+
+Provider keywords default to all and level to 255 unless otherwise specified.
+
+For example:
+
+netsh trace start scenario=InternetClient capture=yes
+
+	Starts tracing for the InternetClient scenario and dependent providers
+		with packet capture enabled for physical network adapters only.
+	Tracing will stop when the "netsh trace stop" command is issued
+		or when the system reboots.
+	Default location and name will be used for the output file. If an old
+		file exists, it will be overwritten.
+
+netsh trace start provider=microsoft-windows-wlan-autoconfig
+	keywords=state,ut:authentication
+
+	Starts tracing for the microsoft-windows-wlan-autoconfig provider
+	Tracing will stop when the "netsh trace stop" command is issued
+		or when the system reboots.
+	Default location and name will be used for the output file. If an old
+		file exists, it will be overwritten.
+	Only events with keyword 'state' or 'ut:authentication' will be logged.
+
+	netsh trace show provider command can be used to display
+		supported keywords and levels.
+
+Capture Filters: 
+	Capture filters are only supported when capture is explicitly
+	enabled with capture=yes. Use 'netsh trace show CaptureFilterHelp'
+	to display a list of supported capture filters and their usage.
+
+Provider Filters: 
+	Provider filters are supported by multiple providers and are enabled
+	with providerFilter=Yes after every provider.
+	Use 'netsh trace show ProviderFilterHelp' to display a list of
+	supported provider filters for each provider and their usage.

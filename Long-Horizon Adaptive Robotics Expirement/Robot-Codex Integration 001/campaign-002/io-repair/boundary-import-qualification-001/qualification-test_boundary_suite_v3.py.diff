@@ -1,0 +1,37 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_boundary_suite_v3.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\test_boundary_suite_v3.py
+@@ -3,6 +3,8 @@
+ import hashlib
+ from pathlib import Path
+ import unittest
++import subprocess
++import sys
+ from unittest.mock import patch
+ 
+ import boundary_suite as original
+@@ -78,4 +80,25 @@
+                 candidate.sources()
+ 
+ 
++class FreshBoundaryImport(unittest.TestCase):
++    def test_standalone_boundary_loads_exact_reader_and_sibling_dependency(self):
++        # -I discards PYTHONPATH and the invoking discovery process's imports.
++        code = """import sys, importlib.util
++from pathlib import Path
++sys.path.insert(0, sys.argv[1])
++import boundary_suite_v3 as boundary
++spec=importlib.util.spec_from_file_location('cold_capture_reader',boundary.CAMPAIGN/'assessment/retained_reads.py')
++reader=importlib.util.module_from_spec(spec)
++spec.loader.exec_module(reader)
++import completion_chronology
++assert Path(completion_chronology.__file__).resolve()==(boundary.CAMPAIGN/'assessment/completion_chronology.py').resolve()
++assert reader.terminal_process_order is completion_chronology.terminal_process_order
++print('exact boundary reader loaded')
++"""
++        result=subprocess.run([sys.executable,'-I','-B','-c',code,str(candidate.CAMPAIGN/'qualification')],
++                              capture_output=True,text=True,encoding='utf-8',timeout=20)
++        self.assertEqual(result.returncode,0,result.stderr)
++        self.assertEqual(result.stdout.strip(),'exact boundary reader loaded')
++
++
+ if __name__=='__main__':unittest.main()

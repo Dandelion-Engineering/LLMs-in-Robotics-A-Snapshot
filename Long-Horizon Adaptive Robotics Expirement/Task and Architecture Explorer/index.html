@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inside the robot · Task & architecture explorer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="masthead"><a class="wordmark" href="#world">DANDELION <span>/ ROBOTICS LAB</span></a><span class="edition">BATCH 01 · RECORDED SIMULATION</span></header>
+<main>
+<div class="intro"><p class="eyebrow">INSIDE THE ROBOT</p><h1>One workcell.<br>Four ways to decide.</h1><p class="dek">Follow a part from raw stock to a finished order. Then look inside the robot: what the LLM decides, what ordinary control code does, and what survives on disk.</p></div>
+<nav class="nav" aria-label="Explorer sections"><button data-view="world" aria-pressed="true">01 <span>The job</span></button><button data-view="architecture" aria-pressed="false">02 <span>Inside the stack</span></button><button data-view="watch" aria-pressed="false">03 <span>Watch a run</span></button></nav>
+<div id="load-status" role="status">Loading the recorded examples…</div>
+<section id="world" class="page">
+ <div class="section-heading"><div><p class="eyebrow">THE ACTUAL TASK</p><h2>Keep a small-batch workcell moving.</h2></div><p>A fixed Panda arm handles tagged parts, a simulated processing fixture, inspection and order trays. Processing is a timed state change; there is no real cutting.</p></div>
+ <div class="world-layout"><div class="scene-wrap"><canvas id="world-canvas" aria-label="Simplified spatial reconstruction of the recorded workcell"></canvas><div class="scene-caption">Schematic workcell · recorded initial simulator poses · operator view</div></div><div class="job-brief"><h3>The example order</h3><p>Two A-family parts and one B-family part. Available stock:</p><div class="order-parts"><span>A1</span><span>A3</span><b>→</b><strong>Tray 1</strong></div><div class="order-parts family-b"><span>B2</span><b>→</b><strong>Tray 2</strong></div><p>Three distinct parts. Each must be processed with its family’s insert, inspected, and placed in the correct tray.</p><div class="subtle-rule"></div><p><strong>Finishing means more than saying “done”.</strong> The evaluator independently checks physical placement, cycle and inspection history, the current order, and a settled final workcell.</p></div></div>
+ <div class="section-heading compact"><h3>A part’s path through the cell</h3><p>Select a step to see the dependency it creates.</p></div>
+ <div id="task-steps" class="task-steps" aria-label="Part processing sequence"></div><div id="step-detail" class="step-detail" aria-live="polite"></div>
+ <div class="world-footer"><div><p class="eyebrow">WHY LONG HORIZON?</p><h3>Earlier decisions change what is possible next.</h3><p>An occupied fixture blocks the next part. An insert change requires room. A new order can change a destination. A restart can leave an accepted command with an uncertain outcome.</p></div><div><p class="eyebrow">WHAT THESE EXAMPLES SHOW</p><p>C01 is the short, nominal three-part case. The full batch adds order changes, handling and visibility disturbances, delays, and restarts. This tour uses the same C01 case for all four entrants; it is not a demonstration of every disturbance.</p><a class="text-link" href="../Engineering%20Investigation%20007/site-r4-003/index.html#view=analysis">Explore the full results and twelve fixed traces ↗</a></div></div>
+</section>
+<section id="architecture" class="page" hidden>
+ <div class="section-heading"><div><p class="eyebrow">WHO DECIDES WHAT?</p><h2>The LLM changes places.<br>The physical control loop stays.</h2></div><p>Choose an entrant. Follow the arrows from sensing to decision to motion, then see how the host carries state between decisions.</p></div>
+ <div class="architecture-picker" id="architecture-picker" aria-label="Architecture"></div>
+ <div class="architecture-title"><h3 id="architecture-name"></h3><p id="architecture-role"></p></div>
+ <div class="legend"><span class="key conventional">Conventional code</span><span class="key llm">LLM</span><span class="key physical">Physical simulation</span></div>
+ <div class="blueprint" id="stack-diagram" aria-label="Robot control stack schematic"></div>
+ <div class="mechanism-detail" id="mechanism-detail"></div>
+ <div class="section-heading compact"><div><p class="eyebrow">THE CONTINUITY FRAMEWORK</p><h3>One durable checkpoint, managed by the host.</h3></div><p>The model receives assembled text and returns JSON. It has no shell, file browser or file-editing tool in these architectures.</p></div>
+ <div id="framework-diagram" class="framework" aria-label="Filesystem and model framework schematic"></div>
+ <div class="architecture-notes" id="architecture-notes"></div>
+ <div class="section-heading compact"><h3>See this architecture in motion</h3><button id="watch-architecture" class="primary">Watch its recorded C01 run →</button></div>
+ <details class="evidence"><summary>Implementation sources and exact scope</summary><div id="architecture-sources"></div></details>
+</section>
+<section id="watch" class="page" hidden>
+ <div class="section-heading"><div><p class="eyebrow">WATCH THE EVIDENCE</p><h2>The world keeps moving<br>while the model thinks.</h2></div><p>Play, scrub, or jump between decisions. The input, output and filesystem panes stop at the selected simulation time.</p></div>
+ <div class="watch-toolbar"><label>Recorded example<select id="episode"><option value="A3">A3 · motion adviser</option><option value="A1">A1 · action chooser</option><option value="A2">A2 · guarded program</option><option value="baseline">Baseline · conventional scheduler</option></select></label><div id="run-outcome" class="run-outcome"></div></div>
+ <div class="replay-layout"><div class="replay-left">
+  <div class="camera-toolbar"><label>Viewpoint<select id="camera"><option value="perspective">3D perspective</option><option value="overhead">3D overhead</option><option value="front">3D front</option><option value="side">3D side</option><option value="recorded">Recorded overhead camera</option></select></label><span id="scene-mode">Reconstruction · operator-only object poses</span></div>
+  <div class="scene-wrap replay-scene"><canvas id="replay-canvas" aria-label="Recorded robot poses reconstructed from a selectable camera"></canvas><img id="recorded-frame" alt="Actual recorded overhead camera frame" hidden><div id="frame-empty" hidden>No camera frame has been recorded at this time.</div></div>
+  <div id="sample-age" class="sample-age"></div>
+  <div class="transport"><button id="play" class="primary" disabled>Play</button><button id="restart" disabled aria-label="Return to beginning">↤ Start</button><strong id="clock">0.0 s</strong><label>Speed<select id="speed"><option value="1">1×</option><option value="4">4×</option><option value="12" selected>12×</option></select></label></div>
+  <input id="scrub" type="range" min="0" max="1" value="0" step="0.001" aria-label="Simulation time in seconds" disabled>
+  <div id="timeline" class="timeline" aria-label="Model calls on the simulation timeline"></div>
+  <div class="decision-nav"><button id="previous-call" disabled>← Previous call</button><label>Jump to a model exchange<select id="call-picker"><option>No exchanges loaded</option></select></label><button id="next-call" disabled>Next call →</button></div>
+  <div id="action-now" class="action-now"></div>
+  <p class="playback-note">Playback of existing evidence, with sample-and-hold poses. Robot motion is retained at 5 Hz; object poses at about 1 Hz. Alternate cameras are simplified reconstructions, not newly rendered MuJoCo video. Recorded camera frames show the original appearance.</p>
+ </div><div class="replay-right">
+  <div class="io-heading"><h3>At the model boundary</h3><span id="call-state" role="status">No model call yet</span></div>
+  <div class="io-tabs" role="group" aria-label="Model information"><button data-io="input" aria-pressed="true">Input</button><button data-io="output" aria-pressed="false">Output</button></div>
+  <label id="input-part-label">Input component<select id="input-part"><option value="context">Decision context · formatted</option><option value="system">System instructions</option><option value="schema">Allowed output schema</option></select></label><div id="io-meta" class="io-meta"></div><pre id="io-content" tabindex="0">The model input will appear when a recorded request is reached.</pre><button id="response-jump" hidden>Jump to this response →</button><details class="wire"><summary>Exact recorded payload</summary><pre id="io-wire" tabindex="0"></pre></details>
+  <div id="output-preview-wrap"><h4>Response at this time</h4><pre id="output-preview" tabindex="0">No response yet.</pre></div>
+  <div class="filesystem-heading"><h3>On disk</h3><span>Host-managed writes</span></div>
+  <div id="live-framework" class="live-framework"></div><div id="filesystem-status"></div>
+  <details id="filesystem-detail"><summary>Inspect latest checkpoint contents</summary><pre id="filesystem-content" tabindex="0"></pre></details>
+ </div></div>
+ <details class="evidence"><summary>Example selection, provenance and what a replay cannot show</summary><div id="replay-evidence"></div></details>
+</section>
+<footer><p>Measured traces, simplified diagrams, explicit boundaries.</p><a href="README.md">Sources & reproduction</a><a href="../README.md">Experiment home</a><span>SESSION 5 · SEPTEMBER 2026</span></footer>
+</main>
+<script src="scene.js"></script><script src="temporal.js"></script><script src="app.js"></script>
+</body></html>

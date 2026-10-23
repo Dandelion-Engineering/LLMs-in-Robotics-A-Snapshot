@@ -1,0 +1,79 @@
+{
+  "probes": [
+    {
+      "name": "candidate_python",
+      "argv": [
+        "C:\\Windows\\System32\\wsl.exe",
+        "--distribution",
+        "LLMs-Robotics-Candidate-001",
+        "--exec",
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "-c",
+        "import hashlib,json,os,pathlib,platform,sys; assert os.getuid()==1000 and os.getgid()==1000; print(json.dumps({'version':sys.version,'implementation':platform.python_implementation(),'executable_sha256':hashlib.sha256(pathlib.Path(sys.executable).read_bytes()).hexdigest(),'uid':os.getuid(),'gid':os.getgid()},sort_keys=True))"
+      ],
+      "timeout_s": 20
+    },
+    {
+      "name": "candidate_isolation",
+      "argv": [
+        "C:\\Windows\\System32\\wsl.exe",
+        "--distribution",
+        "LLMs-Robotics-Candidate-001",
+        "--exec",
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "-c",
+        "import hashlib,json,os,pathlib,subprocess; assert os.getuid()==1000 and os.getgid()==1000; r=subprocess.run(['/usr/bin/bwrap','--version'],capture_output=True,check=True,timeout=5); print(json.dumps({'binary_sha256':hashlib.sha256(pathlib.Path('/usr/bin/bwrap').read_bytes()).hexdigest(),'version':r.stdout.decode('utf8')},sort_keys=True))"
+      ],
+      "timeout_s": 20
+    },
+    {
+      "name": "candidate_userland_tree",
+      "argv": [
+        "C:\\Windows\\System32\\wsl.exe",
+        "--distribution",
+        "LLMs-Robotics-Candidate-001",
+        "--user",
+        "root",
+        "--exec",
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "/mnt/c/Users/cresp/Documents/Dandelion Engineering/LLMs in Robotics/Long-Horizon Adaptive Robotics Expirement/Batch 01/Release Environment Repair 001/installation-tools/verify_installed.py",
+        "--linux-probe",
+        "--manifest",
+        "/mnt/c/Users/cresp/Documents/Dandelion Engineering/LLMs in Robotics/Long-Horizon Adaptive Robotics Expirement/Evidence/runtime-environments/candidate-installed-001/manifest.json",
+        "--manifest-sha256",
+        "b814260f047165642bf05bd5a596e08a42df22002ee35365dd5254532ac6b3ab"
+      ],
+      "timeout_s": 30
+    },
+    {
+      "name": "candidate_kernel",
+      "argv": [
+        "C:\\Windows\\System32\\wsl.exe",
+        "--distribution",
+        "LLMs-Robotics-Candidate-001",
+        "--exec",
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "-c",
+        "import json,os; print(json.dumps(list(os.uname())))"
+      ],
+      "timeout_s": 20
+    },
+    {
+      "name": "gpu_driver",
+      "argv": [
+        "C:\\Windows\\system32\\nvidia-smi.EXE",
+        "--query-gpu=name,driver_version,memory.total",
+        "--format=csv,noheader,nounits"
+      ],
+      "timeout_s": 15
+    }
+  ]
+}

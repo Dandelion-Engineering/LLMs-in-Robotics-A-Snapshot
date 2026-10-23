@@ -1,0 +1,34 @@
+--- before
++++ final
+@@ -569,9 +569,30 @@
+                    if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                    and node.func.attr == 'emit' and node.args
+                    and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str)}
+-        self.assertEqual(emitted, subject.PARENT_KINDS | {'failure', 'channel_denied'})
++        self.assertEqual(emitted, subject.PARENT_KINDS | {'failure', 'channel_denied', 'socket_failure'})
++        self.assertNotIn('socket_failure', subject.PARENT_KINDS)
+         self.assertEqual({row['kind'] for row in self.f.parent} | {'client_eof',
+             'native_cleanup_begin','native_cleanup_ack','native_cleanup_channel'}, subject.PARENT_KINDS)
++
++    def test_socket_failure_metadata_cannot_qualify_otherwise_valid_transport(self):
++        self.f.write()
++        self.assertTrue(self.verify()['passed'])
++        self.f.parent.insert(2, {**self.f.parent[1], 'kind':'socket_failure',
++            'diagnostic_schema':'campaign002-socket-failure-1', 'channel_id':1,
++            'operation':'upload_read', 'exception_class':'ConnectionAbortedError',
++            'errno':1236, 'winerror':1236})
++        self.fails('Owner transport has failure')
++
++    def test_socket_failure_metadata_is_not_an_accepted_expected_failure(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            f,_=diagnostic_fixture(Path(tmp),'foreign_owner')
++            f.parent.insert(2, {**f.parent[1], 'kind':'socket_failure',
++                'diagnostic_schema':'campaign002-socket-failure-1', 'channel_id':1,
++                'operation':'upload_read', 'exception_class':'ConnectionAbortedError',
++                'errno':1236, 'winerror':1236})
++            f.write()
++            with patch.object(subject,'REPO',f.repo),self.assertRaisesRegex(ValueError,'Unknown expected-failure'):
++                subject.verify_expected_failure(f.stage,f.frozen,case='foreign_owner')
+ 
+     def test_actual_begin_finishing_emits_one_original_frontier_and_gates_live_only(self):
+         source = Path(subject.__file__).resolve().parents[1] / 'harness/codehost_bridge_v3.py'

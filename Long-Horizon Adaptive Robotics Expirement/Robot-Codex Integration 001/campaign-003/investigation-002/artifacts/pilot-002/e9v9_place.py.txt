@@ -1,0 +1,51 @@
+"""Bounded, observation-gated sequence for the currently observed C1 only."""
+import json
+import math
+from e9v9_step import brief, cli, guard, run_step
+
+SOURCE = [.3805, -.2397]
+DEST = [.523, -.131]
+
+def check(state, target, jaw_mode):
+    guard(state)
+    p = state['packet']
+    if math.dist(p['tcp_position_m'], target) > .010:
+        raise SystemExit('Stopped: observed TCP differs from target by more than 10 mm')
+    width = p['gripper']['width']
+    if jaw_mode == 'open' and (width < .075 or p['gripper']['holding_visible_id'] is not None):
+        raise SystemExit('Stopped: empty open jaws not supported')
+    if jaw_mode == 'contact':
+        # Width is contact evidence, not a grasp certificate. C1 can be occluded.
+        if not .038 <= width <= .060:
+            raise SystemExit('Stopped: jaw contact evidence inconsistent with C1')
+        for d in p['detections']:
+            if d['id'] == 'C1' and d['age_s'] <= .35:
+                if target[2] > .075 and d['pos'][2] < .027:
+                    raise SystemExit('Stopped: C1 observed on table during attempted carry')
+                if math.dist(d['pos'][:2], p['tcp_position_m'][:2]) > .035:
+                    raise SystemExit('Stopped: C1 observed away from gripper')
+
+def move(name, xy, height, duration, gripper, jaw_mode):
+    target = xy + [height]
+    s = run_step('e9v9-place-' + name,
+        ['manual', 'cartesian-target', '--position'] + list(map(str, target)) +
+        ['--duration', str(duration), '--gripper', str(gripper)])
+    check(s, target, jaw_mode)
+    return s
+
+code, state = cli(['status'])
+if code:
+    raise SystemExit(code)
+check(state, SOURCE + [.06], 'open')
+move('grasp-height', SOURCE, .018, 1.5, 255, 'open')
+move('close', SOURCE, .018, 1.0, 0, 'contact')
+move('lift', SOURCE, .13, 1.8, 0, 'contact')
+move('across', DEST, .13, 2.0, 0, 'contact')
+move('lower', DEST, .018, 1.8, 0, 'contact')
+# The verified TCP is over the pad, within 10 mm of a supported setdown height.
+# Release only here; final placement remains unverified until the arm is clear.
+move('release', DEST, .018, 1.0, 255, 'open')
+move('retreat', DEST, .20, 2.0, 255, 'open')
+state = run_step('e9v9-place-clear', ['skill', 'observe', '--clear-view'])
+print(json.dumps({'sequence_terminal': True, 'final': brief(state),
+                  'placement': 'requires final observation review'}), flush=True)

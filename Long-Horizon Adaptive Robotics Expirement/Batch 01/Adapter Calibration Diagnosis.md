@@ -1,0 +1,23 @@
+# Physical calibration 001: adapter failure and proposed fixture correction
+
+The retained `Evidence/calibration/physical-calibration-001/adapters/result.json` reports `CalibrationFailure: joint_position physical tracking/terminal check failed`. Source identities stayed unchanged and actual host timing passed. This note diagnoses that failed development probe; it does not relabel it or claim an actual rerun succeeded.
+
+Events 5–7 show a one-second native joint-position command admitted at simulation time 0.568 s. Event 28 records interval completion at 1.568 s. Event 36 separately reports observed axis motion and safe terminal checks both true, but maximum joint error **0.0127443946921999 rad**, exceeding the unchanged 0.005 rad threshold. The final commanded-axis displacement was about 0.01455 rad for a 0.015 rad request. Failure was dominated by the fourth joint, not an absent response or a failed command receipt.
+
+The compact actual trajectory identifies two effects:
+
+| State | Joint 4 physical position (rad) | Native target (rad) |
+|---|---:|---:|
+| Before command, approximately 0.562 s | -2.206434 | -2.200000 |
+| Before completion, approximately 1.562 s | -2.212889 | -2.206435 |
+| After completion and hold, approximately 1.912 s | -2.219165 | -2.212889 |
+
+First, the fixture formed every native target from measured joint positions, then assumed physical positions would equal those targets without gravity deflection. The unchanged finite-gain position servo already held the fourth joint about 0.006435 rad from its original native target. Second, `Cell.tick` replaced the final target with measured joint positions at normal direct-command completion, adding another deflection during the subsequent 0.35 s observation interval. The affine effort inverse is not the source of this behavior.
+
+Root fixed the normal endpoint branch in `Runtime/cell.py` to evaluate the existing adapter at the exact command end and retain that bounded final native target for position, velocity, trajectory and planned Cartesian commands. Effort completion retains its measured-pose hold; cancellation/fault semantics are unchanged. Two regressions added to `Runtime/test_cell.py` cover the four position-family modes despite measured sag and clock overshoot, plus effort expiry without reissuing effort. All 23 test_cell checks and 15 existing test_actuation checks passed. These are synthetic checks, not new physical results.
+
+`Adapter Calibration Fixture.patch` was supplied for parent integration, affecting only the physical driver's adapter helper/probe; the helper is now present in the parent-integrated source. It uses the prior measured servo offset to predict local physical displacement under a native-target increment. The error is `(final_joint - initial_joint) - (final_native_target - initial_native_target)`. The reference uses pre-command observations only; it does not fit away the final error. Position and trajectory probes perturb the existing native target. The velocity probe explicitly checks its current native-target integration semantics. The driver retains the **0.005 rad local displacement threshold**, minimum observed motion, safe-terminal checks and Cartesian tolerance. It additionally checks that the final native endpoint remains commanded and reports absolute native-target error, including whether that separate error exceeds 0.005 rad. Passing this revised probe would establish local native-servo response, not absolute joint-position accuracy.
+
+The corrected arithmetic still rejects the old actual trace: its local displacement error is **0.006309158143175786 rad**, above 0.005. Six bounded checks covered staged-source compilation, the constant-offset reference, absent commanded motion, extra sag, nonfinite input and this retained failed example. `Adapter Calibration Fixture.validation.json` records the patch/source identities and arithmetic. The patch is compatible with the independent raw-camera hunk and passed `git apply --check --ignore-space-change`; that option accommodates source/patch line-ending context. No Calibration Tools source was edited for this subtask.
+
+The remaining adapter probes did not execute after the first failure. In particular, the Cartesian test's 3 mm upward target is unchanged and unvalidated; native gravity deflection could affect its positive-motion check. A later result must retain that outcome rather than assuming it passes because the joint-position cause was fixed. The effort-equivalence probe is a separate calibration result and does not establish all optional interface tracking. No new job was launched here.

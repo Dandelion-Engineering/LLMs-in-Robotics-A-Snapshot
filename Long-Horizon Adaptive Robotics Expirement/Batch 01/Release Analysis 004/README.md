@@ -1,0 +1,5 @@
+# Release Analysis 004 — prepared, not accepted
+
+Copied from frozen Release Analysis003. Only the production collector/analyzer Runtime binding changes to sibling `Runtime 004`; all canonical selection, integrity, provenance, estimates, two thousand bootstrap draws and public analysis seed0 remain unchanged. The copied `versioned-copy-manifest.json` is historical003 provenance, not this version's inventory. The authoritative new copy record is `../Release Lifecycle Repair 001/reader-copy-manifest-001.json`.
+
+No analysis, selected results, seeds or checks were generated. Queue the tests listed in `../../Engineering Investigation 004/README.md` only after root completes the staged Runtime. Production CLI remains `collect_results.py --release-dir ... --output ... --complete` and `analyze_results.py --release-dir ... --selected-results ... --output-dir ...`; outputs must be fresh outside frozen sources. The004 evaluation processor already calls the collector and produces the exact selected-results file consumed by the analysis wrapper.

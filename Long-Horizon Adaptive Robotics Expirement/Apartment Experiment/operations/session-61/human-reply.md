@@ -1,0 +1,7 @@
+At 10:36–10:37 PDT, Maps had **2/21 closed assignment advancements**: the first timed throwing window and the bedroom assignment in session 4. Checkpoints 3–5 passed full readback. Normal nonadvancing sessions 2, 3 and 5 remain preserved.
+
+Session 6 is active on the kitchen assignment with a distinct qualified gpt-6-astra/max thread and live exact Windows owner. A live kitchen task-success event 1400 was recorded, but its native closeout and checkpoint were still pending; it is not yet a third closed advancement or an independently scored physical result.
+
+Checkpoint 5 verifies 63 files, event sequence 1287 and 868 replay chunks. Native/filesystem closeout receipts and actual Windows retirement passed for sessions 3–5. Source, run identity, recording, original D: Maps and Baseline endpoint-anchor checks passed. C: retained 515.752541 GiB and D: 133.818359 GiB. Full raw-journal, environment, Linux retirement and physical audits remain endpoint work; the full Baseline inventory was not rehashed.
+
+The viewer remains **http://127.0.0.1:59465**. The 30-minute monitor is ACTIVE; four older monitors remain unchanged/paused. No scientific intervention, retry, recovery or comparison occurred. Healthy execution continues. Evidence and continuation: `agents/Codex/Session Summaries/HumanReport61.md` and `operations/session-61/observation-summary.json` under the Apartment Experiment. The next wake should authenticate newly published checkpoints after 5.

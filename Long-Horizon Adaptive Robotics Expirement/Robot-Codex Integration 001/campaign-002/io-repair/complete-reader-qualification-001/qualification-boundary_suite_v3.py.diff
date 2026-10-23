@@ -1,0 +1,20 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\boundary_suite_v3.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\boundary_suite_v3.py
+@@ -107,7 +107,7 @@
+ 
+ 
+ def sources():
+-    spec=importlib.util.spec_from_file_location('boundary_quiescence_inventory',Path(__file__).with_name('prepare_model_v22.py'))
++    spec=importlib.util.spec_from_file_location('boundary_quiescence_inventory',Path(__file__).with_name('prepare_model_v23.py'))
+     extra=importlib.util.module_from_spec(spec);spec.loader.exec_module(extra)
+     roots=[HARNESS,INTEGRATION/'host',INTEGRATION/'readiness-session-10/boundary',
+            INTEGRATION/'readiness-session-10/orchestrator',INTEGRATION/'isolation-session-9/wsl',
+@@ -121,7 +121,7 @@
+            CAMPAIGN/'io-repair/CHANNEL_FINISH_FRONTIER_VALIDATION_V1.md',
+            CAMPAIGN/'io-repair/CHANNEL_PROBE_SEQUENCE_SYNCHRONIZATION_V1.md',
+            CAMPAIGN/'io-repair/CHANNEL_OWNER_DRAIN_V1.md'}
+-    paths.update(REPO/name for name in extra.process_drain_inputs())
++    paths.update(REPO/name for name in extra.reader_inputs())
+     for root in roots:
+         paths.update(p for p in root.rglob('*') if p.is_file() and p.suffix in ('.py','.md'))
+     paths.add(REPO/'Robot Agent Filesystem v0.1/workspace/RobotAgentPrompt.md')

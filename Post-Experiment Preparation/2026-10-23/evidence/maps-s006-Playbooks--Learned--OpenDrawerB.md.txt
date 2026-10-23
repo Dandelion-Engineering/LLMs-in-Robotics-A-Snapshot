@@ -1,0 +1,41 @@
+# Open drawer B by a perception-aligned handle pull
+
+## Identity
+
+- Name: Open drawer B.
+- Type: learned.
+- Version: 1, provisional.
+- Applicable robot: apartment Cartesian arm and parallel gripper.
+- Source: [Session 006](../../SessionReports/2026-10-10-session-006.md).
+
+## Purpose and when to use
+
+Open the recurring kitchen drawer B before placing an object inside. One successful sequence is established. It has not been tested on A or from another approach orientation.
+
+## Preconditions and inputs
+
+Empty gripper; stationary base facing the visually identified B front approximately normally; fresh RGB-D measurements of its handle, orange feature, front and cabinet top. Use base-relative meters and collision-free, reachable targets. Allow room for the drawer to extend toward the base. Historical coordinates below are evidence, not blind replay targets.
+
+## Implementation
+
+Agent-directed public `arm` and `gripper` primitives, with status polling and observations between stages. No executable program was promoted: geometry and opening verification still require live interpretation. Fixed fixture location is in [Kitchen.md](../../Maps/Rooms/Kitchen.md).
+
+## Procedure and observed trial
+
+1. Inspect B and measure the handle and orange feature. In observation 162, handle front was about (.737,.099,.791), orange surface (.839,.351,.918), cabinet top about 1.06 m high.
+2. The successful trial first approached the orange feature with width .01: (.65,.351,.92), advanced to requested (.865,.351,.92), then withdrew to (.60,.351,.92), pitch 0 and 1.5 s per arm segment. Contact limited motion and briefly displaced the base; reobserve after settling. **The feature's function and whether this press is necessary were not isolated.** No repeat pressing is warranted without evidence.
+3. With width .10, approach above the horizontal handle at (.78,.10,.88), then lower to (.78,.10,.78), 1.5 s each. In this setup the fingers entered the space behind the bar. Inspect alignment before pulling; do not push through a blocked fixture.
+4. Retract toward the base along the drawer axis while preserving height and lateral alignment. The tested pull was to (.42,.10,.78) over 3 s. Observation 165 showed the drawer extended and its interior exposed. The gripper's bilateral-object-contact flag was false throughout; visual fixture motion, not that flag, established opening.
+5. Lift free of the handle before retracting or reaching elsewhere. The tested lift was to (.42,.10,1.30) over 2 s. Reinspect the opening and choose placement coordinates from current geometry.
+
+## Success signals and safety
+
+Success means actual visible drawer extension sufficient for the intended placement, not command acceptance. Stop and reassess if the base shifts, the arm is obstructed, the handle fails to move, or the opening is inadequate. Keep the drawer sweep clear and honor the battery warning. This procedure does not itself acquire an object, verify containment, or close the drawer.
+
+## Evidence and limitations
+
+Session 006 observations 162–166 and public command/status feedback support one opening after the press-and-hook sequence. Cup release above the exposed interior subsequently produced physical `task_success` true. No unpressed comparison, force calibration, latch model, automatic opening, closing procedure or transfer to A is established. All trial coordinates depend on that episode's base alignment.
+
+## Status
+
+Provisional; worth retaining because A/B cup assignments recur and this avoids rediscovering the successful handle interaction. Further use requires fresh perception and outcome verification.

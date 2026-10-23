@@ -1,0 +1,5 @@
+V27 passed all three prerequisites, all six native references and all 12 boundary checks. Smoke025 has now passed all 62 independent checks, including complete startup and Continuity read evidence, both sets of boundary canaries, interruption/fresh invocation, transport, strict timing and verified retirement. The original assessment is qualification/smoke-025-assessment.json (SHA5426faaa4de68d59923772d2c4bf8cfee5b1d846c4ef296e4fafa77118d988c7). Every earlier failed verdict remains unchanged.
+
+The stock-family Pilot024 is running; the home-family pilot follows only on its pass. Both must pass before sealing and launching the fixed twenty-slot campaign. The declared index-label repair passed953 full harness/assessment tests plus its targeted lineage checks without changing model, task, policy or timing criteria. History113 preserves all prior rows and exports; terminal Smoke025 bookkeeping is being added separately.
+
+I am continuing through qualification, campaign admission and the authorized actual-results investigation. Scored starts remain zero. Current evidence and status are linked from campaign-002/README.md, io-repair/PROGRESS.md and HumanReport14.md.

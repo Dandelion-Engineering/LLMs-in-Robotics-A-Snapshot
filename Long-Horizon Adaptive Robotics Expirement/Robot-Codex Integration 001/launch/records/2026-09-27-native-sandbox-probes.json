@@ -1,0 +1,52 @@
+{
+  "recorded_utc": "2026-09-27T04:56:31.5288666Z",
+  "model_turns_run": 0,
+  "sandbox_readiness": "ready",
+  "tests_passed": 9,
+  "runtime_inventory_captured": false,
+  "effective_model_header_captured": false,
+  "historical_metadata_corrections": [
+    "sentinel-001 used root-deny; its original qualification predates the boundary_profile field",
+    "Original sentinel-001 wording about generated-program execution being disabled is not a proven restriction: the dedicated runner is unavailable, no-program use is advisory, and shell execution remains programmable",
+    "Original sentinel-003 minimal-runtime wording understates scope: bootstrap-diagnostic permits other user/system reads outside the exact denied paths",
+    "sentinel-003 timeout cause is unknown; no actual canary or directory-handle check produced output"
+  ],
+  "probes": [
+    {
+      "name": "sentinel-001",
+      "boundary_profile": null,
+      "qualified": false,
+      "exit_code": 1,
+      "termination_reason": null,
+      "policy_sha256": "eea11f289bb016d7be19054783b21f5d4d145e16504fc2ebcca3041d1e7d821d",
+      "stderr": "windows sandbox failed: elevated Windows sandbox requires effective `:root` read access",
+      "raw_evidence_directory": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Integration001\\launch-evidence\\sentinel-001",
+      "workspace": "C:\\Users\\cresp\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\RobotCodex\\Integration001\\bootstrap-001",
+      "checks": {}
+    },
+    {
+      "name": "sentinel-002",
+      "boundary_profile": "users-deny",
+      "qualified": false,
+      "exit_code": 1,
+      "termination_reason": null,
+      "policy_sha256": "1d67d3952666445314c77d1656d61056c603e16f8e57213ec01106842beec67a",
+      "stderr": "windows sandbox failed: helper_unknown_error: apply deny-read ACLs",
+      "raw_evidence_directory": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Integration001\\launch-evidence\\sentinel-002",
+      "workspace": "C:\\Users\\cresp\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\RobotCodex\\Integration001\\bootstrap-001",
+      "checks": {}
+    },
+    {
+      "name": "sentinel-003",
+      "boundary_profile": "bootstrap-diagnostic",
+      "qualified": false,
+      "exit_code": 0,
+      "termination_reason": "timeout",
+      "policy_sha256": "40d6de71d7e72c0faa1ef193724e91c0dd59fe4eed4220ad3dc450d941ee5d9b",
+      "stderr": "",
+      "raw_evidence_directory": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Integration001\\launch-evidence\\sentinel-003",
+      "workspace": "C:\\Users\\cresp\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\RobotCodex\\Integration001\\bootstrap-001",
+      "checks": {}
+    }
+  ]
+}

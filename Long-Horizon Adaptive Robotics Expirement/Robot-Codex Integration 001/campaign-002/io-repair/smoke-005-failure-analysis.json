@@ -1,0 +1,369 @@
+{
+  "schema": "rci-c02-failed-queue-infrastructure-diagnostic-1",
+  "run_id": "RCI001-C02-smoke-005",
+  "framework_revision": "RCI001-C02-dev-027",
+  "queue_job_id": "20260928T034705357469Z-89ec0765",
+  "created_at": "2026-09-28T03:58:29.694784+00:00",
+  "scope": "Read-only infrastructure diagnosis after explicit authorization to inspect failed-queue logs. Raw files are not qualifying, scored, recovery, timing or scientific evidence. No empirical assessor was run.",
+  "official_status": {
+    "id": "20260928T034705357469Z-89ec0765",
+    "state": "failed",
+    "exit_status": 1,
+    "started_at": "2026-09-28T03:47:05.626640Z",
+    "ended_at": "2026-09-28T03:51:06.425939Z"
+  },
+  "empirical_admissibility": {
+    "official_success_gate_passed": false,
+    "assessment_performed": false,
+    "qualification_verdict": null,
+    "scorable": false,
+    "task_outcome": "unknown",
+    "raw_model_assertions_are_empirical_evidence": false
+  },
+  "observed_failure": {
+    "queue_error_line": 2,
+    "error": "Interruption stage failed its gate; restart not attempted",
+    "stages_started": 1,
+    "first_stage_kind": "interrupt",
+    "invocation_id": "interrupt-17155b26335a",
+    "injected_interruption": false,
+    "watchdog_errors": [],
+    "resume_started": false,
+    "later_pilots_started": false,
+    "sequence_host_exit_code": 0,
+    "raw_client_success": true,
+    "raw_client_turn_status": "completed",
+    "raw_client_model_started": true,
+    "retirement_fields": {
+      "all_namespaces_retired": true,
+      "old_token_denied_after_retirement": true,
+      "cleanup_clean": true,
+      "durable_retention_verified": true
+    },
+    "gateway_diagnostic": {
+      "events": 12,
+      "observe_posts": 1,
+      "command_posts": 0,
+      "continuity_posts": 0,
+      "handback_posts": 0
+    },
+    "gate_source": {
+      "archive_entry_suffix": "campaign-002/harness/physical.py",
+      "predicate_line": 145,
+      "failure_line": 146
+    }
+  },
+  "transport_chronology": {
+    "executor2_hash_chain_verified_for_diagnosis": true,
+    "executor2_open": {
+      "line": 1,
+      "wall_unix_s": 1790567233.2878563
+    },
+    "last_completed_command": {
+      "client_event_line": 240,
+      "tool_call_id": "exec-b68ec023-d60a-4167-b5b4-7193e0a4a556",
+      "completed_unix_s": 1790567350.066
+    },
+    "last_executor_request": {
+      "capture_line": 478,
+      "method": "process/terminate",
+      "wall_unix_s": 1790567350.0660875
+    },
+    "last_executor_response": {
+      "capture_line": 479,
+      "wall_unix_s": 1790567350.0685964
+    },
+    "last_executor_send_completion": {
+      "capture_line": 480,
+      "wall_unix_s": 1790567350.0696015
+    },
+    "model_public_commentary": {
+      "client_event_line": 313,
+      "completed_unix_s": 1790567385.745,
+      "diagnostic_summary": "Model said it was preparing files and would commit continuity before running the action."
+    },
+    "stderr_count_only_events": [
+      {
+        "client_event_line": 314,
+        "bytes": 479,
+        "actual_text_retained": false
+      },
+      {
+        "client_event_line": 319,
+        "bytes": 536,
+        "actual_text_retained": false
+      }
+    ],
+    "model_public_final": {
+      "client_event_line": 375,
+      "completed_unix_s": 1790567464.143,
+      "reported_failure": "execution service disconnected before continuity was committed or the program ran",
+      "authority": "Model report of service experience, not independent transport-root-cause proof."
+    },
+    "executor2_closed": {
+      "capture_line": 481,
+      "wall_unix_s": 1790567464.44757,
+      "exception": "ConnectionClosedError(None, None, None)",
+      "after_model_final_seconds": 0.30457019805908203,
+      "cause_of_earlier_tool_failure_proven": false
+    },
+    "codehost_final_receipt": {
+      "to_host": 270148,
+      "from_host": 189561,
+      "expected_client_shutdown_resets": 0,
+      "pump_errors": [],
+      "exit_code": 0
+    },
+    "executor_wrapper_exit": {
+      "exit_code": 0,
+      "stderr_bytes": 103
+    },
+    "retirement_diagnostics": {
+      "executor2": {
+        "normal_wait_timed_out": false,
+        "windows_wrapper_killed_after_linux_retired": false,
+        "windows_exit_code": 0
+      },
+      "codehost1": {
+        "normal_wait_timed_out": false,
+        "windows_wrapper_killed_after_linux_retired": false,
+        "windows_exit_code": 0
+      }
+    }
+  },
+  "timeout_review": {
+    "client_timeout_seconds": 600,
+    "actual_turn_duration_seconds": 225.156,
+    "client_deadline_exhausted_supported": false,
+    "python_relay_180_second_idle_timer_found": false,
+    "private_codehost_socket_timeout": {
+      "archive_entry_suffix": "readiness-session-10/boundary/inside.py",
+      "line": 121,
+      "value": null,
+      "scope": "Connect uses0.2 seconds, then socket explicitly becomes blocking; prior idle-timeout defect absent."
+    },
+    "unknown": "Opaque native app-server/codehost internal budgets and actual discarded error contents are not established by these retained records."
+  },
+  "concrete_source_gaps": [
+    {
+      "name": "unexpected_clean_codehost_eof_not_classified_as_failure",
+      "archive_entry_suffix": "isolation-session-9/wsl/codehost_bridge.py",
+      "wait_line": 101,
+      "abort_predicate_line": 109,
+      "fact": "First pump completion ends bridge; only pump exceptions or nonzero observed wrapper exit set abort. Unexpected clean EOF has no explicit abnormal-close classification.",
+      "caused_smoke005": "unknown"
+    },
+    {
+      "name": "underlying_codehost_exit_status_not_propagated",
+      "archive_entry_suffix": "readiness-session-10/boundary/inside.py",
+      "codehost_branch_line": 111,
+      "final_wait_line": 145,
+      "fact": "Codehost mode terminates/waits its child but falls through without SystemExit(child.returncode), unlike executor mode. Wrapper exit0 therefore cannot establish native codehost exit0.",
+      "caused_smoke005": "unknown"
+    },
+    {
+      "name": "missing_codehost_connection_end_identity_and_time",
+      "archive_entry_suffix": "isolation-session-9/wsl/codehost_bridge.py",
+      "active_rejection_line": 63,
+      "fact": "Final counts omit open/EOF times, first-ending pump and additional simultaneous-client rejection receipts. A final clean summary does not prove continuous availability.",
+      "caused_smoke005": "unknown"
+    },
+    {
+      "name": "discarded_client_diagnostic_content",
+      "archive_entry_suffix": "readiness-session-10/orchestrator/bootstrap_client.py",
+      "discard_line": 160,
+      "fact": "Client logs only stderr byte counts to avoid exposing ambient configuration values. This prevents recovery of actual tool failure diagnostics from these artifacts.",
+      "scope": "Any prospective retention must use an allowlist/redaction, not blanket ambient stderr collection."
+    }
+  ],
+  "supported_next_step": {
+    "classification": "Material testable transport status/observability correction exists; smoke005 root cause remains unproven.",
+    "engineering_actions": [
+      "Add source-bound connection/open/EOF/end receipts, record first-ending pump and expected client-finishing state, and retain bounded sanitized error categories.",
+      "Propagate native codehost exit status and classify unexpected clean EOF as transport failure while preserving intentional client shutdown and all isolation/authority bounds.",
+      "Test deterministic early clean EOF, nonzero child exit, long idle, extra client rejection and expected shutdown with fake sockets/processes; then a prospectively declared bounded non-model transport probe.",
+      "Freeze repaired sources and require fresh qualification only after independent diagnostic validation. No unchanged retry is supported by this diagnosis."
+    ],
+    "human_only_blocker_established": false,
+    "credentials_or_admin_change_supported": false,
+    "repair_implemented_by_this_diagnosis": false,
+    "new_launch_performed": false
+  },
+  "source_bindings": [
+    {
+      "archive_entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+      "sha256": "e20030568bd5d0905092a1e76f38386e6bd463541b5ff291083867e5ec9da572",
+      "bytes": 11167
+    },
+    {
+      "archive_entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/executor_capture.py",
+      "sha256": "453e718d2391330f921d0123a779a5cf4e27b4013bf11485fb747df82eacf833",
+      "bytes": 9424
+    },
+    {
+      "archive_entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+      "sha256": "3aac168bc3aec1a63168b73eada2d9031d8f91c5b626896e8233ed33aafefec1",
+      "bytes": 24426
+    },
+    {
+      "archive_entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/isolation-session-9/wsl/codehost_bridge.py",
+      "sha256": "08767e57d17f431cae1587f38631ae5cd1caecc6c3ee8f5650b7a518ddaa5545",
+      "bytes": 7026
+    },
+    {
+      "archive_entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/boundary/inside.py",
+      "sha256": "6b6745e449348913e542d82aeb8b45320b6f50312540c235a3b07a66dc64faa3",
+      "bytes": 6001
+    },
+    {
+      "archive_entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/orchestrator/bootstrap_client.py",
+      "sha256": "1019205f712c5e27fc2cae7cec96b406710e5fe99eb7c94e7f0e769b076d29d1",
+      "bytes": 21179
+    }
+  ],
+  "limitations": [
+    "Official failed queue exit1 prevents empirical assessment; raw retained files here are infrastructure diagnostics only.",
+    "Model service-error report plus final ConnectionClosedError is insufficient to localize the underlying disconnect.",
+    "No stored original client stderr text or codehost per-connection timing exists in these files; absence of pump_errors is not proof of transport availability.",
+    "No timing or boundary qualification pass is inferred from raw host/client success flags.",
+    "The proposed transport corrections address independently visible source defects, not a proven unique explanation of this run."
+  ],
+  "provenance": {
+    "official_queue_receipt": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-005-queue.json",
+      "sha256": "8616dc504ac70de23184d56f2cddccafef4af26994cdd5d07ff7be35a1df7214",
+      "bytes": 1936
+    },
+    "bindings": [
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-005-queue.json",
+        "sha256": "8616dc504ac70de23184d56f2cddccafef4af26994cdd5d07ff7be35a1df7214",
+        "bytes": 1936,
+        "role": "official failed queue; does not authorize empirical assessment"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\runtime\\logs\\20260928T034705357469Z-89ec0765.log",
+        "sha256": "c82ae3cb1b4a5d1aed51face0604f88c212cf2399f082f3c808a8520ce94ce58",
+        "bytes": 1918,
+        "role": "queue log infrastructure error only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-005-manifest.json",
+        "sha256": "057343b8c553905ee12f574a75ace39b1c8e2a52f2a06c4544d295c48ef112a8",
+        "bytes": 8608,
+        "role": "original run identity and declared bounds"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-027\\snapshot.json",
+        "sha256": "fad6f6aff069f724d825378f7aeab4dd5321ebef81fd4b64e055552d72394b4b",
+        "bytes": 169347,
+        "role": "frozen dev027 source identity"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-027\\code.zip",
+        "sha256": "b981ec5f9641f6133f0abd3a7188257a0f75b5971ba846bc142c20ab9d2ffe3d",
+        "bytes": 1612398,
+        "role": "frozen dev027 source archive"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\sequence-result.json",
+        "sha256": "02c9b9ef8b5b71e2ebcf1a67e90de632cd6b3b943052f7133157047d8707ddca",
+        "bytes": 3962,
+        "role": "raw infrastructure sequence gate failure only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\stage-result.json",
+        "sha256": "f4755bcef2f057123d8a1ebb35471306535b9b0873e99ecb75e791fa090f3c24",
+        "bytes": 3351,
+        "role": "raw first-stage lifecycle diagnostics only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\client\\result.json",
+        "sha256": "da951d7b75fc50bfd1c3933989febede82ce3f0a1ad03803585ee79e7d0d74a7",
+        "bytes": 1246,
+        "role": "raw client lifecycle diagnostics only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\client\\launch.json",
+        "sha256": "338a8f87d5c4063487bf4f74d620997489f7174cc42c2f49608c9a160809e4ca",
+        "bytes": 3283,
+        "role": "declared client timeout and ephemeral launch"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\client\\events.jsonl",
+        "sha256": "ef53292b8358607703c0a61d71b24cb82c66697af13627d5e77e4e0be8e4dfc8",
+        "bytes": 338894,
+        "role": "original client event/error chronology; diagnostic only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\executor-2-capture.jsonl",
+        "sha256": "4dc513a9683d355ba71df6386a2f0f508a2422c746f42930e9f3df61b543a7e2",
+        "bytes": 528767,
+        "role": "trusted executor connection chronology; diagnostic only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\executor-2-requests.jsonl",
+        "sha256": "0e3a9e977c4309e11032aa3f9a533753b786bfdeeeeb729cc39ba40e79b50d60",
+        "bytes": 41094,
+        "role": "request chronology; diagnostic only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\bridge-2-task-results.json",
+        "sha256": "b0d133c73f944d26d866aabdafd49b3fd103c7d60fde7b0d04c5fb9f11e33fb6",
+        "bytes": 101,
+        "role": "executor bridge task ending exception"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\executor-2-exit.json",
+        "sha256": "ab56544fe843dd2b2ede02ec73731b3b9211c32d3a04eafe8764181ea0d45fad",
+        "bytes": 48,
+        "role": "executor wrapper exit receipt"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\executor-2-retirement.json",
+        "sha256": "2d0f38d19fa16f6949f1e7a796a380cb154e203f2be7362954d7b40577bf3a10",
+        "bytes": 2653,
+        "role": "namespace retirement diagnostic"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\executor-2-stderr.txt",
+        "sha256": "77a06eca60bc87650c5c50945cd3d16d8cde22bc84a54424937c920e14cceb00",
+        "bytes": 104,
+        "role": "bounded executor warning diagnostic"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\codehost-1-bridge.json",
+        "sha256": "761d93309d96c8b954a540b90caaf0b2d8d5403fca0be9081aa844ad2d897f84",
+        "bytes": 133,
+        "role": "codehost final counters and pump exceptions"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\codehost-1-retirement.json",
+        "sha256": "8ba93212359adef6ae91a2de104d1a3b616dd4dccc2520e220d277653c294fd8",
+        "bytes": 2684,
+        "role": "codehost wrapper retirement diagnostic"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\codehost-1-stderr.txt",
+        "sha256": "14984a53da099fc9620097825c8654d859db37c773192a3af1e49e477762e3e7",
+        "bytes": 216,
+        "role": "bounded isolated codehost startup diagnostics"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-005\\orchestrator\\interrupt\\broker-events.jsonl",
+        "sha256": "97f72cecce60cfae862f722a2e73a1c3b22b32af3bc68c44ebfc52a81708f7a5",
+        "bytes": 165372,
+        "role": "gateway operation chronology, diagnostic only"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\final-qualification-007\\preflight.json",
+        "sha256": "73cda42ae7e5a1211fe8cc644d3b41338699b59865db3b79a7314f42260ceec8",
+        "bytes": 7795,
+        "role": "prospective lineage declarations"
+      }
+    ],
+    "original_inputs_modified": false,
+    "qualification_history_modified": false,
+    "raw_traces_or_base64_copied": false
+  }
+}

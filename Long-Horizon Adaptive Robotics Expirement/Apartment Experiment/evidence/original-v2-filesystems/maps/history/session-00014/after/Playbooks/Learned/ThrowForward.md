@@ -1,0 +1,53 @@
+# Forward throw of the orange practice sphere
+
+## Identity
+
+- Type: learned; version 1.
+- Configuration: current apartment Cartesian arm and parallel gripper.
+- Source: session 001 (first deployment session, 2026-10-08).
+
+## Purpose and when to use
+
+Release the orange practice sphere toward the living-room bin from a verified nearby throwing pose.
+
+## Preconditions
+
+- Current assignment authorizes throwing; no low-battery warning; at least eight working seconds remain.
+- Base stationary; current perception places bin approximately 1.8–1.9 m forward, within about 0.1 m of the centerline. This is a narrow, empirically tested geometry, not a general ballistic planner.
+- Clear arm sweep and flight path. Arm envelope: x 0.35–1.03, y 0, z 0.85–1.19 m.
+- Orange sphere physically acquired with bilateral contact, measured opening near 0.089 m, secure lift, and commanded width 0.02 m. Inspect grasp before invoking.
+- Arm already at commanded x 0.40, y 0, z 1.15 m, pitch 0. Measured encoders in the tested configuration are approximately reach 0.32, lift 0.72, lateral 0; the program checks a narrow tolerance around these measurements.
+- Current room map loaded. The agent must perform perception, alignment, pickup and any base navigation separately.
+
+## Inputs / invocation
+
+`python3 /workspace/Programs/Learned/throw_forward.py`
+
+Optional `--duration-scale` multiplies the two fast segment durations; default 1.1, the better-centered tested timing. Values 1.0 and 1.1 each succeeded twice. Other values are experimental.
+
+## Outputs / success signals
+
+Prints preconditions, requested waypoints, receipt and final physical status. Fresh landing feedback must report `inside_bin: true`; inspect RGB afterward. A completed trajectory is not evidence of containment. Final arm is extended; retract before driving.
+
+## Procedure
+
+The program uses ordinary trajectory controls: windup, upward-forward acceleration, then concurrent gripper opening and forward follow-through. It polls completion and waits two seconds for landing. It does not reset the object or continue automatically.
+
+## Safety and authority
+
+Stop practice at the battery warning and return to a perceived charger. No navigation, automatic scene interpretation, or clearance checking is implemented. Do not reuse the path for other objects without separate testing.
+
+## Evidence
+
+[Session 001](../../SessionReports/2026-10-08T180302Z-session-001.md): four successful throws, all with RGB confirmation (observations 14, 17, 20, 23). Scale 1.0 landed at (+0.230, -0.029) and (+0.214, -0.024) m (forward, left); scale 1.1 landed at (+0.091, +0.018) and (+0.088, +0.019) m. Landing times: 325.692, 448.224, 483.820, 523.248 simulated seconds. First success used inline primitive calls; the next three used this program. At closeout the default was set to the tested 1.1 value; dock, initial-pose, completion and feedback-freshness checks were tightened. These guard changes were checked statically against recorded successful statuses, without further physical trials after docking.
+
+## Known limitations
+
+- A weaker commanded closure of 0.06 m initially confirmed lift but subsequently lost the sphere before throwing; landed feedback can therefore be stale.
+- Do not reuse prior pickup coordinates after base contact or movement without current sensing.
+- Small action-end servo settling can affect actual base heading.
+- Default grasp positioning stopped above the final grasp in this episode; inspect alignment and use an explicit final descent when justified.
+
+## Status
+
+Validated in the narrow tested geometry (four successes); generalization to other poses or objects remains untested.

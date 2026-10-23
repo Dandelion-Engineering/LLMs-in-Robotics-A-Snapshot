@@ -1,0 +1,89 @@
+diff --git a/Runtime/initial_conditions.py b/Runtime/initial_conditions.py
+index eb971c3..17e45bb 100644
+--- a/Runtime/initial_conditions.py
++++ b/Runtime/initial_conditions.py
+@@ -96,18 +96,22 @@ class RestartOpportunity:
+     """One declared cut with a fixed latest fallback; survives candidate death."""
+     PHASES=('after_acceptance','closed_grip_transfer','after_release','before_outcome')
+     CLOSED_GRIP_MIN_TCP_Z_M=.08
++    AFTER_RELEASE_OPEN_DWELL_S=.10
+     def __init__(self,world_seed,*,enabled=True,fallback_s=60.):
+         if type(world_seed) is not int or world_seed<0:raise ValueError('supplied nonnegative world seed required')
+         if not finite(fallback_s) or fallback_s<=0:raise ValueError('positive fixed fallback required')
+         digest=hashlib.sha256(canonical({'domain':'batch01-restart-opportunity-v1','world_seed':world_seed})).digest()
+-        self._config={'schema_version':'robot-restart-opportunity-1.1','audience':'evaluator/operator only',
++        self._config={'schema_version':'robot-restart-opportunity-1.2','audience':'evaluator/operator only',
+                       'enabled':bool(enabled),'cut':self.PHASES[digest[0]%len(self.PHASES)],
+                       'transport_ordinal':1+digest[1]%2,'fallback_s':float(fallback_s),
+                       'closed_grip_min_tcp_z_m':self.CLOSED_GRIP_MIN_TCP_Z_M,
++                      'after_release_open_dwell_s':self.AFTER_RELEASE_OPEN_DWELL_S,
++                      'after_release_dwell_timebase':'simulation_elapsed_s',
+                       'tcp_height_source':'current public robot TCP telemetry; not payload pose',
+                       'source':'deterministic domain separation of supplied world seed; no new entropy',
+                       'held_limit':'closed jaw, trajectory phase and TCP height do not prove a payload is held or recoverable'}
+         self._seen=[];self._last_time=None;self._exposure=None
++        self._after_release_open_since=None
+ 
+     def configuration(self):return copy.deepcopy(self._config)
+ 
+@@ -121,13 +125,21 @@ class RestartOpportunity:
+         target=len(self._seen)>=self._config['transport_ordinal'] and rid==self._seen[self._config['transport_ordinal']-1]
+         phase=segment.get('phase') if isinstance(segment,dict) else None
+         cut=self._config['cut']
++        # One fixed public dwell, sampled by the ordinary supervisor loop.
++        # Request/phase/jaw changes reset it; no object/contact predicate gates it.
++        release_open=bool(cut=='after_release' and target and request.get('operation')=='transport'
++                          and phase==7 and width>=.065)
++        if release_open:
++            if self._after_release_open_since is None:self._after_release_open_since=float(elapsed)
++        else:self._after_release_open_since=None
++        open_duration=0. if self._after_release_open_since is None else float(elapsed)-self._after_release_open_since
+         # Public robot height prevents a cut at phase4 entry while the tool
+         # is still at pickup level. Payload/contact admissibility is separate.
+         height_available=finite(tcp_z)
+         height_qualified=height_available and tcp_z>=self._config['closed_grip_min_tcp_z_m']
+         matched=bool(target and ((cut=='after_acceptance')
+                     or (cut=='closed_grip_transfer' and phase in (4,5) and width<.065 and height_qualified)
+-                    or (cut=='after_release' and phase==7 and width>=.065)
++                    or (cut=='after_release' and release_open and open_duration>=self._config['after_release_open_dwell_s'])
+                     or (cut=='before_outcome' and phase==9)))
+         fallback=elapsed>=self._config['fallback_s']
+         if not matched and not fallback:return None
+@@ -136,6 +148,9 @@ class RestartOpportunity:
+                         'sim_elapsed_s':float(elapsed),'active_request_id':rid,'actual_segment_phase':phase,
+                         'measured_gripper_width_m':float(width),'transport_opportunities_seen':len(self._seen),
+                         'closed_grip_min_tcp_z_m':self._config['closed_grip_min_tcp_z_m'],
++                        'after_release_open_dwell_s':self._config['after_release_open_dwell_s'],
++                        'after_release_dwell_timebase':self._config['after_release_dwell_timebase'],
++                        'observed_after_release_open_duration_s':open_duration if cut=='after_release' else None,
+                         'measured_tcp_z_m':float(tcp_z) if height_available else None,
+                         'tcp_height_status':'available' if height_available else ('missing' if tcp_z is None else 'invalid'),
+                         'tcp_height_qualified':bool(height_qualified),
+diff --git a/Runtime/test_initial_conditions.py b/Runtime/test_initial_conditions.py
+index a14359e..b6b20e1 100644
+--- a/Runtime/test_initial_conditions.py
++++ b/Runtime/test_initial_conditions.py
+@@ -84,6 +84,11 @@ class InitialTests(unittest.TestCase):
+             for ordinal in range(1,config['transport_ordinal']+1):
+                 result=tracker.observe(ordinal,{'operation':'transport','request_id':str(ordinal)},
+                                        {'phase':phase} if phase is not None else None,width=width,tcp_z=.098)
++            if config['cut']=='after_release':
++                self.assertIsNone(result)
++                result=tracker.observe(ordinal+.11,{'operation':'transport','request_id':str(ordinal)},
++                                       {'phase':phase},width=width,tcp_z=.098)
++                self.assertGreaterEqual(result['observed_after_release_open_duration_s'],config['after_release_open_dwell_s'])
+             self.assertTrue(result['configured_milestone_exercised'])
+             self.assertFalse(result['fallback_used'])
+             self.assertIsNone(tracker.observe(5.,None,None,width=.08))
+@@ -168,6 +173,11 @@ class InitialTests(unittest.TestCase):
+             for ordinal in range(1,config['transport_ordinal']+1):
+                 event=tracker.observe(float(ordinal),{'operation':'transport','request_id':str(ordinal)},
+                                       {'phase':phase} if phase is not None else None,width=width)
++            if cut=='after_release':
++                self.assertIsNone(event)
++                event=tracker.observe(ordinal+.11,{'operation':'transport','request_id':str(ordinal)},
++                                      {'phase':phase},width=width)
++                self.assertGreaterEqual(event['observed_after_release_open_duration_s'],config['after_release_open_dwell_s'])
+             self.assertTrue(event['configured_milestone_exercised'])
+             self.assertIsNone(event['measured_tcp_z_m'])
+             checked.add(cut)

@@ -1,0 +1,234 @@
+{
+  "schema_version": "architecture-map-1.0",
+  "id": "RCI001-C01-home-12",
+  "recorded_at": "2026-09-27T19:08:20.308739+00:00",
+  "author": "Codex Campaign 001",
+  "tags": [
+    "robot-codex-integration-001",
+    "campaign-001",
+    "known-fixture-repeatability"
+  ],
+  "details": {
+    "campaign_id": "RCI001-Campaign001",
+    "certificate_sha256": "89140521f0025febf0c9cdb3ec40eadbe426bb6cee512f81e9a4964855103c86",
+    "source_revision": "RCI001-wsl-010d",
+    "source_snapshot_sha256": "d84c510ee923a395417944e70a90ab1fa3759bc0061c2b6a4a714fb708f25581"
+  },
+  "revision_id": "RCI001-C01-frozen-001",
+  "stage": "evaluation",
+  "condition_id": "fixed-fixture-fresh-invocation",
+  "protocol_id": "RCI001-Campaign001-evaluation-v1",
+  "scenario_id": "blocked-insert-home-world173",
+  "paired_block_id": "unpaired-RCI001-C01-home-12",
+  "replicate": 12,
+  "started_at": null,
+  "rerun_of_run_id": null,
+  "condition_details": {
+    "manifest": {
+      "schema": "robot-codex-development-manifest-1.0",
+      "stage": "development-only",
+      "run_id": "RCI001-C01-home-12",
+      "family": "blocked-insert-home",
+      "mode": "serve",
+      "seed": 173,
+      "noise_seed": 22023,
+      "sim_cap_s": 900,
+      "wall_cap_s": 1100,
+      "storage_cap_bytes": 536870912,
+      "physics_dt_s": 0.002,
+      "clock_mode": "wall-paced; physics continues independently of agent",
+      "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+      "operator_only_fixture": {
+        "part_count": 2,
+        "placements": [
+          {
+            "part_id": "A1",
+            "zone": "insert_home_A"
+          }
+        ],
+        "order": {
+          "version": 1,
+          "closed": true,
+          "requirements": [
+            {
+              "family": "B",
+              "recipe": "B",
+              "count": 1,
+              "tray": "tray2",
+              "max_rework_cycles": 0
+            }
+          ]
+        },
+        "reference_actions": [
+          {
+            "operation": "transport",
+            "part_id": "A1",
+            "destination": "parking1"
+          },
+          {
+            "operation": "setup",
+            "family": "B"
+          }
+        ],
+        "missing_rule": "Frozen setup returns insert A to its occupied home; baseline has no home-evacuation rule.",
+        "baseline_source": "Runtime 004/candidates.py:673-759; cell.py:342-349,537-550"
+      },
+      "limitations": [
+        "Development fixture; not sampled performance evidence",
+        "No collision safety certificate",
+        "Reference solution is protected operator evidence",
+        "Agent process restart only; supervisor restart is not implemented"
+      ],
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "bootstrap": "Follow the instructions in RobotAgentPrompt.md.",
+      "model_turns_max": 1,
+      "invocation_wall_cap_s": 600,
+      "action_request_budget": 20,
+      "observation_request_budget": 50,
+      "interruption_trigger": null,
+      "prior_attempt": null,
+      "outer_campaign_protocol": "RCI001-Campaign001-plan-v1",
+      "scoring_scope": "Prospective repeated fixed development fixtures; no held-out family or layout claim",
+      "host_stage_label_preserved": true,
+      "runtime_workspace": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Campaign001\\RCI001-C01-home-12"
+    },
+    "runtime_manifest_sha256": "45bf59deff25f813118a8431b2f9152af7028cccb326ee4066a41bfb5651fced",
+    "ordinal": 23,
+    "runtime_workspace": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Campaign001\\RCI001-C01-home-12",
+    "host_stage_label_preserved": true,
+    "scope": "Repeatability on two fixed development-qualified fixtures, with fresh sensor seeds and model invocations",
+    "pairing": "Balanced scheduling is not a paired architecture comparison.",
+    "maximum_model_invocations": 1,
+    "no_replacements": true,
+    "evidence": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign001\\RCI001-C01-home-12\\orchestrator",
+    "host_evidence": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign001\\RCI001-C01-home-12\\host",
+    "storage_receipt": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-001\\execution\\RCI001-C01-home-12\\storage\\receipt.json"
+  },
+  "seeds": {
+    "state": "recorded",
+    "refs": [
+      {
+        "label": "manifests/RCI001-C01-home-12.json",
+        "uri": "releases/RCI001-C01-frozen-001/manifests/RCI001-C01-home-12.json",
+        "sha256": "45bf59deff25f813118a8431b2f9152af7028cccb326ee4066a41bfb5651fced",
+        "state": "available",
+        "access": "evaluator_only",
+        "locator": null
+      }
+    ],
+    "reason": null
+  },
+  "frozen_refs": {
+    "code": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Unchanged original 010d implementation archive",
+          "uri": "releases/RCI001-wsl-010d/code.zip",
+          "sha256": "0624a55d4e57de93ec8371843b390d031be114eb1f06df6f86c9d3c8742120bd",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "environment": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Unchanged original 010d source snapshot",
+          "uri": "releases/RCI001-wsl-010d/snapshot.json",
+          "sha256": "d84c510ee923a395417944e70a90ab1fa3759bc0061c2b6a4a714fb708f25581",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "models": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Unchanged original 010d source snapshot",
+          "uri": "releases/RCI001-wsl-010d/snapshot.json",
+          "sha256": "d84c510ee923a395417944e70a90ab1fa3759bc0061c2b6a4a714fb708f25581",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "protocol": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "protocol.md",
+          "uri": "releases/RCI001-C01-frozen-001/protocol.md",
+          "sha256": "d1ff7dc53ebe7b925965bd75ab45263a89c95600527c16789ef40e573269ae9b",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "scenario": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "manifests/RCI001-C01-home-12.json",
+          "uri": "releases/RCI001-C01-frozen-001/manifests/RCI001-C01-home-12.json",
+          "sha256": "45bf59deff25f813118a8431b2f9152af7028cccb326ee4066a41bfb5651fced",
+          "state": "available",
+          "access": "evaluator_only",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "admission": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "admission-certificate.json",
+          "uri": "releases/RCI001-C01-frozen-001/admission-certificate.json",
+          "sha256": "89140521f0025febf0c9cdb3ec40eadbe426bb6cee512f81e9a4964855103c86",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    }
+  },
+  "evidence": [
+    {
+      "label": "manifests/RCI001-C01-home-12.json",
+      "uri": "releases/RCI001-C01-frozen-001/manifests/RCI001-C01-home-12.json",
+      "sha256": "45bf59deff25f813118a8431b2f9152af7028cccb326ee4066a41bfb5651fced",
+      "state": "available",
+      "access": "evaluator_only",
+      "locator": null
+    },
+    {
+      "label": "schedule.json",
+      "uri": "releases/RCI001-C01-frozen-001/schedule.json",
+      "sha256": "74178461c76201081202e96f2aad54df41402b6ab6381414443c28016121f5f1",
+      "state": "available",
+      "access": "operator",
+      "locator": null
+    },
+    {
+      "label": "admission-certificate.json",
+      "uri": "releases/RCI001-C01-frozen-001/admission-certificate.json",
+      "sha256": "89140521f0025febf0c9cdb3ec40eadbe426bb6cee512f81e9a4964855103c86",
+      "state": "available",
+      "access": "operator",
+      "locator": null
+    }
+  ]
+}

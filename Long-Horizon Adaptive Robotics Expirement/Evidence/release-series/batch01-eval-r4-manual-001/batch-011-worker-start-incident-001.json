@@ -1,0 +1,52 @@
+{
+  "schema_version": "queue-worker-start-incident-1",
+  "recorded_at_utc": "2026-09-23T22:43:27.557083+00:00",
+  "failed_queue_job": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T224120456407Z-6064a4ba.json",
+    "sha256": "6a79d57eb1ded75b089eff80600e92882106140e2e01c570cf0e11d67a833d1f"
+  },
+  "submission_stdout": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\batch-011-run-submission.json",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "submission_stderr": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\batch-011-run-submit.stderr.txt",
+    "sha256": "ea29f193ffd524fc369bb903621eb4f6fcbe431e373b2c60ef882befc7980d14"
+  },
+  "observed": {
+    "state": "worker_start_failed",
+    "started_at": null,
+    "worker_pid": null,
+    "child_pid": null,
+    "exit_status": null,
+    "job_log_exists": false,
+    "release_batch_exists": false,
+    "release_batch_count": 10,
+    "canonical_attempts": 40,
+    "attempt_directories": 40,
+    "current_terminal_hashes_match_all_canonical_results": true,
+    "application_error_events_224000_to_224300_utc": 0
+  },
+  "cause": "The unchanged submit ensure_worker exhausted its eight-second acceptance deadline. Detached worker stderr and launch PID are not retained; the specific startup failure is unobserved.",
+  "source_mechanism_hypothesis": "Installed queue pid_alive uses os.kill(pid,0), reached from ensure_worker before the queued-to-running transition and from stale state-lock checks. This known Windows liveness defect can affect startup even with no pre-existing worker; no event captured proves that it caused this rejection.",
+  "queue_source": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\compute_queue.py",
+    "sha256": "ca13faf55645df4050d918a745b183bebb967ae8f5b1dd180ff8212c0ed1d4bf"
+  },
+  "existing_limitation": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Batch 01\\Queue Limitation.md",
+    "sha256": "8c4812fcdfdf14886eb820ffe041be05f98d2c4241e4085c3540b8f9b5cf82c5"
+  },
+  "decision": "Preserve the rejected queue job. Submit the same unchanged run command once more only after this review, fresh capacity, and an idle OS/queue check. This begins no duplicate policy episode: no release attempt was observed for the rejected submission. Stop for renewed concrete inspection on another rejection; no automatic retry loop.",
+  "policy_episode_retry": false,
+  "frozen_source_change": false,
+  "shared_queue_change": false,
+  "prior_batch_completion": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\batch-010-complete.json",
+    "sha256": "d9513990975f4cc1bf0510f533f29b9dbb15d48769774b95c46908f3ad7bc231"
+  },
+  "original_capacity": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\batch-011-capacity.json",
+    "sha256": "4353b8e5395ed18f1ddfa796d961f2f3ed49a96b5f16d16a78f6064be4db32bc"
+  }
+}

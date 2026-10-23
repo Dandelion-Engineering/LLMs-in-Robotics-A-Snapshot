@@ -1,0 +1,252 @@
+--- before/qualification_report.py
++++ after/qualification_report.py
+@@ -129,6 +129,10 @@
+ RESET_INTERRUPT_SOURCES = {'io-repair/single-interrupt-diagnostic-v2/run.py': {'sha256': '3ec098c7aaee147adf3c6228e3330eb9322fdbf20f3738dca3af668db417c3ec', 'bytes': 4959}, 'io-repair/single-interrupt-diagnostic-v2/common.py': {'sha256': '7d17dbf34aa4b539cb5e37ac850569d3b5f41739881c7aba591e5171ece3ad9a', 'bytes': 7034}, 'io-repair/single-interrupt-diagnostic-v2/launch.py': {'sha256': '63af0d5c9e1383c7e51d52c30dab38043c707b9df42ba5dc01a247ce742cf79d', 'bytes': 4074}, 'io-repair/RESET_REJECTION_DIAGNOSTIC_V1.md': {'sha256': '383ed2034e5b804b50a368725d74622933cf7b184ec7faed56131c7a9b9f8af2', 'bytes': 4325}}
+ 
+ 
++# Exact declared dev091 dispatch; failed metadata only, never a success alias.
++SOCKET_INTERRUPT_SOURCES = {'io-repair/single-interrupt-diagnostic-v3/run.py': {'sha256': '3ec098c7aaee147adf3c6228e3330eb9322fdbf20f3738dca3af668db417c3ec', 'bytes': 4959}, 'io-repair/single-interrupt-diagnostic-v3/common.py': {'sha256': 'c340102252816a4a6b8a3b074ee1182dcd727548525e2ab776c81980d0008917', 'bytes': 12499}, 'io-repair/single-interrupt-diagnostic-v3/launch.py': {'sha256': '63af0d5c9e1383c7e51d52c30dab38043c707b9df42ba5dc01a247ce742cf79d', 'bytes': 4074}, 'io-repair/SOCKET_ABORT_NATIVE_DIAGNOSTIC_V1.md': {'sha256': 'eda635ef8981a0c28ceeeb90df9f5426213f87f6e8c874658381f8ee29368314', 'bytes': 6223}}
++
++
+ def failed_single_interrupt_dispatch(row, job, paths, manifest, snapshot, manifest_hash):
+     """Recognize fixed dispatch metadata only, without opening failed outputs."""
+     run, revision = 'RCI001-C02-shutdown-diagnostic-001', 'RCI001-C02-dev-055'
+@@ -142,6 +146,12 @@
+         script = CAMPAIGN / 'io-repair/single-interrupt-diagnostic-v2/run.py'
+         protocol = 'RCI001-Campaign002-single-interrupt-diagnostic-v2'
+         required_sources = RESET_INTERRUPT_SOURCES
++    elif row.get('run_id') == 'RCI001-C02-shutdown-diagnostic-003':
++        run, revision = 'RCI001-C02-shutdown-diagnostic-003', 'RCI001-C02-dev-091'
++        root = CAMPAIGN / 'io-repair/shutdown-diagnostic-003'
++        script = CAMPAIGN / 'io-repair/single-interrupt-diagnostic-v3/run.py'
++        protocol = 'RCI001-Campaign002-single-interrupt-diagnostic-v3'
++        required_sources = SOCKET_INTERRUPT_SOURCES
+     manifest_path = root / 'manifest.json'
+     snapshot_path = CAMPAIGN.parent.parent / 'Architecture Map/releases' / revision / 'snapshot.json'
+     evidence = CAMPAIGN.parent / 'local-evidence/campaign002/io-repair' / run
+--- before/test_qualification_report.py
++++ after/test_qualification_report.py
+@@ -356,11 +356,15 @@
+ 
+     def failed_single_interrupt_fixture(self, version=1):
+         self.failed_queue_fixture()
+-        self.assertIn(version, (1, 2))
++        self.assertIn(version, (1, 2, 3))
+         self.run_id = f'RCI001-C02-shutdown-diagnostic-{version:03}'
+         revision = 'RCI001-C02-dev-055' if version == 1 else 'RCI001-C02-dev-062'
+         folder = 'single-interrupt-diagnostic' if version == 1 else 'single-interrupt-diagnostic-v2'
+         sources = report.SINGLE_INTERRUPT_SOURCES if version == 1 else report.RESET_INTERRUPT_SOURCES
++        if version == 3:
++            revision = 'RCI001-C02-dev-091'
++            folder = 'single-interrupt-diagnostic-v3'
++            sources = report.SOCKET_INTERRUPT_SOURCES
+         self.row.update(run_id=self.run_id, revision=revision)
+         manifest = self.campaign / 'io-repair' / self.run_id.removeprefix('RCI001-C02-') / 'manifest.json'
+         snapshot = self.campaign.parent.parent / 'Architecture Map/releases' / revision / 'snapshot.json'
+@@ -528,6 +532,92 @@
+                 elif change == 'snapshot-run': s['run_id'] = 'other'
+                 elif change == 'snapshot-revision': s['revision'] = 'other'
+                 self.save(manifest, m); self.save(snapshot, s); self.save(self.queue_path, self.job)
++                self.refresh_single_interrupt_bindings(bind_manifest=change != 'snapshot-manifest')
++                with patch.multiple(report, CAMPAIGN=self.campaign, REPO=self.root), self.assertRaises(ValueError):
++                    report.qualification_row(self.row, self.output)
++
++    def test_socket_interrupt_failure_is_metadata_only_and_never_reads_outputs(self):
++        self.failed_single_interrupt_fixture(version=3)
++        allowed = {Path(a['path']).resolve() for a in self.row['artifacts']}
++        original = Path.read_bytes
++        opened = []
++        def guarded(path):
++            self.assertIn(path.resolve(), allowed)
++            opened.append(path.resolve())
++            return original(path)
++        with patch.multiple(report, CAMPAIGN=self.campaign, REPO=self.root), \
++             patch.multiple(qa, CAMPAIGN=self.campaign, REPO=self.root), patch.object(Path, 'read_bytes', guarded):
++            row = report.qualification_row(self.row, self.output)
++            self.assertEqual(qa.failed_queue_guard(row, self.output), [])
++        self.assertEqual(set(opened), allowed)
++        self.assertIsNone(row['model_calls'])
++        self.assertIsNone(row['assessment_schema'])
++        self.assertEqual(row['checks'], {})
++        self.assertEqual(row['task_outcome'], 'unknown')
++        self.assertFalse(row['scorable'])
++        self.assertEqual(len(row['links']), 3)
++
++    def test_socket_interrupt_rejects_dispatch_identity_scope_and_promotion(self):
++        mutations = [('argv', n, str(self.root / 'other')) for n in (0, 4, 6, 8, 10, 12, 14)]
++        mutations += [('job', 'cwd', str(self.root / 'other')),
++                      ('job', 'resolved_executable', str(self.root / 'other')),
++                      ('job', 'state', 'succeeded'), ('job', 'exit_status', 0),
++                      ('job', 'exit_status', True), ('job', 'ended_at', None)]
++        mutations += [('manifest', k, v) for k, v in (
++            ('schema', 'other'), ('stage', 'qualification'), ('qualification_stage', 'campaign002-smoke-qualification'),
++            ('outer_campaign_protocol', 'RCI001-Campaign002-single-interrupt-diagnostic-v2'),
++            ('run_id', 'RCI001-C02-shutdown-diagnostic-002'), ('framework_revision', 'RCI001-C02-dev-062'),
++            ('model', 'other'), ('effort', 'low'), ('bootstrap', 'other'), ('model_turns_max', 2),
++            ('model_turns_max', True), ('seed', 174), ('noise_seed', 24102), ('wall_cap_s', 1801),
++            ('sim_cap_s', 1501), ('invocation_wall_cap_s', 601), ('storage_cap_bytes', 536870913),
++            ('physics_dt_s', .003), ('action_request_budget', 21), ('observation_request_budget', 51))]
++        mutations += [('row', k, v) for k, v in (
++            ('run_id', 'RCI001-C02-shutdown-diagnostic-004'), ('revision', 'RCI001-C02-dev-092'),
++            ('scorable', True), ('task_outcome', 'success'), ('model_calls', 1), ('validity', 'valid'),
++            ('assessment_state', 'assessed'), ('qualification_passed', True))]
++        for target, key, value in mutations:
++            with self.subTest(target=target, key=key, value=value):
++                manifest, _ = self.failed_single_interrupt_fixture(version=3)
++                m = json.loads(manifest.read_bytes())
++                if target == 'argv': self.job['argv'][key] = value
++                elif target == 'job': self.job[key] = value
++                elif target == 'row': self.row[key] = value
++                else: m[key] = value
++                self.save(manifest, m); self.save(self.queue_path, self.job)
++                self.refresh_single_interrupt_bindings()
++                with patch.multiple(report, CAMPAIGN=self.campaign, REPO=self.root), self.assertRaises(ValueError):
++                    report.qualification_row(self.row, self.output)
++
++    def test_socket_interrupt_rejects_every_changed_or_omitted_frozen_source(self):
++        for relative in report.SOCKET_INTERRUPT_SOURCES:
++            for change in ('hash', 'byte-type', 'missing', 'undeclared'):
++                with self.subTest(relative=relative, change=change):
++                    manifest, snapshot = self.failed_single_interrupt_fixture(version=3)
++                    m, s = json.loads(manifest.read_bytes()), json.loads(snapshot.read_bytes())
++                    key = (self.campaign / relative).relative_to(self.root).as_posix()
++                    if change == 'hash': s['sources'][key]['sha256'] = '0' * 64
++                    elif change == 'byte-type': s['sources'][key]['bytes'] = float(s['sources'][key]['bytes'])
++                    elif change == 'missing': del s['sources'][key]
++                    else: m['runtime_input_files'].remove(key)
++                    self.save(manifest, m); self.save(snapshot, s); self.refresh_single_interrupt_bindings()
++                    with patch.multiple(report, CAMPAIGN=self.campaign, REPO=self.root), self.assertRaises(ValueError):
++                        report.qualification_row(self.row, self.output)
++
++    def test_socket_interrupt_rejects_snapshot_and_contract_aliases(self):
++        for change in ('snapshot-manifest', 'snapshot-run', 'snapshot-revision', 'snapshot-schema',
++                       'duplicate-input', 'legacy-schema', 'direct-schema'):
++            with self.subTest(change=change):
++                manifest, snapshot = self.failed_single_interrupt_fixture(version=3)
++                m, s = json.loads(manifest.read_bytes()), json.loads(snapshot.read_bytes())
++                if change.startswith('snapshot-'):
++                    key = {'snapshot-manifest': 'manifest_sha256', 'snapshot-run': 'run_id',
++                           'snapshot-revision': 'revision', 'snapshot-schema': 'schema'}[change]
++                    s[key] = '0' * 64 if key == 'manifest_sha256' else 'other'
++                elif change == 'duplicate-input': m['runtime_input_files'].append(m['runtime_input_files'][0])
++                else: self.row['queue_failure_contract']['schema'] = (
++                    'campaign002-failed-queue-diagnostic-1' if change == 'legacy-schema'
++                    else 'campaign002-failed-diagnostic-queue-1')
++                self.save(manifest, m); self.save(snapshot, s)
+                 self.refresh_single_interrupt_bindings(bind_manifest=change != 'snapshot-manifest')
+                 with patch.multiple(report, CAMPAIGN=self.campaign, REPO=self.root), self.assertRaises(ValueError):
+                     report.qualification_row(self.row, self.output)
+--- before/qualification_qa.py
++++ after/qualification_qa.py
+@@ -105,6 +105,10 @@
+ RESET_INTERRUPT_SOURCES = {'io-repair/single-interrupt-diagnostic-v2/run.py': {'sha256': '3ec098c7aaee147adf3c6228e3330eb9322fdbf20f3738dca3af668db417c3ec', 'bytes': 4959}, 'io-repair/single-interrupt-diagnostic-v2/common.py': {'sha256': '7d17dbf34aa4b539cb5e37ac850569d3b5f41739881c7aba591e5171ece3ad9a', 'bytes': 7034}, 'io-repair/single-interrupt-diagnostic-v2/launch.py': {'sha256': '63af0d5c9e1383c7e51d52c30dab38043c707b9df42ba5dc01a247ce742cf79d', 'bytes': 4074}, 'io-repair/RESET_REJECTION_DIAGNOSTIC_V1.md': {'sha256': '383ed2034e5b804b50a368725d74622933cf7b184ec7faed56131c7a9b9f8af2', 'bytes': 4325}}
+ 
+ 
++# Exact declared dev091 dispatch; failed metadata only, never a success alias.
++SOCKET_INTERRUPT_SOURCES = {'io-repair/single-interrupt-diagnostic-v3/run.py': {'sha256': '3ec098c7aaee147adf3c6228e3330eb9322fdbf20f3738dca3af668db417c3ec', 'bytes': 4959}, 'io-repair/single-interrupt-diagnostic-v3/common.py': {'sha256': 'c340102252816a4a6b8a3b074ee1182dcd727548525e2ab776c81980d0008917', 'bytes': 12499}, 'io-repair/single-interrupt-diagnostic-v3/launch.py': {'sha256': '63af0d5c9e1383c7e51d52c30dab38043c707b9df42ba5dc01a247ce742cf79d', 'bytes': 4074}, 'io-repair/SOCKET_ABORT_NATIVE_DIAGNOSTIC_V1.md': {'sha256': 'eda635ef8981a0c28ceeeb90df9f5426213f87f6e8c874658381f8ee29368314', 'bytes': 6223}}
++
++
+ def failed_single_interrupt_dispatch(row, job, paths, manifest, snapshot, manifest_hash):
+     """Recognize fixed dispatch metadata only, without opening failed outputs."""
+     run, revision = 'RCI001-C02-shutdown-diagnostic-001', 'RCI001-C02-dev-055'
+@@ -118,6 +122,12 @@
+         script = CAMPAIGN / 'io-repair/single-interrupt-diagnostic-v2/run.py'
+         protocol = 'RCI001-Campaign002-single-interrupt-diagnostic-v2'
+         required_sources = RESET_INTERRUPT_SOURCES
++    elif row.get('run_id') == 'RCI001-C02-shutdown-diagnostic-003':
++        run, revision = 'RCI001-C02-shutdown-diagnostic-003', 'RCI001-C02-dev-091'
++        root = CAMPAIGN / 'io-repair/shutdown-diagnostic-003'
++        script = CAMPAIGN / 'io-repair/single-interrupt-diagnostic-v3/run.py'
++        protocol = 'RCI001-Campaign002-single-interrupt-diagnostic-v3'
++        required_sources = SOCKET_INTERRUPT_SOURCES
+     manifest_path = root / 'manifest.json'
+     snapshot_path = CAMPAIGN.parent.parent / 'Architecture Map/releases' / revision / 'snapshot.json'
+     evidence = CAMPAIGN.parent / 'local-evidence/campaign002/io-repair' / run
+--- before/test_qualification_qa.py
++++ after/test_qualification_qa.py
+@@ -192,6 +192,85 @@
+ 
+ 
+ 
++class SocketInterruptQaContracts(unittest.TestCase):
++    def setUp(self):
++        self.f = fixtures.CompanionIntegrity('test_socket_interrupt_failure_is_metadata_only_and_never_reads_outputs')
++        self.f.setUp()
++        self.addCleanup(self.f.tearDown)
++
++    def fixture(self):
++        manifest, snapshot = self.f.failed_single_interrupt_fixture(version=3)
++        with patch.multiple(report, CAMPAIGN=self.f.campaign, REPO=self.f.root):
++            row = report.qualification_row(self.f.row, self.f.output)
++        return row, manifest, snapshot
++
++    def rebind(self, row, *, bind_manifest=True):
++        self.f.refresh_single_interrupt_bindings(bind_manifest=bind_manifest)
++        for n, key in enumerate(('official_queue_sha256', 'manifest_sha256', 'snapshot_sha256')):
++            row['links'][n]['sha256'] = self.f.row['artifacts'][n]['sha256']
++            row['queue_failure'][key] = self.f.row['artifacts'][n]['sha256']
++
++    def test_socket_qa_rejects_rebound_dispatch_and_all_source_substitutions(self):
++        changes = [('dispatch', str(n)) for n in (0, 4, 6, 8, 10, 12, 14)]
++        changes += [('source', relative) for relative in qa.SOCKET_INTERRUPT_SOURCES]
++        changes += [('missing-source', relative) for relative in qa.SOCKET_INTERRUPT_SOURCES]
++        changes += [('missing-input', relative) for relative in qa.SOCKET_INTERRUPT_SOURCES]
++        for change, target in changes:
++            with self.subTest(change=change, target=target):
++                row, manifest, snapshot = self.fixture()
++                m, s = json.loads(manifest.read_bytes()), json.loads(snapshot.read_bytes())
++                if change == 'dispatch':
++                    job = json.loads(self.f.queue_path.read_bytes())
++                    job['argv'][int(target)] = str(self.f.root / 'other')
++                    self.f.save(self.f.queue_path, job)
++                else:
++                    name = (self.f.campaign / target).relative_to(self.f.root).as_posix()
++                    if change == 'source': s['sources'][name]['sha256'] = '0' * 64
++                    elif change == 'missing-source': del s['sources'][name]
++                    else: m['runtime_input_files'].remove(name)
++                self.f.save(manifest, m); self.f.save(snapshot, s); self.rebind(row)
++                with patch.multiple(qa, CAMPAIGN=self.f.campaign, REPO=self.f.root), self.assertRaises(ValueError):
++                    qa.failed_queue_guard(row, self.f.output)
++
++    def test_socket_qa_rejects_rebound_manifest_identity_caps_and_snapshot(self):
++        changes = [('run_id', 'RCI001-C02-shutdown-diagnostic-002'), ('framework_revision', 'RCI001-C02-dev-062'),
++                   ('outer_campaign_protocol', 'RCI001-Campaign002-single-interrupt-diagnostic-v2'),
++                   ('qualification_stage', 'campaign002-smoke-qualification'), ('schema', 'other'),
++                   ('model_turns_max', 2), ('model_turns_max', True), ('wall_cap_s', 1801),
++                   ('sim_cap_s', 1501), ('invocation_wall_cap_s', 601), ('action_request_budget', 21),
++                   ('observation_request_budget', 51), ('noise_seed', 24102)]
++        for key, value in changes:
++            with self.subTest(key=key, value=value):
++                row, manifest, _ = self.fixture()
++                m = json.loads(manifest.read_bytes()); m[key] = value; self.f.save(manifest, m)
++                self.rebind(row)
++                with patch.multiple(qa, CAMPAIGN=self.f.campaign, REPO=self.f.root), self.assertRaises(ValueError):
++                    qa.failed_queue_guard(row, self.f.output)
++        row, _, snapshot = self.fixture()
++        s = json.loads(snapshot.read_bytes()); s['manifest_sha256'] = '0' * 64; self.f.save(snapshot, s)
++        self.rebind(row, bind_manifest=False)
++        with patch.multiple(qa, CAMPAIGN=self.f.campaign, REPO=self.f.root), self.assertRaises(ValueError):
++            qa.failed_queue_guard(row, self.f.output)
++
++    def test_socket_qa_never_promotes_failed_diagnostic_to_outcome_or_scoring(self):
++        original, _, _ = self.fixture()
++        for key, value in [('task_outcome', 'success'), ('scorable', True), ('model_calls', 1),
++                           ('status', 'passed'), ('assessment_schema', 'smoke'), ('timing', {}),
++                           ('checks', {'qualified': True}), ('analyses', [{'passed': True}])]:
++            with self.subTest(key=key):
++                row = copy.deepcopy(original); row[key] = value
++                with self.assertRaises(ValueError):
++                    qa.failed_queue_guard(row, self.f.output)
++        contract = {'schema': 'campaign002-qualification-closeout-status-1', 'state': 'qualification_in_progress',
++                    'basis_run_id': original['run_id'],
++                    'basis_queue_sha256': original['queue_failure']['official_queue_sha256'], 'artifacts': []}
++        closeout = report.current_status_detail(contract, [original], {}, {'entries': []}, self.f.campaign, self.f.output)
++        self.assertTrue(qa.failed_queue_closeout_guard(closeout, [original]))
++        for state in ('qualified_campaign_in_progress', 'campaign_terminal'):
++            with self.assertRaises(ValueError):
++                qa.failed_queue_closeout_guard({**closeout, 'state': state}, [original])
++
++
+ class OrdinaryDiagnosticQaContracts(unittest.TestCase):
+     def setUp(self):
+         self.f = fixtures.CompanionIntegrity('test_successful_row_links_cross_run_diagnostics_without_pooling')

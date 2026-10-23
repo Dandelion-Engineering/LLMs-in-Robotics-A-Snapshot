@@ -1,0 +1,218 @@
+{
+  "schema_version": "architecture-map-1.0",
+  "id": "RCI001-C02-smoke-001",
+  "recorded_at": "2026-09-27T21:13:51.052208+00:00",
+  "author": "Codex session 13",
+  "tags": [
+    "robot-codex-integration-001",
+    "campaign-002"
+  ],
+  "details": {},
+  "revision_id": "RCI001-C02-dev-004",
+  "stage": "development",
+  "condition_id": "campaign002-smoke-qualification",
+  "protocol_id": "RCI001-readiness-session10-v1",
+  "scenario_id": "misplaced-stock",
+  "paired_block_id": "unpaired-RCI001-C02-smoke-001",
+  "replicate": 1,
+  "started_at": null,
+  "rerun_of_run_id": null,
+  "condition_details": {
+    "manifest": {
+      "schema": "robot-codex-development-manifest-1.0",
+      "stage": "development-only",
+      "run_id": "RCI001-C02-smoke-001",
+      "family": "misplaced-stock",
+      "mode": "serve",
+      "seed": 173,
+      "noise_seed": 24101,
+      "sim_cap_s": 1500,
+      "wall_cap_s": 1800,
+      "storage_cap_bytes": 536870912,
+      "physics_dt_s": 0.002,
+      "clock_mode": "wall-paced; physics continues independently of agent",
+      "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+      "operator_only_fixture": {
+        "part_count": 1,
+        "placements": [
+          {
+            "part_id": "A1",
+            "zone": "quarantine"
+          }
+        ],
+        "order": {
+          "version": 1,
+          "closed": true,
+          "requirements": [
+            {
+              "family": "A",
+              "recipe": "A",
+              "count": 1,
+              "tray": "tray1",
+              "max_rework_cycles": 0
+            }
+          ]
+        },
+        "reference_actions": [
+          {
+            "operation": "transport",
+            "part_id": "A1",
+            "destination": "parking1"
+          }
+        ],
+        "missing_rule": "Frozen baseline excludes quarantine from raw-stock eligibility; no failed inspection is present.",
+        "baseline_source": "Runtime 004/candidates.py:739-756"
+      },
+      "limitations": [
+        "Development fixture; not sampled performance evidence",
+        "No collision safety certificate",
+        "Reference solution is protected operator evidence",
+        "Agent process restart only; supervisor restart is not implemented"
+      ],
+      "qualification_stage": "campaign002-smoke-qualification",
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "bootstrap": "Follow the instructions in RobotAgentPrompt.md.",
+      "model_turns_max": 2,
+      "invocation_wall_cap_s": 600,
+      "action_request_budget": 20,
+      "observation_request_budget": 50,
+      "interruption_trigger": "first admitted smoke-open-001 gripper open action; revoke authority then abort client",
+      "scope": "Development smoke; no recovery attempt or performance estimate",
+      "program_route": "sealed-snapshot bounded Python runner; OS namespace shell remains available",
+      "gates": [
+        "real45 canaries each invocation",
+        "actual fresh observation and bounded safe action",
+        "retained admitted program hash",
+        "actual model interruption with durable bytes",
+        "all namespaces retired before new thread",
+        "old token denied",
+        "new invocation queries original request without replay",
+        "atomic protected continuity note visible",
+        "protected handback accepts or rejects honestly",
+        "model program submits nonexistent-operation validation canary; protected host rejects without dispatch"
+      ],
+      "prior_attempt": null,
+      "framework_revision": "RCI001-C02-dev-004",
+      "outer_campaign_protocol": "RCI001-Campaign002-qualification-v1",
+      "runtime_workspace": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Campaign002\\qualification\\RCI001-C02-smoke-001",
+      "runtime_input_files": [
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess_smoke_v2.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_assess.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_smoke_v2.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_timing.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_transport.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/timing.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/qualification/native_suite.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_bootstrap.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_pilot.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_smoke.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/supplement_pilot.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_assessment.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_pilot_assessment.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_smoke_assessment.py"
+      ]
+    },
+    "scope": "One predeclared readiness attempt; no comparative performance inference"
+  },
+  "seeds": {
+    "state": "recorded",
+    "refs": [
+      {
+        "label": "Protected immutable development attempt manifest",
+        "uri": "releases/RCI001-C02-dev-004/manifest.json",
+        "sha256": "a0fde96ba2524135dcf90e2af95735b197887951d0baad95c06f98e9036884a0",
+        "state": "available",
+        "access": "evaluator_only",
+        "locator": null
+      }
+    ],
+    "reason": null
+  },
+  "frozen_refs": {
+    "code": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Exact implementation and runtime templates",
+          "uri": "releases/RCI001-C02-dev-004/code.zip",
+          "sha256": "1bd59f79e1e7aea3a2c26a21bfe591f1d0f30ac2dfdbd99a26c6938a9b4c9f36",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "environment": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Source hashes and requested environment",
+          "uri": "releases/RCI001-C02-dev-004/snapshot.json",
+          "sha256": "9c61b739fc54d41557c5235837fcd25656dced3d7f60cff39e657b00b8ba65f8",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "models": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Source hashes and requested environment",
+          "uri": "releases/RCI001-C02-dev-004/snapshot.json",
+          "sha256": "9c61b739fc54d41557c5235837fcd25656dced3d7f60cff39e657b00b8ba65f8",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "protocol": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Protected immutable development attempt manifest",
+          "uri": "releases/RCI001-C02-dev-004/manifest.json",
+          "sha256": "a0fde96ba2524135dcf90e2af95735b197887951d0baad95c06f98e9036884a0",
+          "state": "available",
+          "access": "evaluator_only",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "scenario": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Protected immutable development attempt manifest",
+          "uri": "releases/RCI001-C02-dev-004/manifest.json",
+          "sha256": "a0fde96ba2524135dcf90e2af95735b197887951d0baad95c06f98e9036884a0",
+          "state": "available",
+          "access": "evaluator_only",
+          "locator": null
+        }
+      ],
+      "reason": null
+    }
+  },
+  "evidence": [
+    {
+      "label": "Protected immutable development attempt manifest",
+      "uri": "releases/RCI001-C02-dev-004/manifest.json",
+      "sha256": "a0fde96ba2524135dcf90e2af95735b197887951d0baad95c06f98e9036884a0",
+      "state": "available",
+      "access": "evaluator_only",
+      "locator": null
+    }
+  ]
+}

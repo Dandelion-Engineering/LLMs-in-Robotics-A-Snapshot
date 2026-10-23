@@ -1,0 +1,91 @@
+{
+  "recorded_utc": "2026-10-11T00:54:52.572814+00:00",
+  "classification": "Operator audit-reader assumption error, not a scientific retry or runtime failure.",
+  "failed_queue": {
+    "uri": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Apartment Experiment\\operations\\session-74\\audit001-terminal.json",
+    "sha256": "728efe8336ae435aea951a75013f8eea55548c58c90547db7fca655e0c86973c",
+    "bytes": 1231
+  },
+  "failed_result": {
+    "uri": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\endpoint-session74\\audit001\\result.json",
+    "sha256": "102dc7a1b46a903bbc073e2b8f23be0ece1d1698f9b814737740bb97aa1a86ee",
+    "bytes": 115071
+  },
+  "reader": {
+    "uri": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Apartment Experiment\\operations\\session-74\\audit_endpoint.py",
+    "sha256": "0b077535b1add22bfa3d2bf3511d10230be637b3522a858619ade34e3eba0d74",
+    "bytes": 23097
+  },
+  "request": {
+    "clock_epoch": "03a4355b67e64e61ae1ae826f5fd2c0e",
+    "kind": "command_requested",
+    "monotonic_ns": 1510965890621100,
+    "payload": {
+      "request": {
+        "kind": "dock",
+        "parameters": {},
+        "request_id": "16819a0a928e438f9667477acca39b68"
+      },
+      "session": 5
+    },
+    "previous": "7befbc1abaa9d5f24c939a8eb2d9990d51a5382fbd369468b71aa0788203bbb9",
+    "sequence": 1283,
+    "sim_time": 3299.655999949621,
+    "wall_ns": 1791653392291097900,
+    "sha256": "60fd6778612819b43afad798252de36a0ddcb2ad6365f72e35e5e2d84bf71bc4"
+  },
+  "terminals": [
+    {
+      "clock_epoch": "03a4355b67e64e61ae1ae826f5fd2c0e",
+      "kind": "command_terminal",
+      "monotonic_ns": 1510965896081800,
+      "payload": {
+        "kind": "dock",
+        "request_id": "16819a0a928e438f9667477acca39b68",
+        "sim_time": 3299.655999949621,
+        "status": "completed"
+      },
+      "previous": "3b1dcd4ca88695afc2f892ba413d62b1ad00d0611f87dfdd1038e8be10318a60",
+      "sequence": 1285,
+      "sim_time": 3299.671999949621,
+      "wall_ns": 1791653392295724100,
+      "sha256": "c36506d0db9b8af58b0d7c1755e8e33ba7c391821751850ffd5dc0057531c075"
+    },
+    {
+      "clock_epoch": "465d3ab9f39d4670ae4959eae4edb2eb",
+      "kind": "command_terminal",
+      "monotonic_ns": 1516357927592800,
+      "payload": {
+        "kind": "dock",
+        "request_id": "16819a0a928e438f9667477acca39b68",
+        "sim_time": 3299.655999949621,
+        "status": "completed"
+      },
+      "previous": "6a5977ecb64e52602a670a75c939d8dade8e9deeec391f9f7fe3d6a3f6e8ec3a",
+      "sequence": 1290,
+      "sim_time": 3442.139999946252,
+      "wall_ns": 1791658784327378000,
+      "sha256": "6403e29b86a17cabe28b4df51c4eec790bc77f9801e299dae2fad5250b271fbe"
+    }
+  ],
+  "checkpoint": {
+    "uri": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\checkpoints\\session-00005\\state.json",
+    "sha256": "aa9c5e9929630ea730488a8c99230064af65bf941f69d7365e7af98d7df72d32",
+    "bytes": 6810
+  },
+  "controller": {
+    "uri": "D:\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\frozen_repository\\Long-Horizon Adaptive Robotics Expirement\\Apartment Experiment\\controller.py",
+    "sha256": "65f059468eceed6e57ae992fbc4948700ee02a32dac9334c5573a94b3278437b",
+    "bytes": 14777
+  },
+  "world": {
+    "uri": "D:\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\frozen_repository\\Long-Horizon Adaptive Robotics Expirement\\Apartment Experiment\\world.py",
+    "sha256": "cf352bbaf235c5ba6548dfc134180b1483af2e60de8490c344259a6d13d8e48c",
+    "bytes": 23226
+  },
+  "cause": "The fresh controller initializes its local last_action to None, then records the checkpoint-restored last_action. One request therefore has a pre-recovery completion and an identical post-resume observation. The reader incorrectly required globally unique terminal receipts.",
+  "correction": "Bound completion to its originating session and separately authenticate the sole repeated post-resume payload against checkpoint5, before any continuation command.",
+  "scientific_changes": 0,
+  "scientific_retries": 0,
+  "plan": "Continue the incomplete read-only audit through the shared queue, retaining the failed first queue, all five completed gates, their immutable full inventories and a final full preservation pass."
+}

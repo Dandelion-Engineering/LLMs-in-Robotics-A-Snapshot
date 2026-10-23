@@ -1,0 +1,561 @@
+{
+  "schema": "rci-c02-transport-probe-analysis-1",
+  "run_id": "RCI001-C02-transport-probe-001",
+  "framework_revision": "RCI001-C02-dev-028",
+  "official_authentication": {
+    "job_id": "20260928T041943923088Z-0db5255a",
+    "state": "succeeded",
+    "exit_status": 0,
+    "started_at": "2026-09-28T04:19:44.170360Z",
+    "ended_at": "2026-09-28T04:20:00.507954Z",
+    "authenticated_at": "2026-09-28T04:24:31.177355+00:00",
+    "direct_status_equal_to_retained_receipt": true,
+    "launch_argv_equal_to_intent": true
+  },
+  "original_result": {
+    "passed": true,
+    "checks": {
+      "two_fresh_cases": true,
+      "all_transport_cases_passed": true
+    },
+    "map_validity": "valid",
+    "map_outcome": "unknown"
+  },
+  "read_only_verification": {
+    "fresh_independent_replay_cases": 2,
+    "equal_to_original_cases": 2,
+    "raw_inputs_and_selected_frozen_sources_verified": true
+  },
+  "cases": [
+    {
+      "kind": "normal",
+      "passed_original": true,
+      "independent_replay_equal_to_original": true,
+      "idle_seconds": 2.0,
+      "h2_frames": [
+        {
+          "type": 4,
+          "flags": 0,
+          "bytes": 18
+        },
+        {
+          "type": 4,
+          "flags": 1,
+          "bytes": 0
+        },
+        {
+          "type": 8,
+          "flags": 0,
+          "bytes": 4
+        },
+        {
+          "type": 6,
+          "flags": 1,
+          "bytes": 8
+        }
+      ],
+      "boundary_canaries": {
+        "passed": 45,
+        "total": 45,
+        "qualified": true
+      },
+      "codehost_canaries": {
+        "host_qualified": true,
+        "model_calls": 0,
+        "enabled_tools": [],
+        "api_count": 7,
+        "denied_import_count": 3
+      },
+      "transport": {
+        "owner_kind": "transport_probe",
+        "accepted": 1,
+        "denied": 0,
+        "to_host_bytes": 59,
+        "from_host_bytes": 66,
+        "pump_errors": [],
+        "owner_finishing": {
+          "kind": "client_finishing_before_close",
+          "monotonic_s": 426665.0,
+          "schema": "campaign002-client-finishing-1",
+          "wall_unix_s": 1790569193.426981
+        },
+        "first_pump_end": {
+          "sequence": 5,
+          "pump": "upload",
+          "reason": "eof",
+          "exception_type": null,
+          "client_finishing": true,
+          "wall_unix_s": 1790569193.4294417,
+          "monotonic_s": 426665.0,
+          "record_sha256": "9ad2a2bc463e36b6dca9b712a6ce7a71275bd858e9d3fb702c4f72cebe85b0b7"
+        },
+        "expected_client_shutdown_resets": 0,
+        "namespace": {
+          "records": 8,
+          "child_exit_before_cleanup": null,
+          "child_exit_code": -15,
+          "terminate_sent": true,
+          "reason": "owner_input_eof"
+        },
+        "child_diagnostics": [
+          {
+            "line": 6,
+            "stream": "stderr",
+            "bytes": 191,
+            "sha256": "42b6b339eca7ce77f8e7620185b692e07fd93690990212dfe7d4aa029c0eae63",
+            "truncated": false
+          },
+          {
+            "line": 7,
+            "stream": "stdout",
+            "bytes": 23,
+            "sha256": "2f012f80db6989ee0678c487020960981ac9095dc62c92ba584cb8753f40c436",
+            "truncated": false
+          }
+        ],
+        "wrapper_exit_code": 0,
+        "retirement_qualified": true,
+        "retired_namespace_empty": true,
+        "cleanup_clean": true
+      },
+      "proof_lines": {
+        "client/events.jsonl": {
+          "owner_finishing": 1,
+          "probe_client_closed": 2
+        },
+        "codehost-transport-v2.jsonl": {
+          "first_pump_end": 5,
+          "cleanup_pump_end": 6,
+          "retirement_started": 7,
+          "connection_closed": 8,
+          "closed": 9
+        },
+        "codehost-1-stderr.txt": {
+          "stdin_eof": 4,
+          "channel_end": 5,
+          "child_diagnostics": [
+            6,
+            7
+          ],
+          "closed": 8
+        }
+      },
+      "input_refs": {
+        "client/events.jsonl": "normal/client/events.jsonl",
+        "codehost-transport-v2.jsonl": "normal/codehost-transport-v2.jsonl",
+        "codehost-1-bridge.json": "normal/codehost-1-bridge.json",
+        "codehost-1-stderr.txt": "normal/codehost-1-stderr.txt",
+        "codehost-1-retirement.json": "normal/codehost-1-retirement.json",
+        "canary-stdout.json": "normal/canary-stdout.json",
+        "canary-stderr.txt": "normal/canary-stderr.txt",
+        "codehost-canary-stdout.json": "normal/codehost-canary-stdout.json",
+        "codehost-canary-stderr.txt": "normal/codehost-canary-stderr.txt",
+        "cleanup.json": "normal/cleanup.json",
+        "runtime-location.json": "normal/runtime-location.json",
+        "runtime-input-hashes.json": "normal/runtime-input-hashes.json"
+      }
+    },
+    {
+      "kind": "reset",
+      "passed_original": true,
+      "independent_replay_equal_to_original": true,
+      "idle_seconds": 2.0,
+      "h2_frames": [
+        {
+          "type": 4,
+          "flags": 0,
+          "bytes": 18
+        },
+        {
+          "type": 4,
+          "flags": 1,
+          "bytes": 0
+        },
+        {
+          "type": 8,
+          "flags": 0,
+          "bytes": 4
+        },
+        {
+          "type": 6,
+          "flags": 1,
+          "bytes": 8
+        }
+      ],
+      "boundary_canaries": {
+        "passed": 45,
+        "total": 45,
+        "qualified": true
+      },
+      "codehost_canaries": {
+        "host_qualified": true,
+        "model_calls": 0,
+        "enabled_tools": [],
+        "api_count": 7,
+        "denied_import_count": 3
+      },
+      "transport": {
+        "owner_kind": "transport_probe",
+        "accepted": 1,
+        "denied": 0,
+        "to_host_bytes": 59,
+        "from_host_bytes": 66,
+        "pump_errors": [],
+        "owner_finishing": {
+          "kind": "client_finishing_before_close",
+          "monotonic_s": 426671.281,
+          "schema": "campaign002-client-finishing-1",
+          "wall_unix_s": 1790569199.7114565
+        },
+        "first_pump_end": {
+          "sequence": 5,
+          "pump": "upload",
+          "reason": "eof",
+          "exception_type": null,
+          "client_finishing": true,
+          "wall_unix_s": 1790569199.7114565,
+          "monotonic_s": 426671.281,
+          "record_sha256": "118ff4b77caa4b96487af9036e4771de52c81e58378a771a9316f01f94afe685"
+        },
+        "expected_client_shutdown_resets": 0,
+        "namespace": {
+          "records": 8,
+          "child_exit_before_cleanup": null,
+          "child_exit_code": -15,
+          "terminate_sent": true,
+          "reason": "owner_input_eof"
+        },
+        "child_diagnostics": [
+          {
+            "line": 6,
+            "stream": "stdout",
+            "bytes": 23,
+            "sha256": "2f012f80db6989ee0678c487020960981ac9095dc62c92ba584cb8753f40c436",
+            "truncated": false
+          },
+          {
+            "line": 7,
+            "stream": "stderr",
+            "bytes": 191,
+            "sha256": "af48f5ce8195438ecec971a65728482bdf4280c9ece2ad0ab5940d395b6c7620",
+            "truncated": false
+          }
+        ],
+        "wrapper_exit_code": 0,
+        "retirement_qualified": true,
+        "retired_namespace_empty": true,
+        "cleanup_clean": true
+      },
+      "proof_lines": {
+        "client/events.jsonl": {
+          "owner_finishing": 1,
+          "probe_client_closed": 2
+        },
+        "codehost-transport-v2.jsonl": {
+          "first_pump_end": 5,
+          "cleanup_pump_end": 6,
+          "retirement_started": 7,
+          "connection_closed": 8,
+          "closed": 9
+        },
+        "codehost-1-stderr.txt": {
+          "stdin_eof": 4,
+          "channel_end": 5,
+          "child_diagnostics": [
+            6,
+            7
+          ],
+          "closed": 8
+        }
+      },
+      "input_refs": {
+        "client/events.jsonl": "reset/client/events.jsonl",
+        "codehost-transport-v2.jsonl": "reset/codehost-transport-v2.jsonl",
+        "codehost-1-bridge.json": "reset/codehost-1-bridge.json",
+        "codehost-1-stderr.txt": "reset/codehost-1-stderr.txt",
+        "codehost-1-retirement.json": "reset/codehost-1-retirement.json",
+        "canary-stdout.json": "reset/canary-stdout.json",
+        "canary-stderr.txt": "reset/canary-stderr.txt",
+        "codehost-canary-stdout.json": "reset/codehost-canary-stdout.json",
+        "codehost-canary-stderr.txt": "reset/codehost-canary-stderr.txt",
+        "cleanup.json": "reset/cleanup.json",
+        "runtime-location.json": "reset/runtime-location.json",
+        "runtime-input-hashes.json": "reset/runtime-input-hashes.json"
+      }
+    }
+  ],
+  "limitations": [
+    "No model invocation, physical simulation, robot task outcome, campaign admission, or smoke005 causal attribution is established.",
+    "The reset case exercised the frozen driver SO_LINGER/abort path. Both retained first pump ends were upload/eof with null exception and zero expected reset exceptions; wire-level RST and reset-exception coverage are not independently established by these receipts.",
+    "Each case tested a two-second idle interval. This does not establish long-duration service reliability or full model tool traffic.",
+    "Windows owner and bridge timestamps are joined only within that clock domain; Linux namespace timestamps are checked only within their own sequence. Cross-operating-system absolute clock equality is not assumed.",
+    "Opaque child diagnostic byte counts and hashes do not disclose messages or establish a disconnect cause.",
+    "Original historical failures and all existing assessments remain unchanged."
+  ],
+  "source_bindings": {
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_bridge_v2.py": {
+      "sha256": "9e95c5d821774a47ce61f316d792596c16f9ec8602b6dd06739f5b4274982f64",
+      "bytes": 13885,
+      "href": "../harness/codehost_bridge_v2.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_inside_v2.py": {
+      "sha256": "101f449435a55a119fb96f401f20546e541baa95f32ed731f2d4030401794aa9",
+      "bytes": 11006,
+      "href": "../harness/codehost_inside_v2.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_entry_v2.py": {
+      "sha256": "b35a728f4fe872281d0970bfcf138b7071abd4311da4ac0477955978e2bec476",
+      "bytes": 1270,
+      "href": "../harness/codehost_entry_v2.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py": {
+      "sha256": "fd90e3dff6268c848b2ee1f60ad3d7b077fea256145293ff199b51136b0fc243",
+      "bytes": 24541,
+      "href": "../harness/runtime.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v2.py": {
+      "sha256": "b3ffc5cbd3bf8d1b5417c9d2ffcb20eb5515030344174b154ccb6ae8c1aa6e25",
+      "bytes": 21281,
+      "href": "../harness/bootstrap_client_v2.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/transport_stderr.py": {
+      "sha256": "29920d4d46d147dbb9726b691dc729ce95de573e6e3e1e12065d04611efcb29f",
+      "bytes": 2204,
+      "href": "../harness/transport_stderr.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/transport_integrity.py": {
+      "sha256": "a2537b44b69f269ceba82d4e7b903f3f231a90f772e30f0f1dbc298119b585cb",
+      "bytes": 21375,
+      "href": "../assessment/transport_integrity.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/TRANSPORT_EVIDENCE_V2.md": {
+      "sha256": "a611128dd58c0b3eb0a86d779fd94bdc7cff77e5fc5361dc399744c6e93e5403",
+      "bytes": 5728,
+      "href": "TRANSPORT_EVIDENCE_V2.md"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/boundary/linux_entry.py": {
+      "sha256": "785a09a92bd3c8b28e5403fa993d98725d61359e34132534b4ddc6500b3a0fb3",
+      "bytes": 2349,
+      "href": "../../readiness-session-10/boundary/linux_entry.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/boundary/namespace.py": {
+      "sha256": "027d5ef394906ef1885b8ae8a2376031aae48ce93efe9bb90f2dc3ef9000c0f9",
+      "bytes": 1788,
+      "href": "../../readiness-session-10/boundary/namespace.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/boundary/inside.py": {
+      "sha256": "6b6745e449348913e542d82aeb8b45320b6f50312540c235a3b07a66dc64faa3",
+      "bytes": 6001,
+      "href": "../../readiness-session-10/boundary/inside.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/boundary/gateway_policy.py": {
+      "sha256": "fbdef33d3753ed2cc0d92a7dc3318267237abf6c001d1fee22341197d013bb76",
+      "bytes": 3124,
+      "href": "../../readiness-session-10/boundary/gateway_policy.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/boundary/retirement.py": {
+      "sha256": "feaa2c2ac62ce3b1950a2f52298ae64180e70c468e45727586e10dcd07ce4151",
+      "bytes": 9692,
+      "href": "../../readiness-session-10/boundary/retirement.py"
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_probe.py": {
+      "sha256": "f2f84ebfc88f811b8b0b0bc6a01a009f6cf3f12dff555bc94180e63f4777f582",
+      "bytes": 6894,
+      "href": "../harness/codehost_probe.py"
+    }
+  },
+  "input_bindings": {
+    "result": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/result.json",
+      "href": "transport-probe-001/evidence/result.json",
+      "sha256": "404237d930f9de636834d585f4f602d89192152ebf52243662b8540b27997b8b",
+      "bytes": 188317
+    },
+    "manifest": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/manifest.json",
+      "href": "transport-probe-001/manifest.json",
+      "sha256": "ecbca53da8057477f20d5f0965c888b0b12af1cdb4cc6f6a700d621bb09b683e",
+      "bytes": 732
+    },
+    "official_queue": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/records/official-status.json",
+      "href": "transport-probe-001/records/official-status.json",
+      "sha256": "3c0dca350d066c67c8d8189a87595b01002f46945a0b881ad46356cc93947183",
+      "bytes": 1584
+    },
+    "launch_intent": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/records/intent.json",
+      "href": "transport-probe-001/records/intent.json",
+      "sha256": "2d61bbb77488a0b5bc53dedbd2a4d3b9c46300de9ef9c3957a952eca902a80e9",
+      "bytes": 1062
+    },
+    "source_snapshot": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-028/snapshot.json",
+      "href": "../../../Architecture Map/releases/RCI001-C02-dev-028/snapshot.json",
+      "sha256": "5aa5c17c52762c88f5588d6437a9f472874a019730b0c2151e02c61320d6adfa",
+      "bytes": 171947
+    },
+    "map_result": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-028/result-RCI001-C02-transport-probe-001/result-record.json",
+      "href": "../../../Architecture Map/releases/RCI001-C02-dev-028/result-RCI001-C02-transport-probe-001/result-record.json",
+      "sha256": "c1576e7e20e12a5d60354bbeeec95c04832480cd15352f62e90ac31a8b0f5644",
+      "bytes": 199029
+    },
+    "map_queue": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-028/result-RCI001-C02-transport-probe-001/queue.json",
+      "href": "../../../Architecture Map/releases/RCI001-C02-dev-028/result-RCI001-C02-transport-probe-001/queue.json",
+      "sha256": "3c0dca350d066c67c8d8189a87595b01002f46945a0b881ad46356cc93947183",
+      "bytes": 1584
+    },
+    "map_source_result": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/RCI001-C02-dev-028/result-RCI001-C02-transport-probe-001/result.json",
+      "href": "../../../Architecture Map/releases/RCI001-C02-dev-028/result-RCI001-C02-transport-probe-001/result.json",
+      "sha256": "404237d930f9de636834d585f4f602d89192152ebf52243662b8540b27997b8b",
+      "bytes": 188317
+    },
+    "normal/client/events.jsonl": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/client/events.jsonl",
+      "href": "transport-probe-001/evidence/normal/client/events.jsonl",
+      "sha256": "55b8812f819c9471f99647cc1b2e6816ffb0f59078fe41b167c3da50fc363383",
+      "bytes": 296
+    },
+    "normal/codehost-transport-v2.jsonl": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/codehost-transport-v2.jsonl",
+      "href": "transport-probe-001/evidence/normal/codehost-transport-v2.jsonl",
+      "sha256": "385c05ec4ea946271d341eb098482693ef49ca41428c8d4f700636fce33b1271",
+      "bytes": 4314
+    },
+    "normal/codehost-1-bridge.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/codehost-1-bridge.json",
+      "href": "transport-probe-001/evidence/normal/codehost-1-bridge.json",
+      "sha256": "0126321b355771998fbd9ec3cdda8329fb202b37d33f573b677a5902bcab445f",
+      "bytes": 4914
+    },
+    "normal/codehost-1-stderr.txt": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/codehost-1-stderr.txt",
+      "href": "transport-probe-001/evidence/normal/codehost-1-stderr.txt",
+      "sha256": "a2404446453a9b26292cf5d8ec88d79999afbb176c298e00ee01fc46a941ae3a",
+      "bytes": 2071
+    },
+    "normal/codehost-1-retirement.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/codehost-1-retirement.json",
+      "href": "transport-probe-001/evidence/normal/codehost-1-retirement.json",
+      "sha256": "8ab64141eca42dce55f547aeea2afe9af068f0fea9c07bba5019934dcf1584de",
+      "bytes": 2945
+    },
+    "normal/canary-stdout.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/canary-stdout.json",
+      "href": "transport-probe-001/evidence/normal/canary-stdout.json",
+      "sha256": "b55f76c3127a19761d2dc7995031568805ef8ce9c27438b04f5e17e52b76ea0b",
+      "bytes": 2151
+    },
+    "normal/canary-stderr.txt": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/canary-stderr.txt",
+      "href": "transport-probe-001/evidence/normal/canary-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "normal/codehost-canary-stdout.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/codehost-canary-stdout.json",
+      "href": "transport-probe-001/evidence/normal/codehost-canary-stdout.json",
+      "sha256": "354eb010a567fb11ca84944b88586b46782c0a264be1680c5a6d9be3535a45b3",
+      "bytes": 2289
+    },
+    "normal/codehost-canary-stderr.txt": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/codehost-canary-stderr.txt",
+      "href": "transport-probe-001/evidence/normal/codehost-canary-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "normal/cleanup.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/cleanup.json",
+      "href": "transport-probe-001/evidence/normal/cleanup.json",
+      "sha256": "cdd05fb59455c976ade07316279fb7f15473db8b4ab22f541320b97ae10847de",
+      "bytes": 40
+    },
+    "normal/runtime-location.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/runtime-location.json",
+      "href": "transport-probe-001/evidence/normal/runtime-location.json",
+      "sha256": "d6735ac18ea34f77ff845548e469fe53ac5c4d6084197401b9e9c4c928b7d43e",
+      "bytes": 625
+    },
+    "normal/runtime-input-hashes.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/normal/runtime-input-hashes.json",
+      "href": "transport-probe-001/evidence/normal/runtime-input-hashes.json",
+      "sha256": "431ac3ffae0b2bf5c45c8d5c60926452903ff27fc7ba345d2ec4702d6029ff8b",
+      "bytes": 1263
+    },
+    "reset/client/events.jsonl": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/client/events.jsonl",
+      "href": "transport-probe-001/evidence/reset/client/events.jsonl",
+      "sha256": "4b1cf2d9fc478d2a037b447b62b7357660b4c339309e99b89721dead78e41594",
+      "bytes": 301
+    },
+    "reset/codehost-transport-v2.jsonl": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/codehost-transport-v2.jsonl",
+      "href": "transport-probe-001/evidence/reset/codehost-transport-v2.jsonl",
+      "sha256": "906896bfc068d0515652cced62c581873ce137fc32f819f4a9a7af16fbbea8e8",
+      "bytes": 4316
+    },
+    "reset/codehost-1-bridge.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/codehost-1-bridge.json",
+      "href": "transport-probe-001/evidence/reset/codehost-1-bridge.json",
+      "sha256": "85d9f25e145d76f1cbd379e316bfe18ebc9d76c9a4bb022437d18aad882f0355",
+      "bytes": 4925
+    },
+    "reset/codehost-1-stderr.txt": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/codehost-1-stderr.txt",
+      "href": "transport-probe-001/evidence/reset/codehost-1-stderr.txt",
+      "sha256": "f7cd6a578837b8a340f0e74b49fa1949db286dd65135bac5f3f01ec52d0c6380",
+      "bytes": 2080
+    },
+    "reset/codehost-1-retirement.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/codehost-1-retirement.json",
+      "href": "transport-probe-001/evidence/reset/codehost-1-retirement.json",
+      "sha256": "dbafae43edd2431970148f9d3e9bc42c5af116c6c078939842ee8cba709284f5",
+      "bytes": 2950
+    },
+    "reset/canary-stdout.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/canary-stdout.json",
+      "href": "transport-probe-001/evidence/reset/canary-stdout.json",
+      "sha256": "b55f76c3127a19761d2dc7995031568805ef8ce9c27438b04f5e17e52b76ea0b",
+      "bytes": 2151
+    },
+    "reset/canary-stderr.txt": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/canary-stderr.txt",
+      "href": "transport-probe-001/evidence/reset/canary-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reset/codehost-canary-stdout.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/codehost-canary-stdout.json",
+      "href": "transport-probe-001/evidence/reset/codehost-canary-stdout.json",
+      "sha256": "dff9c42aa9762642b511e31aa4be9d19bf888285edb9703f13b5b950acd57ec4",
+      "bytes": 2289
+    },
+    "reset/codehost-canary-stderr.txt": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/codehost-canary-stderr.txt",
+      "href": "transport-probe-001/evidence/reset/codehost-canary-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reset/cleanup.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/cleanup.json",
+      "href": "transport-probe-001/evidence/reset/cleanup.json",
+      "sha256": "cdd05fb59455c976ade07316279fb7f15473db8b4ab22f541320b97ae10847de",
+      "bytes": 40
+    },
+    "reset/runtime-location.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/runtime-location.json",
+      "href": "transport-probe-001/evidence/reset/runtime-location.json",
+      "sha256": "28b2c8af50d0c0410e936a987471d6cd4a7e0ca09b360021e309926e4ef5c34b",
+      "bytes": 625
+    },
+    "reset/runtime-input-hashes.json": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/transport-probe-001/evidence/reset/runtime-input-hashes.json",
+      "href": "transport-probe-001/evidence/reset/runtime-input-hashes.json",
+      "sha256": "2b2f10d2ae8de8ffb8b49f323609f8e1e8b767d6146198099fbe58b315558859",
+      "bytes": 1263
+    }
+  }
+}

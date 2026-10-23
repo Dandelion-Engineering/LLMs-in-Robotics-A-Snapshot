@@ -1,0 +1,21 @@
+# Prospective pilot retirement receipt inventory correction
+
+Declared 2026-09-29 after Pilot-stock024/dev086 failed and before implementation. Official job `20260929T041418803542Z-2f3b6425` succeeded with genuine integer exit zero at04:18:09.652362 UTC. Its original independent assessment SHA `a87dc3025fb1212b3969640eeaf185701b201ed0bf8613d443f7332697d6f126` is invalid with unknown task outcome:36 of38 checks passed; `all_namespace_retirements_observed` and `qualified_lifecycle_end_observed` failed. V27 stopped before the home pilot and all scored attempts. Preserve this assessment, disposition and registered result unchanged.
+
+## Observed source mismatch
+
+The frozen campaign pilot wrapper in `assessment/assess.py` delegates stage inspection to the original readiness reader. Its `*-retirement.json` inventory omits the shared-host receipt `codehost-owner-retirement-v3.json`. The current smoke reader already includes that exact filename. The retained pilot has two executor receipts and the versioned shared-host receipt; each satisfies the existing `check_retirement` predicate. Independent transport verification also binds the shared-host receipt. The current shared-host inventory regression exercises only the smoke entry point.
+
+The false namespace flag also prevents the existing successful-terminal-host-closure branch from establishing lifecycle completion. The pilot's later explicit retirement and old-token HTTP requests encountered connection refusal after the protected host had closed. This method must not interpret connection refusal as HTTP403, invent an explicit retirement event, or change the terminal-closure criteria. The additive diagnosis must retain the exact receipt, source, chronology and queue bindings supporting this distinction.
+
+## Bounded change
+
+Extend only the campaign pilot's stage inventory to include the exact sibling basename `codehost-owner-retirement-v3.json` when it is present. Preserve the legacy reader and all original readiness sources. Keep its existing retirement entries, add the versioned receipt as an independently read object, and recompute only `all_namespace_retirements_observed` with the unchanged predicate: at least three receipts, an executor receipt, a codehost receipt, and every receipt satisfying the existing `check_retirement` function. A malformed, failed, nonempty, unknown or missing receipt cannot be replaced by a producer's success flag or by a connection error. An additional failing legacy receipt must continue to fail the aggregate even when the versioned receipt passes.
+
+Do not broaden the filename glob, route the pilot wholesale through the smoke assessor, introduce a circular import, change the retirement predicate or either lifecycle branch, or change transport/capture/continuity/task/timing checks. The normal source snapshot and independent transport bindings continue to apply. Runtime, namespace retirement, host lifecycle, model bootstrap, prompts, policy, physics, sensing and task behavior remain unchanged.
+
+## Validation and fresh qualification
+
+Exercise the actual campaign pilot `inspect_stage` entry point with both legacy and versioned host layouts. Retain negative cases for an absent host, malformed or failed versioned receipt, nonempty namespace, insufficient executor inventory, and a failing extra legacy receipt. Verify that the existing terminal-closure branch remains unavailable when namespace evidence fails and still reports missing explicit-retirement/HTTP403 receipts honestly when terminal closure is established. Check that unrelated stage fields and legacy-only behavior are preserved. Keep the existing smoke inventory tests.
+
+Retain a failing pre-repair regression and the passing repair checks, run the full harness and assessment suites, and bind the method and additive diagnostic packet in a new immutable source inventory. Use fresh run identities and the unchanged PLAN seeds for the complete prerequisite/native/boundary/smoke/two-pilot qualification sequence. Do not resume V27, reuse its partial passes for admission, relabel historical outcomes or launch scoring before fresh full qualification. This method changes evidence inventory only; all PLAN authority, preservation, capacity and no-replacement rules remain in force.

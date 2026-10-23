@@ -1,0 +1,262 @@
+{
+  "schema": "campaign002-raw-tool-result-source-analysis-1",
+  "created_utc": "2026-09-28T06:30:52.419951+00:00",
+  "mode": "read_only_dependency_inspection_and_prospective_recommendation",
+  "production_edits": false,
+  "model_calls": 0,
+  "queue_launches": 0,
+  "installed_binary_build_attestation": false,
+  "tag": "rust-v0.157.1",
+  "license_reference": {
+    "url": "https://github.com/openai/codex/blob/rust-v0.157.1/LICENSE",
+    "local": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-output-source-001\\LICENSE"
+  },
+  "findings": [
+    {
+      "id": "raw_option",
+      "source": "thread_lifecycle.rs:319-334; session/mod.rs:3537-3666,4163-4170; bespoke_event_handling.rs:1163-1176; protocol/common.rs:1957",
+      "finding": "experimentalRawEvents gates delivery of prepared ResponseItems as rawResponseItem/completed. FunctionCallOutput and CustomToolCallOutput are recorded, with thread/turn identity. Tool formatting and code-mode truncation precede this boundary. Raw item clones precede separate history truncation; no exact next-request or attention claim."
+    },
+    {
+      "id": "direct_id",
+      "source": "tools/context.rs:413-421,578-602; unified_exec/process_manager.rs:244,824-826",
+      "finding": "Direct exec response call_id and native process metadata toolCallId share the dispatched call ID. Require equality, literal arguments, actual complete process bytes and exact raw payload."
+    },
+    {
+      "id": "nested_id",
+      "source": "tools/code_mode/delegate.rs:317-334; tools/code_mode/mod.rs:341-407; tools/context.rs:55-65,448-477",
+      "finding": "Code-mode delegate creates independent exec-UUID. runtime_tool_call_id is per-cell and explicitly not the Codex tool call ID. Nested JSON exposes chunk_id/wall_time_seconds/exit_code/session_id/original_token_count/output, not event_call_id. H2 runtime IDs alone do not join native toolCallId. No public parent/cell field in retained installed commandExecution schema."
+    },
+    {
+      "id": "schema_mismatch",
+      "source": "tools/context.rs:83-121; bespoke_event_handling.rs:1396-1434; retained ItemCompletedNotification.json",
+      "finding": "Fetched tag has model_context/originating-call features absent from retained installed schema. Version label is not build attestation. Do not use tag-only parent fields or claim installed binary source equality."
+    },
+    {
+      "id": "h2_scope",
+      "source": "grpc_session/completion.rs; tools/code_mode/mod.rs:256-326; tools/code_mode/execute_handler.rs:124-126",
+      "finding": "CompleteToolCall.output_json is result delivered to JavaScript; JS need not print it. ExecuteEvent outcome is prior to core output formatting/truncation. A passive H2 parser requires framing/HPACK/gRPC/compression/stream/status handling and still cannot replace final prepared output. No H2 change recommended for this bounded repair."
+    }
+  ],
+  "recommendation": {
+    "status": "prospective_only_parent_adopted_method_separately",
+    "minimum_runtime_change": "Additive bootstrap_client_v3 enabling thread/start.experimentalRawEvents with explicit receipt; preserve existing durable logging/redaction, model/config/ephemeral/historynone/network/isolation/timeouts/forwarding. Keep v2 immutable. No historical reassessment.",
+    "raw_types": [
+      "function_call",
+      "function_call_output",
+      "custom_tool_call",
+      "custom_tool_call_output"
+    ],
+    "output_schema": "String or ordered FunctionCallOutputContentItem list. Text proof supports complete text only; reject missing call IDs, foreign identities, nontext/unknown output, duplicate keys, cap/truncation/error/redaction and incomplete events.",
+    "nested_scope": "Explicit finite unique-call correlation, not authoritative parent-ID join. Single literal exec invocation + sole text/console.log whole-value or .output print; unique complete matching command in exact same-thread/turn raw call/output interval. Reject overlap, multiple calls, yielding/unresolved cells, aliases/transforms and ambiguous envelopes. No arbitrary JavaScript evaluation or substring proof.",
+    "byte_rule": "Entire extracted prepared payload must equal complete authenticated stdout with empty stderr and integer0 exit; segment via existing trusted source matcher. Keep app_projection_equals_executor false when false; add separate proof only.",
+    "validation": "Meaningful adversarial deterministic tests; byte/AST bootstrap parity; no-model option preflight; source/binary/schema binding; new freeze and full fresh native/boundary/smoke/pilots. Old smoke008 failure remains."
+  },
+  "inputs": [
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server-protocol__src__protocol__common.rs",
+      "sha256": "27fe9ee0a155ee1e5f59860869277fd7179f22e151a38326738396b60d97ebea",
+      "bytes": 173236
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__bespoke_event_handling.rs",
+      "sha256": "e379140cecf3812c9495d744c3a4a9e49a84fe1773b0f0979b7affe51f482239",
+      "bytes": 154786
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__request_processors.rs",
+      "sha256": "7297e1abac27d184426ad8e718b1f27d8f96ed6de8f8ceb2d4b46f652e0e932d",
+      "bytes": 34773
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__request_processors__thread_lifecycle.rs",
+      "sha256": "204a9b470a4ee86fbc7cdbc6737291a8dea678c562220153df4ccd57f4545ea4",
+      "bytes": 34305
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server__src__thread_state.rs",
+      "sha256": "a3f9d252d61c9a78c50db119c87796cec92a734971762c1ba013791af2556e33",
+      "bytes": 23440
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__code-mode__src__grpc_session__completion.rs",
+      "sha256": "3784c8bfc0c1b883103937a10c6370f46b059ea88a33653039469941dc20171d",
+      "bytes": 1863
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__code-mode__src__grpc_session__operations.rs",
+      "sha256": "5d3798e40862a9c536c1d1d3283423eafc812c88963e4c42d959841cf5dff26a",
+      "bytes": 15648
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__context__mod.rs",
+      "sha256": "9c06aebf3b1a2b8efebe8c039fc26a0f854b780a81764c12ee31fb98a55635d3",
+      "bytes": 6119
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__context_manager__mod.rs",
+      "sha256": "7cd60df27403a2409d5032455b9c6ea1be8015a3b6fb41f3b75415be83f205da",
+      "bytes": 291
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__context_manager__updates.rs",
+      "sha256": "4e0af13be7eeecaadf1a76d346d1abd810405a8ca3213ee54d63d218f5b5f1d6",
+      "bytes": 2093
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__image_preparation.rs",
+      "sha256": "007803d8cf789b759d2704375b62aa23e63b8f29ae138ece317c53da2fd987f5",
+      "bytes": 15462
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__session__mod.rs",
+      "sha256": "52f7d89d8ec2861850b17c4c21fdde295bdf35473efe11821af86432b61e651b",
+      "bytes": 205816
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__session__retained_context.rs",
+      "sha256": "38dd5642a4b2ff194252591d7aadfe4035f37681cb5d7590a985e1af5588fbd1",
+      "bytes": 1249
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__session__session.rs",
+      "sha256": "b8c7568cb409f471ba6d511fd0d4761d8001f35e6f89eb003d444748838a7853",
+      "bytes": 92362
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__session__turn.rs",
+      "sha256": "9bac4139db5bd362f5975c25cf41af16e0debc1328febfd136c0a0e05b20a7af",
+      "bytes": 122461
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__stream_events_utils.rs",
+      "sha256": "10c955dd6103faddf4c14e00e5e19e848bf24a765a4c18fa32dce580f7050fce",
+      "bytes": 20476
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__delegate.rs",
+      "sha256": "515961dca924cc2772611e8c6c30eed9011ab3a3c4f61af2a61907677b5b5f49",
+      "bytes": 18658
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__execute_handler.rs",
+      "sha256": "a32c03ef28a3b087af7d570d4a92f9fe7ae466ab8445638938ffd4881aa30615",
+      "bytes": 8979
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__mod.rs",
+      "sha256": "13b5bda6e93a65fe999a3f07b3c5ee4a05850bfca57e4090876d70b310d8ba9e",
+      "bytes": 19667
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__output.rs",
+      "sha256": "071a30e1811bb43939e59f910c180b5377e9aa2f99f5e2bc658032bf1d319c77",
+      "bytes": 2600
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__context.rs",
+      "sha256": "9a9acc6daab2112bd9ca1a07a1e1f2105b20a7f565878157c726ee0d7a3e00cc",
+      "bytes": 20351
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/core-src-directory.json",
+      "sha256": "3822ac52680c476e2645a5566fa047348c0fae1534d5861dbda0e11afc9ec7b5",
+      "bytes": 129988
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/session-directory.json",
+      "sha256": "09900dd433ffabd576c19793fcf0ec0cf7e8a2addfb1bfcc4be765257497899e",
+      "bytes": 52142
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-002.json",
+      "sha256": "864d74b7bed7d9fa3914c041c833eff309bcad4d90a8ba9d95d888621e2c97d0",
+      "bytes": 1777
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-003.json",
+      "sha256": "bb922d03af1c34867dc599b30627997feee0954fdfe845fb4ee5c84cdb3de07d",
+      "bytes": 2613
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-004.json",
+      "sha256": "13e25030458aa41c364c2c3d5cd4d99e9914e55924bda9550a7c31ead236c6d0",
+      "bytes": 585
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-005.json",
+      "sha256": "ca6d273abff95b7d9506deec1d3e198ec413e80dcc66a8bcc3c1c7eb1831b3c6",
+      "bytes": 591
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-006.json",
+      "sha256": "6d848fe7d0b16ffd86331b1d9c082f1ec8be9fdf92029475b33c3b17d0825772",
+      "bytes": 1232
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-007.json",
+      "sha256": "a09b64baa2a0fc76fe10df06350fb4b438b8293b65eae17f30f86654141182e3",
+      "bytes": 1238
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-008.json",
+      "sha256": "55b9861916c2eee8c64bb99404d77bdbb24d6905baa528e5f11f28148b9dbf5d",
+      "bytes": 1276
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-009.json",
+      "sha256": "73d8b3c1a04682423cfb8954c0332f6907cac70a9cfd0d2a746661299068d200",
+      "bytes": 1252
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-010.json",
+      "sha256": "83fa51f0ba4f2c8daad56d9098b36fc7d8fab2d262270cfe8e25d1f606f8ad3e",
+      "bytes": 1236
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence-011.json",
+      "sha256": "e4371926c1379a5c8dedab9686f668897cc4fcbd478d284827342df054aa42fe",
+      "bytes": 1476
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/source-evidence.json",
+      "sha256": "894d0c2002db8f11676c56e1101d760b4eacf96a7b53845da0a1319c1a119bb4",
+      "bytes": 2582
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/isolation-session-9/native/app-server-schema/v2/ThreadStartParams.json",
+      "sha256": "80a40a7fac15b4bf70efb7f893fb353acc0a0d30c68f54aee4f01923deca85de",
+      "bytes": 13453
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/isolation-session-9/native/app-server-schema/v2/RawResponseItemCompletedNotification.json",
+      "sha256": "e41475a93885572579b0963718e46783b07f9ddb9e61f0669dac09da4d59185e",
+      "bytes": 33606
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/isolation-session-9/native/app-server-schema/v2/ItemCompletedNotification.json",
+      "sha256": "d04b9153de38cd8302a2a418a44a65e8265d4c7586d46ea2cc801b594c6acf5b",
+      "bytes": 48031
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v2.py",
+      "sha256": "b3ffc5cbd3bf8d1b5417c9d2ffcb20eb5515030344174b154ccb6ae8c1aa6e25",
+      "bytes": 21281
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/LICENSE",
+      "sha256": "d17f227e4df5da1600391338865ce0f3055211760a36688f816941d58232d8dc",
+      "bytes": 10926
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__core__src__unified_exec__process_manager.rs",
+      "sha256": "17d2d564fecd30ea0bbd2301ccd013a07a91e14404094619bd79edc2c1c2750a",
+      "bytes": 73353
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/RAW_TOOL_RESULT_EVIDENCE_V1.md",
+      "sha256": "e96ac64f3f451ceb0b0470a66306b60462bab89c026a24d139ced969b30ec128",
+      "bytes": 5873
+    }
+  ]
+}

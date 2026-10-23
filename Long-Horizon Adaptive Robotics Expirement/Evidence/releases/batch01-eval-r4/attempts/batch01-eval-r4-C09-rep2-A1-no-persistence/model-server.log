@@ -1,0 +1,1626 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 16310 MiB):
+  Device 0: NVIDIA GeForce RTX 5060 Ti, compute capability 12.0, VMM: yes, VRAM: 16310 MiB
+load_backend: loaded CUDA backend from C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime 004\vendor\model\llama\ggml-cuda.dll
+load_backend: loaded RPC backend from C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime 004\vendor\model\llama\ggml-rpc.dll
+load_backend: loaded CPU backend from C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime 004\vendor\model\llama\ggml-cpu-zen4.dll
+Setting 'enable_thinking' via --chat-template-kwargs is deprecated. Use --reasoning on / --reasoning off instead.
+build_info: b9000-1a03cf47f
+system_info: n_threads = 3 (n_threads_batch = 3) / 16 | CUDA : ARCHS = 750,800,860,890,1200,1210 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | BLACKWELL_NATIVE_FP4 = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+Running without SSL
+init: using 2 threads for HTTP server
+Web UI is disabled
+start: binding port with default address family
+main: loading model
+srv    load_model: loading model 'C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime 004\vendor\model\Qwen3-14B-Q4_K_M.gguf'
+common_init_result: fitting params to device memory, for bugs during this step try to reproduce them with -fit off, or provide --verbose logs if the bug only occurs with -fit on
+common_params_fit_impl: getting device memory data for initial parameters:
+common_memory_breakdown_print: | memory breakdown [MiB]  | total    free     self   model   context   compute    unaccounted |
+common_memory_breakdown_print: |   - CUDA0 (RTX 5060 Ti) | 16310 = 15172 + (11028 =  8161 +    2560 +     306) +       -9889 |
+common_memory_breakdown_print: |   - Host                |                    469 =   417 +       0 +      52                |
+common_params_fit_impl: projected to use 11028 MiB of device memory vs. 15172 MiB of free device memory
+common_params_fit_impl: will leave 4143 >= 1024 MiB of free device memory, no changes needed
+common_fit_params: successfully fit params to free device memory
+common_fit_params: fitting params to free memory took 0.25 seconds
+llama_model_load_from_file_impl: using device CUDA0 (NVIDIA GeForce RTX 5060 Ti) (0000:01:00.0) - 15172 MiB free
+llama_model_loader: loaded meta data with 28 key-value pairs and 443 tensors from C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime 004\vendor\model\Qwen3-14B-Q4_K_M.gguf (version GGUF V3 (latest))
+llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+llama_model_loader: - kv   0:                       general.architecture str              = qwen3
+llama_model_loader: - kv   1:                               general.type str              = model
+llama_model_loader: - kv   2:                               general.name str              = Qwen3 14B Awq Compatible Instruct
+llama_model_loader: - kv   3:                           general.finetune str              = awq-compatible-Instruct
+llama_model_loader: - kv   4:                           general.basename str              = Qwen3
+llama_model_loader: - kv   5:                         general.size_label str              = 14B
+llama_model_loader: - kv   6:                          qwen3.block_count u32              = 40
+llama_model_loader: - kv   7:                       qwen3.context_length u32              = 40960
+llama_model_loader: - kv   8:                     qwen3.embedding_length u32              = 5120
+llama_model_loader: - kv   9:                  qwen3.feed_forward_length u32              = 17408
+llama_model_loader: - kv  10:                 qwen3.attention.head_count u32              = 40
+llama_model_loader: - kv  11:              qwen3.attention.head_count_kv u32              = 8
+llama_model_loader: - kv  12:                       qwen3.rope.freq_base f32              = 1000000.000000
+llama_model_loader: - kv  13:     qwen3.attention.layer_norm_rms_epsilon f32              = 0.000001
+llama_model_loader: - kv  14:                 qwen3.attention.key_length u32              = 128
+llama_model_loader: - kv  15:               qwen3.attention.value_length u32              = 128
+llama_model_loader: - kv  16:                       tokenizer.ggml.model str              = gpt2
+llama_model_loader: - kv  17:                         tokenizer.ggml.pre str              = qwen2
+llama_model_loader: - kv  18:                      tokenizer.ggml.tokens arr[str,151936]  = ["!", "\"", "#", "$", "%", "&", "'", ...
+llama_model_loader: - kv  19:                  tokenizer.ggml.token_type arr[i32,151936]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+llama_model_loader: - kv  20:                      tokenizer.ggml.merges arr[str,151387]  = ["Ġ Ġ", "ĠĠ ĠĠ", "i n", "Ġ t",...
+llama_model_loader: - kv  21:                tokenizer.ggml.eos_token_id u32              = 151645
+llama_model_loader: - kv  22:            tokenizer.ggml.padding_token_id u32              = 151643
+llama_model_loader: - kv  23:                tokenizer.ggml.bos_token_id u32              = 151643
+llama_model_loader: - kv  24:               tokenizer.ggml.add_bos_token bool             = false
+llama_model_loader: - kv  25:                    tokenizer.chat_template str              = {%- if tools %}\n    {{- '<|im_start|>...
+llama_model_loader: - kv  26:               general.quantization_version u32              = 2
+llama_model_loader: - kv  27:                          general.file_type u32              = 15
+llama_model_loader: - type  f32:  161 tensors
+llama_model_loader: - type q4_K:  241 tensors
+llama_model_loader: - type q6_K:   41 tensors
+print_info: file format = GGUF V3 (latest)
+print_info: file type   = Q4_K - Medium
+print_info: file size   = 8.38 GiB (4.87 BPW) 
+load: 0 unused tokens
+load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+load: printing all EOG tokens:
+load:   - 128247 ('</s>')
+load:   - 151643 ('<|endoftext|>')
+load:   - 151645 ('<|im_end|>')
+load:   - 151662 ('<|fim_pad|>')
+load:   - 151663 ('<|repo_name|>')
+load:   - 151664 ('<|file_sep|>')
+load: special tokens cache size = 27
+load: token to piece cache size = 0.9311 MB
+print_info: arch                  = qwen3
+print_info: vocab_only            = 0
+print_info: no_alloc              = 0
+print_info: n_ctx_train           = 40960
+print_info: n_embd                = 5120
+print_info: n_embd_inp            = 5120
+print_info: n_layer               = 40
+print_info: n_head                = 40
+print_info: n_head_kv             = 8
+print_info: n_rot                 = 128
+print_info: n_swa                 = 0
+print_info: is_swa_any            = 0
+print_info: n_embd_head_k         = 128
+print_info: n_embd_head_v         = 128
+print_info: n_gqa                 = 5
+print_info: n_embd_k_gqa          = 1024
+print_info: n_embd_v_gqa          = 1024
+print_info: f_norm_eps            = 0.0e+00
+print_info: f_norm_rms_eps        = 1.0e-06
+print_info: f_clamp_kqv           = 0.0e+00
+print_info: f_max_alibi_bias      = 0.0e+00
+print_info: f_logit_scale         = 0.0e+00
+print_info: f_attn_scale          = 0.0e+00
+print_info: n_ff                  = 17408
+print_info: n_expert              = 0
+print_info: n_expert_used         = 0
+print_info: n_expert_groups       = 0
+print_info: n_group_used          = 0
+print_info: causal attn           = 1
+print_info: pooling type          = -1
+print_info: rope type             = 2
+print_info: rope scaling          = linear
+print_info: freq_base_train       = 1000000.0
+print_info: freq_scale_train      = 1
+print_info: n_ctx_orig_yarn       = 40960
+print_info: rope_yarn_log_mul     = 0.0000
+print_info: rope_finetuned        = unknown
+print_info: model type            = 14B
+print_info: model params          = 14.77 B
+print_info: general.name          = Qwen3 14B Awq Compatible Instruct
+print_info: vocab type            = BPE
+print_info: n_vocab               = 151936
+print_info: n_merges              = 151387
+print_info: BOS token             = 151643 '<|endoftext|>'
+print_info: EOS token             = 151645 '<|im_end|>'
+print_info: EOT token             = 151645 '<|im_end|>'
+print_info: PAD token             = 151643 '<|endoftext|>'
+print_info: LF token              = 198 'Ċ'
+print_info: FIM PRE token         = 151659 '<|fim_prefix|>'
+print_info: FIM SUF token         = 151661 '<|fim_suffix|>'
+print_info: FIM MID token         = 151660 '<|fim_middle|>'
+print_info: FIM PAD token         = 151662 '<|fim_pad|>'
+print_info: FIM REP token         = 151663 '<|repo_name|>'
+print_info: FIM SEP token         = 151664 '<|file_sep|>'
+print_info: EOG token             = 128247 '</s>'
+print_info: EOG token             = 151643 '<|endoftext|>'
+print_info: EOG token             = 151645 '<|im_end|>'
+print_info: EOG token             = 151662 '<|fim_pad|>'
+print_info: EOG token             = 151663 '<|repo_name|>'
+print_info: EOG token             = 151664 '<|file_sep|>'
+print_info: max token length      = 256
+load_tensors: loading model tensors, this can take a while... (mmap = true, direct_io = false)
+load_tensors: offloading output layer to GPU
+load_tensors: offloading 39 repeating layers to GPU
+load_tensors: offloaded 41/41 layers to GPU
+load_tensors:   CPU_Mapped model buffer size =   417.30 MiB
+load_tensors:        CUDA0 model buffer size =  8161.75 MiB
+...........................................................................................
+common_init_result: added </s> logit bias = -inf
+common_init_result: added <|endoftext|> logit bias = -inf
+common_init_result: added <|im_end|> logit bias = -inf
+common_init_result: added <|fim_pad|> logit bias = -inf
+common_init_result: added <|repo_name|> logit bias = -inf
+common_init_result: added <|file_sep|> logit bias = -inf
+llama_context: constructing llama_context
+llama_context: n_seq_max     = 1
+llama_context: n_ctx         = 16384
+llama_context: n_ctx_seq     = 16384
+llama_context: n_batch       = 2048
+llama_context: n_ubatch      = 512
+llama_context: causal_attn   = 1
+llama_context: flash_attn    = enabled
+llama_context: kv_unified    = false
+llama_context: freq_base     = 1000000.0
+llama_context: freq_scale    = 1
+llama_context: n_ctx_seq (16384) < n_ctx_train (40960) -- the full capacity of the model will not be utilized
+llama_context:  CUDA_Host  output buffer size =     0.58 MiB
+llama_kv_cache:      CUDA0 KV buffer size =  2560.00 MiB
+llama_kv_cache: size = 2560.00 MiB ( 16384 cells,  40 layers,  1/1 seqs), K (f16): 1280.00 MiB, V (f16): 1280.00 MiB
+llama_kv_cache: attn_rot_k = 0, n_embd_head_k_all = 128
+llama_kv_cache: attn_rot_v = 0, n_embd_head_k_all = 128
+sched_reserve: reserving ...
+sched_reserve: resolving fused Gated Delta Net support:
+sched_reserve: fused Gated Delta Net (autoregressive) enabled
+sched_reserve: fused Gated Delta Net (chunked) enabled
+sched_reserve:      CUDA0 compute buffer size =   306.75 MiB
+sched_reserve:  CUDA_Host compute buffer size =    52.01 MiB
+sched_reserve: graph nodes  = 1407
+sched_reserve: graph splits = 2
+sched_reserve: reserve took 6.83 ms, sched copies = 1
+common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+srv    load_model: initializing slots, n_slots = 1
+no implementations specified for speculative decoding
+slot   load_model: id  0 | task -1 | new slot, n_ctx = 16384
+srv    load_model: prompt cache is disabled - use `--cache-ram N` to enable it
+srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+srv          init: init: --cache-idle-slots requires --kv-unified, disabling
+init: chat template, example_format: '<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+'
+srv          init: init: chat template, thinking = 0
+main: model loaded
+main: server is listening on http://127.0.0.1:64935
+main: starting the main loop...
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+slot update_slots: id  0 | task 0 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3592
+slot update_slots: id  0 | task 0 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 0 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.570156
+slot update_slots: id  0 | task 0 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 0 | init sampler, took 0.31 ms, tokens: text = 3592, total = 3592
+slot update_slots: id  0 | task 0 | prompt processing done, n_tokens = 3592, batch.n_tokens = 1544
+slot print_timing: id  0 | task 0 | 
+prompt eval time =    2050.44 ms /  3592 tokens (    0.57 ms per token,  1751.82 tokens per second)
+       eval time =     400.40 ms /    16 tokens (   25.02 ms per token,    39.96 tokens per second)
+      total time =    2450.84 ms /  3608 tokens
+slot      release: id  0 | task 0 | stop processing: n_tokens = 3607, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.188 (> 0.100 thold), f_keep = 0.197
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 18 | processing task, is_child = 0
+slot update_slots: id  0 | task 18 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3785
+slot update_slots: id  0 | task 18 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 18 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.541083
+slot update_slots: id  0 | task 18 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 18 | init sampler, took 0.57 ms, tokens: text = 3785, total = 3785
+slot update_slots: id  0 | task 18 | prompt processing done, n_tokens = 3785, batch.n_tokens = 1737
+slot print_timing: id  0 | task 18 | 
+prompt eval time =    2342.11 ms /  3785 tokens (    0.62 ms per token,  1616.06 tokens per second)
+       eval time =     395.99 ms /    16 tokens (   24.75 ms per token,    40.41 tokens per second)
+      total time =    2738.10 ms /  3801 tokens
+slot      release: id  0 | task 18 | stop processing: n_tokens = 3800, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.190 (> 0.100 thold), f_keep = 0.187
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 36 | processing task, is_child = 0
+slot update_slots: id  0 | task 36 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3749
+slot update_slots: id  0 | task 36 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 36 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.546279
+slot update_slots: id  0 | task 36 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 36 | init sampler, took 0.55 ms, tokens: text = 3749, total = 3749
+slot update_slots: id  0 | task 36 | prompt processing done, n_tokens = 3749, batch.n_tokens = 1701
+slot print_timing: id  0 | task 36 | 
+prompt eval time =    2295.93 ms /  3749 tokens (    0.61 ms per token,  1632.89 tokens per second)
+       eval time =     394.19 ms /    16 tokens (   24.64 ms per token,    40.59 tokens per second)
+      total time =    2690.12 ms /  3765 tokens
+slot      release: id  0 | task 36 | stop processing: n_tokens = 3764, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.188 (> 0.100 thold), f_keep = 0.189
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 54 | processing task, is_child = 0
+slot update_slots: id  0 | task 54 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3797
+slot update_slots: id  0 | task 54 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 54 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.539373
+slot update_slots: id  0 | task 54 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 54 | init sampler, took 0.37 ms, tokens: text = 3797, total = 3797
+slot update_slots: id  0 | task 54 | prompt processing done, n_tokens = 3797, batch.n_tokens = 1749
+slot print_timing: id  0 | task 54 | 
+prompt eval time =    2174.56 ms /  3797 tokens (    0.57 ms per token,  1746.10 tokens per second)
+       eval time =     393.54 ms /    16 tokens (   24.60 ms per token,    40.66 tokens per second)
+      total time =    2568.10 ms /  3813 tokens
+slot      release: id  0 | task 54 | stop processing: n_tokens = 3812, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.189 (> 0.100 thold), f_keep = 0.187
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 72 | processing task, is_child = 0
+slot update_slots: id  0 | task 72 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3766
+slot update_slots: id  0 | task 72 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 72 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.543813
+slot update_slots: id  0 | task 72 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 72 | init sampler, took 0.43 ms, tokens: text = 3766, total = 3766
+slot update_slots: id  0 | task 72 | prompt processing done, n_tokens = 3766, batch.n_tokens = 1718
+slot print_timing: id  0 | task 72 | 
+prompt eval time =    2144.39 ms /  3766 tokens (    0.57 ms per token,  1756.21 tokens per second)
+       eval time =     395.27 ms /    16 tokens (   24.70 ms per token,    40.48 tokens per second)
+      total time =    2539.66 ms /  3782 tokens
+slot      release: id  0 | task 72 | stop processing: n_tokens = 3781, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.179 (> 0.100 thold), f_keep = 0.188
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 90 | processing task, is_child = 0
+slot update_slots: id  0 | task 90 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3970
+slot update_slots: id  0 | task 90 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 90 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.515869
+slot update_slots: id  0 | task 90 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 90 | init sampler, took 0.51 ms, tokens: text = 3970, total = 3970
+slot update_slots: id  0 | task 90 | prompt processing done, n_tokens = 3970, batch.n_tokens = 1922
+slot print_timing: id  0 | task 90 | 
+prompt eval time =    2362.23 ms /  3970 tokens (    0.60 ms per token,  1680.61 tokens per second)
+       eval time =     397.55 ms /    16 tokens (   24.85 ms per token,    40.25 tokens per second)
+      total time =    2759.78 ms /  3986 tokens
+slot      release: id  0 | task 90 | stop processing: n_tokens = 3985, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.178
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 108 | processing task, is_child = 0
+slot update_slots: id  0 | task 108 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4000
+slot update_slots: id  0 | task 108 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 108 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.512000
+slot update_slots: id  0 | task 108 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 108 | init sampler, took 0.43 ms, tokens: text = 4000, total = 4000
+slot update_slots: id  0 | task 108 | prompt processing done, n_tokens = 4000, batch.n_tokens = 1952
+slot print_timing: id  0 | task 108 | 
+prompt eval time =    2485.05 ms /  4000 tokens (    0.62 ms per token,  1609.62 tokens per second)
+       eval time =     395.29 ms /    16 tokens (   24.71 ms per token,    40.48 tokens per second)
+      total time =    2880.35 ms /  4016 tokens
+slot      release: id  0 | task 108 | stop processing: n_tokens = 4015, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 126 | processing task, is_child = 0
+slot update_slots: id  0 | task 126 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4002
+slot update_slots: id  0 | task 126 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 126 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.511744
+slot update_slots: id  0 | task 126 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 126 | init sampler, took 0.34 ms, tokens: text = 4002, total = 4002
+slot update_slots: id  0 | task 126 | prompt processing done, n_tokens = 4002, batch.n_tokens = 1954
+slot print_timing: id  0 | task 126 | 
+prompt eval time =    2308.55 ms /  4002 tokens (    0.58 ms per token,  1733.56 tokens per second)
+       eval time =     396.75 ms /    16 tokens (   24.80 ms per token,    40.33 tokens per second)
+      total time =    2705.30 ms /  4018 tokens
+slot      release: id  0 | task 126 | stop processing: n_tokens = 4017, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 144 | processing task, is_child = 0
+slot update_slots: id  0 | task 144 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4010
+slot update_slots: id  0 | task 144 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 144 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510723
+slot update_slots: id  0 | task 144 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 144 | init sampler, took 0.33 ms, tokens: text = 4010, total = 4010
+slot update_slots: id  0 | task 144 | prompt processing done, n_tokens = 4010, batch.n_tokens = 1962
+slot print_timing: id  0 | task 144 | 
+prompt eval time =    2356.76 ms /  4010 tokens (    0.59 ms per token,  1701.49 tokens per second)
+       eval time =     397.27 ms /    16 tokens (   24.83 ms per token,    40.28 tokens per second)
+      total time =    2754.03 ms /  4026 tokens
+slot      release: id  0 | task 144 | stop processing: n_tokens = 4025, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 162 | processing task, is_child = 0
+slot update_slots: id  0 | task 162 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4019
+slot update_slots: id  0 | task 162 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 162 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509579
+slot update_slots: id  0 | task 162 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 162 | init sampler, took 0.40 ms, tokens: text = 4019, total = 4019
+slot update_slots: id  0 | task 162 | prompt processing done, n_tokens = 4019, batch.n_tokens = 1971
+slot print_timing: id  0 | task 162 | 
+prompt eval time =    2309.47 ms /  4019 tokens (    0.57 ms per token,  1740.23 tokens per second)
+       eval time =     395.36 ms /    16 tokens (   24.71 ms per token,    40.47 tokens per second)
+      total time =    2704.82 ms /  4035 tokens
+slot      release: id  0 | task 162 | stop processing: n_tokens = 4034, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.176
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 180 | processing task, is_child = 0
+slot update_slots: id  0 | task 180 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4006
+slot update_slots: id  0 | task 180 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 180 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.511233
+slot update_slots: id  0 | task 180 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 180 | init sampler, took 0.55 ms, tokens: text = 4006, total = 4006
+slot update_slots: id  0 | task 180 | prompt processing done, n_tokens = 4006, batch.n_tokens = 1958
+slot print_timing: id  0 | task 180 | 
+prompt eval time =    2308.29 ms /  4006 tokens (    0.58 ms per token,  1735.49 tokens per second)
+       eval time =     397.42 ms /    16 tokens (   24.84 ms per token,    40.26 tokens per second)
+      total time =    2705.71 ms /  4022 tokens
+slot      release: id  0 | task 180 | stop processing: n_tokens = 4021, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 198 | processing task, is_child = 0
+slot update_slots: id  0 | task 198 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4019
+slot update_slots: id  0 | task 198 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 198 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509579
+slot update_slots: id  0 | task 198 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 198 | init sampler, took 0.34 ms, tokens: text = 4019, total = 4019
+slot update_slots: id  0 | task 198 | prompt processing done, n_tokens = 4019, batch.n_tokens = 1971
+slot print_timing: id  0 | task 198 | 
+prompt eval time =    2356.50 ms /  4019 tokens (    0.59 ms per token,  1705.49 tokens per second)
+       eval time =     395.58 ms /    16 tokens (   24.72 ms per token,    40.45 tokens per second)
+      total time =    2752.08 ms /  4035 tokens
+slot      release: id  0 | task 198 | stop processing: n_tokens = 4034, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.176
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 216 | processing task, is_child = 0
+slot update_slots: id  0 | task 216 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4007
+slot update_slots: id  0 | task 216 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 216 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.511106
+slot update_slots: id  0 | task 216 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 216 | init sampler, took 0.55 ms, tokens: text = 4007, total = 4007
+slot update_slots: id  0 | task 216 | prompt processing done, n_tokens = 4007, batch.n_tokens = 1959
+slot print_timing: id  0 | task 216 | 
+prompt eval time =    2309.53 ms /  4007 tokens (    0.58 ms per token,  1734.99 tokens per second)
+       eval time =     397.00 ms /    16 tokens (   24.81 ms per token,    40.30 tokens per second)
+      total time =    2706.53 ms /  4023 tokens
+slot      release: id  0 | task 216 | stop processing: n_tokens = 4022, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 234 | processing task, is_child = 0
+slot update_slots: id  0 | task 234 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4017
+slot update_slots: id  0 | task 234 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 234 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509833
+slot update_slots: id  0 | task 234 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 234 | init sampler, took 0.34 ms, tokens: text = 4017, total = 4017
+slot update_slots: id  0 | task 234 | prompt processing done, n_tokens = 4017, batch.n_tokens = 1969
+slot print_timing: id  0 | task 234 | 
+prompt eval time =    2314.17 ms /  4017 tokens (    0.58 ms per token,  1735.83 tokens per second)
+       eval time =     322.72 ms /    13 tokens (   24.82 ms per token,    40.28 tokens per second)
+      total time =    2636.89 ms /  4030 tokens
+slot      release: id  0 | task 234 | stop processing: n_tokens = 4029, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 249 | processing task, is_child = 0
+slot update_slots: id  0 | task 249 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4023
+slot update_slots: id  0 | task 249 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 249 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509073
+slot update_slots: id  0 | task 249 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 249 | init sampler, took 0.35 ms, tokens: text = 4023, total = 4023
+slot update_slots: id  0 | task 249 | prompt processing done, n_tokens = 4023, batch.n_tokens = 1975
+slot print_timing: id  0 | task 249 | 
+prompt eval time =    2379.90 ms /  4023 tokens (    0.59 ms per token,  1690.41 tokens per second)
+       eval time =     322.64 ms /    13 tokens (   24.82 ms per token,    40.29 tokens per second)
+      total time =    2702.54 ms /  4036 tokens
+slot      release: id  0 | task 249 | stop processing: n_tokens = 4035, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 264 | processing task, is_child = 0
+slot update_slots: id  0 | task 264 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4023
+slot update_slots: id  0 | task 264 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 264 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509073
+slot update_slots: id  0 | task 264 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 264 | init sampler, took 0.56 ms, tokens: text = 4023, total = 4023
+slot update_slots: id  0 | task 264 | prompt processing done, n_tokens = 4023, batch.n_tokens = 1975
+slot print_timing: id  0 | task 264 | 
+prompt eval time =    2371.58 ms /  4023 tokens (    0.59 ms per token,  1696.34 tokens per second)
+       eval time =     322.86 ms /    13 tokens (   24.84 ms per token,    40.27 tokens per second)
+      total time =    2694.43 ms /  4036 tokens
+slot      release: id  0 | task 264 | stop processing: n_tokens = 4035, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 279 | processing task, is_child = 0
+slot update_slots: id  0 | task 279 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4012
+slot update_slots: id  0 | task 279 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 279 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510469
+slot update_slots: id  0 | task 279 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 279 | init sampler, took 0.34 ms, tokens: text = 4012, total = 4012
+slot update_slots: id  0 | task 279 | prompt processing done, n_tokens = 4012, batch.n_tokens = 1964
+slot print_timing: id  0 | task 279 | 
+prompt eval time =    2289.16 ms /  4012 tokens (    0.57 ms per token,  1752.60 tokens per second)
+       eval time =     395.43 ms /    16 tokens (   24.71 ms per token,    40.46 tokens per second)
+      total time =    2684.60 ms /  4028 tokens
+slot      release: id  0 | task 279 | stop processing: n_tokens = 4027, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 297 | processing task, is_child = 0
+slot update_slots: id  0 | task 297 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4011
+slot update_slots: id  0 | task 297 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 297 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510596
+slot update_slots: id  0 | task 297 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 297 | init sampler, took 0.39 ms, tokens: text = 4011, total = 4011
+slot update_slots: id  0 | task 297 | prompt processing done, n_tokens = 4011, batch.n_tokens = 1963
+slot print_timing: id  0 | task 297 | 
+prompt eval time =    2404.69 ms /  4011 tokens (    0.60 ms per token,  1667.99 tokens per second)
+       eval time =     397.98 ms /    16 tokens (   24.87 ms per token,    40.20 tokens per second)
+      total time =    2802.67 ms /  4027 tokens
+slot      release: id  0 | task 297 | stop processing: n_tokens = 4026, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 315 | processing task, is_child = 0
+slot update_slots: id  0 | task 315 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4021
+slot update_slots: id  0 | task 315 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 315 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509326
+slot update_slots: id  0 | task 315 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 315 | init sampler, took 0.34 ms, tokens: text = 4021, total = 4021
+slot update_slots: id  0 | task 315 | prompt processing done, n_tokens = 4021, batch.n_tokens = 1973
+slot print_timing: id  0 | task 315 | 
+prompt eval time =    2303.34 ms /  4021 tokens (    0.57 ms per token,  1745.72 tokens per second)
+       eval time =     396.12 ms /    16 tokens (   24.76 ms per token,    40.39 tokens per second)
+      total time =    2699.47 ms /  4037 tokens
+slot      release: id  0 | task 315 | stop processing: n_tokens = 4036, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.176
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 333 | processing task, is_child = 0
+slot update_slots: id  0 | task 333 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4026
+slot update_slots: id  0 | task 333 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 333 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.508694
+slot update_slots: id  0 | task 333 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 333 | init sampler, took 0.45 ms, tokens: text = 4026, total = 4026
+slot update_slots: id  0 | task 333 | prompt processing done, n_tokens = 4026, batch.n_tokens = 1978
+slot print_timing: id  0 | task 333 | 
+prompt eval time =    2308.18 ms /  4026 tokens (    0.57 ms per token,  1744.23 tokens per second)
+       eval time =     320.74 ms /    13 tokens (   24.67 ms per token,    40.53 tokens per second)
+      total time =    2628.91 ms /  4039 tokens
+slot      release: id  0 | task 333 | stop processing: n_tokens = 4038, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.176
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 348 | processing task, is_child = 0
+slot update_slots: id  0 | task 348 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3997
+slot update_slots: id  0 | task 348 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 348 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.512384
+slot update_slots: id  0 | task 348 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 348 | init sampler, took 0.41 ms, tokens: text = 3997, total = 3997
+slot update_slots: id  0 | task 348 | prompt processing done, n_tokens = 3997, batch.n_tokens = 1949
+slot print_timing: id  0 | task 348 | 
+prompt eval time =    2420.78 ms /  3997 tokens (    0.61 ms per token,  1651.12 tokens per second)
+       eval time =     395.38 ms /    16 tokens (   24.71 ms per token,    40.47 tokens per second)
+      total time =    2816.16 ms /  4013 tokens
+slot      release: id  0 | task 348 | stop processing: n_tokens = 4012, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 366 | processing task, is_child = 0
+slot update_slots: id  0 | task 366 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4009
+slot update_slots: id  0 | task 366 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 366 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510851
+slot update_slots: id  0 | task 366 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 366 | init sampler, took 0.34 ms, tokens: text = 4009, total = 4009
+slot update_slots: id  0 | task 366 | prompt processing done, n_tokens = 4009, batch.n_tokens = 1961
+slot print_timing: id  0 | task 366 | 
+prompt eval time =    2315.79 ms /  4009 tokens (    0.58 ms per token,  1731.16 tokens per second)
+       eval time =     396.12 ms /    16 tokens (   24.76 ms per token,    40.39 tokens per second)
+      total time =    2711.91 ms /  4025 tokens
+slot      release: id  0 | task 366 | stop processing: n_tokens = 4024, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 384 | processing task, is_child = 0
+slot update_slots: id  0 | task 384 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4016
+slot update_slots: id  0 | task 384 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 384 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509960
+slot update_slots: id  0 | task 384 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 384 | init sampler, took 0.34 ms, tokens: text = 4016, total = 4016
+slot update_slots: id  0 | task 384 | prompt processing done, n_tokens = 4016, batch.n_tokens = 1968
+slot print_timing: id  0 | task 384 | 
+prompt eval time =    2400.36 ms /  4016 tokens (    0.60 ms per token,  1673.08 tokens per second)
+       eval time =     319.65 ms /    13 tokens (   24.59 ms per token,    40.67 tokens per second)
+      total time =    2720.00 ms /  4029 tokens
+slot      release: id  0 | task 384 | stop processing: n_tokens = 4028, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 399 | processing task, is_child = 0
+slot update_slots: id  0 | task 399 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4014
+slot update_slots: id  0 | task 399 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 399 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510214
+slot update_slots: id  0 | task 399 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 399 | init sampler, took 0.37 ms, tokens: text = 4014, total = 4014
+slot update_slots: id  0 | task 399 | prompt processing done, n_tokens = 4014, batch.n_tokens = 1966
+slot print_timing: id  0 | task 399 | 
+prompt eval time =    2312.39 ms /  4014 tokens (    0.58 ms per token,  1735.87 tokens per second)
+       eval time =     397.23 ms /    16 tokens (   24.83 ms per token,    40.28 tokens per second)
+      total time =    2709.62 ms /  4030 tokens
+slot      release: id  0 | task 399 | stop processing: n_tokens = 4029, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 417 | processing task, is_child = 0
+slot update_slots: id  0 | task 417 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4007
+slot update_slots: id  0 | task 417 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 417 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.511106
+slot update_slots: id  0 | task 417 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 417 | init sampler, took 0.34 ms, tokens: text = 4007, total = 4007
+slot update_slots: id  0 | task 417 | prompt processing done, n_tokens = 4007, batch.n_tokens = 1959
+slot print_timing: id  0 | task 417 | 
+prompt eval time =    2316.79 ms /  4007 tokens (    0.58 ms per token,  1729.55 tokens per second)
+       eval time =     396.07 ms /    16 tokens (   24.75 ms per token,    40.40 tokens per second)
+      total time =    2712.86 ms /  4023 tokens
+slot      release: id  0 | task 417 | stop processing: n_tokens = 4022, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 435 | processing task, is_child = 0
+slot update_slots: id  0 | task 435 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4019
+slot update_slots: id  0 | task 435 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 435 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.509579
+slot update_slots: id  0 | task 435 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 435 | init sampler, took 0.33 ms, tokens: text = 4019, total = 4019
+slot update_slots: id  0 | task 435 | prompt processing done, n_tokens = 4019, batch.n_tokens = 1971
+slot print_timing: id  0 | task 435 | 
+prompt eval time =    2429.95 ms /  4019 tokens (    0.60 ms per token,  1653.95 tokens per second)
+       eval time =     396.58 ms /    16 tokens (   24.79 ms per token,    40.35 tokens per second)
+      total time =    2826.52 ms /  4035 tokens
+slot      release: id  0 | task 435 | stop processing: n_tokens = 4034, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.177 (> 0.100 thold), f_keep = 0.176
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 453 | processing task, is_child = 0
+slot update_slots: id  0 | task 453 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4011
+slot update_slots: id  0 | task 453 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 453 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510596
+slot update_slots: id  0 | task 453 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 453 | init sampler, took 0.45 ms, tokens: text = 4011, total = 4011
+slot update_slots: id  0 | task 453 | prompt processing done, n_tokens = 4011, batch.n_tokens = 1963
+slot print_timing: id  0 | task 453 | 
+prompt eval time =    2306.51 ms /  4011 tokens (    0.58 ms per token,  1738.99 tokens per second)
+       eval time =     397.48 ms /    16 tokens (   24.84 ms per token,    40.25 tokens per second)
+      total time =    2703.98 ms /  4027 tokens
+slot      release: id  0 | task 453 | stop processing: n_tokens = 4026, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 471 | processing task, is_child = 0
+slot update_slots: id  0 | task 471 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4004
+slot update_slots: id  0 | task 471 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 471 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.511488
+slot update_slots: id  0 | task 471 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 471 | init sampler, took 0.54 ms, tokens: text = 4004, total = 4004
+slot update_slots: id  0 | task 471 | prompt processing done, n_tokens = 4004, batch.n_tokens = 1956
+slot print_timing: id  0 | task 471 | 
+prompt eval time =    2373.58 ms /  4004 tokens (    0.59 ms per token,  1686.90 tokens per second)
+       eval time =     393.33 ms /    16 tokens (   24.58 ms per token,    40.68 tokens per second)
+      total time =    2766.91 ms /  4020 tokens
+slot      release: id  0 | task 471 | stop processing: n_tokens = 4019, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.179 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 489 | processing task, is_child = 0
+slot update_slots: id  0 | task 489 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 3982
+slot update_slots: id  0 | task 489 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 489 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.514314
+slot update_slots: id  0 | task 489 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 489 | init sampler, took 0.38 ms, tokens: text = 3982, total = 3982
+slot update_slots: id  0 | task 489 | prompt processing done, n_tokens = 3982, batch.n_tokens = 1934
+slot print_timing: id  0 | task 489 | 
+prompt eval time =    2299.47 ms /  3982 tokens (    0.58 ms per token,  1731.70 tokens per second)
+       eval time =     395.88 ms /    16 tokens (   24.74 ms per token,    40.42 tokens per second)
+      total time =    2695.36 ms /  3998 tokens
+slot      release: id  0 | task 489 | stop processing: n_tokens = 3997, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.178
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 507 | processing task, is_child = 0
+slot update_slots: id  0 | task 507 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4010
+slot update_slots: id  0 | task 507 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 507 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510723
+slot update_slots: id  0 | task 507 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 507 | init sampler, took 0.35 ms, tokens: text = 4010, total = 4010
+slot update_slots: id  0 | task 507 | prompt processing done, n_tokens = 4010, batch.n_tokens = 1962
+slot print_timing: id  0 | task 507 | 
+prompt eval time =    2287.87 ms /  4010 tokens (    0.57 ms per token,  1752.72 tokens per second)
+       eval time =     396.68 ms /    16 tokens (   24.79 ms per token,    40.33 tokens per second)
+      total time =    2684.55 ms /  4026 tokens
+slot      release: id  0 | task 507 | stop processing: n_tokens = 4025, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.178 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 525 | processing task, is_child = 0
+slot update_slots: id  0 | task 525 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4011
+slot update_slots: id  0 | task 525 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 525 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.510596
+slot update_slots: id  0 | task 525 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot init_sampler: id  0 | task 525 | init sampler, took 0.42 ms, tokens: text = 4011, total = 4011
+slot update_slots: id  0 | task 525 | prompt processing done, n_tokens = 4011, batch.n_tokens = 1963
+slot print_timing: id  0 | task 525 | 
+prompt eval time =    2406.80 ms /  4011 tokens (    0.60 ms per token,  1666.53 tokens per second)
+       eval time =     400.00 ms /    16 tokens (   25.00 ms per token,    40.00 tokens per second)
+      total time =    2806.79 ms /  4027 tokens
+slot      release: id  0 | task 525 | stop processing: n_tokens = 4026, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.168 (> 0.100 thold), f_keep = 0.177
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 543 | processing task, is_child = 0
+slot update_slots: id  0 | task 543 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4228
+slot update_slots: id  0 | task 543 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 543 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.484390
+slot update_slots: id  0 | task 543 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 543 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.968780
+slot update_slots: id  0 | task 543 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 543 | init sampler, took 0.66 ms, tokens: text = 4228, total = 4228
+slot update_slots: id  0 | task 543 | prompt processing done, n_tokens = 4228, batch.n_tokens = 132
+slot print_timing: id  0 | task 543 | 
+prompt eval time =    2503.10 ms /  4228 tokens (    0.59 ms per token,  1689.10 tokens per second)
+       eval time =     398.68 ms /    16 tokens (   24.92 ms per token,    40.13 tokens per second)
+      total time =    2901.78 ms /  4244 tokens
+slot      release: id  0 | task 543 | stop processing: n_tokens = 4243, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.169 (> 0.100 thold), f_keep = 0.168
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 562 | processing task, is_child = 0
+slot update_slots: id  0 | task 562 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4212
+slot update_slots: id  0 | task 562 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 562 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.486230
+slot update_slots: id  0 | task 562 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 562 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.972460
+slot update_slots: id  0 | task 562 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 562 | init sampler, took 0.56 ms, tokens: text = 4212, total = 4212
+slot update_slots: id  0 | task 562 | prompt processing done, n_tokens = 4212, batch.n_tokens = 116
+slot print_timing: id  0 | task 562 | 
+prompt eval time =    2472.31 ms /  4212 tokens (    0.59 ms per token,  1703.67 tokens per second)
+       eval time =     396.17 ms /    16 tokens (   24.76 ms per token,    40.39 tokens per second)
+      total time =    2868.48 ms /  4228 tokens
+slot      release: id  0 | task 562 | stop processing: n_tokens = 4227, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.169 (> 0.100 thold), f_keep = 0.168
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 581 | processing task, is_child = 0
+slot update_slots: id  0 | task 581 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4216
+slot update_slots: id  0 | task 581 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 581 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.485768
+slot update_slots: id  0 | task 581 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 581 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.971537
+slot update_slots: id  0 | task 581 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 581 | init sampler, took 0.36 ms, tokens: text = 4216, total = 4216
+slot update_slots: id  0 | task 581 | prompt processing done, n_tokens = 4216, batch.n_tokens = 120
+slot print_timing: id  0 | task 581 | 
+prompt eval time =    2400.84 ms /  4216 tokens (    0.57 ms per token,  1756.05 tokens per second)
+       eval time =     398.66 ms /    16 tokens (   24.92 ms per token,    40.13 tokens per second)
+      total time =    2799.50 ms /  4232 tokens
+slot      release: id  0 | task 581 | stop processing: n_tokens = 4231, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.160 (> 0.100 thold), f_keep = 0.168
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 600 | processing task, is_child = 0
+slot update_slots: id  0 | task 600 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4445
+slot update_slots: id  0 | task 600 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 600 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.460742
+slot update_slots: id  0 | task 600 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 600 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.921485
+slot update_slots: id  0 | task 600 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 600 | init sampler, took 0.66 ms, tokens: text = 4445, total = 4445
+slot update_slots: id  0 | task 600 | prompt processing done, n_tokens = 4445, batch.n_tokens = 349
+slot print_timing: id  0 | task 600 | 
+prompt eval time =    2655.65 ms /  4445 tokens (    0.60 ms per token,  1673.79 tokens per second)
+       eval time =     398.74 ms /    16 tokens (   24.92 ms per token,    40.13 tokens per second)
+      total time =    3054.38 ms /  4461 tokens
+slot      release: id  0 | task 600 | stop processing: n_tokens = 4460, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.160 (> 0.100 thold), f_keep = 0.159
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 619 | processing task, is_child = 0
+slot update_slots: id  0 | task 619 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4449
+slot update_slots: id  0 | task 619 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 619 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.460328
+slot update_slots: id  0 | task 619 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 619 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.920656
+slot update_slots: id  0 | task 619 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 619 | init sampler, took 0.40 ms, tokens: text = 4449, total = 4449
+slot update_slots: id  0 | task 619 | prompt processing done, n_tokens = 4449, batch.n_tokens = 353
+slot print_timing: id  0 | task 619 | 
+prompt eval time =    2648.90 ms /  4449 tokens (    0.60 ms per token,  1679.56 tokens per second)
+       eval time =     399.73 ms /    16 tokens (   24.98 ms per token,    40.03 tokens per second)
+      total time =    3048.63 ms /  4465 tokens
+slot      release: id  0 | task 619 | stop processing: n_tokens = 4464, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.160 (> 0.100 thold), f_keep = 0.159
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 638 | processing task, is_child = 0
+slot update_slots: id  0 | task 638 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4441
+slot update_slots: id  0 | task 638 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 638 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.461157
+slot update_slots: id  0 | task 638 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 638 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.922315
+slot update_slots: id  0 | task 638 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 638 | init sampler, took 0.37 ms, tokens: text = 4441, total = 4441
+slot update_slots: id  0 | task 638 | prompt processing done, n_tokens = 4441, batch.n_tokens = 345
+slot print_timing: id  0 | task 638 | 
+prompt eval time =    2574.42 ms /  4441 tokens (    0.58 ms per token,  1725.05 tokens per second)
+       eval time =     397.56 ms /    16 tokens (   24.85 ms per token,    40.25 tokens per second)
+      total time =    2971.98 ms /  4457 tokens
+slot      release: id  0 | task 638 | stop processing: n_tokens = 4456, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.160 (> 0.100 thold), f_keep = 0.160
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 657 | processing task, is_child = 0
+slot update_slots: id  0 | task 657 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4446
+slot update_slots: id  0 | task 657 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 657 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.460639
+slot update_slots: id  0 | task 657 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 657 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.921278
+slot update_slots: id  0 | task 657 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 657 | init sampler, took 0.54 ms, tokens: text = 4446, total = 4446
+slot update_slots: id  0 | task 657 | prompt processing done, n_tokens = 4446, batch.n_tokens = 350
+slot print_timing: id  0 | task 657 | 
+prompt eval time =    2567.80 ms /  4446 tokens (    0.58 ms per token,  1731.44 tokens per second)
+       eval time =     398.53 ms /    16 tokens (   24.91 ms per token,    40.15 tokens per second)
+      total time =    2966.33 ms /  4462 tokens
+slot      release: id  0 | task 657 | stop processing: n_tokens = 4461, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.161 (> 0.100 thold), f_keep = 0.160
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 676 | processing task, is_child = 0
+slot update_slots: id  0 | task 676 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4432
+slot update_slots: id  0 | task 676 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 676 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.462094
+slot update_slots: id  0 | task 676 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 676 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.924188
+slot update_slots: id  0 | task 676 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 676 | init sampler, took 0.58 ms, tokens: text = 4432, total = 4432
+slot update_slots: id  0 | task 676 | prompt processing done, n_tokens = 4432, batch.n_tokens = 336
+slot print_timing: id  0 | task 676 | 
+prompt eval time =    2548.30 ms /  4432 tokens (    0.57 ms per token,  1739.20 tokens per second)
+       eval time =     399.08 ms /    16 tokens (   24.94 ms per token,    40.09 tokens per second)
+      total time =    2947.38 ms /  4448 tokens
+slot      release: id  0 | task 676 | stop processing: n_tokens = 4447, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.160
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 695 | processing task, is_child = 0
+slot update_slots: id  0 | task 695 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4634
+slot update_slots: id  0 | task 695 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 695 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441951
+slot update_slots: id  0 | task 695 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 695 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.883902
+slot update_slots: id  0 | task 695 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 695 | init sampler, took 0.56 ms, tokens: text = 4634, total = 4634
+slot update_slots: id  0 | task 695 | prompt processing done, n_tokens = 4634, batch.n_tokens = 538
+slot print_timing: id  0 | task 695 | 
+prompt eval time =    2775.41 ms /  4634 tokens (    0.60 ms per token,  1669.66 tokens per second)
+       eval time =     400.56 ms /    16 tokens (   25.03 ms per token,    39.94 tokens per second)
+      total time =    3175.96 ms /  4650 tokens
+slot      release: id  0 | task 695 | stop processing: n_tokens = 4649, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 714 | processing task, is_child = 0
+slot update_slots: id  0 | task 714 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4631
+slot update_slots: id  0 | task 714 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 714 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442237
+slot update_slots: id  0 | task 714 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 714 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884474
+slot update_slots: id  0 | task 714 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 714 | init sampler, took 0.41 ms, tokens: text = 4631, total = 4631
+slot update_slots: id  0 | task 714 | prompt processing done, n_tokens = 4631, batch.n_tokens = 535
+slot print_timing: id  0 | task 714 | 
+prompt eval time =    2680.97 ms /  4631 tokens (    0.58 ms per token,  1727.36 tokens per second)
+       eval time =     399.10 ms /    16 tokens (   24.94 ms per token,    40.09 tokens per second)
+      total time =    3080.07 ms /  4647 tokens
+slot      release: id  0 | task 714 | stop processing: n_tokens = 4646, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 733 | processing task, is_child = 0
+slot update_slots: id  0 | task 733 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4647
+slot update_slots: id  0 | task 733 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 733 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.440714
+slot update_slots: id  0 | task 733 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 733 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.881429
+slot update_slots: id  0 | task 733 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 733 | init sampler, took 0.39 ms, tokens: text = 4647, total = 4647
+slot update_slots: id  0 | task 733 | prompt processing done, n_tokens = 4647, batch.n_tokens = 551
+slot print_timing: id  0 | task 733 | 
+prompt eval time =    2697.69 ms /  4647 tokens (    0.58 ms per token,  1722.58 tokens per second)
+       eval time =     401.31 ms /    16 tokens (   25.08 ms per token,    39.87 tokens per second)
+      total time =    3099.01 ms /  4663 tokens
+slot      release: id  0 | task 733 | stop processing: n_tokens = 4662, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 752 | processing task, is_child = 0
+slot update_slots: id  0 | task 752 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4659
+slot update_slots: id  0 | task 752 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 752 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.439579
+slot update_slots: id  0 | task 752 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 752 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.879159
+slot update_slots: id  0 | task 752 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 752 | init sampler, took 0.41 ms, tokens: text = 4659, total = 4659
+slot update_slots: id  0 | task 752 | prompt processing done, n_tokens = 4659, batch.n_tokens = 563
+slot print_timing: id  0 | task 752 | 
+prompt eval time =    2714.52 ms /  4659 tokens (    0.58 ms per token,  1716.32 tokens per second)
+       eval time =     401.37 ms /    16 tokens (   25.09 ms per token,    39.86 tokens per second)
+      total time =    3115.89 ms /  4675 tokens
+slot      release: id  0 | task 752 | stop processing: n_tokens = 4674, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.152
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 771 | processing task, is_child = 0
+slot update_slots: id  0 | task 771 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4619
+slot update_slots: id  0 | task 771 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 771 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.443386
+slot update_slots: id  0 | task 771 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 771 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.886772
+slot update_slots: id  0 | task 771 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 771 | init sampler, took 0.39 ms, tokens: text = 4619, total = 4619
+slot update_slots: id  0 | task 771 | prompt processing done, n_tokens = 4619, batch.n_tokens = 523
+slot print_timing: id  0 | task 771 | 
+prompt eval time =    2691.63 ms /  4619 tokens (    0.58 ms per token,  1716.06 tokens per second)
+       eval time =     401.45 ms /    16 tokens (   25.09 ms per token,    39.86 tokens per second)
+      total time =    3093.08 ms /  4635 tokens
+slot      release: id  0 | task 771 | stop processing: n_tokens = 4634, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 790 | processing task, is_child = 0
+slot update_slots: id  0 | task 790 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4647
+slot update_slots: id  0 | task 790 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 790 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.440714
+slot update_slots: id  0 | task 790 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 790 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.881429
+slot update_slots: id  0 | task 790 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 790 | init sampler, took 0.58 ms, tokens: text = 4647, total = 4647
+slot update_slots: id  0 | task 790 | prompt processing done, n_tokens = 4647, batch.n_tokens = 551
+slot print_timing: id  0 | task 790 | 
+prompt eval time =    2695.18 ms /  4647 tokens (    0.58 ms per token,  1724.19 tokens per second)
+       eval time =     401.03 ms /    16 tokens (   25.06 ms per token,    39.90 tokens per second)
+      total time =    3096.20 ms /  4663 tokens
+slot      release: id  0 | task 790 | stop processing: n_tokens = 4662, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 809 | processing task, is_child = 0
+slot update_slots: id  0 | task 809 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4631
+slot update_slots: id  0 | task 809 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 809 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442237
+slot update_slots: id  0 | task 809 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 809 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884474
+slot update_slots: id  0 | task 809 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 809 | init sampler, took 0.53 ms, tokens: text = 4631, total = 4631
+slot update_slots: id  0 | task 809 | prompt processing done, n_tokens = 4631, batch.n_tokens = 535
+slot print_timing: id  0 | task 809 | 
+prompt eval time =    2682.47 ms /  4631 tokens (    0.58 ms per token,  1726.39 tokens per second)
+       eval time =     399.45 ms /    16 tokens (   24.97 ms per token,    40.06 tokens per second)
+      total time =    3081.92 ms /  4647 tokens
+slot      release: id  0 | task 809 | stop processing: n_tokens = 4646, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 828 | processing task, is_child = 0
+slot update_slots: id  0 | task 828 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4642
+slot update_slots: id  0 | task 828 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 828 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441189
+slot update_slots: id  0 | task 828 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 828 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.882378
+slot update_slots: id  0 | task 828 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 828 | init sampler, took 0.54 ms, tokens: text = 4642, total = 4642
+slot update_slots: id  0 | task 828 | prompt processing done, n_tokens = 4642, batch.n_tokens = 546
+slot print_timing: id  0 | task 828 | 
+prompt eval time =    2697.06 ms /  4642 tokens (    0.58 ms per token,  1721.13 tokens per second)
+       eval time =     399.50 ms /    16 tokens (   24.97 ms per token,    40.05 tokens per second)
+      total time =    3096.56 ms /  4658 tokens
+slot      release: id  0 | task 828 | stop processing: n_tokens = 4657, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 847 | processing task, is_child = 0
+slot update_slots: id  0 | task 847 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4635
+slot update_slots: id  0 | task 847 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 847 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441855
+slot update_slots: id  0 | task 847 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 847 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.883711
+slot update_slots: id  0 | task 847 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 847 | init sampler, took 0.44 ms, tokens: text = 4635, total = 4635
+slot update_slots: id  0 | task 847 | prompt processing done, n_tokens = 4635, batch.n_tokens = 539
+slot print_timing: id  0 | task 847 | 
+prompt eval time =    2704.19 ms /  4635 tokens (    0.58 ms per token,  1714.01 tokens per second)
+       eval time =     401.58 ms /    16 tokens (   25.10 ms per token,    39.84 tokens per second)
+      total time =    3105.77 ms /  4651 tokens
+slot      release: id  0 | task 847 | stop processing: n_tokens = 4650, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 866 | processing task, is_child = 0
+slot update_slots: id  0 | task 866 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4622
+slot update_slots: id  0 | task 866 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 866 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.443098
+slot update_slots: id  0 | task 866 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 866 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.886196
+slot update_slots: id  0 | task 866 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 866 | init sampler, took 0.39 ms, tokens: text = 4622, total = 4622
+slot update_slots: id  0 | task 866 | prompt processing done, n_tokens = 4622, batch.n_tokens = 526
+slot print_timing: id  0 | task 866 | 
+prompt eval time =    2681.78 ms /  4622 tokens (    0.58 ms per token,  1723.49 tokens per second)
+       eval time =     401.32 ms /    16 tokens (   25.08 ms per token,    39.87 tokens per second)
+      total time =    3083.10 ms /  4638 tokens
+slot      release: id  0 | task 866 | stop processing: n_tokens = 4637, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.154
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 885 | processing task, is_child = 0
+slot update_slots: id  0 | task 885 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4641
+slot update_slots: id  0 | task 885 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 885 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441284
+slot update_slots: id  0 | task 885 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 885 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.882568
+slot update_slots: id  0 | task 885 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 885 | init sampler, took 0.39 ms, tokens: text = 4641, total = 4641
+slot update_slots: id  0 | task 885 | prompt processing done, n_tokens = 4641, batch.n_tokens = 545
+slot print_timing: id  0 | task 885 | 
+prompt eval time =    2693.09 ms /  4641 tokens (    0.58 ms per token,  1723.30 tokens per second)
+       eval time =     400.56 ms /    16 tokens (   25.04 ms per token,    39.94 tokens per second)
+      total time =    3093.65 ms /  4657 tokens
+slot      release: id  0 | task 885 | stop processing: n_tokens = 4656, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 904 | processing task, is_child = 0
+slot update_slots: id  0 | task 904 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4627
+slot update_slots: id  0 | task 904 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 904 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442619
+slot update_slots: id  0 | task 904 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 904 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.885239
+slot update_slots: id  0 | task 904 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 904 | init sampler, took 0.39 ms, tokens: text = 4627, total = 4627
+slot update_slots: id  0 | task 904 | prompt processing done, n_tokens = 4627, batch.n_tokens = 531
+slot print_timing: id  0 | task 904 | 
+prompt eval time =    2758.79 ms /  4627 tokens (    0.60 ms per token,  1677.18 tokens per second)
+       eval time =     399.30 ms /    16 tokens (   24.96 ms per token,    40.07 tokens per second)
+      total time =    3158.09 ms /  4643 tokens
+slot      release: id  0 | task 904 | stop processing: n_tokens = 4642, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 923 | processing task, is_child = 0
+slot update_slots: id  0 | task 923 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4630
+slot update_slots: id  0 | task 923 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 923 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442333
+slot update_slots: id  0 | task 923 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 923 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884665
+slot update_slots: id  0 | task 923 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 923 | init sampler, took 0.51 ms, tokens: text = 4630, total = 4630
+slot update_slots: id  0 | task 923 | prompt processing done, n_tokens = 4630, batch.n_tokens = 534
+slot print_timing: id  0 | task 923 | 
+prompt eval time =    2705.20 ms /  4630 tokens (    0.58 ms per token,  1711.52 tokens per second)
+       eval time =     401.33 ms /    16 tokens (   25.08 ms per token,    39.87 tokens per second)
+      total time =    3106.53 ms /  4646 tokens
+slot      release: id  0 | task 923 | stop processing: n_tokens = 4645, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 942 | processing task, is_child = 0
+slot update_slots: id  0 | task 942 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4636
+slot update_slots: id  0 | task 942 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 942 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441760
+slot update_slots: id  0 | task 942 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 942 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.883520
+slot update_slots: id  0 | task 942 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 942 | init sampler, took 0.42 ms, tokens: text = 4636, total = 4636
+slot update_slots: id  0 | task 942 | prompt processing done, n_tokens = 4636, batch.n_tokens = 540
+slot print_timing: id  0 | task 942 | 
+prompt eval time =    2773.88 ms /  4636 tokens (    0.60 ms per token,  1671.31 tokens per second)
+       eval time =     414.75 ms /    16 tokens (   25.92 ms per token,    38.58 tokens per second)
+      total time =    3188.62 ms /  4652 tokens
+slot      release: id  0 | task 942 | stop processing: n_tokens = 4651, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 961 | processing task, is_child = 0
+slot update_slots: id  0 | task 961 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4632
+slot update_slots: id  0 | task 961 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 961 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442142
+slot update_slots: id  0 | task 961 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 961 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884283
+slot update_slots: id  0 | task 961 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 961 | init sampler, took 0.39 ms, tokens: text = 4632, total = 4632
+slot update_slots: id  0 | task 961 | prompt processing done, n_tokens = 4632, batch.n_tokens = 536
+slot print_timing: id  0 | task 961 | 
+prompt eval time =    2769.46 ms /  4632 tokens (    0.60 ms per token,  1672.53 tokens per second)
+       eval time =     414.59 ms /    16 tokens (   25.91 ms per token,    38.59 tokens per second)
+      total time =    3184.05 ms /  4648 tokens
+slot      release: id  0 | task 961 | stop processing: n_tokens = 4647, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 980 | processing task, is_child = 0
+slot update_slots: id  0 | task 980 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4632
+slot update_slots: id  0 | task 980 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 980 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442142
+slot update_slots: id  0 | task 980 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 980 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884283
+slot update_slots: id  0 | task 980 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 980 | init sampler, took 0.68 ms, tokens: text = 4632, total = 4632
+slot update_slots: id  0 | task 980 | prompt processing done, n_tokens = 4632, batch.n_tokens = 536
+slot print_timing: id  0 | task 980 | 
+prompt eval time =    2780.61 ms /  4632 tokens (    0.60 ms per token,  1665.82 tokens per second)
+       eval time =     414.11 ms /    16 tokens (   25.88 ms per token,    38.64 tokens per second)
+      total time =    3194.72 ms /  4648 tokens
+slot      release: id  0 | task 980 | stop processing: n_tokens = 4647, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.163 (> 0.100 thold), f_keep = 0.163
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 999 | processing task, is_child = 0
+slot update_slots: id  0 | task 999 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4640
+slot update_slots: id  0 | task 999 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 999 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441379
+slot update_slots: id  0 | task 999 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 999 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.882759
+slot update_slots: id  0 | task 999 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 999 | init sampler, took 0.47 ms, tokens: text = 4640, total = 4640
+slot update_slots: id  0 | task 999 | prompt processing done, n_tokens = 4640, batch.n_tokens = 544
+slot print_timing: id  0 | task 999 | 
+prompt eval time =    2707.33 ms /  4640 tokens (    0.58 ms per token,  1713.86 tokens per second)
+       eval time =     399.04 ms /    16 tokens (   24.94 ms per token,    40.10 tokens per second)
+      total time =    3106.37 ms /  4656 tokens
+slot      release: id  0 | task 999 | stop processing: n_tokens = 4655, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1018 | processing task, is_child = 0
+slot update_slots: id  0 | task 1018 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4645
+slot update_slots: id  0 | task 1018 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1018 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.440904
+slot update_slots: id  0 | task 1018 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1018 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.881808
+slot update_slots: id  0 | task 1018 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1018 | init sampler, took 0.68 ms, tokens: text = 4645, total = 4645
+slot update_slots: id  0 | task 1018 | prompt processing done, n_tokens = 4645, batch.n_tokens = 549
+slot print_timing: id  0 | task 1018 | 
+prompt eval time =    2796.37 ms /  4645 tokens (    0.60 ms per token,  1661.08 tokens per second)
+       eval time =     398.84 ms /    16 tokens (   24.93 ms per token,    40.12 tokens per second)
+      total time =    3195.21 ms /  4661 tokens
+slot      release: id  0 | task 1018 | stop processing: n_tokens = 4660, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1037 | processing task, is_child = 0
+slot update_slots: id  0 | task 1037 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4616
+slot update_slots: id  0 | task 1037 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1037 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.443674
+slot update_slots: id  0 | task 1037 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1037 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.887348
+slot update_slots: id  0 | task 1037 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1037 | init sampler, took 0.59 ms, tokens: text = 4616, total = 4616
+slot update_slots: id  0 | task 1037 | prompt processing done, n_tokens = 4616, batch.n_tokens = 520
+slot print_timing: id  0 | task 1037 | 
+prompt eval time =    2788.50 ms /  4616 tokens (    0.60 ms per token,  1655.37 tokens per second)
+       eval time =     402.22 ms /    16 tokens (   25.14 ms per token,    39.78 tokens per second)
+      total time =    3190.72 ms /  4632 tokens
+slot      release: id  0 | task 1037 | stop processing: n_tokens = 4631, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.154
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1056 | processing task, is_child = 0
+slot update_slots: id  0 | task 1056 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4631
+slot update_slots: id  0 | task 1056 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1056 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442237
+slot update_slots: id  0 | task 1056 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1056 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884474
+slot update_slots: id  0 | task 1056 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1056 | init sampler, took 0.40 ms, tokens: text = 4631, total = 4631
+slot update_slots: id  0 | task 1056 | prompt processing done, n_tokens = 4631, batch.n_tokens = 535
+slot print_timing: id  0 | task 1056 | 
+prompt eval time =    2768.00 ms /  4631 tokens (    0.60 ms per token,  1673.05 tokens per second)
+       eval time =     401.48 ms /    16 tokens (   25.09 ms per token,    39.85 tokens per second)
+      total time =    3169.47 ms /  4647 tokens
+slot      release: id  0 | task 1056 | stop processing: n_tokens = 4646, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1075 | processing task, is_child = 0
+slot update_slots: id  0 | task 1075 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4642
+slot update_slots: id  0 | task 1075 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1075 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441189
+slot update_slots: id  0 | task 1075 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1075 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.882378
+slot update_slots: id  0 | task 1075 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1075 | init sampler, took 0.69 ms, tokens: text = 4642, total = 4642
+slot update_slots: id  0 | task 1075 | prompt processing done, n_tokens = 4642, batch.n_tokens = 546
+slot print_timing: id  0 | task 1075 | 
+prompt eval time =    2695.91 ms /  4642 tokens (    0.58 ms per token,  1721.87 tokens per second)
+       eval time =     400.21 ms /    16 tokens (   25.01 ms per token,    39.98 tokens per second)
+      total time =    3096.12 ms /  4658 tokens
+slot      release: id  0 | task 1075 | stop processing: n_tokens = 4657, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.163 (> 0.100 thold), f_keep = 0.162
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1094 | processing task, is_child = 0
+slot update_slots: id  0 | task 1094 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4631
+slot update_slots: id  0 | task 1094 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1094 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442237
+slot update_slots: id  0 | task 1094 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1094 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884474
+slot update_slots: id  0 | task 1094 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1094 | init sampler, took 0.41 ms, tokens: text = 4631, total = 4631
+slot update_slots: id  0 | task 1094 | prompt processing done, n_tokens = 4631, batch.n_tokens = 535
+slot print_timing: id  0 | task 1094 | 
+prompt eval time =    2676.53 ms /  4631 tokens (    0.58 ms per token,  1730.23 tokens per second)
+       eval time =     400.71 ms /    16 tokens (   25.04 ms per token,    39.93 tokens per second)
+      total time =    3077.24 ms /  4647 tokens
+slot      release: id  0 | task 1094 | stop processing: n_tokens = 4646, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1113 | processing task, is_child = 0
+slot update_slots: id  0 | task 1113 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4622
+slot update_slots: id  0 | task 1113 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1113 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.443098
+slot update_slots: id  0 | task 1113 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1113 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.886196
+slot update_slots: id  0 | task 1113 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1113 | init sampler, took 0.70 ms, tokens: text = 4622, total = 4622
+slot update_slots: id  0 | task 1113 | prompt processing done, n_tokens = 4622, batch.n_tokens = 526
+slot print_timing: id  0 | task 1113 | 
+prompt eval time =    2673.82 ms /  4622 tokens (    0.58 ms per token,  1728.61 tokens per second)
+       eval time =     401.19 ms /    16 tokens (   25.07 ms per token,    39.88 tokens per second)
+      total time =    3075.01 ms /  4638 tokens
+slot      release: id  0 | task 1113 | stop processing: n_tokens = 4637, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.154
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1132 | processing task, is_child = 0
+slot update_slots: id  0 | task 1132 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4621
+slot update_slots: id  0 | task 1132 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1132 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.443194
+slot update_slots: id  0 | task 1132 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1132 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.886388
+slot update_slots: id  0 | task 1132 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1132 | init sampler, took 0.39 ms, tokens: text = 4621, total = 4621
+slot update_slots: id  0 | task 1132 | prompt processing done, n_tokens = 4621, batch.n_tokens = 525
+slot print_timing: id  0 | task 1132 | 
+prompt eval time =    2673.81 ms /  4621 tokens (    0.58 ms per token,  1728.24 tokens per second)
+       eval time =     402.15 ms /    16 tokens (   25.13 ms per token,    39.79 tokens per second)
+      total time =    3075.97 ms /  4637 tokens
+slot      release: id  0 | task 1132 | stop processing: n_tokens = 4636, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.154
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1151 | processing task, is_child = 0
+slot update_slots: id  0 | task 1151 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4630
+slot update_slots: id  0 | task 1151 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1151 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442333
+slot update_slots: id  0 | task 1151 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1151 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884665
+slot update_slots: id  0 | task 1151 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1151 | init sampler, took 0.62 ms, tokens: text = 4630, total = 4630
+slot update_slots: id  0 | task 1151 | prompt processing done, n_tokens = 4630, batch.n_tokens = 534
+slot print_timing: id  0 | task 1151 | 
+prompt eval time =    2683.10 ms /  4630 tokens (    0.58 ms per token,  1725.62 tokens per second)
+       eval time =     401.65 ms /    16 tokens (   25.10 ms per token,    39.84 tokens per second)
+      total time =    3084.75 ms /  4646 tokens
+slot      release: id  0 | task 1151 | stop processing: n_tokens = 4645, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1170 | processing task, is_child = 0
+slot update_slots: id  0 | task 1170 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4639
+slot update_slots: id  0 | task 1170 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1170 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441474
+slot update_slots: id  0 | task 1170 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1170 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.882949
+slot update_slots: id  0 | task 1170 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1170 | init sampler, took 0.69 ms, tokens: text = 4639, total = 4639
+slot update_slots: id  0 | task 1170 | prompt processing done, n_tokens = 4639, batch.n_tokens = 543
+slot print_timing: id  0 | task 1170 | 
+prompt eval time =    2689.87 ms /  4639 tokens (    0.58 ms per token,  1724.62 tokens per second)
+       eval time =     403.09 ms /    16 tokens (   25.19 ms per token,    39.69 tokens per second)
+      total time =    3092.96 ms /  4655 tokens
+slot      release: id  0 | task 1170 | stop processing: n_tokens = 4654, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1189 | processing task, is_child = 0
+slot update_slots: id  0 | task 1189 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4635
+slot update_slots: id  0 | task 1189 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1189 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441855
+slot update_slots: id  0 | task 1189 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1189 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.883711
+slot update_slots: id  0 | task 1189 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1189 | init sampler, took 0.39 ms, tokens: text = 4635, total = 4635
+slot update_slots: id  0 | task 1189 | prompt processing done, n_tokens = 4635, batch.n_tokens = 539
+slot print_timing: id  0 | task 1189 | 
+prompt eval time =    2698.24 ms /  4635 tokens (    0.58 ms per token,  1717.79 tokens per second)
+       eval time =     400.86 ms /    16 tokens (   25.05 ms per token,    39.91 tokens per second)
+      total time =    3099.10 ms /  4651 tokens
+slot      release: id  0 | task 1189 | stop processing: n_tokens = 4650, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1208 | processing task, is_child = 0
+slot update_slots: id  0 | task 1208 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4629
+slot update_slots: id  0 | task 1208 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1208 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442428
+slot update_slots: id  0 | task 1208 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1208 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884856
+slot update_slots: id  0 | task 1208 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1208 | init sampler, took 0.39 ms, tokens: text = 4629, total = 4629
+slot update_slots: id  0 | task 1208 | prompt processing done, n_tokens = 4629, batch.n_tokens = 533
+slot print_timing: id  0 | task 1208 | 
+prompt eval time =    2698.19 ms /  4629 tokens (    0.58 ms per token,  1715.60 tokens per second)
+       eval time =     401.03 ms /    16 tokens (   25.06 ms per token,    39.90 tokens per second)
+      total time =    3099.22 ms /  4645 tokens
+slot      release: id  0 | task 1208 | stop processing: n_tokens = 4644, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.163 (> 0.100 thold), f_keep = 0.163
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1227 | processing task, is_child = 0
+slot update_slots: id  0 | task 1227 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4642
+slot update_slots: id  0 | task 1227 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1227 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441189
+slot update_slots: id  0 | task 1227 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1227 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.882378
+slot update_slots: id  0 | task 1227 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1227 | init sampler, took 0.68 ms, tokens: text = 4642, total = 4642
+slot update_slots: id  0 | task 1227 | prompt processing done, n_tokens = 4642, batch.n_tokens = 546
+slot print_timing: id  0 | task 1227 | 
+prompt eval time =    2709.68 ms /  4642 tokens (    0.58 ms per token,  1713.12 tokens per second)
+       eval time =     399.85 ms /    16 tokens (   24.99 ms per token,    40.01 tokens per second)
+      total time =    3109.53 ms /  4658 tokens
+slot      release: id  0 | task 1227 | stop processing: n_tokens = 4657, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.153 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1246 | processing task, is_child = 0
+slot update_slots: id  0 | task 1246 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4643
+slot update_slots: id  0 | task 1246 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1246 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.441094
+slot update_slots: id  0 | task 1246 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1246 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.882188
+slot update_slots: id  0 | task 1246 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1246 | init sampler, took 0.44 ms, tokens: text = 4643, total = 4643
+slot update_slots: id  0 | task 1246 | prompt processing done, n_tokens = 4643, batch.n_tokens = 547
+slot print_timing: id  0 | task 1246 | 
+prompt eval time =    2708.84 ms /  4643 tokens (    0.58 ms per token,  1714.02 tokens per second)
+       eval time =     399.67 ms /    16 tokens (   24.98 ms per token,    40.03 tokens per second)
+      total time =    3108.51 ms /  4659 tokens
+slot      release: id  0 | task 1246 | stop processing: n_tokens = 4658, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.154 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1265 | processing task, is_child = 0
+slot update_slots: id  0 | task 1265 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4633
+slot update_slots: id  0 | task 1265 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1265 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.442046
+slot update_slots: id  0 | task 1265 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1265 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.884092
+slot update_slots: id  0 | task 1265 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1265 | init sampler, took 0.56 ms, tokens: text = 4633, total = 4633
+slot update_slots: id  0 | task 1265 | prompt processing done, n_tokens = 4633, batch.n_tokens = 537
+slot print_timing: id  0 | task 1265 | 
+prompt eval time =    2703.01 ms /  4633 tokens (    0.58 ms per token,  1714.02 tokens per second)
+       eval time =     402.51 ms /    16 tokens (   25.16 ms per token,    39.75 tokens per second)
+      total time =    3105.52 ms /  4649 tokens
+slot      release: id  0 | task 1265 | stop processing: n_tokens = 4648, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200
+srv  log_server_r: done request: POST /apply-template 127.0.0.1 200
+srv  log_server_r: done request: POST /tokenize 127.0.0.1 200
+srv  params_from_: Chat format: peg-native
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.155 (> 0.100 thold), f_keep = 0.153
+slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> ?top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+slot launch_slot_: id  0 | task 1284 | processing task, is_child = 0
+slot update_slots: id  0 | task 1284 | new prompt, n_ctx_slot = 16384, n_keep = 0, task.n_tokens = 4611
+slot update_slots: id  0 | task 1284 | n_tokens = 0, memory_seq_rm [0, end)
+slot update_slots: id  0 | task 1284 | prompt processing progress, n_tokens = 2048, batch.n_tokens = 2048, progress = 0.444155
+slot update_slots: id  0 | task 1284 | n_tokens = 2048, memory_seq_rm [2048, end)
+slot update_slots: id  0 | task 1284 | prompt processing progress, n_tokens = 4096, batch.n_tokens = 2048, progress = 0.888311
+slot update_slots: id  0 | task 1284 | n_tokens = 4096, memory_seq_rm [4096, end)
+slot init_sampler: id  0 | task 1284 | init sampler, took 0.58 ms, tokens: text = 4611, total = 4611
+slot update_slots: id  0 | task 1284 | prompt processing done, n_tokens = 4611, batch.n_tokens = 515
+slot print_timing: id  0 | task 1284 | 
+prompt eval time =    2667.48 ms /  4611 tokens (    0.58 ms per token,  1728.60 tokens per second)
+       eval time =     393.50 ms /    16 tokens (   24.59 ms per token,    40.66 tokens per second)
+      total time =    3060.98 ms /  4627 tokens
+slot      release: id  0 | task 1284 | stop processing: n_tokens = 4626, truncated = 0
+srv  update_slots: all slots are idle
+srv  log_server_r: done request: POST /v1/chat/completions 127.0.0.1 200

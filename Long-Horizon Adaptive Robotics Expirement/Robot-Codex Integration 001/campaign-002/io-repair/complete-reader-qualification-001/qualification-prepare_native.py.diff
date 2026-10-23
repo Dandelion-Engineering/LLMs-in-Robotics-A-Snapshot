@@ -1,0 +1,20 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\prepare_native.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\prepare_native.py
+@@ -30,7 +30,7 @@
+               'io-repair/PILOT_RETIREMENT_INVENTORY_V1.md')
+ 
+ def inventory():
+-    spec=importlib.util.spec_from_file_location('native_quiescence_inventory',HERE/'prepare_model_v22.py')
++    spec=importlib.util.spec_from_file_location('native_quiescence_inventory',HERE/'prepare_model_v23.py')
+     extra=importlib.util.module_from_spec(spec);spec.loader.exec_module(extra)
+     sources=(list((CAMPAIGN/'harness').glob('*.py'))
+              +list((CAMPAIGN/'assessment').glob('*.py'))
+@@ -38,7 +38,7 @@
+              +[HERE/'native_suite.py', HERE/'assess_native.py', Path(__file__),
+                HERE/'test_prepare_native.py']
+              +[CAMPAIGN/name for name in METHOD_FILES]
+-             +[REPO/name for name in extra.process_drain_inputs()])
++             +[REPO/name for name in extra.reader_inputs()])
+     if any(not path.is_file() or path.is_symlink() for path in sources):
+         raise ValueError('Native inventory contains a missing or linked source')
+     return sorted(set(sources))

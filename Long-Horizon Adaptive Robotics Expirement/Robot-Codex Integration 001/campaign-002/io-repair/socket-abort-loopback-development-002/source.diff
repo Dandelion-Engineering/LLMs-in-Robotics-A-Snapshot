@@ -1,0 +1,39 @@
+--- development-001/fixture.py
++++ development-002/fixture.py
+@@ -57,6 +57,7 @@
+         ConnectionRefusedError: "ConnectionRefusedError",
+         TimeoutError: "TimeoutError",
+         OSError: "OSError",
++        TypeError: "TypeError",
+         asyncio.CancelledError: "CancelledError",
+         FixtureError: "FixtureError",
+         ObservationDeadline: "ObservationDeadline",
+@@ -144,7 +145,7 @@
+         except BaseException as error:
+             value = {"kind": "cancelled" if isinstance(error, asyncio.CancelledError) else "error", "error": error_metadata(error)}
+         value["phase"] = state["phase"]
+-        recorder.emit("receive_terminal", case=name, **value)
++        recorder.emit("receive_terminal", case=name, observation=value)
+         terminal_events.append(value)
+         return value
+ 
+@@ -220,7 +221,7 @@
+             recorder.emit("observation_deadline", case=name, bound_s=OBSERVATION_S)
+     except BaseException as error:
+         observation = {"kind": "setup_or_action_error", "error": error_metadata(error), "phase": "observation"}
+-        recorder.emit("case_error", case=name, **observation)
++        recorder.emit("case_error", case=name, observation=observation)
+     finally:
+         observation_ended = time.monotonic()
+         state["phase"] = "cleanup"
+--- development-001/launch.py
++++ development-002/launch.py
+@@ -79,7 +79,7 @@
+ 
+ def source_paths():
+     base = Path(sys.base_prefix)
+-    paths = [Path(__file__), HERE / "fixture.py", METHOD, Path(sys.executable)]
++    paths = [Path(__file__), HERE / "fixture.py", METHOD, HERE / "CORRECTION.md", Path(sys.executable)]
+     paths += [H / name for name in ("codehost_bridge_v3.py", "codehost_owner.py", "codehost_mux_protocol.py", "native_cleanup_protocol.py")]
+     paths += sorted((base / "Lib/asyncio").glob("*.py"))
+     paths += [base / "Lib/socket.py", base / "Lib/selectors.py", base / "DLLs/_socket.pyd", base / "DLLs/_overlapped.pyd", base / ("python%d%d.dll" % sys.version_info[:2])]

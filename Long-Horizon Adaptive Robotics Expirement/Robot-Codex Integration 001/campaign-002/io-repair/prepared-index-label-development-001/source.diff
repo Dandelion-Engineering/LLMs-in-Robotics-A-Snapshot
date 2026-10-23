@@ -1,0 +1,212 @@
+--- baseline/prepared_result_segments.py
++++ current/prepared_result_segments.py
+@@ -21,6 +21,7 @@
+ MAX_SCRIPT_BYTES = 16384
+ MAX_CHILDREN = 8
+ SOURCE_HASHES = {
++    '/io-repair/PREPARED_INDEX_LABELS_V1.md': '202f9ec2d4be550c9bf327a0263efeb73e0fa0c058922322b22a50b92eb84db2',
+     '/io-repair/PREPARED_STARTUP_SEGMENTS_V1.md': '39287ceb982a9a2077863c5107c15bc4744e1fc544aafd9d32f014cc25e5dd7f',
+     '/io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md': '1deb7c87a485651167a6777731287f76d3cb8ddbf4b0a9d36f47c58018b1c91c',
+     '/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__mod.rs': '13b5bda6e93a65fe999a3f07b3c5ee4a05850bfca57e4090876d70b310d8ba9e',
+@@ -33,6 +34,15 @@
+ }
+ TOKEN = re.compile(r'''\s+|"(?:[^"\\\r\n]|\\.)*"|'(?:[^'\\\r\n]|\\.)*'|[A-Za-z_][A-Za-z_0-9]*|[0-9]+|\.\.\.|=>|\+\+|[{}()\[\].,;:=<]''')
+ RESERVED = {'tools', 'text', 'console', 'await', 'let', 'const', 'Promise', 'for', 'true', 'false'}
++INDEX_LABEL_EXCLUDED = RESERVED | {
++    'status', 'value', 'reason', 'chunk_id', 'wall_time_seconds', 'exit_code',
++    'original_token_count', 'output', 'session_id', '__proto__', 'prototype', 'constructor',
++    'break', 'case', 'catch', 'class', 'continue', 'debugger', 'default', 'delete', 'do',
++    'else', 'enum', 'export', 'extends', 'finally', 'function', 'if', 'implements',
++    'import', 'in', 'instanceof', 'interface', 'new', 'null', 'package', 'private',
++    'protected', 'public', 'return', 'static', 'super', 'switch', 'this', 'throw',
++    'try', 'typeof', 'var', 'void', 'while', 'with', 'yield',
++}
+ WARNING = re.compile(rb'Warning: truncated output \(original token count: ([1-9][0-9]*)\)\nTotal output lines: ([1-9][0-9]*)\n\n')
+ MARKER = re.compile('…([0-9]+) (?:tokens|chars) truncated…'.encode())
+ OMITTED = re.compile(r'\.\.\. [0-9]+ bytes omitted \.\.\.')
+@@ -103,14 +113,14 @@
+     def print_object(self, counter, result, indexed=False):
+         self.sequence('text', '(', '{')
+         kind, key = self.pop()
++        # String tokens are decoded before this check, including escape aliases.
++        require(kind in ('name', 'string') and len(key) <= 128
++                and re.fullmatch(r'[A-Za-z_][A-Za-z_0-9]*', key)
++                and key not in INDEX_LABEL_EXCLUDED, 'Invalid index label')
+         if self.peek(':'):
+-            require(kind in ('name', 'string') and key in ('index', 'part'), 'Unknown index property')
+             self.sequence(':', counter)
+         else:
+             require(kind == 'name' and key == counter, 'Shorthand differs from index binding')
+-            require(key not in {'status', 'value', 'reason', 'chunk_id', 'wall_time_seconds',
+-                                'exit_code', 'original_token_count', 'output', 'session_id'},
+-                    'Shorthand collides with result field')
+         self.sequence(',', '...', result)
+         if indexed:
+             self.sequence('[', counter, ']')
+--- baseline/test_prepared_result_segments.py
++++ current/test_prepared_result_segments.py
+@@ -127,7 +127,7 @@
+         for emitter, spread in (('index', 'value'), ('part', 'r[i]')):
+             script = wrapper(2, emitter).replace('index:i', 'i').replace('part:i', 'i')
+             mutations = [script.replace('{i,', '{other,'), script.replace('{i,', '{"i",'),
+-                         script.replace('{i,', '{[i],'), script.replace('{i,', '{i:i,'),
++                         script.replace('{i,', '{[i],'), script.replace('{i,', '{i:0,'),
+                          script.replace('{i,', '{i:other,'), script.replace('{i,', '{i,i,'),
+                          script.replace('{i,', '{i,extra:1,'),
+                          script.replace('...' + spread, '...other'),
+@@ -200,7 +200,7 @@
+         baseline = wrapper(emission='index'); loop = wrapper(emission='part')
+         cases = [baseline.replace('value,i', 'value,value'),
+                  baseline.replace('index:i', 'index:0'),
+-                 baseline.replace('index:i', 'unknown:i'),
++                 baseline.replace('index:i', 'unknown:other'),
+                  baseline.replace('...value', '...r'),
+                  baseline.replace('{index:i,...value}', '{...value,index:i}'),
+                  baseline.replace('text({', 'console.log({'),
+@@ -211,6 +211,88 @@
+                  loop.replace('i<r.length', 'i<=r.length')]
+         for script in cases:
+             with self.subTest(script=script), self.assertRaises(ValueError):
++                parser.parse_wrapper(script)
++
++    def test_literal_index_labels_both_emitters_quotes_and_renaming(self):
++        import re
++        for emitter in ('index', 'part'):
++            for key in ('source', 'unknown', '_slot', 'position7', 'toJSON', 'r', 'a' * 128):
++                for label in (key, encode(key)):
++                    script = wrapper(2, emitter).replace(emitter + ':i', label + ':i')
++                    script = re.sub(r'\bi\b', 'counter7', script)
++                    with self.subTest(emitter=emitter, label=label):
++                        recipe = parser.parse_wrapper(script)
++                        self.assertEqual(recipe['index_key'], key)
++                        result = parser.parse_prepared_result(HEADER + '\n'.join(
++                            encode(settled('file' + str(i), i, key)) for i in range(2)), recipe)
++                        self.assertEqual([r['stdout_prefix'] for r in result['records']], [b'file0', b'file1'])
++
++    def test_decoded_literal_labels_and_all_collision_classes(self):
++        template = wrapper(1, 'index')
++        recipe = parser.parse_wrapper(template.replace('index:i', r'"\u0073ource":i'))
++        self.assertEqual(recipe['index_key'], 'source')
++        good = encode(settled('complete', 0, 'source'))
++        self.assertEqual(parser.parse_prepared_result(HEADER + good, recipe)['records'][0]['stdout_prefix'], b'complete')
++        labels = ['status', 'value', 'reason', 'chunk_id', 'wall_time_seconds', 'exit_code',
++                  'original_token_count', 'output', 'session_id', '__proto__', 'prototype',
++                  'constructor', 'tools', 'text', 'console', 'await', 'const', 'Promise',
++                  'for', 'true', 'false', 'return', 'class', 'new', 'null', 'yield',
++                  'a' * 129, '0', 'name-with-hyphen', '', 'naïve']
++        for key in labels:
++            with self.subTest(key=key), self.assertRaises(ValueError):
++                parser.parse_wrapper(template.replace('index:i', encode(key) + ':i'))
++        for label in (r'"\u005f\u005fproto__"', r'"\u0073tatus"', r'"\u0030"'):
++            with self.subTest(label=label), self.assertRaises(ValueError):
++                parser.parse_wrapper(template.replace('index:i', label + ':i'))
++
++    def test_literal_label_never_weakens_counter_or_spread(self):
++        template = wrapper(2, 'part').replace('part:i', 'source:i')
++        variants = [template.replace('source:i', value) for value in (
++            'source:j', 'source:0', 'source:true', 'source:"i"', 'source:r', '["source"]:i',
++            'source:i,extra:i', 'source:i,source:i', 'get source()', 'source=i')]
++        variants += [template.replace('...r[i]', '...r[0]'), template.replace('...r[i]', '...other[i]'),
++                     template.replace('{source:i,...r[i]}', '{...r[i],source:i}'),
++                     template + 'text("extra");']
++        for script in variants:
++            with self.subTest(script=script), self.assertRaises(ValueError):
++                parser.parse_wrapper(script)
++
++    def test_literal_label_actual_record_key_integer_and_order_are_exact(self):
++        recipe = parser.parse_wrapper(wrapper(2, 'part').replace('part:i', 'source:i'))
++        first, second = encode(settled('a', 0, 'source')), encode(settled('b', 1, 'source'))
++        good = first + '\n' + second
++        cases = [good.replace('"source":0', replacement, 1) for replacement in (
++            '"other":0', '"source":false', '"source":0.0', '"source":"0"', '"source":1',
++            '"source":0,"source":0', r'"source":0,"\u0073ource":0')]
++        cases += [good.replace('"source":1', '"source":0'),
++                  good.replace('"source":0,"status":"fulfilled"', '"status":"fulfilled","source":0'),
++                  good.replace('"status":"fulfilled"', '"status":"fulfilled","source":0', 1)]
++        for body in cases:
++            with self.subTest(body=body), self.assertRaises(ValueError):
++                parser.parse_prepared_result(HEADER + body, recipe)
++        escaped = good.replace('"source":', r'"\u0073ource":')
++        self.assertEqual(len(parser.parse_prepared_result(HEADER + escaped, recipe)['records']), 2)
++
++    def test_source_label_prefix_keeps_complete_file_and_utf8_limits(self):
++        script = wrapper(2, 'part', 200).replace('part:i', 'source:i')
++        recipe = parser.parse_wrapper(script)
++        text = 'TASKS complete\nROBOT complete\n' + 'λ雪 tools\n' * 2000
++        body = encode(settled(text, 0, 'source')) + '\n' + encode(settled('live' * 3000, 1, 'source'))
++        parsed = parser.parse_prepared_result(HEADER + truncate(body, 200), recipe)
++        record, = parsed['records']
++        self.assertEqual(record['command_index'], 0)
++        self.assertFalse(record['complete'])
++        self.assertTrue(record['stdout_prefix'].startswith(b'TASKS complete\nROBOT complete\n'))
++        self.assertTrue(parser.validate_prefix_rounding(record, text.encode(), parsed['truncation'])['validated'])
++        self.assertFalse(parsed['truncation']['suffix_consumed_as_evidence'])
++        with self.assertRaises(ValueError):
++            parser.encoded_span(record, 0, len(text.encode()))
++
++    def test_shorthand_excludes_prototype_keywords_and_length(self):
++        import re
++        for key in ('__proto__', 'prototype', 'constructor', 'return', 'class', 'a' * 129):
++            script = re.sub(r'\bi\b', key, wrapper(1, 'part').replace('part:i', 'i'))
++            with self.subTest(key=key), self.assertRaises(ValueError):
+                 parser.parse_wrapper(script)
+ 
+     def test_duplicate_commands_and_unqualified_execution_fail(self):
+--- baseline/test_prepared_startup_segments.py
++++ current/test_prepared_startup_segments.py
+@@ -243,6 +243,55 @@
+                 body[2]['text']=body[2]['text'].replace(f'"{key}":1',f'"{key}":0')
+                 self.rejected(index=1)
+ 
++    def test_source_label_counted_loop_authenticates_both_children(self):
++        self.configure(['cat Tasks.md Robot.md Tools.md', 'cat RobotAgentPrompt.md'], reverse=True)
++        self.call['params']['item']['input'] = self.call['params']['item']['input'].replace(
++            'results.forEach(text);', 'for (let i=0;i<results.length;i++)text({source:i,...results[i]});')
++        body = self.output['params']['item']['output']
++        for index, item in enumerate(body[1:]):
++            item['text'] = json.dumps({'source': index, **json.loads(item['text'])}, separators=(',', ':'))
++        result = self.prove()
++        self.assertEqual(result['covered_segment_indices'], [0, 1, 2])
++        self.assertEqual(len(result['children']), 2)
++        self.assertEqual(self.prove(1)['covered_segment_indices'], [0])
++        body[2]['text'] = body[2]['text'].replace('"source":1', '"source":false')
++        self.rejected()
++
++    def test_source_label_truncated_head_keeps_only_complete_target_files(self):
++        self.configure(['cat Tasks.md Robot.md Tools.md', 'cat RobotAgentPrompt.md'])
++        self.call['params']['item']['input'] = '// @exec: {"max_output_tokens":150}\n' + self.call['params']['item']['input'].replace(
++            'results.forEach(text);', 'for (let i=0;i<results.length;i++)text({source:i,...results[i]});')
++        body = self.output['params']['item']['output']
++        text = '\n'.join(json.dumps({'source': i, **json.loads(item['text'])}, separators=(',', ':'))
++                         for i, item in enumerate(body[1:]))
++        original_tokens = (len(text.encode()) + 3) // 4
++        body[1:] = [{'type': 'input_text', 'text':
++            f'Warning: truncated output (original token count: {original_tokens})\nTotal output lines: 2\n\n'
++            + text[:300] + f'…{original_tokens-150} tokens truncated…' + text[-300:]}]
++        result = self.prove()
++        self.assertEqual(result['covered_segment_indices'], [0, 1])
++        self.assertEqual(result['match'], 'complete_fixed_file_in_prepared_result_prefix')
++        self.rejected(index=1)
++        body[1]['text'] = body[1]['text'].replace('"source":0', '"source":1', 1)
++        self.rejected()
++
++    def test_new_label_method_missing_or_changed_fails_source_gate(self):
++        suffix = '/io-repair/PREPARED_INDEX_LABELS_V1.md'
++        with zipfile.ZipFile(self.archive) as archive:
++            original = {name: archive.read(name) for name in archive.namelist()}
++        matches = [name for name in original if name.endswith(suffix)]
++        self.assertEqual(len(matches), 1)
++        for omitted in (False, True):
++            modified = dict(original)
++            if omitted:
++                del modified[matches[0]]
++            else:
++                modified[matches[0]] += b'changed'
++            with zipfile.ZipFile(self.archive, 'w') as archive:
++                for name, value in modified.items():
++                    archive.writestr(name, value)
++            self.rejected()
++
+     def test_nonfixed_continuity_and_live_segments_are_never_credited(self):
+         for name in ('Continuity.md','live/state.json'):
+             with self.subTest(path=name):

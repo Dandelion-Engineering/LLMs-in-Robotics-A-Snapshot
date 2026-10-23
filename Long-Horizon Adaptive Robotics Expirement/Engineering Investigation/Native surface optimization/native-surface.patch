@@ -1,0 +1,138 @@
+--- a/Runtime/restart_physical_class.py
++++ b/Runtime/restart_physical_class.py
+@@ -13,6 +13,8 @@
+ import copy
+ import hashlib
+ import math
++import struct
++import weakref
+ from pathlib import Path
+ import xml.etree.ElementTree as ET
+ 
+@@ -244,6 +246,116 @@
+     return result
+ 
+ 
++
++
++class _SurfaceNode:
++    __slots__ = ('token', 'descriptor', 'children')
++
++    def __init__(self, token, descriptor, children=()):
++        self.token, self.descriptor, self.children = token, descriptor, children
++
++
++# Values contain bytes, primitive descriptors and weak references only. No node
++# retains the native model. Retiring a model releases its entire byte baseline.
++_SURFACE_MEMOS = weakref.WeakKeyDictionary()
++
++
++def _observed_surface(value, previous=None, path='model'):
++    """Read every current public field; reuse hashes only for exact byte matches.
++
++    Same canonical representation and unsupported-property policy as _surface.
++    This is a complete current comparison, not a simulation-time cache.
++    """
++    def leaf(token, describe):
++        if previous is not None and previous.token == token:
++            return previous
++        return _SurfaceNode(token, describe())
++
++    if value is None or type(value) in (str, bool, int):
++        return leaf(('scalar', type(value), value), lambda: value)
++    if type(value) is float:
++        if not math.isfinite(value):
++            raise UnsupportedEvidence(path + ': nonfinite scalar')
++        # Python equality equates positive/negative zero, but canonical JSON
++        # preserves them. Compare the exact float representation instead.
++        return leaf(('float', struct.pack('>d', value)), lambda: value)
++    if isinstance(value, bytes):
++        return leaf(('bytes', value), lambda: {'bytes_sha256': hashlib.sha256(value).hexdigest(), 'length': len(value)})
++    if hasattr(value, 'dtype') and hasattr(value, 'shape') and hasattr(value, 'tobytes'):
++        token = ('array', str(value.dtype), tuple(value.shape), value.tobytes())
++        if previous is not None and previous.token == token:
++            return previous
++        if value.dtype.kind in 'fc' and not np.isfinite(value).all():
++            raise UnsupportedEvidence(path + ': nonfinite array')
++        return _SurfaceNode(token, {'dtype': token[1], 'shape': list(token[2]),
++                                    'sha256': hashlib.sha256(token[3]).hexdigest()})
++    if isinstance(value, (tuple, list)):
++        token = ('sequence', type(value), len(value))
++        old = previous.children if previous is not None and previous.token == token else (None,) * len(value)
++        children = tuple(_observed_surface(v, old[i], path) for i, v in enumerate(value))
++        if previous is not None and previous.token == token and all(a is b for a, b in zip(children, old)):
++            return previous
++        return _SurfaceNode(token, [child.descriptor for child in children], children)
++    if isinstance(value, dict):
++        if not all(isinstance(k, str) for k in value):
++            raise UnsupportedEvidence(path + ': non-string mapping keys')
++        fields = [(k, v) for k, v in sorted(value.items())]
++        kind = ('mapping',)
++    elif type(value).__module__.startswith('mujoco.'):
++        fields = []
++        for name in dir(value):
++            if name.startswith('_'):
++                continue
++            field = getattr(value, name)
++            if not callable(field):
++                fields.append((name, field))
++        if not fields:
++            raise UnsupportedEvidence(path + ': unsupported property ' + type(value).__name__)
++        kind = ('native', type(value))
++    else:
++        raise UnsupportedEvidence(path + ': unsupported property ' + type(value).__name__)
++    token = (*kind, tuple(k for k, _ in fields))
++    old = previous.children if previous is not None and previous.token == token else (None,) * len(fields)
++    children = tuple(_observed_surface(v, old[i], path + '.' + k) for i, (k, v) in enumerate(fields))
++    if previous is not None and previous.token == token and all(a is b for a, b in zip(children, old)):
++        return previous
++    return _SurfaceNode(token, {k: child.descriptor for (k, _), child in zip(fields, children)}, children)
++
++
++def _model_surface_sha(model, seal):
++    """Memoize only a verified descriptor; compare every live native field first."""
++    key = (seal['seal_sha256'], seal['compiled_surface_sha256'], tuple(seal['mark_indices']))
++    try:
++        prior = _SURFACE_MEMOS.get(model)
++    except TypeError:
++        # Preserve the original verifier for non-weak-referenceable test/native
++        # providers. Actual MjModel supports weak keys; never keep a strong key.
++        return digest(_model_surface(model, seal['mark_indices']))
++    if prior is None or prior[0]() is not model or prior[1] != key:
++        prior = None
++    root = _observed_surface(model, None if prior is None else prior[2])
++    # Keep the existing binary-color rule and its error ordering. Raw rgba is
++    # included in the full live comparison; only these checked marks normalize.
++    colors = model.geom_rgba.copy()
++    for index in seal['mark_indices']:
++        color = colors[index].tolist()
++        if not (len(color) == 4 and all(abs(a - b) <= 2e-8 for a, b in zip(color, [.03, .03, .03, 1.]))
++                or color == [1., 1., 1., 1.]):
++            raise UnsupportedEvidence('process mark color outside binary source rule')
++        colors[index] = [0., 0., 0., 0.]
++    normalized_colors = _surface(colors)
++    if prior is not None and root is prior[2]:
++        observed_sha = prior[3]
++    else:
++        surface = dict(root.descriptor)
++        surface['geom_rgba'] = normalized_colors
++        observed_sha = digest(surface)
++    # An altered or unsupported model never establishes a reusable baseline.
++    if observed_sha == seal['compiled_surface_sha256']:
++        _SURFACE_MEMOS[model] = (weakref.ref(model), key, root, observed_sha)
++    return observed_sha
++
++
+ def _mass_properties(model, body_id):
+     mass = float(model.body_mass[body_id])
+     com = model.body_ipos[body_id].tolist()
+@@ -336,8 +448,7 @@
+             raise UnsupportedEvidence('exact physical configuration identity missing')
+         if hashlib.sha256(xml.encode()).hexdigest() != seal['scene_xml_sha256'] or digest(registry) != seal['registry_sha256']:
+             raise UnsupportedEvidence('source XML/registry changed after sealed construction')
+-        surface = _model_surface(model, seal['mark_indices'])
+-        if digest(surface) != seal['compiled_surface_sha256']:
++        if _model_surface_sha(model, seal) != seal['compiled_surface_sha256']:
+             raise UnsupportedEvidence('compiled model differs from sealed source construction')
+         return {'schema_version': OBS_SCHEMA, 'export_schema': EXPORT_SCHEMA, 'export_state': 'pass',
+                 'source_hashes': copy.deepcopy(seal['source_hashes']), 'component_sha256': copy.deepcopy(seal['component_sha256']),

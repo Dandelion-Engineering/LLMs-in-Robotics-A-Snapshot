@@ -1,0 +1,58 @@
+--- Long-Horizon Adaptive Robotics Expirement/Batch 01/Restart Qualification Tools/assess_validation.py
++++ Long-Horizon Adaptive Robotics Expirement/Batch 01/Restart Qualification Tools/assess_validation.py
+@@ -346,6 +346,34 @@
+                 'route':{'state':route[0],'reason':route[1],'observed':route[2]},
+                 'scope':'Archived numerical formulas only; final-bundle qualification gate deliberately not evaluated'}
+     except (KeyError, TypeError, ValueError, StopIteration) as exc:
++        return {'state':'unknown','reason':str(exc)}
++
++
++def dispatch_invariants(cut, dispatch):
++    """Required observed invariants, without reapplying cut envelope bounds.
++
++    Numeric membership successfully selects only a unique bilateral payload
++    with complete protected inventory, finite vectors and a valid relative
++    rotation. Keep that evidence, payload/cell identity and actual route
++    obstacles/destination checks. Displacement from a cut-only calibrated
++    interval is descriptive at dispatch, for both _grip and _route.
++    """
++    try:
++        require(dispatch['grip']['state'] in ('pass','fail') and dispatch['route']['state'] in ('pass','fail'),
++                'Dispatch numerical capture/comparison is incomplete')
++        grip = dispatch['grip']['observed']['checks']
++        routes = dispatch['route']['observed']
++        require(len(routes)==1, 'Dispatch route identity is ambiguous')
++        route = routes[0]['checks']
++        checks = {'same_unique_bilateral_payload_and_cell':dispatch['payload_id']==cut['payload_id']
++                  and dispatch['cell_id']==cut['cell_id'],
++                  'payload_kind':flag(grip.get('kind')),
++                  'payload_family':flag(grip.get('family'))}
++        for key in ('free_destination','same_destination_region','payload_kind','payload_family',
++                    'corridors_clear_of_other_movable_bodies'):
++            checks['route_'+key] = flag(route.get(key))
++        return result(checks, scope='Required dispatch capture/payload/destination/obstacle invariants; cut-envelope bounds are descriptive here')
++    except (KeyError,TypeError,ValueError) as exc:
+         return {'state':'unknown','reason':str(exc)}
+ 
+ 
+@@ -639,6 +667,11 @@
+                 compatibility[label] = compat['verify_class_compatibility'](class_spec,snapshot['physical_class_observation'],
+                     frozen_spec_sha256=rule['class_spec']['canonical_sha256'])
+             report['numeric_membership'] = memberships; report['class_compatibility'] = compatibility
++            report['numeric_membership_roles'] = {'cut':'required_cut_admission',
++                                                  'before_recovery':'descriptive_cut_envelope_comparison'}
++            report['dispatch_invariants'] = dispatch_invariants(memberships['cut'],memberships['before_recovery'])
++            report['landmark_clocks'] = {label:{key:state.get(key) for key in ('sim_time_s','wall_elapsed_s')}
++                for label,state in states.items() if state.get('status')=='recorded'}
+             report['landmark_refs'] = {k:v.get('source_ref') for k,v in states.items() if v.get('status')=='recorded'}
+             cell_id = memberships['cut'].get('cell_id')
+             cell = next((c for c in rule['cells'] if c['cell_id']==cell_id), None)
+@@ -651,7 +684,7 @@
+             hold = hold_assessment(rule,row,geometry.get('physics_timestep_s'),placement_event(evidence,identity),functions)
+             report['hold_absence_placement_timing'] = hold
+             report['child_status'] = row['child_result']['status']; report['child_error'] = row['child_result'].get('error')
+-            report['state'] = all_states([m['state'] for m in memberships.values()]
++            report['state'] = all_states([memberships['cut']['state'],report['dispatch_invariants']['state']]
+                 + [c['compatibility_state'] for c in compatibility.values()] + [geometry['state'],hold['state'],
+                     geometry.get('sampled_other_body_and_contact',{}).get('state','unknown'),
+                     'unknown' if row['unparsed_events'] else 'pass'])

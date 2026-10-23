@@ -1,0 +1,72 @@
+{
+  "schema": "robot-codex-development-manifest-1.0",
+  "stage": "development-only",
+  "run_id": "RCI001-s10-pilot-001",
+  "family": "misplaced-stock",
+  "mode": "serve",
+  "seed": 173,
+  "noise_seed": 13,
+  "sim_cap_s": 900,
+  "wall_cap_s": 1100,
+  "storage_cap_bytes": 536870912,
+  "physics_dt_s": 0.002,
+  "clock_mode": "wall-paced; physics continues independently of agent",
+  "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+  "operator_only_fixture": {
+    "part_count": 1,
+    "placements": [
+      {
+        "part_id": "A1",
+        "zone": "quarantine"
+      }
+    ],
+    "order": {
+      "version": 1,
+      "closed": true,
+      "requirements": [
+        {
+          "family": "A",
+          "recipe": "A",
+          "count": 1,
+          "tray": "tray1",
+          "max_rework_cycles": 0
+        }
+      ]
+    },
+    "reference_actions": [
+      {
+        "operation": "transport",
+        "part_id": "A1",
+        "destination": "parking1"
+      }
+    ],
+    "missing_rule": "Frozen baseline excludes quarantine from raw-stock eligibility; no failed inspection is present.",
+    "baseline_source": "Runtime 004/candidates.py:739-756"
+  },
+  "limitations": [
+    "Development fixture; not sampled performance evidence",
+    "No collision safety certificate",
+    "Reference solution is protected operator evidence",
+    "Agent process restart only; supervisor restart is not implemented"
+  ],
+  "qualification_stage": "single-development-recovery-pilot",
+  "model": "gpt-6-astra",
+  "effort": "max",
+  "bootstrap": "Follow the instructions in RobotAgentPrompt.md.",
+  "model_turns_max": 1,
+  "invocation_wall_cap_s": 600,
+  "action_request_budget": 20,
+  "observation_request_budget": 50,
+  "interruption_trigger": null,
+  "scope": "One development-only misplaced-stock recovery pilot. Preserve any outcome; no retry, tuning, general performance claim or campaign.",
+  "program_route": "sealed-snapshot bounded Python runner; OS namespace shell remains available",
+  "gates": [
+    "prior actual-model bootstrap passed",
+    "prior real-interface interruption/reconciliation/protection smoke passed",
+    "one fresh exact-bootstrap invocation",
+    "ordinary recovery Tasks only; no protected reference solution in workspace",
+    "retain commands, outcomes, handback and conventional follow-through",
+    "no retry after terminal model/robot outcome"
+  ],
+  "prior_attempt": null
+}

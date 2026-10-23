@@ -1,0 +1,80 @@
+{
+  "schema": "rci-c02-protected-io-diagnostic-1",
+  "duration_s": 120,
+  "tick_hz": 100,
+  "sensor_every_ticks": 10,
+  "state_every_ticks": 50,
+  "wall_cap_s": 180,
+  "output_cap_bytes": 134217728,
+  "model_turns_max": 0,
+  "physics_steps_max": 0,
+  "image_quota_bytes": 12000000,
+  "core_quota_bytes": 50000000,
+  "sparse_period_s": 2,
+  "maximum_timing_rows": 250000,
+  "run_id": "RCI001-C02-protected-io-001",
+  "framework_revision": "RCI001-C02-dev-014",
+  "stage": "diagnostic",
+  "mode": "protected-io",
+  "qualification_stage": "no-model-no-physics-shared-durability",
+  "input_host": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-native-003/RCI001-C02-native-003-stock-1/host",
+  "input_bindings": [
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-native-003/RCI001-C02-native-003-stock-1/host/public-history.jsonl",
+      "bytes": 2249397,
+      "sha256": "137a22ed8983a58cee344a7a1c1b2075d54e4422c960ffc9a5c23074dd2ab614"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-native-003/RCI001-C02-native-003-stock-1/host/public-state.json",
+      "bytes": 14952,
+      "sha256": "73e9ea8a60907cc0ccb63e937137567d29c94039e9ba5fe9754c5f1833be820f"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-native-003/RCI001-C02-native-003-stock-1/host/command-registry.json",
+      "bytes": 15247,
+      "sha256": "5218d28b04fac413fa86087084752a193fac1a769ffd458186a36ba640088b7e"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-native-003/RCI001-C02-native-003-stock-1/host/native-recording/container-manifest.json",
+      "bytes": 524,
+      "sha256": "ea96e84e886fbb026fbef930db09d3ae750d44fc14e6d0419a8bc16567e20d90"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/local-evidence/campaign002/qualification/RCI001-C02-native-003/RCI001-C02-native-003-stock-1/host/native-recording/evidence.sqlite.gz",
+      "bytes": 7031646,
+      "sha256": "02130f05904a150897269dd8c99d18ff5cdc363d6f761a3c81d58edea0c23ef0"
+    }
+  ],
+  "schedule": {
+    "motion_rows": 12000,
+    "journal_observations": 1200,
+    "sqlite_images": 1200,
+    "state_publications": 240,
+    "registry_publications": 1200
+  },
+  "source_counts": {
+    "journal_observations": 588,
+    "motion_rows": 5912,
+    "sqlite_images": 587,
+    "retained_image_pairs": 30,
+    "sqlite_events": 0
+  },
+  "limitations": [
+    "Non-physics diagnostic; no model, scoring, qualification or production adoption.",
+    "Terminal state/registry snapshots preserve authentic terminal sizes, not historical growth.",
+    "Only retained sparse encoded native images are available; unavailable intermediate frames are not reconstructed.",
+    "No sensor encoding, observation-latest mirrors, non-observation events, task motion or physics.",
+    "Process IO counters and inclusive wall/CPU timings do not attribute device, driver, filter or scheduler causes.",
+    "Cooperative wall cap does not preempt a blocked OS durability call; output cap is an observed final bound."
+  ],
+  "runtime_input_files": [
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/instrumented_journal.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/instrumented_recorder.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/diagnostic/README.md",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/diagnostic/assess.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/diagnostic/benchmark.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/diagnostic/plan.json",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/diagnostic/test_diagnostic.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/operate_diagnostic.py"
+  ]
+}

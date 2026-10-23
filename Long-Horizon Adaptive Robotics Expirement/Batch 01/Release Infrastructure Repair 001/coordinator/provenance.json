@@ -1,0 +1,70 @@
+{
+  "schema_version": "release-coordinator-repair-proposal-1",
+  "prepared_date_utc": "2026-09-23",
+  "status": "prepared_tests_deferred_root_runtime_location_confirmed",
+  "originals_modified": false,
+  "queue_called": false,
+  "runtime_target": "Runtime/release_runner.py",
+  "retention_helper": "Batch 01/Release Analysis/measure_retention.py",
+  "original_coordinator": {
+    "path_from_experiment": "Batch 01/Release Analysis/run_release_series.ps1",
+    "sha256": "d24ce1464f5a2c77d69a679477fa22906550e90cb2492ac42feb1a335c1fdaad"
+  },
+  "original_tests": {
+    "path_from_experiment": "Batch 01/Release Analysis/test_run_release_series.ps1",
+    "sha256": "e39cc94201100cd2269fa89ba06058a7774b10ac955ca649bc5e1a156e3afce5",
+    "retained_check_groups": 6
+  },
+  "prepared_files": {
+    "run_release_series.ps1": "a6a2b46c8cc35bf4a27eea2f9aed1299f717bdb900f0e71d61ecad1d753ef4a4",
+    "test_run_release_series.ps1": "8cb52dc5a33368fe994ed6a3fdcd84f6df02f3800196d53f685fae2362238786",
+    "run_regressions.py": "ebfd2adf010fb9bc98de120d364af90136c4b5c57e5793b5890658886bd82f45"
+  },
+  "initial_test_failure": {
+    "queue_job_id": "20260923T132509599871Z-31a16a89",
+    "test_sha256": "c300f9422144f930e9d51ea2127cca532c40330031d95d57cde9ff7d9ce3d8e6",
+    "host": "Windows PowerShell 5.1",
+    "cause": "AST-created path-check script block had no backing file and an empty PSScriptRoot",
+    "repair": "Test captures its real source directory before dynamic blocks and substitutes that variable only in the isolated AST path expression",
+    "coordinator_source_changed": false,
+    "tests_rerun_by_preparing_agent": false
+  },
+  "second_test_failure": {
+    "queue_job_id": "20260923T133412657951Z-066c0720",
+    "test_sha256": "031a978fc75e8148a16365293c736b064ebb048411e61b389214c4f0e98e2939",
+    "host": "Windows PowerShell 5.1",
+    "observed_error": "Get-FileHash was not recognized when the first unmocked Hash-Small call ran",
+    "source_facts": "PS5.1 exports Get-FileHash from its utility nested script module; inherited process PSModulePath put Core module locations first. Exact failed autoload resolution was not recorded.",
+    "repair": "Coordinator and tests explicitly import their own PSHOME utility manifest. Bounded launcher assigns each child only its host Modules path and runs both hosts even if one fails.",
+    "tested_gates_relaxed": false,
+    "tests_rerun_by_preparing_agent": false
+  },
+  "prepared_total_check_groups": 14,
+  "fixtures": [
+    {
+      "local_path": "fixtures/original-official-receipt.json",
+      "source_from_experiment": "Evidence/queue-receipts/20260923T130932492695Z-514666d5.json",
+      "sha256": "417eaf5487c180696bfa06c0fd619c1554a89a3143db06dcee40800dbb2b5fc5"
+    },
+    {
+      "local_path": "fixtures/official-queue-status.json",
+      "source_from_experiment": "Evidence/releases/batch01-eval-r1/batches/20260923T130932492695Z-514666d5/official-queue-status.json",
+      "sha256": "c49d9ba5cb5e40f8aa47024d4b3a5269f3922c3d91270a55506ec55a9e4e5fbf"
+    },
+    {
+      "local_path": "fixtures/finalized.json",
+      "source_from_experiment": "Evidence/releases/batch01-eval-r1/batches/20260923T130932492695Z-514666d5/finalized.json",
+      "sha256": "df087cf9e5735f7d6514ec5276f57b81fb99223af3cb17ff42c65b2e486bd3ff"
+    }
+  ],
+  "timestamp_regression": {
+    "source_from_experiment": "Evidence/derived/retention-development-final-001/summary.json",
+    "field": "captured_at",
+    "exact_value": "2026-09-23T13:00:39.465344+00:00",
+    "one_microsecond_interval_bounds": "synthetic neighboring instants in Z and -07:00 offsets; not extra actual observations"
+  },
+  "release_policy_changed": false,
+  "incident_waivers_created": false,
+  "automatic_retries": 0,
+  "original_planned_attempts": 264
+}

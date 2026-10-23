@@ -1,0 +1,68 @@
+--- before/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v4.py
++++ after/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v4.py
+@@ -220,7 +220,12 @@
+             self.receive(return_notifications=True)
+ 
+     def close(self):
+-        from native_quiescence import close
++        selected = getattr(self.args, "native_process_drain", False)
++        require(type(selected) is bool, "Native process-drain selection must be boolean")
++        if selected:
++            from native_process_quiescence import close
++        else:
++            from native_quiescence import close
+         return close(self, MAX_BYTES)
+ 
+ 
+--- before/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py
++++ after/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py
+@@ -403,6 +403,7 @@
+                 args.native_process_ready=self.native_process_ready
+                 args.native_cleanup_barrier=self.native_cleanup_barrier
+                 args.native_exit_barrier=self.native_exit_barrier
++                args.native_process_drain=True
+                 return await asyncio.to_thread(bootstrap.run,args)
+             return await with_codehost(self,model_host)
+         return await captured_executor.bridge_executor(self,callback)
+--- before/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_bridge_v3.py
++++ after/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_bridge_v3.py
+@@ -754,6 +754,9 @@
+         return safe, unchanged
+ 
+     def native_exit_barrier(self, request):
++        if isinstance(request, dict) and request.get('schema') == 'campaign002-process-drain-request-1':
++            import process_drain
++            return process_drain.bridge_join(self, request)
+         import native_exit_drain
+         return native_exit_drain.bridge_join(self, request)
+ 
+--- before/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/transport_integrity_v3.py
++++ after/Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/transport_integrity_v3.py
+@@ -15,6 +15,7 @@
+ 
+ import client_quiescence
+ import pre_exit_integrity
++import process_integrity
+ import cleanup_transport
+ 
+ 
+@@ -1392,12 +1393,14 @@
+             'scope': 'Authenticated single owner and shared host, exact channel bytes, bounded lifecycle and retirement only.'}
+     if quiescence is not None:
+         result['client_quiescence'] = quiescence
+-    if pre_exit_integrity.enabled(frozen) and owner_kind == 'model_client':
+-        pre_exit = pre_exit_integrity.verify(root, frozen, rows, channels, quiescence, repo=REPO)
+-        for name, binding in pre_exit['input_bindings'].items():
+-            require(name not in inputs or inputs[name] == binding, 'Pre-exit inputs changed during verification')
++    process_method = process_integrity.enabled(frozen)
++    ordering_reader = process_integrity if process_method else pre_exit_integrity
++    if ordering_reader.enabled(frozen) and owner_kind == 'model_client':
++        ordering = ordering_reader.verify(root, frozen, rows, channels, quiescence, repo=REPO)
++        for name, binding in ordering['input_bindings'].items():
++            require(name not in inputs or inputs[name] == binding, 'Native ordering inputs changed during verification')
+             inputs[name] = binding
+-        result['native_pre_exit_drain'] = pre_exit
++        result['native_process_drain' if process_method else 'native_pre_exit_drain'] = ordering
+     return result
+ 
+ 

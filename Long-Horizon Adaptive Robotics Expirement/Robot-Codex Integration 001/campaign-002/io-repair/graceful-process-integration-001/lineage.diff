@@ -1,0 +1,132 @@
+--- before/qualification/prepare_native.py
++++ after/qualification/prepare_native.py
+@@ -30,7 +30,7 @@
+               'io-repair/PILOT_RETIREMENT_INVENTORY_V1.md')
+ 
+ def inventory():
+-    spec=importlib.util.spec_from_file_location('native_quiescence_inventory',HERE/'prepare_model_v21.py')
++    spec=importlib.util.spec_from_file_location('native_quiescence_inventory',HERE/'prepare_model_v22.py')
+     extra=importlib.util.module_from_spec(spec);spec.loader.exec_module(extra)
+     sources=(list((CAMPAIGN/'harness').glob('*.py'))
+              +list((CAMPAIGN/'assessment').glob('*.py'))
+@@ -38,7 +38,7 @@
+              +[HERE/'native_suite.py', HERE/'assess_native.py', Path(__file__),
+                HERE/'test_prepare_native.py']
+              +[CAMPAIGN/name for name in METHOD_FILES]
+-             +[REPO/name for name in extra.pre_exit_inputs()])
++             +[REPO/name for name in extra.process_drain_inputs()])
+     if any(not path.is_file() or path.is_symlink() for path in sources):
+         raise ValueError('Native inventory contains a missing or linked source')
+     return sorted(set(sources))
+--- before/qualification/host_probe.py
++++ after/qualification/host_probe.py
+@@ -42,9 +42,9 @@
+                + list((RCI / 'readiness-session-10/assessment').glob('*.py'))
+                + [Path(__file__), HERE / 'assess_host_probe.py'])
+     if args.purpose == 'continuous-physics-during-durable-io':
+-        spec = importlib.util.spec_from_file_location('host_quiescence_inventory', HERE / 'prepare_model_v21.py')
++        spec = importlib.util.spec_from_file_location('host_quiescence_inventory', HERE / 'prepare_model_v22.py')
+         extra = importlib.util.module_from_spec(spec); spec.loader.exec_module(extra)
+-        sources.extend(REPO / name for name in extra.pre_exit_inputs())
++        sources.extend(REPO / name for name in extra.process_drain_inputs())
+         sources.append(CAMPAIGN / 'io-repair/DESIGN.md')
+         sources.append(CAMPAIGN / 'io-repair/READ_EVIDENCE_V2.md')
+         sources.append(CAMPAIGN / 'io-repair/TRANSPORT_EVIDENCE_V2.md')
+--- before/qualification/boundary_suite_v3.py
++++ after/qualification/boundary_suite_v3.py
+@@ -107,7 +107,7 @@
+ 
+ 
+ def sources():
+-    spec=importlib.util.spec_from_file_location('boundary_quiescence_inventory',Path(__file__).with_name('prepare_model_v21.py'))
++    spec=importlib.util.spec_from_file_location('boundary_quiescence_inventory',Path(__file__).with_name('prepare_model_v22.py'))
+     extra=importlib.util.module_from_spec(spec);spec.loader.exec_module(extra)
+     roots=[HARNESS,INTEGRATION/'host',INTEGRATION/'readiness-session-10/boundary',
+            INTEGRATION/'readiness-session-10/orchestrator',INTEGRATION/'isolation-session-9/wsl',
+@@ -121,7 +121,7 @@
+            CAMPAIGN/'io-repair/CHANNEL_FINISH_FRONTIER_VALIDATION_V1.md',
+            CAMPAIGN/'io-repair/CHANNEL_PROBE_SEQUENCE_SYNCHRONIZATION_V1.md',
+            CAMPAIGN/'io-repair/CHANNEL_OWNER_DRAIN_V1.md'}
+-    paths.update(REPO/name for name in extra.pre_exit_inputs())
++    paths.update(REPO/name for name in extra.process_drain_inputs())
+     for root in roots:
+         paths.update(p for p in root.rglob('*') if p.is_file() and p.suffix in ('.py','.md'))
+     paths.add(REPO/'Robot Agent Filesystem v0.1/workspace/RobotAgentPrompt.md')
+--- before/harness/raw_event_preflight_v2.py
++++ after/harness/raw_event_preflight_v2.py
+@@ -80,9 +80,9 @@
+         'codex-rs__app-server__src__bespoke_event_handling.rs',
+         'codex-rs__app-server__src__request_processors__thread_lifecycle.rs',
+         'codex-rs__core__src__session__session.rs')]
+-    spec = importlib.util.spec_from_file_location('raw_quiescence_inventory', CAMPAIGN / 'qualification/prepare_model_v21.py')
++    spec = importlib.util.spec_from_file_location('raw_quiescence_inventory', CAMPAIGN / 'qualification/prepare_model_v22.py')
+     extra = importlib.util.module_from_spec(spec); spec.loader.exec_module(extra)
+-    return sorted({path.relative_to(REPO).as_posix() for path in paths} | set(extra.pre_exit_inputs()))
++    return sorted({path.relative_to(REPO).as_posix() for path in paths} | set(extra.process_drain_inputs()))
+ 
+ 
+ def validate_snapshot(snapshot, revision=None):
+--- before/harness/test_native_owner_bootstrap.py
++++ after/harness/test_native_owner_bootstrap.py
+@@ -218,6 +218,9 @@
+ class NativeOwnerParityTests(unittest.TestCase):
+     def remove_epoch_runtime_additions(self, candidate):
+         self.assertEqual(hashlib.sha256(EPOCH_METHOD.read_bytes()).hexdigest(), EPOCH_METHOD_SHA)
++        process_selection = b'                args.native_process_drain=True\n'
++        self.assertEqual(candidate.count(process_selection), 1)
++        candidate = candidate.replace(process_selection, b'')
+         pre_exit = b'                args.native_exit_barrier=self.native_exit_barrier\n'
+         self.assertEqual(candidate.count(pre_exit), 1)
+         candidate = candidate.replace(pre_exit, b'')
+--- before/harness/test_native_shutdown_order.py
++++ after/harness/test_native_shutdown_order.py
+@@ -96,6 +96,11 @@
+             candidate = (HERE/'native_quiescence.py').read_text(encoding='utf-8')
+             self.assertEqual(strip_instrumentation(candidate), old)
+             bridge = (HERE/'codehost_bridge_v3.py').read_text(encoding='utf-8')
++            process_dispatch = ("        if isinstance(request, dict) and request.get('schema') == 'campaign002-process-drain-request-1':\n"
++                                "            import process_drain\n"
++                                "            return process_drain.bridge_join(self, request)\n")
++            self.assertEqual(bridge.count(process_dispatch), 1)
++            bridge = bridge.replace(process_dispatch, '')
+             for addition in ('        observed_perf_counter_ns = time.perf_counter_ns()\n',
+                              '                observed_perf_counter_ns=observed_perf_counter_ns,\n',
+                              BRIDGE_EXIT, '        self.fixture.native_exit_barrier = self.native_exit_barrier\n'):
+--- before/admission/prepare_certificate.py
++++ after/admission/prepare_certificate.py
+@@ -124,6 +124,10 @@
+         'pilot_retirement_inventory_method': CAMPAIGN / 'io-repair/PILOT_RETIREMENT_INVENTORY_V1.md',
+         'native_pre_exit_drain_method': CAMPAIGN / 'io-repair/native-pre-exit-drain-001/DECLARATION.md',
+         'native_pre_exit_drain_assessor': CAMPAIGN / 'assessment/pre_exit_integrity.py',
++        'native_process_drain_method': CAMPAIGN / 'io-repair/GRACEFUL_PROCESS_DRAIN_V1.md',
++        'native_process_drain_assessor': CAMPAIGN / 'assessment/process_integrity.py',
++        'native_process_drain_diagnostic_proof': CAMPAIGN / 'io-repair/graceful-process-assessment-001/transport-proof.json',
++        'native_process_drain_diagnostic_result': CAMPAIGN / 'io-repair/graceful-process-assessment-001/terminal-result.json',
+         'pilot_stock024_lifecycle_diagnosis': CAMPAIGN / 'io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.json',
+         'pilot_stock024_lifecycle_diagnosis_report': CAMPAIGN / 'io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.md',
+         'smoke024_read_diagnosis': CAMPAIGN / 'io-repair/smoke-024-read-diagnosis-001/analysis.json',
+--- before/admission/test_prepare_admission.py
++++ after/admission/test_prepare_admission.py
+@@ -137,6 +137,10 @@
+             ('pilot_retirement_inventory_method','io-repair/PILOT_RETIREMENT_INVENTORY_V1.md'),
+             ('native_pre_exit_drain_method','io-repair/native-pre-exit-drain-001/DECLARATION.md'),
+             ('native_pre_exit_drain_assessor','assessment/pre_exit_integrity.py'),
++            ('native_process_drain_method','io-repair/GRACEFUL_PROCESS_DRAIN_V1.md'),
++            ('native_process_drain_assessor','assessment/process_integrity.py'),
++            ('native_process_drain_diagnostic_proof','io-repair/graceful-process-assessment-001/transport-proof.json'),
++            ('native_process_drain_diagnostic_result','io-repair/graceful-process-assessment-001/terminal-result.json'),
+             ('pilot_stock024_lifecycle_diagnosis','io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.json'),
+             ('pilot_stock024_lifecycle_diagnosis_report','io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.md'),
+             ('smoke024_read_diagnosis','io-repair/smoke-024-read-diagnosis-001/analysis.json'),
+@@ -161,7 +165,10 @@
+                 self.assertEqual(value['artifacts'][key],certificate.identity(self.campaign/relative))
+ 
+     def test_missing_repair_declaration_or_failed_diagnosis_prevents_candidate(self):
+-        for relative in ('io-repair/PILOT_RETIREMENT_INVENTORY_V1.md',
++        for relative in ('io-repair/GRACEFUL_PROCESS_DRAIN_V1.md',
++                         'assessment/process_integrity.py',
++                         'io-repair/graceful-process-assessment-001/transport-proof.json',
++                         'io-repair/PILOT_RETIREMENT_INVENTORY_V1.md',
+                          'io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.json',
+                          'io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.md',
+                          'io-repair/PREPARED_INDEX_LABELS_V1.md',

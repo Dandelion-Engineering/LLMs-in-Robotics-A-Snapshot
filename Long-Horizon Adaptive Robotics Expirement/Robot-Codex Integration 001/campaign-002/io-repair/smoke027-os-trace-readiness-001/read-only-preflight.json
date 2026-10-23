@@ -1,0 +1,70 @@
+{
+  "at": "2026-09-29T18:47:01.131839+00:00",
+  "elevated_administrator": false,
+  "actions": [
+    {
+      "argv": [
+        "pktmon.exe",
+        "status"
+      ],
+      "exit_code": 5,
+      "stdout": "",
+      "stderr": "Failed to communicate with the PktMon driver: Access is denied.\n\n"
+    },
+    {
+      "argv": [
+        "netsh.exe",
+        "trace",
+        "show",
+        "status"
+      ],
+      "exit_code": 1,
+      "stdout": "There is no trace session currently in progress.\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "pktmon.exe",
+        "start",
+        "help"
+      ],
+      "exit_code": 0,
+      "stdout": "pktmon start [--capture [--counters-only] [--comp <selector>] [--type <type>]\n                        [--pkt-size <bytes>] [--flags <mask>]]\n             [--trace --provider <name> [--keywords <k>] [--level <n>] ...]\n             [--file-name <name>] [--file-size <size>] [--log-mode <mode>]\n    Start packet capture, counters, and event collection.\n\nPacket Capture\n    -c, --capture\n        Enable packet capture and counters.\n\n        -o, --counters-only\n            Enable packet counters only, without logging. Equivalent to\n            '--capture --flags 0'.\n\n        --comp { all | nics | id1 id2 ... }\n            Select components to capture packets on. Can be ALL components,\n            NICs only, or a list of component Ids. Default is ALL.\n\n        --type { all | flow | drop }\n            Select which packets to capture. Default is ALL.\n\n        --pkt-size <bytes>\n            Number of bytes to log from each packet. To always log the entire\n            packet set this to 0. Default is 128 bytes.\n\n        --flags <mask>\n            Hexadecimal bitmask that controls which Packet Monitor events are\n            logged. Default is 0x032.\n\n            0x000 - No events, but enable counters.\n            0x001 - Internal Packet Monitor errors.\n            0x002 - Summary of components, counters, and filters.\n            0x004 - NET_BUFFER_LIST group source and destination information.\n            0x008 - Select packet metadata from NDIS_NET_BUFFER_LIST_INFO.\n            0x010 - Raw packet, truncated to --pkt-size.\n            0x020 - Component registration changes.\n\nEvent Providers\n    -t, --trace\n        Enable event collection.\n\n        -p, --provider <name>\n            Event provider name or GUID. For multiple providers, use this\n            parameter more than once.\n\n        -k, --keywords <k>\n            Hexadecimal bitmask that controls which events are logged\n            for the corresponding provider. Default is 0xFFFFFFFFFFFFFFFF.\n\n        -l, --level <n>\n            Logging level for the corresponding provider.\n            Default is 4 (info level).\n\nLogging Parameters\n    -f, --file-name <name>\n        Log file name. Default is PktMon.etl.\n\n    -s, --file-size <size>\n        Maximum log file size in megabytes. Default is 512 MB.\n\n    -m, --log-mode { circular | multi-file | memory | real-time }\n        Logging mode. Default is circular.\n\n        circular    New events overwrite the oldest ones when the log is full.\n\n        multi-file  No limit on number of captured events, but a new log file\n                    is created each time the log is full.\n\n        memory      Like circular, but the entire log is stored in memory.\n                    It is written to a file when pktmon is stopped.\n\n        real-time   Display events and packets on screen at real time. No log\n                    file is created. Press Ctrl+C to stop monitoring.\n\nExample 1: Packet capture\n    pktmon start --capture\n\nExample 2: Packet counters only\n    pktmon start --counters-only\n\nExample 3: Event logging\n    pktmon start --trace -p Microsoft-Windows-TCPIP -p Microsoft-Windows-NDIS\n\nExample 4: Packet capture with event logging\n    pktmon start --capture --trace -p Microsoft-Windows-TCPIP -k 0xFF -l 4\n\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "pktmon.exe",
+        "filter",
+        "add",
+        "help"
+      ],
+      "exit_code": 0,
+      "stdout": "pktmon filter add <name> [-m <mac> [mac2]] [-v <vlan>] [-d { IPv4 | IPv6 | number }]\n                         [-t { TCP [flag ...] | UDP | ICMP | ICMPv6 | number }]\n                         [-i <ip> [ip2]] [-p <port> [port2]] [-b] [-e [port]]\n    Add a filter to control which packets are reported. For a packet to be\n    reported, it must match all conditions specified in at least one filter.\n    Up to 32 filters can be active at once.\n\n    NOTE1: When two MACs (-m), IPs (-i), or ports (-p) are specified, the filter\n           matches packets that contain both. It will not distinguish between source\n           or destination for this purpose.\n\nname\n    Optional name or description of the filter.\n\nEthernet frame\n    -m, --mac[-address]\n        Match source or destination MAC address. See NOTE1 above.\n\n    -v, --vlan\n        Match by VLAN Id (VID) in the 802.1Q header.\n\n    -d, --data-link[-protocol], --ethertype\n        Match by data link (layer 2) protocol. Can be IPv4, IPv6, ARP, or\n        a protocol number.\n\nIP header\n    --dscp\n        Match by the 6-bit Differentiated Services Code Point (DSCP) field.\n\n    -t, --transport[-protocol], --ip-protocol\n        Match by transport (layer 4) protocol. Can be TCP, UDP, ICMP, ICMPv6, or\n        a protocol number.\n        To further filter TCP packets, an optional list of TCP flags to match can\n        be provided. Supported flags are FIN, SYN, RST, PSH, ACK, URG, ECE, and CWR.\n\n    -i, --ip[-address]\n        Match source or destination IP address. See NOTE1 above.\n        To match by subnet, use CIDR notation with the prefix length.\n\nTCP/UDP header\n    -p, --port\n        Match source or destination port number. See NOTE1 above.\n\nCluster Heartbeat\n    -b, --heartbeat\n        Match RCP heartbeat messages over UDP port 3343.\n\nEncapsulation\n    -e, --encap\n        Apply above filtering parameters to both inner and outer encapsulation headers.\n        Supported encapsulation methods are VXLAN, GRE, NVGRE, and IP-in-IP.\n        Custom VXLAN port is optional, and defaults to 4789.\n\nExample 1: Ping filter\n    pktmon filter add MyPing -i 10.10.10.10 -t ICMP\n\nExample 2: TCP SYN filter for SMB traffic\n    pktmon filter add MySmbSyn -i 10.10.10.10 -t TCP SYN -p 445\n\nExample 3: Subnet filter\n    pktmon filter add MySubnet -i 10.10.10.0/24\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "pktmon.exe",
+        "filter",
+        "remove",
+        "help"
+      ],
+      "exit_code": 0,
+      "stdout": "pktmon filter remove\n    Remove all packet filters.\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "pktmon.exe",
+        "etl2txt",
+        "help"
+      ],
+      "exit_code": 0,
+      "stdout": "pktmon etl2txt <file> [--out <file>] [--stats] [--timestamp] [--metadata]\n                      [--tmfpath <dir;...>] [--brief] [--verbose] [--hex]\n                      [--no-ethernet] [--vxlan <port>]\n    Convert an ETL log file to text format. Alias: e2t\n\n<file>\n    ETL file to convert.\n\n-o, --out <file>\n    File path of the output file, which is overwritten if it already exists.\n\n-s, --stats\n    Display log file statistics and exit.\n\n-t, --timestamp\n    Use a simplified timestamp prefix for each event.\n\n-m, --metadata\n    Include event metadata, such as logging level and keywords.\n\n-p, --tmfpath <dir;...>\n    One or more directories with TMF files for decoding events from other providers.\n\nPacket Formatting\n    -b, --brief\n        Use an abbreviated packet format.\n\n    -v, --verbose\n        Use a verbose packet format.\n\n    -x, --hex\n        Include a hex dump of the packet.\n\n    -e, --no-ethernet\n        Exclude Ethernet header data.\n\n    -l, --vxlan <port>\n        Specify a different VXLAN port than the default of 4789.\n\n",
+      "stderr": ""
+    }
+  ],
+  "capture_started": false,
+  "filters_changed": false
+}

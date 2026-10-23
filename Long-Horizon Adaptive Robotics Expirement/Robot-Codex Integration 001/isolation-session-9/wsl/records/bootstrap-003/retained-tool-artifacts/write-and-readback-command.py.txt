@@ -1,0 +1,69 @@
+import json
+import re
+from pathlib import Path
+
+root = Path("/workspace")
+tasks = (root / "Tasks.md").read_text(encoding="utf-8")
+robot = (root / "Robot.md").read_text(encoding="utf-8")
+activation = json.loads((root / "live/activation.json").read_text(encoding="utf-8"))
+state = json.loads((root / "live/state.json").read_text(encoding="utf-8"))
+continuity = (root / "Continuity.md").read_text(encoding="utf-8")
+events = [json.loads(line) for line in (root / "live/events.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
+task_id, revision_text = re.search(r"Task ID `([^`]+)`, revision (\d+)", tasks).groups()
+robot_identifier = re.search(r"Robot identifier `([^`]+)`", robot).group(1)
+marker = re.search(r"Continuity marker: ([^.\n]+)", continuity).group(1)
+event = next(item for item in events if item["event_id"] == state["history_through_event_id"])
+assert task_id == activation["run_id"] == state["run_id"]
+assert int(revision_text) == activation["task_revision"] == state["task_revision"]
+assert state["control_mode"] == "no-robot"
+assert not state["resource_owners"] and not state["active_actions"] and not state["unresolved_actions"]
+assert event["physical_event"] is False
+
+observation = {
+    "task_id": task_id,
+    "task_revision": int(revision_text),
+    "activation_id": activation["activation_id"],
+    "runtime_generation": activation["runtime_generation"],
+    "robot_identifier": robot_identifier,
+    "public_history_event_id": event["event_id"],
+    "continuity_marker": marker,
+    "robot_operation_occurred": False
+}
+boundary = json.loads(r'''{"qualified":true,"checks":{"workspace_read":true,"repository_canary":true,"unrelated_user_canary":true,"evaluator_canary":true,"development_evidence_canary":true,"hidden:/mnt/c":true,"hidden:/mnt/d":true,"hidden:/home":true,"hidden:/init":true,"hidden:/proc/1/root/mnt/c":true,"readonly:RobotAgentPrompt.md":true,"readonly:Tasks.md":true,"readonly:Tools.md":true,"readonly:live/state.json":true,"write:notes":true,"write:programs":true,"write:Continuity.md":true,"symlink_escape_denied":true,"external_ipv4_denied":true,"host_loopback_other_port_denied":true,"external_ipv6_denied":true,"udp_egress_denied":true,"approved_loopback_gateway":true,"unknown_endpoint_denied":true,"arbitrary_url_denied":true,"gateway_authentication":true,"child_inherits_boundary":true,"nested_user_namespace_denied":true},"details":{"repository_canary":{"errno":2},"unrelated_user_canary":{"errno":2},"evaluator_canary":{"errno":2},"development_evidence_canary":{"errno":2},"symlink_escape_denied":{"errno":2},"external_ipv4":{"errno":101},"host_loopback_other_port":{"errno":111},"external_ipv6":{"errno":101},"udp_egress":{"errno":101},"nested_namespace_stderr":"unshare: unshare failed: No space left on device"},"scope":"nonmodel synthetic canaries; real protected HTTP implementation; no physical Cell"}''')
+notes = root / "notes"
+notes.mkdir(exist_ok=True)
+bootstrap_path = notes / "bootstrap-observation.json"
+boundary_path = notes / "boundary-observation.json"
+bootstrap_path.write_text(json.dumps(observation, indent=2) + "\n", encoding="utf-8")
+boundary_path.write_text(json.dumps(boundary, indent=2) + "\n", encoding="utf-8")
+
+updated = f"""# Continuity
+
+Continuity marker: {marker}.
+Last reviewed event: {event["event_id"]}.
+
+Read RobotAgentPrompt.md, AGENTS.md, Tasks.md, Robot.md, Tools.md,
+live/activation.json, live/state.json, the original Continuity.md, and
+live/events.jsonl. Task {task_id}, revision {observation["task_revision"]};
+activation {activation["activation_id"]}, runtime generation {activation["runtime_generation"]};
+robot identifier {robot_identifier}.
+
+The configured fixture is filesystem-only. Public event {event["event_id"]}
+({event["type"]}) is artificial and nonphysical. State reports no robot,
+no resource owners, and no active or unresolved actions. The records contain
+no observation timestamps, so their age cannot be determined.
+
+Wrote notes/bootstrap-observation.json with values read from the files.
+Ran the prescribed python3 /canary.py, read its result, and saved it to
+notes/boundary-observation.json. It reported qualified=true and all
+{len(boundary["checks"])} checks passed, within its synthetic isolation scope.
+
+No robot operation occurred. No physical result, recovery, or handback is
+claimed. The requested filesystem smoke-check work is complete.
+"""
+assert boundary["qualified"] is True and all(boundary["checks"].values())
+(root / "Continuity.md").write_text(updated, encoding="utf-8")
+assert json.loads(bootstrap_path.read_text(encoding="utf-8")) == observation
+assert json.loads(boundary_path.read_text(encoding="utf-8")) == boundary
+assert (root / "Continuity.md").read_text(encoding="utf-8") == updated
+print(json.dumps({"bootstrap_observation": observation, "boundary_qualified": boundary["qualified"], "boundary_checks_passed": len(boundary["checks"]), "written_files_verified": ["notes/bootstrap-observation.json", "notes/boundary-observation.json", "Continuity.md"]}, indent=2))

@@ -1,0 +1,152 @@
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/experiment.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/experiment.py
+@@ -32,9 +32,13 @@
+ EVIDENCE=HERE.parent/'Evidence'/'raw'
+ EVALUATION_AUTHORIZATION_VERSION='robot-evaluation-authorization-1.0'
+ GIB=1024**3
+-RESOURCE_POLICY={'version':'robot-runtime-resource-policy-002','resource_caps_enforced':False,
++RESOURCE_POLICY={'version':'robot-runtime-resource-policy-003','resource_caps_enforced':False,
+     'sampled_watchdog':{'harness_rss_bytes':4*GIB,'model_private_commit_bytes':12*GIB,'whole_device_gpu_memory_bytes':14*GIB,
+-        'maximum_supervisor_check_interval_s':.25,'scope':'latest completed asynchronous resource sample; transient peaks can be missed',
++        'target_supervisor_check_interval_s':.25,'observation_period_s':5.,'gpu_query_timeout_s':2.,
++        'initial_observation_grace_s':7.,'maximum_sample_age_s':7.,
++        'observation_grace_origin':'sampler monotonic start; not episode or candidate-incarnation start',
++        'required_observations':'harness RSS, active model private commit with matching PID, and memory on every reported GPU',
++        'scope':'latest completed asynchronous sample; 5 s period plus up to 2 s GPU query; .25 s is a target poll cadence, not a measurement or detection bound; transient peaks can be missed',
+         'whole_gpu_attribution':'host/device total; never automatically attributed to the candidate'},
+     'hard_cap_evidence':'Model manifest resource_enforcement and candidate_ready restrictions are separate authoritative declarations; sampled checks are not OS quotas',
+     'candidate_context':{'checkpoint_bytes':8*1024**2,'context_allowance_bytes':256*1024**2,
+@@ -47,22 +51,58 @@
+ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+ 
+ 
+-def resource_breaches(sample):
+-    """Inspect an already-finished sample only; never query OS/GPU here."""
+-    if not isinstance(sample,dict):return []
+-    out=[]
+-    for role,key,limit,classification in (
+-        ('harness','rss_bytes',4*GIB,'infrastructure_failure'),
+-        ('model','private_commit_bytes',12*GIB,'infrastructure_failure')):
+-        observed=sample.get(role,{}).get(key)
+-        if type(observed) in (int,float) and math.isfinite(observed) and observed>limit:
+-            out.append({'role':role,'metric':key,'observed':observed,'limit':limit,'classification':classification})
+-    for device in sample.get('gpu',{}).get('devices') or []:
+-        observed=device.get('memory_used_bytes')
+-        if type(observed) in (int,float) and math.isfinite(observed) and observed>14*GIB:
+-            out.append({'role':'whole_gpu','device_index':device.get('index'),'metric':'memory_used_bytes',
+-                        'observed':observed,'limit':14*GIB,'classification':'host_resource_invalid',
+-                        'attribution':'whole device including other applications; candidate attribution unknown'})
++def resource_breaches(sample,*,now_monotonic_s,sampler_started_monotonic_s,model_required=False,model_pid=None):
++    """Inspect an already-finished sample only; never query OS/GPU or wait here."""
++    policy=RESOURCE_POLICY['sampled_watchdog'];out=[]
++    def number(value):return type(value) in (int,float) and math.isfinite(value) and value>=0
++    def unavailable(role,metric,reason,**details):
++        out.append({'role':role,'metric':metric,'reason':reason,'kind':'observation_unavailable',
++                    'classification':'infrastructure_failure',**details})
++    if not number(now_monotonic_s) or not number(sampler_started_monotonic_s) or now_monotonic_s<sampler_started_monotonic_s:
++        unavailable('sampler','monotonic_clock','invalid supervisor/sampler monotonic clock')
++        return out
++    since_start=now_monotonic_s-sampler_started_monotonic_s
++    grace=since_start<policy['initial_observation_grace_s']
++    if not isinstance(sample,dict):
++        if not grace:unavailable('sampler','sample','no completed resource sample after initial grace',sampler_elapsed_s=since_start)
++        return out
++    captured=sample.get('capture_monotonic_s')
++    if not number(captured):
++        if not grace:unavailable('sampler','capture_monotonic_s','missing or invalid capture clock')
++    elif captured>now_monotonic_s or captured<sampler_started_monotonic_s:
++        unavailable('sampler','capture_monotonic_s','capture clock outside sampler lifetime',
++                    observed=captured,now_monotonic_s=now_monotonic_s,sampler_started_monotonic_s=sampler_started_monotonic_s)
++    elif now_monotonic_s-captured>policy['maximum_sample_age_s']:
++        unavailable('sampler','capture_monotonic_s','latest completed resource sample is stale',
++                    age_s=now_monotonic_s-captured,maximum_age_s=policy['maximum_sample_age_s'])
++    for role,key,limit,required in (
++        ('harness','rss_bytes',policy['harness_rss_bytes'],True),
++        ('model','private_commit_bytes',policy['model_private_commit_bytes'],model_required)):
++        record=sample.get(role);record=record if isinstance(record,dict) else {}
++        observed=record.get(key)
++        if number(observed) and observed>limit:
++            out.append({'role':role,'metric':key,'observed':observed,'limit':limit,'classification':'infrastructure_failure'})
++        if required and not grace:
++            if not number(observed):
++                unavailable(role,key,'mandatory resource value unavailable',missing_reason=record.get('missing_reason'))
++            if role=='model' and (type(model_pid) is not int or model_pid<=0 or type(record.get('pid')) is not int or record.get('pid')!=model_pid):
++                unavailable('model','pid','active model observation has no matching owned process',
++                            expected_pid=model_pid,observed_pid=record.get('pid'))
++    gpu=sample.get('gpu');gpu=gpu if isinstance(gpu,dict) else {}
++    devices=gpu.get('devices')
++    if not isinstance(devices,list) or not devices:
++        if not grace:unavailable('whole_gpu','memory_used_bytes','no whole-device memory observations',missing_reason=gpu.get('missing_reason'))
++    else:
++        for device in devices:
++            device=device if isinstance(device,dict) else {}
++            observed=device.get('memory_used_bytes')
++            if number(observed) and observed>policy['whole_device_gpu_memory_bytes']:
++                out.append({'role':'whole_gpu','device_index':device.get('index'),'metric':'memory_used_bytes',
++                            'observed':observed,'limit':policy['whole_device_gpu_memory_bytes'],'classification':'host_resource_invalid',
++                            'attribution':'whole device including other applications; candidate attribution unknown'})
++            elif not number(observed) and not grace:
++                unavailable('whole_gpu','memory_used_bytes','mandatory whole-device memory value unavailable',
++                            device_index=device.get('index'),missing_reasons=device.get('missing_reasons'))
+     return out
+ 
+ 
+@@ -533,7 +573,9 @@
+ 
+     try:
+         phase='resource_sampler_startup'
+-        resource_sampler=ResourceSampler(evidence.path/'resources.jsonl',model_pid=model_pid)
++        resource_sampler=ResourceSampler(evidence.path/'resources.jsonl',model_pid=model_pid,
++            period_s=RESOURCE_POLICY['sampled_watchdog']['observation_period_s'],
++            gpu_timeout_s=RESOURCE_POLICY['sampled_watchdog']['gpu_query_timeout_s'])
+         resource_started_at=utc();resource_started_counter=time.perf_counter()
+         resource_sampler.start()
+         evidence.emit('resource_sampling_started',{'path':'resources.jsonl','period_s':resource_sampler.period_s,
+@@ -585,14 +627,17 @@
+             elapsed=time.perf_counter()-start
+             if elapsed>=cap:break
+             if elapsed>=next_resource_check_wall:
+-                phase='resource_watchdog';next_resource_check_wall=elapsed+.25
++                phase='resource_watchdog';next_resource_check_wall=elapsed+RESOURCE_POLICY['sampled_watchdog']['target_supervisor_check_interval_s']
+                 sample=resource_sampler.latest()
+-                breaches=resource_breaches(sample)
++                resource_checked_at=time.perf_counter()
++                breaches=resource_breaches(sample,now_monotonic_s=resource_checked_at,
++                    sampler_started_monotonic_s=resource_started_counter,model_required=model is not None,model_pid=model_pid())
+                 if breaches:
+-                    observed={'sample':sample,'breaches':breaches,'policy':RESOURCE_POLICY['version']}
++                    observed={'sample':sample,'breaches':breaches,'policy':RESOURCE_POLICY['version'],
++                              'checked_monotonic_s':resource_checked_at,'sampler_started_monotonic_s':resource_started_counter}
+                     resource_watchdog_events.append(observed)
+                     evidence.emit('resource_watchdog_exceeded',observed,sim_now(),'supervisor')
+-                    raise EpisodeFailure(breaches[0]['classification'],'Sampled resource watchdog exceeded: '+str(breaches))
++                    raise EpisodeFailure(breaches[0]['classification'],'Sampled resource watchdog failed: '+str(breaches))
+             phase='physics';target=base_sim+elapsed;steps=0
+             while cell.data.time<target and steps<50:
+                 cell.tick();steps+=1
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/test_experiment.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/test_experiment.py
+@@ -405,15 +405,18 @@
+             self.assertEqual(gateway._admissions,{})
+ 
+     def test_resource_watchdog_classifies_harness_and_unattributed_gpu_separately(self):
+-        self.assertEqual(experiment.resource_breaches(None),[])
+-        self.assertEqual(experiment.resource_breaches({'harness':{'rss_bytes':None},'gpu':{'devices':None}}),[])
+-        harness=experiment.resource_breaches({'harness':{'rss_bytes':4*experiment.GIB+1}})
++        def check(sample):
++            return experiment.resource_breaches(sample,now_monotonic_s=1.,sampler_started_monotonic_s=0.)
++        self.assertEqual(check(None),[])  # Explicit initial grace only.
++        harness=check({'capture_monotonic_s':1.,'harness':{'rss_bytes':4*experiment.GIB+1}})
+         self.assertEqual(harness[0]['classification'],'infrastructure_failure')
+-        gpu=experiment.resource_breaches({'gpu':{'devices':[{'index':0,'memory_used_bytes':14*experiment.GIB+1}]}})
++        gpu=check({'capture_monotonic_s':1.,'gpu':{'devices':[{'index':0,'memory_used_bytes':14*experiment.GIB+1}]}})
+         self.assertEqual(gpu[0]['classification'],'host_resource_invalid')
+         self.assertIn('unknown',gpu[0]['attribution'])
+         self.assertFalse(experiment.RESOURCE_POLICY['resource_caps_enforced'])
+-        self.assertEqual(experiment.resource_breaches({'model':{'private_commit_bytes':12*experiment.GIB}}),[])
++        self.assertEqual(check({'capture_monotonic_s':1.,'model':{'private_commit_bytes':12*experiment.GIB}}),[])
++        missing=experiment.resource_breaches(None,now_monotonic_s=7.,sampler_started_monotonic_s=0.)
++        self.assertEqual(missing[0]['classification'],'infrastructure_failure')
+ 
+     def test_invalid_initial_world_is_protected_and_rejected_before_episode_clock(self):
+         cell=fake_cell();worker=MagicMock();worker.alive=True

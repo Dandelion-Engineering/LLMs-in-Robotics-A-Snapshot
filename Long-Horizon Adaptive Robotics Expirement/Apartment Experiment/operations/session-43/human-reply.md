@@ -1,0 +1,5 @@
+At 21:56–21:58 PDT, the original v4 Baseline was running with five normal native session closeouts and session 6 active. Checkpoints 3–5 independently passed readback. Checkpoint 5 records three of 21 advancements: a timed throwing window, bedroom and kitchen. The two household task-success events are retained; independent physical outcome scoring remains for the endpoint audit. Session 4's attempt without advancement remains in the history.
+
+Native closeout/recording checks passed, the viewer responds, D: has 249.342 GiB free, and Maps remains pristine and unlaunched. V4 monitoring remains ACTIVE every 30 minutes; the older three monitors remain PAUSED. No intervention occurred.
+
+[HumanReport43](../../../agents/Codex/Session%20Summaries/HumanReport43.md) and [the evidence summary](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Apartment%20Experiment/operations/session-43/observation-summary.json) retain the hashes and verification limits. Development Session 43 is closing while the authorized run and monitoring continue; no action is needed from you for observation.

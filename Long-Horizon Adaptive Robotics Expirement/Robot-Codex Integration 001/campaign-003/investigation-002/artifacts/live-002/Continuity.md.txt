@@ -1,0 +1,57 @@
+# Recovery evidence, robot-authored
+
+Run RCI001-C03-live-002-attempt; invocation robot-session-1; authority epoch 3; order version 1. This note is historical evidence, not authority. Read current instructions and public status before any later action.
+
+Current task was C1 placement entirely on C_pad, arm clear, empty open jaws. No A/B processing was requested. All actions used the protected robot.py Client.
+
+Two raised transfer attempts lost their grasps, reconciled with fresh detections on the table. A third approach closed at commanded TCP z=0.009 m but jaw closure was restricted near the table (about 75 mm wide); raising to z=0.017 m enabled closure to about 43 mm. Short lifts and about 25 mm x / 18 mm y transport increments at commanded z=0.050 m retained approximately 42 mm jaw width through most of the transfer. The grasp was lost in c1-transfer-step7-003 near the pad. Subsequent vertical lift and clear-view move used open jaws and reconciled C1 on C_pad. These are empirical outcomes, not a qualified routine.
+
+Final physical-motion request c1-clear-view-003 completed. Requested camera acquisition c1-pad-check-003 completed at sequence 8146, capture time 823.1239999943595 s, image publication event 8330. I inspected its actual image through robot_image; it shows C1 inside the C_pad outline, near the negative-x edge. Detection uncertainty remains 0.004 m. Grasp history alone was not treated as completion.
+
+Latest public snapshot before handback:
+{
+  "sequence": 8968,
+  "capture": 906.9679999923768,
+  "C1": {
+    "age_s": 0.04199999999900683,
+    "family": "C",
+    "id": "C1",
+    "kind": "part",
+    "pixels": 152,
+    "pos": [
+      0.4942045974251588,
+      -0.1453051415411489,
+      0.016934636878967287
+    ],
+    "uncertainty_m": 0.004,
+    "visible_mark": "raw",
+    "zone": "C_pad"
+  },
+  "tcp": [
+    0.3973343534102338,
+    -0.0003662145680371082,
+    0.3465418076751382
+  ],
+  "gripper": {
+    "holding_visible_id": null,
+    "width": 0.07999999189817208
+  },
+  "active_command": null,
+  "station": {
+    "busy": false,
+    "clamped": false,
+    "completed_cycle_id": null,
+    "cycle_id": 0,
+    "fault": false,
+    "fixture_insert": "A",
+    "guard_closed": false,
+    "occupied_visible_id": null,
+    "ready": true
+  }
+}
+
+All submitted physical requests have terminal receipts. Manual receipts still report generic physical verification unknown; the final observed configuration reconciles the task outcome. No motion remains executing. Planned final request ID: c1-handback-001. This note does not claim that handback was accepted; consult its receipt or a separately authored framework record.
+
+
+<!-- Machine-authored terminal record -->
+{"accepted_event_id":9264,"accepted_sim_time_s":918.0299999921152,"appended_wall_unix_ns":1791082561661093467,"author":"framework","authority_epoch":4,"claim":"Handback accepted; conventional control resumed. This is framework evidence, not an agent claim.","handback_request_id":"c1-handback-001","record_id":"5a166c047d1f6ec31561a6fa40e637bf2ff06cebd980e4796618916b1f25d05f","resumed_sim_time_s":918.081999992114,"resumed_wall_unix_ns":1791082552770668900,"resumption_event_id":9270,"resumption_evidence_sha256":"ffb2b2613b0fdf65a48b1d097fc604f5a910f4f3709d885ad6bb41070fff1bf6","retirement_evidence_sha256":"9e3c98dd94df100b3a6aef921008ed735f68408d396ccf623f7a62d550d69e57","run_id":"RCI001-C03-live-002-attempt","schema":"campaign003-framework-terminal-1","session_id":"robot-session-1"}

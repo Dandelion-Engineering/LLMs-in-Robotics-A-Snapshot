@@ -1,0 +1,965 @@
+{
+  "schema_version": "heartbeat-cadence-decision-1",
+  "recorded_at": "2026-09-24T22:46:04.920709+00:00",
+  "author": "Codex session 4",
+  "automation_id": "complete-robotics-experiments",
+  "requested_comparison_minutes": [
+    15,
+    30,
+    60
+  ],
+  "selected_interval_minutes": 15,
+  "decision": "Keep15minutes during manually gated experiment chunks; quiet lightweight status check then required receipt/finalization/nextbatch work if ready.",
+  "reason": "32historical complete four-attempt chunks have median about33minutes,14of32under30minutes. Nextchunk cannot be admitted before actual terminal receipt and metadata finalization. Longer intervals reduce wakeups but add handoff latency; globalqueue idleness is not required.",
+  "not_claimed": "Mathematical optimum, exact future delay, risk prevention by polling frequency, or unchanged supervisor terminals for administrative interruption.",
+  "summary": {
+    "observed_finished_chunks": 35,
+    "full_four_attempt_chunks": 32,
+    "partial_stop_chunks": 3,
+    "full_chunk_min_minutes": 15.701670783333332,
+    "full_chunk_median_minutes": 33.069147058333336,
+    "full_chunk_max_minutes": 56.64027646666667,
+    "full_chunks_under30minutes": 14,
+    "finalizer_receipts": 39,
+    "finalizer_median_seconds": 1.326889
+  },
+  "tradeoff": [
+    {
+      "interval_minutes": 15,
+      "checks_per_hour": 4.0,
+      "illustrative_mean_detection_lag_minutes": 7.5
+    },
+    {
+      "interval_minutes": 30,
+      "checks_per_hour": 2.0,
+      "illustrative_mean_detection_lag_minutes": 15.0
+    },
+    {
+      "interval_minutes": 60,
+      "checks_per_hour": 1.0,
+      "illustrative_mean_detection_lag_minutes": 30.0
+    }
+  ],
+  "lag_assumption": "Illustrative only: completion independent of periodic check phase, no active turn or scheduler delay. Real shared-queue waits and turn durations vary; not measured future latency.",
+  "behavior": [
+    "Do not rerun trials or broad validation during checks.",
+    "Use installed locked status/small owned completion records. No raw evidence scan while physical work lives.",
+    "If still progressing normally, stop the check quietly; no repeated within-turn polls merely to fill time.",
+    "If own run terminal, collect officialreceipt after own descendants exit, enqueue exact finalizer even while otherproject runs.",
+    "A promptly scheduled lightweight finalizer may complete during same wake; verify once after useful wait and enqueue nextreadychunk then.",
+    "If finalizer waits behind other project, leave it queued and check next heartbeat rather than repeatedly polling.",
+    "Report only failure, requiredaction or meaningful change.",
+    "Reassess cadence if workflow changes to unattended continuation or substantially longer chunks.",
+    "Keep separate paused llms-in-robotics cron unchanged."
+  ],
+  "full_chunks": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T170737916224Z-e830c136.json",
+        "sha256": "ed80ec049de67fabddc3c2b440b362f8883ee6ffcb89a1c3de74ae6fc439c111"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T170737916224Z-e830c136\\planned.json",
+        "sha256": "1029b2c2c518a64ed55b6a9c5640e5badf5fb8411068f71b5754d6e7a6c67241"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T170737916224Z-e830c136\\finished.json",
+        "sha256": "c9170aec0e8051cfbfda9ec9f7a76f392517a40431f74a1c619983ada9d2c929"
+      },
+      "elapsed_seconds": 3123.644779,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T175956517100Z-72b177c3.json",
+        "sha256": "3adc976b46a288a82e4db418b2f206c9192486f527c6af37a15d1d33665af6e8"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T175956517100Z-72b177c3\\planned.json",
+        "sha256": "a00a07deaddba8f1692866c2e0aea7a12838f54ff4fc46d9464b1b86e0bf4ccd"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T175956517100Z-72b177c3\\finished.json",
+        "sha256": "8eeef36423e8b41a0d42dfd6a3b3dc883b5e9ff2e45b4759fdfd0f6483d2f345"
+      },
+      "elapsed_seconds": 1998.069542,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T183336855721Z-0bcd4415.json",
+        "sha256": "7a34ab042011336cbb8ea0bf61469a0d82623305542dbccbf9f9cd8bae52df9c"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T183336855721Z-0bcd4415\\planned.json",
+        "sha256": "028cf846784881b505c7fb9ddaefd1bd00bcaeab6881a7caf93e7c81e4f263fc"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T183336855721Z-0bcd4415\\finished.json",
+        "sha256": "64c83b3590035f92e7e76486ad9808e977e4e6a5c0c5d9073c1ac9b2e169a604"
+      },
+      "elapsed_seconds": 1118.459504,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T185230595755Z-54343611.json",
+        "sha256": "df396c442407900f72fa9ffc8dc3059523fc178de97b207e2faf43b221a93c71"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T185230595755Z-54343611\\planned.json",
+        "sha256": "5ffba9f3efd56f1a9b3643f40c0fce9a7eef10ccbb886c4153049e5bd627cd30"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T185230595755Z-54343611\\finished.json",
+        "sha256": "ff7bc63a4c22e873c0d600c713298b37b047eca5afdf9cd0a799cf3cbfb83faf"
+      },
+      "elapsed_seconds": 1269.969504,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T191355774320Z-08a9afe9.json",
+        "sha256": "52fe47d5bb4e9919c56450b739fd606113acd612a01601e4a83365b0e70050c5"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T191355774320Z-08a9afe9\\planned.json",
+        "sha256": "78a9722bdc9aaac993763fa6939a88829a0068be92dac113778e2e2ec1299508"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T191355774320Z-08a9afe9\\finished.json",
+        "sha256": "1fc4fcc59c9d6e09fc208ffeecc37976795d3f2cbccaa03759f4c1627f3c6da5"
+      },
+      "elapsed_seconds": 1248.083103,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T193501989788Z-83c16ad0.json",
+        "sha256": "d52721bc917edf4e9fc9eec357518a9adbd72a24a0a8cac0a52ec8d3100983a4"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T193501989788Z-83c16ad0\\planned.json",
+        "sha256": "fd1cfbd9c83925bf988ab646d62c60b157dbc09ea2f868c84a040e70ffd34d76"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T193501989788Z-83c16ad0\\finished.json",
+        "sha256": "e2c05674b2a83486439bc53bb72159a4a982e6f332fbab372b9e89416d393c01"
+      },
+      "elapsed_seconds": 942.100247,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T195105544351Z-9d95af9e.json",
+        "sha256": "10006e57d114e003994eb341339995a2b3f44e55533559d91f174bd7f2e87a89"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T195105544351Z-9d95af9e\\planned.json",
+        "sha256": "6de7430c6ea81c47aa57a46de2dcd181edbefeac1f76bc2d0d8263df253f2fb9"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T195105544351Z-9d95af9e\\finished.json",
+        "sha256": "3fe3452f7773e09a827b1ec82437c9fea01114edcb9998ada7e82e64e23fa205"
+      },
+      "elapsed_seconds": 1973.306056,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T202419047236Z-6249dd27.json",
+        "sha256": "e6f0f1c150937e8cc60722acbfa916175c44434b61306f77b47c5f699650ae97"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T202419047236Z-6249dd27\\planned.json",
+        "sha256": "f5fff032786ab25f522cb8d81d136f59de2582b99ae4598b3372affd4f2d9c89"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T202419047236Z-6249dd27\\finished.json",
+        "sha256": "0450f2e5b328837b1ac8aaf188d5fbb227ba7570a662ed8d3a4701728a11bf02"
+      },
+      "elapsed_seconds": 3398.416588,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T212114806713Z-91be7919.json",
+        "sha256": "c04277bfb271cd918b4d09fe65c093c57b04c967dfc8a25ab24d62928238d507"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T212114806713Z-91be7919\\planned.json",
+        "sha256": "dbf8aceb6b1f031177d1ee8e99f0b7723eb2897922a0bf30aa6c98e66423f57e"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T212114806713Z-91be7919\\finished.json",
+        "sha256": "e9eac18e87821ba546d7e8e18da202c7ac3f787d2d48fc8dbf3ce6607920bd03"
+      },
+      "elapsed_seconds": 1696.427709,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T221549482049Z-514c491a.json",
+        "sha256": "4c88523d2e65ff74d98c34ad2b77dadcac0fdd6dd38518473a0425f84ec47743"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T221549482049Z-514c491a\\planned.json",
+        "sha256": "274c9455765d4c1579be901350f0b5f344ad23e7f2df4c42eded83c2e6845d06"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T221549482049Z-514c491a\\finished.json",
+        "sha256": "67951e9a4eb4059147fec3b38ff2b2fbe8f53c15a4bb4b9ed8cdad5395af42f9"
+      },
+      "elapsed_seconds": 1227.164119,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T224347669834Z-7df48d32.json",
+        "sha256": "f233cbcc81c4cb259521a0fe8f17dedcb1a22d5273e9e1508570234abebf5816"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T224347669834Z-7df48d32\\planned.json",
+        "sha256": "1af1db224bc8921fc8a9a73b03f9515730f53a315760873aeaca2a0c44338502"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T224347669834Z-7df48d32\\finished.json",
+        "sha256": "e6acc00d52b4aa449fc2fc24aa41f3d4b6ad34e0ebcc7aba7a497695a6f40dc4"
+      },
+      "elapsed_seconds": 2248.439297,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T233501991840Z-18c970f9.json",
+        "sha256": "f0f49219890d5e63869743e92275ad9d08b05abe874e765cb046c4a05813ac6a"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T233501991840Z-18c970f9\\planned.json",
+        "sha256": "64c891908eaba081098748147e9799667f31590973163748f1cdea265d0da5c6"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260923T233501991840Z-18c970f9\\finished.json",
+        "sha256": "52df06eb3fa98357a3e0c01ea2ad29e21611abf95346fe1fcd7455fce985f136"
+      },
+      "elapsed_seconds": 2161.813291,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T003058817849Z-d6d4cd72.json",
+        "sha256": "12787f1ae3a755df2c90411b0df7d0b1e0915c534366d2099074384dd1102a54"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T003058817849Z-d6d4cd72\\planned.json",
+        "sha256": "164047295d0830db5d08cfa6a3ea3d7522a5dc42701bf500d1b7ba6c5d151d03"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T003058817849Z-d6d4cd72\\finished.json",
+        "sha256": "11e1c64eda27de5562930b0d3ef337df49e4341c7104d7296f044b7b8fc687ac"
+      },
+      "elapsed_seconds": 2848.840147,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T012634756239Z-b1ca3883.json",
+        "sha256": "55104eacd9dc12d69ea77a7d23e970541f2715ad8b7370b161dc53d0c9acacab"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T012634756239Z-b1ca3883\\planned.json",
+        "sha256": "332846055164662e99b370efa4d25152667203cd9da4ab299bd90c3b3572584e"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T012634756239Z-b1ca3883\\finished.json",
+        "sha256": "699609da63eb124aa5f22a1b227316e3c3f565aca94ff0a4b64cfbfa52ca160d"
+      },
+      "elapsed_seconds": 2256.531512,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T022655293819Z-272506f7.json",
+        "sha256": "c96eb710b8c2fac1bcabdfd6539cc3d659b2ad0b9dc17b1d72acfe530b041d19"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T022655293819Z-272506f7\\planned.json",
+        "sha256": "1247427d0eb5c224dd72fd823ffb578b58a60bcbb4b5c70421dd4bb2a665375e"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T022655293819Z-272506f7\\finished.json",
+        "sha256": "5740485561cfce4ded0e0c2aa787b79b94bd46fe115719108d3149647d3bc66b"
+      },
+      "elapsed_seconds": 1709.70722,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T031408030635Z-0a4cbf86.json",
+        "sha256": "a23291c8828430b2dca979af7fd4a721059e228948917cbf8b63f1eb3f96ec8f"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T031408030635Z-0a4cbf86\\planned.json",
+        "sha256": "5dc08be6d19df1deac7dc532782ab91ad0c5f7e23b94f177afc31ebd7f5c8b97"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T031408030635Z-0a4cbf86\\finished.json",
+        "sha256": "62fd55cbdb18c5f44ed64443392172c87d52846728409998974ff6b6663fb2e9"
+      },
+      "elapsed_seconds": 1005.300633,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T033428366474Z-ee29245b.json",
+        "sha256": "cddda0cd045e0f94d13cdf085d2cee5f8c346a4c2dfbbf87bd1a07a7d4f85c7b"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T033428366474Z-ee29245b\\planned.json",
+        "sha256": "1f2f6e37bc250df75e62a21b4f6e32e07737c4aa2d24b972e5161283ddc3c81f"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T033428366474Z-ee29245b\\finished.json",
+        "sha256": "7740a159d4efd97ed5381aab582832ed971bda37b303ae21e507396613ea5c82"
+      },
+      "elapsed_seconds": 2586.491938,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T043606956752Z-274393f0.json",
+        "sha256": "d24a261e3dc3b0153a6f75c76bd46a34fc69898633ecb858ef9c6ae67af6a2bf"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T043606956752Z-274393f0\\planned.json",
+        "sha256": "bd604dd435411769f014a6892170c8bccbcf683ba9d2049cce64eaa50eac5245"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T043606956752Z-274393f0\\finished.json",
+        "sha256": "b871a7047efb3f32f5ca9337b196daa9a0bcec7d2f259eb3ed31a7ec0a9f3b41"
+      },
+      "elapsed_seconds": 3160.094607,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T054708536289Z-8f7fe525.json",
+        "sha256": "c524bc9430222144586ceb849744e83211f28fc097ed868f7c58bb42d4ec414d"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T054708536289Z-8f7fe525\\planned.json",
+        "sha256": "09ab7b3d46d22e6e4b662710987df92891a3a15375964ab2fa2a26ec1bb8063a"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T054708536289Z-8f7fe525\\finished.json",
+        "sha256": "346b2dc448a4ba1a95e9ee0851f947b1297de117377cab9688308dc7fbe89e96"
+      },
+      "elapsed_seconds": 1691.995969,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T063338562424Z-3da7655f.json",
+        "sha256": "06fc12d4c0e137caecd197491c5fa6dc8577c915765539553da8ad7a8da4d0f3"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T063338562424Z-3da7655f\\planned.json",
+        "sha256": "9d66dfb2cfb68806080da1fc53b0179ad7e20f505c06c4d7d13192f94bd78dfe"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T063338562424Z-3da7655f\\finished.json",
+        "sha256": "f15ce156287254605ddb581d58d6c4f7588b87ee89aa3727836d5053beec1d4e"
+      },
+      "elapsed_seconds": 2558.460476,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T073437602579Z-dece72ca.json",
+        "sha256": "9fa29f82907dc43134af6f163b5e902d648172b470cd19734c9c2afa96891974"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T073437602579Z-dece72ca\\planned.json",
+        "sha256": "682144504cd949bb25b9a5772ab0b16aecf4814b0ae3c80961904633e4295241"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T073437602579Z-dece72ca\\finished.json",
+        "sha256": "eef3e1161ce799ea14cc0f28689d91d1fa1622cabadfc68d578e3a6d9d61d133"
+      },
+      "elapsed_seconds": 1690.049392,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T082100545017Z-0a35c9ae.json",
+        "sha256": "5ad6eeffecffd62fb095b96d67fcebfa4948a5f7f31f8c36e20161c8ddddf6ea"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T082100545017Z-0a35c9ae\\planned.json",
+        "sha256": "0fbfab1973d65d6034e78078213ec7966de68bea67ffe7ce55b961ba691642cb"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T082100545017Z-0a35c9ae\\finished.json",
+        "sha256": "603972e1721f2bf7ae16dc02c636af33bc18a93ecf6f03ae93736cfc579d1ce3"
+      },
+      "elapsed_seconds": 2249.260456,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T091703658637Z-ddcfb844.json",
+        "sha256": "b2187a7cc6a9b6b4cff2bc3ec6db88913ad6a482eff0b287b5ef2ca54d37e2ad"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T091703658637Z-ddcfb844\\planned.json",
+        "sha256": "29e7c544bdb9063119b899c12cba05d499c8ffad92b67211770e3c98ce9a9862"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T091703658637Z-ddcfb844\\finished.json",
+        "sha256": "f96d5e8ee1b32e3f780391e233500701df168f0ed5a7f0c73abc5e19aa720f2c"
+      },
+      "elapsed_seconds": 1737.960537,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T100435054162Z-9e9a14c9.json",
+        "sha256": "5043a62c505f855d6807f161bc7cb538199209235f77abd679af443ada8cb521"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T100435054162Z-9e9a14c9\\planned.json",
+        "sha256": "2621e6e8ef81dbefffbfd8c976b00de06df0bc2f22d7f113af6664a955f2e078"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T100435054162Z-9e9a14c9\\finished.json",
+        "sha256": "f29e8f3f181111734f71bc9d2918626f263f23b50ee676edebe5ea3b3b7bdc00"
+      },
+      "elapsed_seconds": 1994.991591,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T105606596921Z-61ecd44b.json",
+        "sha256": "54ba6f16347cc4200fe4dc0f19ae69b9f8c071f0be4b90dfda48e25bfbc69ad2"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T105606596921Z-61ecd44b\\planned.json",
+        "sha256": "289846b38ed851f58ecffd67907767824aaef2a952ab18d06779479b56d3550e"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T105606596921Z-61ecd44b\\finished.json",
+        "sha256": "20e4c58c35fe8a4606ee21c4f28e563703c709d5583969d87c2006a28e8fb561"
+      },
+      "elapsed_seconds": 2011.129662,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T122609869033Z-070d589c.json",
+        "sha256": "dca08f61d257a3ea0e179488a82c25e9c87d4458c1200bf7a8f37eb30d3ee333"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T122609869033Z-070d589c\\planned.json",
+        "sha256": "2f58ddcc5fdf2f3e5fe03a63fe0ee0edcd20a20532c364953201298c8a1543e2"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T122609869033Z-070d589c\\finished.json",
+        "sha256": "dde04b15ee8c1f225d977db784101cbdc234223fe87bfc19d3ff2bad644aa968"
+      },
+      "elapsed_seconds": 972.052421,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T130115198016Z-6ca846f4.json",
+        "sha256": "3aea594475064c102ced7378399377500bc8aca53c8a7749b3d1d6915c0587ce"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T130115198016Z-6ca846f4\\planned.json",
+        "sha256": "167180e89c8bd9afe111f315acbfa992dc01451d1e3955cf67ea7dc92b12b78f"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T130115198016Z-6ca846f4\\finished.json",
+        "sha256": "cb34e16e2f616ae65c7601f87cebee63f037d6264d6971461fbbaaf2c46bf2c7"
+      },
+      "elapsed_seconds": 1099.683459,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T133844920842Z-9fc5e2b7.json",
+        "sha256": "8c22134580cff6696b32aa47d9147a2c9ecbaa49514b36fa8c0a620a26b7931e"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T133844920842Z-9fc5e2b7\\planned.json",
+        "sha256": "35c0225c85f3712e07e481c715547a5605691c5c22c053cfa790563029a194f7"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T133844920842Z-9fc5e2b7\\finished.json",
+        "sha256": "5f712aab81b5583c0e55e449efa74c1ef1bd41e7bc73c064a569954c7f746997"
+      },
+      "elapsed_seconds": 2207.273679,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T143512658482Z-e3a649f7.json",
+        "sha256": "9366799e18f795754df8b9fd58d9ab8314989dcaf686b768cfd5ea19f992d2ef"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T143512658482Z-e3a649f7\\planned.json",
+        "sha256": "932767727d6edd0ed180985d5175f534e838a3c1991c33d288881abb97147066"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T143512658482Z-e3a649f7\\finished.json",
+        "sha256": "7eb0485e07aac4a0ded21b4997c538a5582e987d654bd53fcfe63b5fbb66a7db"
+      },
+      "elapsed_seconds": 1322.840057,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T151625742074Z-8fdc427a.json",
+        "sha256": "d47d4f06caf217691cdaca1ea0a18f65a585ee9cf150ce4f3300b2079eff7b27"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T151625742074Z-8fdc427a\\planned.json",
+        "sha256": "55899efd8b34516b74e96e824c766bc39793c01599e07408e6fc12c86be7825a"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T151625742074Z-8fdc427a\\finished.json",
+        "sha256": "8a5e486fe0b09022dc4ded154deaa6282ffadddddd43454273243d3be55a2d3b"
+      },
+      "elapsed_seconds": 1929.673221,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T160809552031Z-76d77f11.json",
+        "sha256": "f0de8f4b978b9b911720669bf1e34e9ff109b5986153f877cf1f0a1569e88a94"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T160809552031Z-76d77f11\\planned.json",
+        "sha256": "d6406d05482688adb19d2ce250d42e6e3cd946ff43e30bc65c875f441c482d87"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T160809552031Z-76d77f11\\finished.json",
+        "sha256": "823d4ae13df0b97bde1a270c2f83e84f14efe8a3e5b7670520236dc55af2948f"
+      },
+      "elapsed_seconds": 3395.434378,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T175558957748Z-9ccbc8f6.json",
+        "sha256": "a527965d2408975d23190ec95bf671ccb827b8f56cf0cf77cc94ada1b9b2c310"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T175558957748Z-9ccbc8f6\\planned.json",
+        "sha256": "b7eb74b59a6a088574e623d9216b0166e14a86c5c7c946b11e6c1a2ccbc33e4b"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T175558957748Z-9ccbc8f6\\finished.json",
+        "sha256": "f81e6b04becd520e5fd88869499f0d8fa90f899d12ab9ff901019b82709acf0a"
+      },
+      "elapsed_seconds": 2530.783316,
+      "selected": 4,
+      "terminal": 4,
+      "stop_reason": null
+    }
+  ],
+  "partial_stops_retained": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T114851750615Z-709753d9.json",
+        "sha256": "44033b13b17e61e7a89ac75ec892ff845eb4b926d4be5edb83f38bc744dac4bf"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T114851750615Z-709753d9\\planned.json",
+        "sha256": "992d33c01d613a984cfcecd483080e2e8858228cfac9e95de500f6ec1879e0f0"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T114851750615Z-709753d9\\finished.json",
+        "sha256": "c41520523f9442254923b3bb50f671afddb8dbff4552bdede4eaaa5f1e47d56f"
+      },
+      "elapsed_seconds": 680.37601,
+      "selected": 4,
+      "terminal": 2,
+      "stop_reason": "Invalid attempt retained; stop batch for explicit infrastructure/readiness review"
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T172624113609Z-88f8fc4d.json",
+        "sha256": "7bc36b52a1e76d99a454b693ef85d8ec8838d8d1a8b367b07e6cb3b9cc288f5b"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T172624113609Z-88f8fc4d\\planned.json",
+        "sha256": "6c7c48eb041935b6d3eb642240b07e953c57dd9edf80b7ee1cfd3084e6283e93"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T172624113609Z-88f8fc4d\\finished.json",
+        "sha256": "8f98d8c24d9ae9a753345a70c8e5916c399e620ba529a9a8c74a285b3e41254f"
+      },
+      "elapsed_seconds": 150.13228,
+      "selected": 4,
+      "terminal": 1,
+      "stop_reason": "Invalid attempt retained; stop batch for explicit infrastructure/readiness review"
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T185747396672Z-3cd1855f.json",
+        "sha256": "54de0acabc67a7927316366b9f94e639295a0adee1ca7edd511e68bcfd03c0bc"
+      },
+      "plan": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T185747396672Z-3cd1855f\\planned.json",
+        "sha256": "1ff82b8576e1165ce45b34a05e5b3a5481728cccaa4bedaa011a61435497a66e"
+      },
+      "finished": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\batches\\20260924T185747396672Z-3cd1855f\\finished.json",
+        "sha256": "bdf2ffc3aa2c05bf656242465930161b6300dcf4b26efaabf9354d2b2cc42550"
+      },
+      "elapsed_seconds": 624.866461,
+      "selected": 4,
+      "terminal": 1,
+      "stop_reason": "Invalid attempt retained; stop batch for explicit infrastructure/readiness review"
+    }
+  ],
+  "finalizers": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T175944598516Z-10dede38.json",
+        "sha256": "8232a8a8a11ee681d5c940b0ed29bb0e9b3de41e46b7b8055b3f0f34b1c704ca"
+      },
+      "seconds": 1.215391
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T183324209404Z-24cc72ba.json",
+        "sha256": "dfff9d8b9d38001005c8f8a1569cda72ecb76b155c28221f6a93d2d0be600a68"
+      },
+      "seconds": 1.205022
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T185217592944Z-1ef72c78.json",
+        "sha256": "40538fa862a444035be5525adacf0552812d82a86098dca0e7c6c9c8eb8692c5"
+      },
+      "seconds": 1.210689
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T191342287056Z-3466ddc5.json",
+        "sha256": "7dbe505e4f3fa9fad88af56644cd2002ab36a6ae81ad681d3ab4101d2d3c0579"
+      },
+      "seconds": 1.220257
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T193447721456Z-ca533998.json",
+        "sha256": "c928d1204827f015f7e38bddef16dc2017f5ee1670a0ef3ddc31eeee3d5b6ae7"
+      },
+      "seconds": 1.329959
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T195051118287Z-97507829.json",
+        "sha256": "aebfdd40acad7af076166116fe4977ade023f91ad39b9aa8133933783bfe24ae"
+      },
+      "seconds": 1.21258
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T202404105166Z-d7543ba3.json",
+        "sha256": "9903dd526978994fd8f543eefdfd9e2601de6cc47b2e695c3e09e5015ef69435"
+      },
+      "seconds": 1.220461
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T212058754783Z-02a2ce44.json",
+        "sha256": "c420dd98b616c9284e7b0dcbf67a0b0db9ddf47d787d5dea56da90722001c53e"
+      },
+      "seconds": 1.324949
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T214939904560Z-7c27cd1d.json",
+        "sha256": "1496002a7e732d1310d4c09f376f4bd12b864bde63ba8e3d4ca3fce6e37a38c4"
+      },
+      "seconds": 1.328359
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T223903166700Z-6219caeb.json",
+        "sha256": "0ef9c5bca278fbec6f022a1d628030814f2aa0e90399245dee29c35a828b60d9"
+      },
+      "seconds": 1.224527
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T233320064790Z-d45f6b16.json",
+        "sha256": "bb280eba58e7d442477e1f3517a5184ae624bdebc8313dbd092770d33e830040"
+      },
+      "seconds": 1.324034
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T002321081081Z-c75e616e.json",
+        "sha256": "f2ee758259b58c76b2566618fca4b062a8545caa95d0741580a89608e0730b89"
+      },
+      "seconds": 0.143435
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T002557882841Z-23d6d0e2.json",
+        "sha256": "79cb2f49c9e3f25a4f586c77a02bf574fdcdd40d68e6718a031386f405a5a440"
+      },
+      "seconds": 0.689531
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T002857955953Z-c5dd71d4.json",
+        "sha256": "b7f615cac0cd04df2b559b0282e17ecdd7c31a7d50347db3f72d4330d730f792"
+      },
+      "seconds": 1.123474
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T012001611661Z-3e7e5f34.json",
+        "sha256": "ada3d45667057801318644f3042a733bfc20a025717edd94cabf597d6f6e4365"
+      },
+      "seconds": 0.130676
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T012432890270Z-e3848d83.json",
+        "sha256": "a21b3f6edcbc072488f07d0fac52975958147cea3f9e433b15cacf2960a7dd3f"
+      },
+      "seconds": 1.337749
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T022047695212Z-0b61ecbf.json",
+        "sha256": "c071ca1eb43b5bad297cd8bac6d2643048a9253469873536ab24124df98e1088"
+      },
+      "seconds": 1.326889
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T031207535760Z-e8f16cd8.json",
+        "sha256": "4c7e5ee7baacdc817d7428928a41410a879dca6b39b8446da1b88d6e97af7683"
+      },
+      "seconds": 1.236285
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T033207257626Z-b7c96192.json",
+        "sha256": "24c2e42347f40482746f55bb28e5d1c8578b95308f4bd161e76d6f401d55cbb5"
+      },
+      "seconds": 1.224372
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T043406760436Z-c6506e15.json",
+        "sha256": "acc7a4b1db3b08d3a3c4a43f0011387e6f55b12c5bceb905d783708fadecead2"
+      },
+      "seconds": 1.338715
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T054504665578Z-fc40e8bc.json",
+        "sha256": "e12bde4a353c9c19c8c29f01c1c7fba2909d160aa13f015342812944a15c7141"
+      },
+      "seconds": 1.340298
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T063138651311Z-94bc0f1c.json",
+        "sha256": "f01c049882e9a9592896048ea1dc2e3d840b2f079a0b1887ef6f989582d76f04"
+      },
+      "seconds": 1.333222
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T073232180019Z-f60e1804.json",
+        "sha256": "d5cfa81a6996dad0d5ce5d0c458b0923973f52a4422a4ca635484cdb9e07c074"
+      },
+      "seconds": 1.329262
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T081902666158Z-523c979e.json",
+        "sha256": "733d71d02779cab6ef56583fa7956253df56f76e4634c90d7f547359d281cd9e"
+      },
+      "seconds": 1.33518
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T091503484820Z-3eb20044.json",
+        "sha256": "5b59967b93e59ef81510bba8e6e8d603f61561c09f1f02af0930be8ffe18e0ee"
+      },
+      "seconds": 1.337751
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T100236004336Z-e60051ae.json",
+        "sha256": "213b233e86003f3390ad8f29f05391c7ee25903ec86cc4e1d922cc9fe95c4bc7"
+      },
+      "seconds": 1.329948
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T105405382684Z-93824007.json",
+        "sha256": "f5bee0d1789cc661a5aeb3be5d004759d12ba7afee7ec6a73435958cc1af1b99"
+      },
+      "seconds": 1.331575
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T114612466916Z-e04b82c0.json",
+        "sha256": "27f45f6aa5be0e2d2ab4c4a08c31b8195f445cc1ce376b545ef9775260487d65"
+      },
+      "seconds": 1.339047
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T121712145071Z-70b65f7e.json",
+        "sha256": "f347ba4eb5bcce2ac3a99fc28c6cba899eb0bfc0adc3e53dce75d7874fef623c"
+      },
+      "seconds": 1.341571
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T125834426835Z-4acc7d14.json",
+        "sha256": "fc93b743d7ab9e020d8e2f6eaf42e88d05ae6d3f46cab0044a5aadfaeb8d75d6"
+      },
+      "seconds": 1.346618
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T133606923372Z-269c9c7d.json",
+        "sha256": "d5e140171c1b5da24200d7d8bece047831576964c40e0a0866e0d8d42d2b008b"
+      },
+      "seconds": 1.340195
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T143210581586Z-bf3c536a.json",
+        "sha256": "55ae2b21e6d08ddc7ae0dbbdfea14bbe4df004f792f863a5b4e9f9770fcf1d63"
+      },
+      "seconds": 1.350357
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T151344982018Z-e1157dd1.json",
+        "sha256": "804ba30eabb11c6a4ed7c42c1698ce0f838a0395a313a64fd7090f1571aabaac"
+      },
+      "seconds": 1.342709
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T160509303667Z-3699ea92.json",
+        "sha256": "47c70b88bd6a71207eb8a44b0c8ae8290709fda94438b3e09b6a9894f360ccc8"
+      },
+      "seconds": 1.338735
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T172102336748Z-f6388bb2.json",
+        "sha256": "efd317d70a17c4a3bc651d232c4e43d81e702a06dff910b236db11623e68608a"
+      },
+      "seconds": 1.23358
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T172354454093Z-c4cf9808.json",
+        "sha256": "ed82d7d90d7947c5dfba5fce8d4eb4002f2e2d13725b74ceb701abd6069b07bd"
+      },
+      "seconds": 0.911544
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T174559666907Z-9caeae57.json",
+        "sha256": "a1e0031f947e0325f87de0a6162c32d8dc5967d98d5238a9b50798bee543cb64"
+      },
+      "seconds": 0.694316
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T185429971120Z-4637228c.json",
+        "sha256": "a479c519a3f937f41abb5d92c331f4b97d61f089b95b7c54ba3b022eba40644a"
+      },
+      "seconds": 1.446363
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T193031316795Z-79a18e97.json",
+        "sha256": "3ac1ce9a95d262ccc95a98b675137f91d6086ffdddc3b3e618ba6abf79d12d5b"
+      },
+      "seconds": 0.698627
+    }
+  ],
+  "official_schedule_docs": "https://learn.chatgpt.com/docs/automations?surface=app"
+}

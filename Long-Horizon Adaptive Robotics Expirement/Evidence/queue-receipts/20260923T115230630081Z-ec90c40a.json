@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-c",
+    "from pathlib import Path\nfrom types import SimpleNamespace\nimport sys,json,hashlib\nroot=Path.cwd()\nexp=root/'Long-Horizon Adaptive Robotics Expirement'\nsys.path.insert(0,str(exp/'Runtime'))\nimport record_attempt as records\nfrom release_runner import verify_queue_receipt\njob='20260923T104637848546Z-10f91c9b'\nreceipt=exp/'Evidence/queue-receipts'/f'{job}.json'\nverify_queue_receipt(job,str(receipt))\nbatch_path=Path('D:/CodexEvidence/LLMs-in-Robotics/development-batch-003-001/batch-result.json')\nbatch_bytes=batch_path.read_bytes()\nbatch=json.loads(batch_bytes)\nplan_bytes=(exp/'Batch 01/development-plan-003.json').read_bytes()\nplan=json.loads(plan_bytes)\nexpected=[r['run_id'] for r in plan]\nif batch['plan_sha256']!=hashlib.sha256(plan_bytes).hexdigest() or batch['plan']!=plan or batch['not_started'] or batch['stop_reason'] is not None or [r['run_id'] for r in batch['attempts']]!=expected:\n    raise ValueError('Original plan and complete batch accounting differ')\ndata,_,errors=records.am.read_store(records.MAP)\nif errors or any(r['run_id'] in expected for r in data['result']):\n    raise ValueError('Map errors or a selected finish already exists')\nfor row in batch['attempts']:\n    storage,legacy,registration=records.registered_storage(row['run_id'])\n    raw=Path(storage['evidence_dir'])/'result.json'\n    if type(row['exit_status']) is not int or row['exit_status']!=0 or str(raw)!=row['result_path'] or hashlib.sha256(raw.read_bytes()).hexdigest()!=row['result_sha256']:\n        raise ValueError('Original terminal result binding differs')\nfor row in batch['attempts']:\n    records.finish(SimpleNamespace(run_id=row['run_id'],queue_job_id=job))\n    print('Finished canonical development result: '+row['run_id'],flush=True)\nif batch_path.read_bytes()!=batch_bytes or (exp/'Batch 01/development-plan-003.json').read_bytes()!=plan_bytes:\n    raise ValueError('Batch or plan changed during finalization')\nprint('All eight original terminal outcomes retained; no scientific validity upgrade.',flush=True)\n"
+  ],
+  "cancel_requested_at": null,
+  "child_pid": 13180,
+  "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics",
+  "ended_at": "2026-09-23T11:52:44.221357Z",
+  "error": null,
+  "exit_status": 0,
+  "id": "20260923T115230630081Z-ec90c40a",
+  "log_path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\runtime\\logs\\20260923T115230630081Z-ec90c40a.log",
+  "resolved_executable": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+  "started_at": "2026-09-23T11:52:31.553957Z",
+  "state": "succeeded",
+  "submitted_at": "2026-09-23T11:52:30.630081Z",
+  "submitting_project": "LLMs-in-Robotics",
+  "worker_pid": 13244
+}

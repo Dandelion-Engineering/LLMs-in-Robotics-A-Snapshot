@@ -1,0 +1,5 @@
+At 04:28 PDT, v4 Baseline had advanced **20/21 assignments** and closed 34 native sessions. Session 33 completed the kitchen assignment; session 34 closed without advancing the last bedroom assignment. Session 35 recorded task_success and returned to dock, but its native closeout and final checkpoint were still pending in the captured observation. I am not calling the endpoint complete.
+
+Checkpoints 33–34 authenticate. Recording checks pass, the viewer responds, D: has 135.413 GiB free, and Maps remains pristine. The current monitor stays active; the older three remain paused. No intervention or retry occurred.
+
+[Session 56 report](../../../agents/Codex/Session%20Summaries/HumanReport56.md) · [Immutable observation evidence](../../../Long-Horizon%20Adaptive%20Robotics%20Expirement/Apartment%20Experiment/operations/session-56/observation-summary.json). The next wake must independently audit all endpoint evidence and actual retirement before pausing monitoring; seven throwing advances remain timed practice windows, not mastery claims.

@@ -1,0 +1,55 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime 004\experiment.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Runtime Recovery 001\experiment_recovery.py
+@@ -20,6 +20,12 @@
+ import time
+ import uuid
+ import numpy as np
++import sys
++
++# Administrative successor: physical/policy modules keep their actual frozen
++# locations, including the class-bound absolute compiler asset path.
++FROZEN_RUNTIME=Path(__file__).resolve().parent.parent/'Runtime 004'
++if str(FROZEN_RUNTIME) not in sys.path:sys.path.insert(0,str(FROZEN_RUNTIME))
+ 
+ from cell import Cell,DT,ZONES,zone_half
+ from initial_conditions import initial_world_report,RestartOpportunity
+@@ -35,7 +41,7 @@
+ HERE=Path(__file__).resolve().parent
+ EVIDENCE=HERE.parent/'Evidence'/'raw'
+ from development_storage import location as development_location
+-EVALUATION_AUTHORIZATION_VERSION='robot-evaluation-authorization-1.0'
++EVALUATION_AUTHORIZATION_VERSION='robot-evaluation-recovery-authorization-1.0'
+ GIB=1024**3
+ RESOURCE_POLICY={'version':'robot-runtime-resource-policy-004','resource_caps_enforced':False,
+     'sampled_watchdog':{'harness_rss_bytes':4*GIB,'model_private_commit_bytes':12*GIB,'whole_device_gpu_memory_bytes':14*GIB,
+@@ -208,14 +214,14 @@
+         assigned=development_location(run_id,development_raw_root,default_root=EVIDENCE,require_fresh=True)
+         return Path(assigned['evidence_dir']),None
+     if development_raw_root is not None:raise ValueError('Development raw root cannot override evaluation authority')
+-    from release_runner import VerifiedEvaluationContext
+-    if not isinstance(context,VerifiedEvaluationContext):raise ValueError('Evaluation requires a verified release context')
++    from recovery_runner import RecoveryEvaluationContext
++    if not isinstance(context,RecoveryEvaluationContext):raise ValueError('Evaluation requires a verified recovery context')
+     path=context.assert_episode(kind=kind,n=n,cap=cap,condition=condition,scenario=scenario,
+                                 stage=stage,run_id=run_id,**seeds)
+     if Path(path).resolve()!=context.evidence_dir.resolve():raise ValueError('Authorized evidence path mismatch')
+     provenance={'authorization_version':EVALUATION_AUTHORIZATION_VERSION,'release_sha256':context.release_sha256,
+                 'manifest_sha256':context.manifest_sha256,'queue_job_id':context.queue_job_id,
+-                'verified_at':context.verified_at}
++                'verified_at':context.verified_at,**context.execution_provenance}
+     return context.evidence_dir,provenance
+ 
+ 
+@@ -686,7 +692,11 @@
+                   'seed_semantics':{'seed':'legacy alias of world_seed','world_seed':'mass, friction, tag palette, process duration and public-rule event parameters',
+                                     'layout_seed':'raw stock positions','noise_seed':'supervisor-owned readout noise; survives candidate restart',
+                                     'policy_seed':'actual local-model sampling seed','policy_noise_seed':'development compatibility default only, overridden by explicit policy/noise roles'},
+-                  'part_count':n,'cap_s':cap,'started_at':started_at,'code_sha256':{p.name:sha(p) for p in HERE.glob('*.py')},'model':model.identity if model else None,'clock_track':'actual_host','scope':'physical-workcell development; readiness not yet established',
++                   'part_count':n,'cap_s':cap,'started_at':started_at,'code_sha256':{p.name:sha(p) for p in FROZEN_RUNTIME.glob('*.py')},
++                   'code_source_root':str(FROZEN_RUNTIME),'administrative_code_source_root':str(HERE),
++                   'administrative_code_sha256':{p.name:sha(p) for p in HERE.glob('*.py')},
++                   'executed_supervisor':{'path':str(Path(__file__).resolve()),'sha256':sha(Path(__file__))},
++                   'model':model.identity if model else None,'clock_track':'actual_host','scope':'physical-workcell development; readiness not yet established',
+                   'resources':{'path':'resources.jsonl','period_s':resource_sampler.period_s,'resource_caps_enforced':False,
+                                'coverage':'run_episode startup through cell/candidate cleanup; model-server startup and normal shutdown are outside this coverage'},
+                   'assistance':{'policy_id':assistance.POLICY_ID,'delay_s':assistance.DELAY_S,'clock_rule':'both wall and simulation waits must reach 15 seconds',

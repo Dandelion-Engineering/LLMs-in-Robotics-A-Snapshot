@@ -1,0 +1,47 @@
+{
+  "schema_version": "root-resource-sampler-incident-decision-1",
+  "recorded_at_utc": "2026-09-24T17:53:25.666758+00:00",
+  "reviewer": "Codex session 4 root",
+  "run_id": "batch01-eval-r4-C24-rep2-A3-no-persistence",
+  "release_sha256": "ed65f8b33e16daaa081031cfe7ccc7ac65644af3522546aad0d2fa76a1d72fe1",
+  "classification": "isolated_runtime_failure",
+  "rationale": "The only observed resource-watchdog stop among 127 canonical original attempts was one on-schedule resource capture lasting 7.712918300007004 seconds and recording TimeoutExpired for the unchanged nvidia-smi query with a two-second timeout. The prior 20 captures completed within 0.06814950000261888 seconds without missing process or GPU observations. At the watchdog check the next capture was still pending, so the last published capture-start age was 7.23983639999642 seconds, correctly exceeding the unchanged seven-second gate. This is an operational isolated_runtime_failure interpretation of this one observed collection stall, not proof that the OS/driver is healthy or that the event cannot recur. The allocation of delay among process reads, subprocess startup, waiting, timeout cleanup and scheduling is unknown. Five-second sampling plus a two-second GPU timeout leaves no extra freshness margin; this known limitation is retained, not widened. The episode remains infrastructure-invalid. All 127 post-run integrity checks passed; physics timing and cleanup passed for this episode. A separate single idle read-only GPU query completed in 0.04909139999654144 seconds, showing current responsiveness only, not under-load readiness or past cause. No systematic source/integrity failure was observed. Continue only untouched original manifests in stored order, excluding the entire C24-rep2 block from primary inference while retaining the prior C02-rep2 exclusion. Never retry this episode or change sources, readiness, qualification, thresholds, model, budgets or policies. The next runner must freshly verify frozen inputs; any new invalidity requires a new concrete review and recurrence must be assessed as a pattern, not covered by this review.",
+  "original_terminal": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C24-rep2-A3-no-persistence\\terminal.json",
+    "sha256": "a7aa9b9801d004374eb37af64b9cb1f8a38bbcfd6344c958a65c2405032d46c5",
+    "run_id": "batch01-eval-r4-C24-rep2-A3-no-persistence"
+  },
+  "original_validity_retained": "invalid",
+  "original_infrastructure_invalid_retained": true,
+  "diagnostic": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-resource-sampler-incident-001\\diagnostic.json",
+    "sha256": "7aceef256b9162c7f062eae613e73918dc53fafb4f525ea55cb08759eeeeb722"
+  },
+  "diagnostic_receipt": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T174908935085Z-c736bd5c.json",
+    "sha256": "b6e02655743ee5ab7f4dc65351e24ca58e8ecef29ef3a7be1a806f8be7389d8e"
+  },
+  "current_gpu_probe": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-resource-sampler-incident-001\\current-gpu-probe.json",
+    "sha256": "b3c73a79ae7f50cdfc9d9d2b0403ad8d4171a469143a61919f23770063f6892a"
+  },
+  "current_gpu_probe_receipt": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T175047193107Z-dd8c5a58.json",
+    "sha256": "ef08030177279920b934e120aa295683e02b4742c58fe3f7b4f5b0be2fca99b7"
+  },
+  "finalized_batch_record": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\batch-033-complete.json",
+    "sha256": "d4e6c652759634c5c66bd072aa683e6dad31f02ceee63a39ad8cf005c923326c"
+  },
+  "independent_review": "batch_design_audit reviewed unchanged source and exact diagnostic; hdmi_power_evidence queried bounded OS events; root read both and actual records",
+  "source_readiness_evaluator_oracle_integrity_breach_observed": false,
+  "continuation_scope": "all_original_unattempted",
+  "whole_block_primary_exclusions_after_review": [
+    "batch01-eval-r4-C02-rep2",
+    "batch01-eval-r4-C24-rep2"
+  ],
+  "automatic_retries": 0,
+  "frozen_sources_or_thresholds_changed": false,
+  "remaining_unattempted_before_continuation": 137,
+  "no_primary_performance_outcomes_used_for_decision": true
+}

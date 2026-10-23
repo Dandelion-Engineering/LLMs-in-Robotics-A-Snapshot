@@ -1,0 +1,28 @@
+--- launch_campaign_v28.py
++++ launch_campaign_v29.py
+@@ -1,4 +1,4 @@
+-"""Retain one sealed Campaign 002 launch after the complete V28 admission chain.
++"""Retain one sealed Campaign 002 launch after the complete V29 admission chain.
+ 
+ This operator wrapper is outside the frozen runtime inventory. It invokes the
+ existing operator/coordinator and never implements an experiment or retries a
+@@ -12,8 +12,8 @@
+ import sys
+ 
+ IO = Path(__file__).resolve().parent
+-spec = importlib.util.spec_from_file_location('sealed_campaign_control_v28',
+-                                            IO / 'control_campaign_admission_v28.py')
++spec = importlib.util.spec_from_file_location('sealed_campaign_control_v29',
++                                            IO / 'control_campaign_admission_v29.py')
+ control = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(control)
+ c = control.c
+@@ -43,7 +43,7 @@
+     if args.action == 'dry-run':
+         print(json.dumps({'dry_run': True, 'receipt': c.identity(control.RECORDS / 'first-slot-dry-run-receipt.json')}))
+         return 0
+-    records = IO / 'campaign-execution-v28-001'
++    records = IO / 'campaign-execution-v29-001'
+     c.require(not records.exists() and not (control.C / 'execution').exists(),
+               'Existing execution or outer launch record; reconcile without restart')
+     coordinator = control.C / 'run_campaign.py'

@@ -1,0 +1,37 @@
+{
+  "schema": "rci-recorder-journal-feasibility-1",
+  "run_id": "RCI001-C02-recorder-feasibility-002",
+  "framework_revision": "RCI001-C02-dev-011",
+  "seed": 173,
+  "mode_order": [
+    "DELETE",
+    "PERSIST",
+    "PERSIST",
+    "DELETE",
+    "DELETE",
+    "PERSIST",
+    "PERSIST",
+    "DELETE"
+  ],
+  "frames_per_round": 600,
+  "motion_rows_per_frame": 10,
+  "width": 64,
+  "height": 48,
+  "wall_cap_s": 300,
+  "space_policy": {
+    "host_cap_bytes": 536870912,
+    "native_reserve_bytes": 67108864,
+    "database_limit_bytes": 2097152,
+    "journal_limit_bytes": 33554432,
+    "publication_limit_bytes": 8388608,
+    "metadata_allowance_bytes": 1048576
+  },
+  "model_turns_max": 0,
+  "stage": "diagnostic",
+  "mode": "recorder-feasibility",
+  "qualification_stage": "no-model-recorder-parity-recovery-space-latency",
+  "scope": "Fixed counterbalanced synthetic recorder comparison only. No physics, model, recovery score, production policy adoption or relaxation of host timing criteria. Preserve every round and error; no retries or performance win threshold.",
+  "interpretation": "Timing is a bounded storage-workload diagnostic, not real-time host qualification or a power-loss guarantee. Configuration, payload parity, error propagation, interrupted-transaction recovery and complete finalization/observed-space evidence govern mechanical feasibility.",
+  "predecessor_not_run": "RCI001-C02-recorder-feasibility-001",
+  "inventory_correction": "Include three prior assessment modules imported by the external assessor. Workload and declared policies unchanged; predecessor never launched."
+}

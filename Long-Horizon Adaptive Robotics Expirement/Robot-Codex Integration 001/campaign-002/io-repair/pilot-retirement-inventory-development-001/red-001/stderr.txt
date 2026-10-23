@@ -1,0 +1,115 @@
+test_actual_inventory_feeds_unchanged_honest_terminal_closure (test_assess.PilotRetirementInventoryTests.test_actual_inventory_feeds_unchanged_honest_terminal_closure) ... FAIL
+test_bad_extra_legacy_receipt_is_not_replaced_by_good_versioned_receipt (test_assess.PilotRetirementInventoryTests.test_bad_extra_legacy_receipt_is_not_replaced_by_good_versioned_receipt) ... FAIL
+test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) ... 
+  test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'qualified': False}) ... FAIL
+  test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'retired': False}) ... FAIL
+  test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'namespace_evidence_available': False}) ... FAIL
+  test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'namespace_ids': []}) ... FAIL
+  test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'namespace_members': [{'pid': 9}]}) ... FAIL
+  test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'outer_same_process': True}) ... FAIL
+test_insufficient_inventory_stays_false (test_assess.PilotRetirementInventoryTests.test_insufficient_inventory_stays_false) ... ok
+test_legacy_only_stage_is_byte_value_equivalent_to_original_upgrade (test_assess.PilotRetirementInventoryTests.test_legacy_only_stage_is_byte_value_equivalent_to_original_upgrade) ... ok
+test_malformed_versioned_json_is_not_ignored_even_with_valid_legacy_host (test_assess.PilotRetirementInventoryTests.test_malformed_versioned_json_is_not_ignored_even_with_valid_legacy_host) ... FAIL
+test_missing_host_and_unknown_version_do_not_complete_inventory (test_assess.PilotRetirementInventoryTests.test_missing_host_and_unknown_version_do_not_complete_inventory) ... ok
+test_missing_observations_and_unknown_record_do_not_pass (test_assess.PilotRetirementInventoryTests.test_missing_observations_and_unknown_record_do_not_pass) ... ok
+test_versioned_addition_changes_only_inventory_and_namespace_check (test_assess.PilotRetirementInventoryTests.test_versioned_addition_changes_only_inventory_and_namespace_check) ... FAIL
+test_versioned_and_legacy_host_layouts_are_accepted_by_actual_pilot (test_assess.PilotRetirementInventoryTests.test_versioned_and_legacy_host_layouts_are_accepted_by_actual_pilot) ... 
+  test_versioned_and_legacy_host_layouts_are_accepted_by_actual_pilot (test_assess.PilotRetirementInventoryTests.test_versioned_and_legacy_host_layouts_are_accepted_by_actual_pilot) (name='codehost-owner-retirement-v3.json') ... FAIL
+
+======================================================================
+FAIL: test_actual_inventory_feeds_unchanged_honest_terminal_closure (test_assess.PilotRetirementInventoryTests.test_actual_inventory_feeds_unchanged_honest_terminal_closure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 240, in test_actual_inventory_feeds_unchanged_honest_terminal_closure
+    self.assertEqual(lifecycle['branch'], 'successful_terminal_host_closure')
+AssertionError: 'unestablished' != 'successful_terminal_host_closure'
+- unestablished
++ successful_terminal_host_closure
+
+
+======================================================================
+FAIL: test_bad_extra_legacy_receipt_is_not_replaced_by_good_versioned_receipt (test_assess.PilotRetirementInventoryTests.test_bad_extra_legacy_receipt_is_not_replaced_by_good_versioned_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 232, in test_bad_extra_legacy_receipt_is_not_replaced_by_good_versioned_receipt
+    self.assertEqual(len(stage['retirements']), 4)
+AssertionError: 3 != 4
+
+======================================================================
+FAIL: test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'qualified': False})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 208, in test_every_unchanged_retirement_predicate_still_rejects
+    self.assertIn('codehost-owner-retirement-v3.json', stage['retirements'])
+AssertionError: 'codehost-owner-retirement-v3.json' not found in {'executor-1-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}, 'executor-2-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}}
+
+======================================================================
+FAIL: test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'retired': False})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 208, in test_every_unchanged_retirement_predicate_still_rejects
+    self.assertIn('codehost-owner-retirement-v3.json', stage['retirements'])
+AssertionError: 'codehost-owner-retirement-v3.json' not found in {'executor-1-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}, 'executor-2-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}}
+
+======================================================================
+FAIL: test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'namespace_evidence_available': False})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 208, in test_every_unchanged_retirement_predicate_still_rejects
+    self.assertIn('codehost-owner-retirement-v3.json', stage['retirements'])
+AssertionError: 'codehost-owner-retirement-v3.json' not found in {'executor-1-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}, 'executor-2-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}}
+
+======================================================================
+FAIL: test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'namespace_ids': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 208, in test_every_unchanged_retirement_predicate_still_rejects
+    self.assertIn('codehost-owner-retirement-v3.json', stage['retirements'])
+AssertionError: 'codehost-owner-retirement-v3.json' not found in {'executor-1-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}, 'executor-2-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}}
+
+======================================================================
+FAIL: test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'namespace_members': [{'pid': 9}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 208, in test_every_unchanged_retirement_predicate_still_rejects
+    self.assertIn('codehost-owner-retirement-v3.json', stage['retirements'])
+AssertionError: 'codehost-owner-retirement-v3.json' not found in {'executor-1-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}, 'executor-2-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}}
+
+======================================================================
+FAIL: test_every_unchanged_retirement_predicate_still_rejects (test_assess.PilotRetirementInventoryTests.test_every_unchanged_retirement_predicate_still_rejects) (change={'outer_same_process': True})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 208, in test_every_unchanged_retirement_predicate_still_rejects
+    self.assertIn('codehost-owner-retirement-v3.json', stage['retirements'])
+AssertionError: 'codehost-owner-retirement-v3.json' not found in {'executor-1-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}, 'executor-2-retirement.json': {'qualified': True, 'observations': [{'retired': True, 'namespace_evidence_available': True, 'namespace_ids': [101], 'namespace_members': [], 'outer_same_process': False}]}}
+
+======================================================================
+FAIL: test_malformed_versioned_json_is_not_ignored_even_with_valid_legacy_host (test_assess.PilotRetirementInventoryTests.test_malformed_versioned_json_is_not_ignored_even_with_valid_legacy_host)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 214, in test_malformed_versioned_json_is_not_ignored_even_with_valid_legacy_host
+    with self.assertRaises(json.JSONDecodeError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: JSONDecodeError not raised
+
+======================================================================
+FAIL: test_versioned_addition_changes_only_inventory_and_namespace_check (test_assess.PilotRetirementInventoryTests.test_versioned_addition_changes_only_inventory_and_namespace_check)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 189, in test_versioned_addition_changes_only_inventory_and_namespace_check
+    self.assertTrue(actual['checks']['all_namespace_retirements_observed'])
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_versioned_and_legacy_host_layouts_are_accepted_by_actual_pilot (test_assess.PilotRetirementInventoryTests.test_versioned_and_legacy_host_layouts_are_accepted_by_actual_pilot) (name='codehost-owner-retirement-v3.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\assessment\test_assess.py", line 174, in test_versioned_and_legacy_host_layouts_are_accepted_by_actual_pilot
+    self.assertEqual(set(stage['retirements']),
+AssertionError: Items in the second set but not the first:
+'codehost-owner-retirement-v3.json'
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.107s
+
+FAILED (failures=11)

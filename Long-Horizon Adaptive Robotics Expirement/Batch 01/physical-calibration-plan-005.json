@@ -1,0 +1,19 @@
+{
+  "schema_version": "physical-calibration-plan-1.0",
+  "attempt_id": "physical-calibration-005",
+  "registered_before_execution": true,
+  "mode": "all",
+  "seed": 0,
+  "output": "../Evidence/calibration/physical-calibration-005",
+  "purpose": "Repeat all seven physical prerequisites after measured motion/pad corrections, declared solver budget increase and task-cancellation hold repair",
+  "prior_attempts": ["physical-calibration-002", "physical-calibration-003", "physical-calibration-004"],
+  "evidence": ["../Evidence/calibration/recovery-kinematics-002/summary.json", "../Evidence/calibration/recovery-kinematics-003/summary.json", "../Evidence/calibration/physical-calibration-004/held-recovery/result.json"],
+  "common_changes": {"parking1_m": [0.34, 0.04], "parking2_m": [0.46, 0.12], "maximum_cartesian_step_m": 0.01, "ik_maximum_iterations": 480, "ik_convergence_thresholds_changed": false, "insert_home_A": "original (0.18,-0.25) retained; no relocation selected", "cancel": "Discard future task motion and freeze last already-issued native task setpoint; direct adapters retain measured-position fallback"},
+  "selection_reason": "Diagnostic003 original-home120 failed and original-home480 passed the fixed full approach/descent/lift without changing position/orientation tolerances; both relocated-home variants also passed but were not selected. Cal004 completed physical parking2 placement yet failed the unchanged post-absence75mm height check; bilateral contacts persisted at retained snapshots while reset-to-measured-q changed ctrl by up to0.047709rad.",
+  "static_worlds": [[3,0],[6,1],[10,2]],
+  "hard_child_wall_caps_s": [225,225,225,105,65,90,85],
+  "thresholds_changed": false,
+  "source_identity": "Exact Runtime, Calibration Tools and Panda bytes bundled before launch and held unchanged throughout",
+  "unchanged_rules": ["No object pose changes or attachments", "Public sensing and action choice", "Existing grip, height, full containment and settling predicates", "One-second actual physics absence", "Native camera payload and decoded limits", "Actual-host timing criteria"],
+  "scored_ready_claimed": false
+}

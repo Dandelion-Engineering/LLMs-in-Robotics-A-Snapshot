@@ -1,0 +1,249 @@
+--- before/retained_reads.py
++++ after/retained_reads.py
+@@ -12,6 +12,7 @@
+ from pathlib import Path
+ import re
+ import shlex
++from completion_chronology import terminal_process_order
+ 
+ 
+ def sha(raw):
+@@ -117,23 +118,11 @@
+                     continue
+                 process = [r for r in responses if r['message'].get('method') in ('process/output', 'process/exited', 'process/closed')
+                            and r['message'].get('params', {}).get('processId') == pid]
+-                if not process or process[-1]['message'].get('method') != 'process/closed':
++                try:
++                    ordering = terminal_process_order(process)
++                except ValueError:
+                     continue
+-                exits = [r for r in process if r['message'].get('method') == 'process/exited']
+-                if len(exits) != 1 or sum(r['message'].get('method') == 'process/closed' for r in process) != 1:
+-                    continue
+-                process_order = [r['message']['params'].get('seq') for r in process]
+-                output_order = [r['message']['params'].get('seq') for r in process
+-                                if r['message'].get('method') == 'process/output']
+-                # Native exit notification can overtake output on the retained
+-                # transport. Preserve arrival order; never sort or repair bytes.
+-                # With one exit, closed last/max, and ordered outputs, only the
+-                # exit notice can differ from globally increasing native seq.
+-                if (any(type(sequence) is not int for sequence in process_order)
+-                        or set(process_order) != set(range(1, len(process) + 1))
+-                        or process_order[-1] != len(process)
+-                        or any(left >= right for left, right in zip(output_order, output_order[1:]))):
+-                    continue
++                process_order, output_order = ordering['order'], ordering['output_order']
+                 stdout, stderr = bytearray(), bytearray()
+                 valid = True
+                 for row in process:
+@@ -155,7 +144,7 @@
+                             valid = False
+                             break
+                         (stdout if p['stream'] == 'stdout' else stderr).extend(data)
+-                end = exits[0]['message']['params']
++                end = ordering['exit']['message']['params']
+                 if (not valid or type(end.get('exitCode')) is not int or end['exitCode'] != 0
+                         or end.get('sandboxDenied') is not False or stderr):
+                     continue
+@@ -166,7 +155,8 @@
+                     'process_id': pid, 'tool_call_id': item_id,
+                     'process_sequences': len(process), 'stdout_bytes': len(stdout), 'stdout_sha256': sha(stdout),
+                     'process_sequence_order': process_order, 'output_sequence_order': output_order,
+-                    'closed_sequence': process_order[-1], 'exit_sequence': end['seq'],
++                    'closed_sequence': ordering['closed']['message']['params']['seq'], 'exit_sequence': end['seq'],
++                    'exit_arrived_after_close': ordering['exit_arrived_after_close'],
+                     'exit_interleaved_out_of_sequence': process_order != list(range(1, len(process) + 1)),
+                     'app_projection_bytes': len(projection.encode()) if isinstance(projection, str) else None,
+                     'app_projection_sha256': sha(projection.encode()) if isinstance(projection, str) else None,
+@@ -198,11 +188,21 @@
+     retaining its stdout and stderr separately. No intervening command can
+     replace the output or status. Paths contain only literal notes components.
+     """
+-    lines = (script(item) or '').strip().splitlines()
++    body = script(item) or ''
++    lines = body.strip().splitlines()
+     if not lines:
+         return None
+     invocation = r'(?:python3|python|/usr/bin/python3|/usr/bin/python)(?:[ \t]+-[IB])*[ \t]+/canary\.py'
+     note = r'notes/(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+'
++    if len(lines) == 1 and '\n' not in body and '\r' not in body:
++        conditional = re.fullmatch(invocation + r'[ \t]+>[ \t]+(' + note
++                                  + r')[ \t]+&&[ \t]+cat[ \t]+\1[ \t]*', lines[0])
++        if conditional:
++            output = conditional[1]
++            if (output.endswith('boundary-observation.json')
++                    and all(part not in ('.', '..') for part in output.split('/'))):
++                return {'form': 'conditional_redirect_then_read', 'output': output, 'stderr': None}
++            return None
+     first = re.fullmatch(invocation + r'(?:[ \t]+>[ \t]+(' + note + r')'
+                          + r'(?:[ \t]+2>[ \t]+(' + note + r'))?)?[ \t]*', lines[0])
+     if first is None:
+--- before/completion_chronology.py
++++ after/completion_chronology.py
+@@ -42,6 +42,29 @@
+     return number
+ 
+ 
++def terminal_process_order(process):
++    """Authenticate order without moving bytes; only the exit may overtake close."""
++    require(isinstance(process, list) and process, 'Missing process stream')
++    closed = [row for row in process if row['message'].get('method') == 'process/closed']
++    exits = [row for row in process if row['message'].get('method') == 'process/exited']
++    require(len(closed) == 1, 'Missing unique terminal process close')
++    require(len(exits) == 1, 'Missing unique process exit')
++    require(all(row['message'].get('method') in ('process/output', 'process/exited', 'process/closed')
++                for row in process), 'Unknown process notification')
++    order = [row['message']['params'].get('seq') for row in process]
++    outputs = [row for row in process if row['message']['method'] == 'process/output']
++    outseq = [row['message']['params'].get('seq') for row in outputs]
++    require(all(type(n) is int for n in order) and len(set(order)) == len(order)
++            and set(order) == set(range(1, len(process) + 1))
++            and closed[0]['message']['params']['seq'] == len(process),
++            'Incomplete/nonterminal process sequence')
++    require(all(a < b for a, b in zip(outseq, outseq[1:]))
++            and all(row['sequence'] < closed[0]['sequence'] for row in outputs),
++            'Reordered output or output after process close')
++    return {'closed': closed[0], 'exit': exits[0], 'order': order, 'output_order': outseq,
++            'exit_arrived_after_close': exits[0]['sequence'] > closed[0]['sequence']}
++
++
+ def completion_chronology(rows, delivered, request, process_id, emitted_ms):
+     """Return original emission data and a separately named evidence upper bound.
+ 
+@@ -78,7 +101,7 @@
+               and (row.get('message') or {}).get('id') == message.get('id')]
+     require(len(starts) == 1 and ((starts[0].get('message') or {}).get('result') or {}).get('processId') == process_id
+             and 'error' not in starts[0]['message'], 'Missing unique successful process start receipt')
+-    require(len(closed) == 1 and process[-1] == closed[0], 'Missing unique terminal process close')
++    ordering = terminal_process_order(process)
+     required = sorted(starts + process, key=lambda row: row['sequence'])
+     require(all(row['sequence'] > request_sequence for row in required),
+             'Process response precedes request capture')
+@@ -104,6 +127,7 @@
+         'request_wall_unix_s': start,
+         'closed_wall_unix_s': close,
+         'closed_capture_sequence': closed[0]['sequence'],
++        'exit_arrived_after_close': ordering['exit_arrived_after_close'],
+         'app_emitted_at_ms': emitted_ms,
+         # Kept for compatibility and original evidence, never used as an upper bound.
+         'app_complete_wall_unix_s': emitted_ms / 1000,
+--- before/canary_readback_proof.py
++++ after/canary_readback_proof.py
+@@ -18,7 +18,7 @@
+ import zipfile
+ 
+ from canary_exit_proof import check_document, fixture_proof, retained_file, source_proof
+-from completion_chronology import completion_chronology, finite_time
++from completion_chronology import completion_chronology, finite_time, terminal_process_order
+ from empty_startup_reads import environment_proof, load_json, require, unique_object
+ from retained_reads import canonical, load_capture, sha
+ from transport_integrity import retirement_integrity
+@@ -275,15 +275,7 @@
+     stream = [r for r in rows if r.get('kind') == 'response'
+               and r['message'].get('method') in ('process/output','process/exited','process/closed')
+               and r['message'].get('params',{}).get('processId') == pid]
+-    require(stream and stream[-1]['message']['method'] == 'process/closed', 'Incomplete process stream')
+-    exits = [r for r in stream if r['message']['method'] == 'process/exited']
+-    require(len(exits) == 1 and sum(r['message']['method'] == 'process/closed' for r in stream) == 1,
+-            'Duplicate/missing process exit/close')
+-    seq = [r['message']['params'].get('seq') for r in stream]
+-    outseq = [r['message']['params']['seq'] for r in stream if r['message']['method'] == 'process/output']
+-    require(all(type(n) is int for n in seq) and len(set(seq)) == len(seq)
+-            and set(seq) == set(range(1,len(seq)+1)) and seq[-1] == len(seq)
+-            and outseq == sorted(outseq), 'Incomplete/reordered process sequence')
++    ordering = terminal_process_order(stream)
+     stdout, stderr = bytearray(), bytearray()
+     for row in starts + stream:
+         require(row['sequence'] > request['sequence'] and row['sequence'] in delivered
+@@ -299,7 +291,7 @@
+             require(params.get('stream') in ('stdout','stderr'), 'Unknown native output stream')
+             (stdout if params['stream']=='stdout' else stderr).extend(raw)
+             require(len(stdout)+len(stderr) <= MAX_STREAM, 'Process stream bound exceeded')
+-    code = exits[0]['message']['params'].get('exitCode')
++    code = ordering['exit']['message']['params'].get('exitCode')
+     require(type(code) is int, 'Missing genuine integer process exit')
+     identity = (p.get('metadata') or {}).get('toolCallId')
+     if identity:
+@@ -333,14 +325,14 @@
+         check_document(json_document(stdout))
+         delivery = [r['wall_unix_s'] for r in rows if r.get('kind') == 'delivered'
+                     and r.get('response_sequence') in [x['sequence'] for x in starts+stream]]
+-        require(request['wall_unix_s'] < stream[-1]['wall_unix_s'] <= max(delivery), 'Probe chronology differs')
++        require(request['wall_unix_s'] < ordering['closed']['wall_unix_s'] <= max(delivery), 'Probe chronology differs')
+         execution = {'request_wall_unix_s': request['wall_unix_s'],
+                      'evidence_complete_upper_wall_unix_s':max(delivery)}
+         completion_index = None; item = None
+     return {'item_id':identity, 'process_id':pid, 'argv':p['argv'], 'exit_code':code,
+             'stdout':bytes(stdout), 'stderr':bytes(stderr), 'item':item,
+             'completion_index':completion_index, 'execution':execution,
+-            'request_sequence':request['sequence'], 'closed_sequence':stream[-1]['sequence']}
++            'request_sequence':request['sequence'], 'closed_sequence':ordering['closed']['sequence']}
+ 
+ 
+ def reviewed_sources(source_zip, hashes, receipts):
+--- before/initial_read_composition.py
++++ after/initial_read_composition.py
+@@ -19,32 +19,47 @@
+ SCHEMA = 'initial-read-compositions-1'
+ ROOT_PREFIXES = (b'/workspace/notes', b'/workspace/programs')
+ FIND_SCRIPT = r"find /workspace/notes /workspace/programs -maxdepth 3 -type f -printf '%p\n'"
++FILTERED_FIND_SCRIPT = ('find /workspace/notes /workspace/programs /workspace/live -maxdepth 3 -type f '
++                        '! -name endpoint.json ! -name state.json ! -name activation.json -print')
++FILTERED_ROOT_PREFIXES = ROOT_PREFIXES + (b'/workspace/live',)
+ _CAT_PATH = r'''(?:Continuity\.md|/workspace/Continuity\.md|'Continuity\.md'|'/workspace/Continuity\.md'|"Continuity\.md"|"/workspace/Continuity\.md")'''
+ _PREFIX_RECIPE = re.compile(r'[ \t]*cat[ \t]+' + _CAT_PATH + r'[ \t]*&&[ \t]*'
+                             + re.escape(FIND_SCRIPT) + r'[ \t]*')
++_FILTERED_RECIPE = re.compile(r'[ \t]*cat[ \t]+' + _CAT_PATH + r'[ \t]*&&[ \t]*'
++                              + re.escape(FILTERED_FIND_SCRIPT) + r'[ \t]*')
++
++
++def find_prefix_roots(argv):
++    """Return only the root set for one of the two complete finite recipes."""
++    if (not isinstance(argv, list) or len(argv) != 3 or argv[:2] != ['/usr/bin/bash', '-lc']
++            or not isinstance(argv[2], str) or len(argv[2].encode()) > literal.MAX_SCRIPT_BYTES):
++        return None
++    if _PREFIX_RECIPE.fullmatch(argv[2]):
++        return ROOT_PREFIXES
++    if _FILTERED_RECIPE.fullmatch(argv[2]):
++        return FILTERED_ROOT_PREFIXES
++    return None
+ 
+ 
+ def find_prefix_recipe(argv):
+-    """Recognize only the declared literal cat and fixed find formatter."""
+-    return (isinstance(argv, list) and len(argv) == 3 and argv[:2] == ['/usr/bin/bash', '-lc']
+-            and isinstance(argv[2], str) and len(argv[2].encode()) <= literal.MAX_SCRIPT_BYTES
+-            and _PREFIX_RECIPE.fullmatch(argv[2]) is not None)
++    return find_prefix_roots(argv) is not None
+ 
+ 
+-def prefix_attribution(expected, raw):
++def prefix_attribution(expected, raw, roots=ROOT_PREFIXES):
+     """Prove find cannot supply any byte of the required initial prefix."""
+     require(isinstance(expected, bytes) and 0 < len(expected) <= literal.MAX_OUTPUT_BYTES,
+             'Initial prefix must be bounded and nonempty')
+     require(isinstance(raw, bytes) and 0 < len(raw) <= literal.MAX_OUTPUT_BYTES,
+             'Empty/oversize composed output')
+     require(raw[:len(expected)] == expected, 'Complete initial prefix differs from observed bytes')
+-    for root in ROOT_PREFIXES:
++    require(roots in (ROOT_PREFIXES, FILTERED_ROOT_PREFIXES), 'Unsupported find root set')
++    for root in roots:
+         require(root not in expected, 'Find root occurs inside initial prefix')
+         require(not any(expected.endswith(root[:size]) for size in range(1, len(root))),
+                 'Find root can straddle initial prefix boundary')
+     return {'segment': {'path': 'Continuity.md', 'start_byte': 0, 'end_byte': len(expected),
+                         'bytes': len(expected), 'sha256': sha(expected)},
+-            'excluded_find_initial_prefixes': [root.decode() for root in ROOT_PREFIXES],
++            'excluded_find_initial_prefixes': [root.decode() for root in roots],
+             'root_straddle_excluded': True,
+             'unattributed_remainder': {'start_byte': len(expected), 'end_byte': len(raw),
+                                       'bytes': len(raw) - len(expected), 'sha256': sha(raw[len(expected):])},
+@@ -143,7 +158,7 @@
+                 else:
+                     static, static_proof = literal.static_sources(root, host, source_zip, hashes, history,
+                         ['Continuity.md'], execution['request_wall_unix_s'], candidate_receipts)
+-                    details = prefix_attribution(static['Continuity.md'], raw)
++                    details = prefix_attribution(static['Continuity.md'], raw, find_prefix_roots(argv))
+                     match_name = 'complete_initial_continuity_prefix_from_literal_cat'
+                     scope = 'All protected initial bytes are attributed to literal cat. The remaining bytes are unattributed; no whole-current-file identity, listing snapshot, no-mutation or attention claim.'
+                 proof = {'item_id': item['id'], 'match': match_name, 'input_sha256': hashes['Continuity.md'],

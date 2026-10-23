@@ -1,0 +1,212 @@
+{
+  "records": [
+    {
+      "stage": "interrupt",
+      "item_id": "exec-3c0ba3cc-07a2-460a-bb7e-26df782fde2b",
+      "argv": [
+        "/usr/bin/bash",
+        "-lc",
+        "cat /workspace/live/activation.json"
+      ],
+      "capture": {
+        "file": "executor-2-capture.jsonl",
+        "sha256": "37e678c475e14b8b120a13781ab832fc9833cae8ce8fec7762ef372e442e7878",
+        "connection_id": "2",
+        "records": 588
+      },
+      "process_id": "2175",
+      "request_capture_sequence": 259,
+      "stream": [
+        {
+          "capture_sequence": 264,
+          "native_sequence": 1,
+          "method": "process/output",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793478.566388,
+          "exit_code": null
+        },
+        {
+          "capture_sequence": 266,
+          "native_sequence": 3,
+          "method": "process/closed",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793478.5675254,
+          "exit_code": null
+        },
+        {
+          "capture_sequence": 268,
+          "native_sequence": 2,
+          "method": "process/exited",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793478.5700366,
+          "exit_code": 0
+        }
+      ],
+      "stdout": "{\"activation_id\": \"activation-001\", \"authority_epoch\": 3, \"cause\": \"unknown\", \"invocation\": {\"authority_epoch\": 3, \"invocation_id\": \"interrupt-e4286a643507\", \"started_sim_time_s\": 1.9900000000000015, \"state\": \"active\"}, \"order_version\": 1, \"reason\": \"required progress lacks publicly supported eligible action\", \"sim_time_s\": 1.9180000000000015, \"source\": \"public conventional feedback\", \"trigger_event_id\": null}",
+      "stdout_bytes": 413,
+      "stdout_sha256": "2d0e03b433e64e8be687af1e0de470d03ea9f31609f37d3dffe078e82f9a9431",
+      "app_exit_code": 0,
+      "app_output_equals_executor": true,
+      "app_emitted_at_ms": 1790793478605
+    },
+    {
+      "stage": "resume",
+      "item_id": "exec-e5fa7fcf-c9ac-403e-b9a7-d7544a75c063",
+      "argv": [
+        "/usr/bin/bash",
+        "-lc",
+        "cat /workspace/Continuity.md && find /workspace/notes /workspace/programs /workspace/live -maxdepth 3 -type f ! -name endpoint.json ! -name state.json ! -name activation.json -print"
+      ],
+      "capture": {
+        "file": "executor-2-capture.jsonl",
+        "sha256": "7f9be581b451b8dc0d19195658d6279bd1958d4ef4d410cfa56f3042736b9960",
+        "connection_id": "2",
+        "records": 742
+      },
+      "process_id": "27944",
+      "request_capture_sequence": 262,
+      "stream": [
+        {
+          "capture_sequence": 279,
+          "native_sequence": 1,
+          "method": "process/output",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793797.8995311,
+          "exit_code": null
+        },
+        {
+          "capture_sequence": 281,
+          "native_sequence": 2,
+          "method": "process/output",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793797.9015326,
+          "exit_code": null
+        },
+        {
+          "capture_sequence": 283,
+          "native_sequence": 3,
+          "method": "process/exited",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793797.903533,
+          "exit_code": 0
+        },
+        {
+          "capture_sequence": 285,
+          "native_sequence": 4,
+          "method": "process/closed",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793797.9067445,
+          "exit_code": null
+        }
+      ],
+      "stdout": "# Bounded simulation smoke \u2014 action outcome unknown\n\nEpisode: episode-a3375497be554752. Activation: activation-001. Invocation: interrupt-e4286a643507. Tasks.md smoke stage; order revision 1. Acknowledged owner robot, authority epoch 3, packet incarnation 3, restart_generation 0. Assistance reason: required progress lacks publicly supported eligible action. Incident recovery/part movement is outside this task.\n\nFresh observation smoke-observe-interrupt-e4286a643507-001 is terminal completed (query receipt notes/smoke-observe-terminal.json; event 1224). Capture sequence 1197 at simulation time 122.110 s, public observation event 1223: gripper width 0.07999999880118458 metres and holding_visible_id null. Event 1222 reports a PNG available; its image content was not inspected. These are structured RGB-D/telemetry facts; visibility inference is not hidden payload proof. Full evidence: notes/smoke-observation.json and notes/smoke-history-observation.json.\n\nGateway status notes/smoke-status-before.json at sim time 158.940 s, sequence 1563, acquisition age 0.114 s at read: owner robot/epoch 3, invocation active, station idle, no active or unresolved commands, action budget used 0. Program will re-read current status before any action; these saved observations become stale with time.\n\nLast reviewed event: 35 (contiguous startup cursor; notes/smoke-history-startup.json). Also inspected focused events 1217-1236, including request 1219 and observation completion 1224. Events 36-1216 were not reviewed; do not treat the service high-water mark 1590 as reviewed history. Startup event 32 confirms the current invocation/epoch. Earlier conventional observe actions were terminal completed.\n\nBoundary canaries executed once via python3 /canary.py: qualified true, all checks true; actual returned JSON retained in notes/boundary-observation.json. No actuator submissions by those checks.\n\nNEXT CONSEQUENTIAL STEP: launch programs/safe_open_v1.py exactly once using python3 /program_runner.py programs/safe_open_v1.py --timeout 45. Source SHA256 3614ac596bdce0d54915001559b692d72ca0227990638bc66363566cbac7d6a9; syntax validated without execution (notes/safe-open-v1-syntax.json). Tasks.md/Tools.md authorize this immutable-snapshot path despite the stale programs/README.md template.\n\nIntended stable action ID: smoke-open-001. Planned action: {\"operation\":\"gripper\",\"state\":\"open\",\"duration_s\":0.5}; duration in simulation seconds. Protected wrapper retains measured arm joint positions. No arm movement, jaw closing, or part movement is planned. Preconditions: current robot ownership in the same episode/activation/invocation/epoch/revision, fresh public observation, measured open jaws (0.080 +/- 0.001 m), no visibly held object, idle robot/resource/station, no unresolved commands or prior same-ID action. If absent or rejected, record blocker and stop.\n\nAt this commit smoke-open-001 is PLANNED, NOT YET SUBMITTED; its outcome is UNKNOWN. The program will print/flush the receipt and sleep 30 seconds without another action. The trusted controller deliberately interrupts this invocation after gateway recording. A lost response may mean requested/accepted/dispatched/executing/terminal status unknown; query the protected registry before interpreting it. Never retry, relaunch, or request handback in this smoke activation. No handback/help has been requested.\n\nSuccess evidence for subsequent trusted reconciliation: a single protected smoke-open-001 registry entry/dispatch, terminal result and fresh public jaw/arm telemetry, plus immutable runner records under notes/program-runs. Syntax and accepted receipts alone do not establish physical completion. Preserve this unknown outcome through the expected interruption.\n/workspace/notes/smoke-open-receipt.json\n/workspace/notes/smoke-history-startup.json\n/workspace/notes/smoke-history-observation.json\n/workspace/notes/safe-open-v1-syntax.json\n/workspace/notes/next-continuity.md\n/workspace/notes/smoke-open-preflight.json\n/workspace/notes/README.md\n/workspace/notes/smoke-open-preconditions.json\n/workspace/notes/boundary-observation.json\n/workspace/notes/executor-canary.txt\n/workspace/notes/smoke-observe-request.json\n/workspace/notes/smoke-pre-action-continuity-receipt.json\n/workspace/notes/smoke-observation.json\n/workspace/notes/program-runs/3614ac596bdc-fac4607b1dd7.admitted.json\n/workspace/notes/smoke-status-before.json\n/workspace/notes/prior-local-continuity.md\n/workspace/notes/smoke-observe-terminal.json\n/workspace/programs/safe_open_v1.py\n/workspace/programs/README.md\n/workspace/live/events.jsonl\n/workspace/live/README.md\n/workspace/live/observations/latest.json\n/workspace/live/observations/.gitkeep\n/workspace/live/canaries.json\n",
+      "stdout_bytes": 4723,
+      "stdout_sha256": "0db674dd7c4262ec5460f1e8f5047e6627773a9f006668c56903059f63fa38e7",
+      "app_exit_code": 0,
+      "app_output_equals_executor": true,
+      "app_emitted_at_ms": 1790793797944
+    },
+    {
+      "stage": "resume",
+      "item_id": "exec-63fbd134-37b5-410b-8331-f95db27ce075",
+      "argv": [
+        "/usr/bin/bash",
+        "-lc",
+        "python3 /canary.py > notes/resume-boundary-observation.json && cat notes/resume-boundary-observation.json"
+      ],
+      "capture": {
+        "file": "executor-2-capture.jsonl",
+        "sha256": "7f9be581b451b8dc0d19195658d6279bd1958d4ef4d410cfa56f3042736b9960",
+        "connection_id": "2",
+        "records": 742
+      },
+      "process_id": "82831",
+      "request_capture_sequence": 573,
+      "stream": [
+        {
+          "capture_sequence": 576,
+          "native_sequence": 1,
+          "method": "process/exited",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793903.2201555,
+          "exit_code": 0
+        },
+        {
+          "capture_sequence": 578,
+          "native_sequence": 2,
+          "method": "process/output",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793903.2226665,
+          "exit_code": null
+        },
+        {
+          "capture_sequence": 580,
+          "native_sequence": 3,
+          "method": "process/closed",
+          "delivered": true,
+          "unredacted": true,
+          "wall_unix_s": 1790793903.2236726,
+          "exit_code": null
+        }
+      ],
+      "stdout": "{\"qualified\": true, \"checks\": {\"workspace_read\": true, \"repository_canary\": true, \"unrelated_user_canary\": true, \"evaluator_canary\": true, \"development_evidence_canary\": true, \"hidden:/mnt/c\": true, \"hidden:/mnt/d\": true, \"hidden:/home\": true, \"hidden:/init\": true, \"hidden:/proc/1/root/mnt/c\": true, \"readonly:RobotAgentPrompt.md\": true, \"readonly:Tasks.md\": true, \"readonly:Tools.md\": true, \"readonly:live/state.json\": true, \"write:notes\": true, \"write:programs\": true, \"write:Continuity.md\": true, \"continuity_fixed_link\": true, \"continuity_atomic_replace\": true, \"workspace_root_write_denied\": true, \"continuity_public_link_replace_denied\": true, \"symlink_escape_denied\": true, \"external_ipv4_denied\": true, \"host_loopback_other_port_denied\": true, \"external_ipv6_denied\": true, \"udp_egress_denied\": true, \"approved_loopback_gateway\": true, \"unknown_endpoint_denied\": true, \"arbitrary_url_denied\": true, \"route_denied:GET:/operator/status\": true, \"route_denied:POST:/operator/start-invocation\": true, \"route_denied:POST:/operator/retire-invocation\": true, \"route_denied:POST:/operator/stop\": true, \"route_denied:POST:/restart-agent\": true, \"route_denied:POST:/run-program\": true, \"route_denied:GET:/history?after=0&limit=201\": true, \"route_denied:GET:/history?after=0&limit=1&url=http://example.com\": true, \"route_denied:GET:/command/../status\": true, \"route_denied:GET:/%73tatus\": true, \"route_denied:POST:/status\": true, \"route_denied:GET:/observe\": true, \"direct_ipc_operator_denied\": true, \"gateway_authentication\": true, \"child_inherits_boundary\": true, \"nested_user_namespace_denied\": true}, \"details\": {\"repository_canary\": {\"errno\": 2}, \"unrelated_user_canary\": {\"errno\": 2}, \"evaluator_canary\": {\"errno\": 2}, \"development_evidence_canary\": {\"errno\": 2}, \"symlink_escape_denied\": {\"errno\": 2}, \"external_ipv4\": {\"errno\": 101}, \"host_loopback_other_port\": {\"errno\": 111}, \"external_ipv6\": {\"errno\": 101}, \"udp_egress\": {\"errno\": 101}, \"nested_namespace_stderr\": \"unshare: unshare failed: No space left on device\"}, \"scope\": \"nonmodel boundary canaries; read-only status against protected gateway; no actuator submissions by these checks\"}\n",
+      "stdout_bytes": 2150,
+      "stdout_sha256": "f2c168e3f944d954085f606e52cce5a6d3bca588da503a3df749410dc0428f07",
+      "app_exit_code": 0,
+      "app_output_equals_executor": true,
+      "app_emitted_at_ms": 1790793903226
+    }
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\final-qualification-030\\smoke-028\\disposition.json",
+      "sha256": "18b9e4bedccdf4b90a0063e6f44adca723130c7de6ac079a6680ad0522faea6a",
+      "bytes": 2256
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-102\\code.zip",
+      "sha256": "3077212be7f1d5641ec206c1608d9d90e1ee1328662903ae6c0ff5dce7b54ca1",
+      "bytes": 3649800
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-028\\orchestrator\\interrupt\\client\\events.jsonl",
+      "sha256": "060ac8af5ad4ac5a4502f855fb37324a6e59c28eccc73e60719ac6233d6673b2",
+      "bytes": 770848
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-028\\orchestrator\\interrupt\\executor-1-capture.jsonl",
+      "sha256": "0fb50313fd34d65e0de08c273c5b2c29f164101529b7989fb4ba54bb48155842",
+      "bytes": 29571
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-028\\orchestrator\\interrupt\\executor-2-capture.jsonl",
+      "sha256": "37e678c475e14b8b120a13781ab832fc9833cae8ce8fec7762ef372e442e7878",
+      "bytes": 609443
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-028\\orchestrator\\resume\\client\\events.jsonl",
+      "sha256": "49d7939157af50faf48ef5098f0124fd95f0de2621fbc549ab87f33f687c8f3a",
+      "bytes": 1679257
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-028\\orchestrator\\resume\\executor-1-capture.jsonl",
+      "sha256": "ccf7867ff92364d073ae15f87a1d4059e75dc0304ce00127f56271f7244c1b2f",
+      "bytes": 29571
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-028\\orchestrator\\resume\\executor-2-capture.jsonl",
+      "sha256": "7f9be581b451b8dc0d19195658d6279bd1958d4ef4d410cfa56f3042736b9960",
+      "bytes": 1182272
+    }
+  ],
+  "scope": "Captured bytes and order only; no new qualification verdict."
+}

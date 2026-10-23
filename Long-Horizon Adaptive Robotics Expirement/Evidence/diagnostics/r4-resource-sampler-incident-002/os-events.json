@@ -1,0 +1,66 @@
+{
+  "schema_version": "bounded-windows-event-review-1",
+  "incident": "r4-resource-sampler-incident-002",
+  "reviewer": "Codex hdmi_power_evidence subagent; resource-sampler incident scope only",
+  "query_started_at_utc": "2026-09-24T19:31:27.8244663+00:00",
+  "query_completed_at_utc": "2026-09-24T19:31:28.2585008+00:00",
+  "method": "Get-WinEvent -FilterHashtable with LogName, StartTime, EndTime, Level; -ErrorAction Stop",
+  "query": {
+    "start_utc": "2026-09-24T19:07:20.0000000+00:00",
+    "end_utc": "2026-09-24T19:08:40.0000000+00:00",
+    "start_local": "2026-09-24T12:07:20.0000000-07:00",
+    "end_local": "2026-09-24T12:08:40.0000000-07:00",
+    "windows_time_zone_id": "Pacific Standard Time",
+    "windows_time_zone_display_name": "(UTC-08:00) Pacific Time (US & Canada)",
+    "channels": [
+      "System",
+      "Application"
+    ],
+    "levels": [
+      {
+        "number": 1,
+        "name": "Critical"
+      },
+      {
+        "number": 2,
+        "name": "Error"
+      },
+      {
+        "number": 3,
+        "name": "Warning"
+      }
+    ],
+    "provider_filter": null
+  },
+  "results": [
+    {
+      "channel": "System",
+      "status": "no_matching_events",
+      "count": 0,
+      "events": [],
+      "error_id": "NoMatchingEventsFound,Microsoft.PowerShell.Commands.GetWinEventCommand",
+      "error_message": "No events were found that match the specified selection criteria."
+    },
+    {
+      "channel": "Application",
+      "status": "no_matching_events",
+      "count": 0,
+      "events": [],
+      "error_id": "NoMatchingEventsFound,Microsoft.PowerShell.Commands.GetWinEventCommand",
+      "error_message": "No events were found that match the specified selection criteria."
+    }
+  ],
+  "limitations": [
+    "Only the stated System/Application channels, warning/error/critical levels and exact bounded time window were queried.",
+    "Informational events, WSL-specific or other operational channels, performance traces and earlier/later times were not queried.",
+    "Absence of matching events does not identify the stall cause or exclude unlogged or subsecond CPU, storage, display, WSL, process or system delays.",
+    "No causal attribution, hardware-fix claim, trial-validity change or continuation authorization is made."
+  ],
+  "actions": {
+    "read_only_event_queries": true,
+    "queue_calls": false,
+    "performance_or_device_reset": false,
+    "raw_trial_streams_read": false,
+    "only_written_artifact": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-resource-sampler-incident-002\\os-events.json"
+  }
+}

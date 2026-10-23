@@ -1,0 +1,174 @@
+--- baseline/assessment/assess.py
++++ assessment/assess.py
+@@ -120,6 +120,7 @@
+     required = [LAUNCHER, Path(__file__), REPO / TIMING_SOURCE,
+                  *(CAMPAIGN / 'harness' / name for name in ('runtime.py', 'run_host.py', 'timing.py', 'executor_capture.py')),
+                  HERE / 'retained_reads.py', HERE / 'canary_exit_proof.py', HERE / 'empty_startup_reads.py',
++                 HERE / 'canary_readback_proof.py',
+                  HERE / 'raw_tool_result_reads.py',
+                 *(PRIOR / name for name in ('assess_bootstrap.py', 'assess_smoke.py', 'assess_pilot.py'))]
+     for path in required:
+@@ -296,6 +297,130 @@
+                      'RTF 0.95 through 1.05 and outside fraction <0.01. Initialization and cleanup are excluded.'}
+ 
+ 
++def verify_mirror_epoch_denial(root, revocation, registry, history):
++    """A newly recorded 409 proves authority loss only with the protected transition."""
++    def canonical(value):
++        return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
++
++    def unique_object(pairs):
++        result = {}
++        for key, value in pairs:
++            require(key not in result, 'Duplicate mirror receipt field')
++            result[key] = value
++        return result
++
++    paths = [root / name for name in ('mirror-requests.jsonl', 'mirror-replies.jsonl')]
++    require(all(p.is_file() for p in paths) and sum(p.stat().st_size for p in paths) <= 16 * 1024 * 1024,
++            'Missing or oversized mirror request/reply evidence')
++    records = []
++    for path in paths:
++        rows = []
++        for line in path.read_bytes().splitlines(keepends=True):
++            require(line.endswith(b'\n') and 0 < len(line) <= 16384, 'Incomplete or oversized mirror receipt')
++            rows.append(json.loads(line, object_pairs_hook=unique_object))
++        records.append(rows)
++    requests, replies = records
++    require(bool(requests) and len(requests) == len(replies), 'Mirror request/reply counts differ')
++    request_keys = {'schema', 'request_id', 'method', 'path', 'origin', 'pinned_invocation_id',
++                    'pinned_authority_epoch', 'initial_state_sha256', 'request_wall_unix_s'}
++    reply_keys = request_keys | {'response_wall_unix_s', 'status', 'response_bytes',
++                                 'response_sha256', 'response_retained', 'response'}
++    ids, prior_completed = set(), None
++    for request, reply in zip(requests, replies):
++        require(isinstance(request, dict) and set(request) == request_keys
++                and isinstance(reply, dict) and set(reply) == reply_keys,
++                'Mirror receipt fields differ')
++        rid = request['request_id']
++        require(isinstance(rid, str) and len(rid) == 32 and all(c in '0123456789abcdef' for c in rid)
++                and rid not in ids, 'Mirror request identity missing or ambiguous')
++        ids.add(rid)
++        require(request['schema'] == 'campaign002-mirror-request-1'
++                and reply['schema'] == 'campaign002-mirror-reply-1'
++                and all(request[k] == reply[k] for k in request_keys - {'schema'})
++                and request['origin'] == 'protected_host' and request['method'] == 'GET'
++                and request['path'] == '/status', 'Mirror reply/request provenance differs')
++        start, end = request['request_wall_unix_s'], reply['response_wall_unix_s']
++        require(finite(start) and finite(end) and start <= end <= revocation['wall_unix_s']
++                and (prior_completed is None or prior_completed <= start), 'Mirror request/reply time differs')
++        prior_completed = end
++        require(type(reply['status']) is int and 100 <= reply['status'] <= 599
++                and type(reply['response_bytes']) is int and 0 < reply['response_bytes'] <= 8 * 1024 * 1024
++                and isinstance(reply['response_sha256'], str) and len(reply['response_sha256']) == 64
++                and all(c in '0123456789abcdef' for c in reply['response_sha256'])
++                and type(reply['response_retained']) is bool, 'Mirror response identity malformed')
++        if reply['response_retained']:
++            raw = canonical(reply['response'])
++            require(len(raw) <= 4096 and len(raw) == reply['response_bytes']
++                    and sha(raw) == reply['response_sha256'], 'Mirror response bytes/hash differ')
++        else:
++            require(reply['response'] is None and reply['response_bytes'] > 4096,
++                    'Mirror omitted response identity differs')
++    reply = replies[-1]
++    require(all(q['status'] == 200 and (not q['response_retained']
++                or isinstance(q['response'], dict) and q['response'].get('ok') is True)
++                for q in replies[:-1]), 'Earlier mirror reply is not successful')
++    require(revocation.get('source') == 'public_mirror' and revocation.get('trace_id') is None
++            and revocation.get('method') == 'GET' and revocation.get('path') == '/status'
++            and revocation.get('mirror_context') == reply
++            and type(revocation.get('status')) is int and revocation['status'] == reply['status'] == 409,
++            'Epoch revocation has no exact protected mirror reply')
++    body = reply['response']
++    require(reply['response_retained'] is True and isinstance(body, dict)
++            and body.get('ok') is False and isinstance(body.get('error'), dict)
++            and body['error'].get('code') == 'stale_authentication'
++            and revocation.get('response') == body, 'Epoch revocation lacks exact typed denial')
++    epoch, invocation = reply['pinned_authority_epoch'], reply['pinned_invocation_id']
++    require(type(epoch) is int and epoch >= 0 and revocation.get('pinned_authority_epoch') == epoch
++            and type(revocation.get('pinned_authority_epoch')) is int
++            and isinstance(invocation, str) and 0 < len(invocation) <= 128,
++            'Mirror pinned invocation/epoch malformed')
++    require(all(q['pinned_authority_epoch'] == epoch and type(q['pinned_authority_epoch']) is int
++                and q['pinned_invocation_id'] == invocation
++                and q['initial_state_sha256'] == reply['initial_state_sha256'] for q in requests),
++            'Mirror invocation binding changes between requests')
++    stage = read_json(root / 'stage-result.json')
++    initial = read_json(root / 'runtime-input-hashes.json')
++    require(stage.get('invocation_id') == invocation
++            and isinstance(reply['initial_state_sha256'], str) and len(reply['initial_state_sha256']) == 64
++            and initial.get('live/state.json') == reply['initial_state_sha256'],
++            'Mirror invocation or initial-state source binding differs')
++    matching = lambda kind: [e for e in history if e.get('type') == kind
++                            and isinstance(e.get('payload'), dict)
++                            and isinstance(e['payload'].get('invocation'), dict)
++                            and e['payload']['invocation'].get('invocation_id') == invocation]
++    starts, retires = matching('invocation_start-invocation'), matching('invocation_retire-invocation')
++    require(len(starts) == len(retires) == 1, 'Missing or ambiguous protected invocation transition')
++    started, retired = starts[0], retires[0]
++    a, b = started['payload'], retired['payload']
++    require(type(started.get('event_id')) is int and type(retired.get('event_id')) is int
++            and started['event_id'] < retired['event_id']
++            and finite(started.get('wall_unix_s')) and finite(retired.get('wall_unix_s'))
++            and started['wall_unix_s'] <= reply['request_wall_unix_s']
++            <= retired['wall_unix_s'] <= reply['response_wall_unix_s'] <= revocation['wall_unix_s']
++            and type(started.get('authority_epoch')) is int and started['authority_epoch'] == epoch
++            and type(retired.get('authority_epoch')) is int and retired['authority_epoch'] == epoch + 1
++            and type(a.get('authority_epoch')) is int and a['authority_epoch'] == epoch
++            and type(b.get('authority_epoch')) is int and b['authority_epoch'] == epoch + 1
++            and a['invocation'].get('state') == 'active' and b['invocation'].get('state') == 'retired'
++            and type(a['invocation'].get('authority_epoch')) is int and a['invocation']['authority_epoch'] == epoch
++            and type(b['invocation'].get('authority_epoch')) is int and b['invocation']['authority_epoch'] == epoch,
++            'Protected invocation/epoch transition is outside the mirror request')
++    command = registry.get(b.get('request_id'), {})
++    require(command.get('actor') == 'operator' and command.get('kind') == 'retire-invocation'
++            and command.get('phase') == 'terminal' and command.get('status') == 'completed'
++            and command.get('request_id') == b.get('request_id')
++            and command.get('envelope', {}).get('invocation_id') == invocation
++            and type(command.get('envelope', {}).get('authority_epoch')) is int
++            and command['envelope']['authority_epoch'] == epoch
++            and command.get('transition') == {k: v for k, v in b.items() if k != 'request_id'},
++            'Epoch denial lacks protected completed retirement command')
++    return {'schema': 'campaign002-mirror-epoch-denial-proof-1', 'request_id': reply['request_id'],
++            'invocation_id': invocation, 'pinned_authority_epoch': epoch,
++            'start_event_id': started['event_id'], 'retirement_event_id': retired['event_id'],
++            'request_count': len(requests), 'response_sha256': reply['response_sha256'],
++            'scope': 'Loss of this invocation authority only; no successful operation or task outcome.'}
++
++
+ def verify_transport(stage_root, registry, history):
+     """Join pre-dispatch traces to replies and distinguish local from host denials."""
+     root = Path(stage_root)
+@@ -311,6 +436,7 @@
+     revocation_path = root / 'authority-revocation.json'
+     revocation = read_json(revocation_path) if revocation_path.exists() else None
+     latch_time = revocation.get('wall_unix_s') if revocation else None
++    epoch_denial = None
+     if revocation:
+         require(finite(latch_time), 'Revocation time is missing or non-finite')
+         response = revocation.get('response', {})
+@@ -356,6 +482,8 @@
+             require(revocation.get('status') == 403 and response.get('ok') is False
+                     and response.get('error', {}).get('code') in ('unauthorized', 'invocation_retired'),
+                     'Host revocation denial lacks explicit protected capability denial')
++        elif reason == 'host_epoch_denied':
++            epoch_denial = verify_mirror_epoch_denial(root, revocation, registry, history)
+         else:
+             raise ValueError('Unknown authority revocation reason')
+     local_denials = 0
+@@ -392,6 +520,7 @@
+     return {'schema': 'rci-campaign-independent-transport-2', 'passed': True,
+             'request_count': len(requests), 'local_denial_count': local_denials,
+             'authority_revocation': revocation, 'nonfatal_mirror_closure': closure,
++            'mirror_epoch_denial': epoch_denial,
+             'scope': 'Pre-dispatch broker traces bind reply origin. Local denials establish no host reply, '
+                      'continuity commit, retirement receipt or task success.'}
+ 
+@@ -536,6 +665,7 @@
+         model_canary_repetition_observed=stage['checks'].get('all_45_model_canaries_saved'),
+         actual_canary_retained_evidence=stage['canary_matches'],
+         canary_check_values_audit=stage.get('canary_exit_proof'),
++        canary_readback_audit=stage.get('canary_readback_proof'),
+         time={'maximum_wall_minus_sim_s': lag, 'sim_elapsed_s': host_result.get('sim_elapsed_s'),
+               'wall_elapsed_s': host_result.get('wall_elapsed_s'), 'predeclared_max_lag_s': timing_max_lag_s},
+         bindings={'manifest_sha256': manifest_sha256, 'framework_snapshot_sha256': hash_file(frozen_path),

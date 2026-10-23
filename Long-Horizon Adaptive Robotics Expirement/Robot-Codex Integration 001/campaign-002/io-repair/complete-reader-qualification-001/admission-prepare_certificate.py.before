@@ -1,0 +1,295 @@
+"""Bind completed qualification and twenty manifests; never launch a run."""
+import argparse
+from contextlib import contextmanager
+from datetime import datetime, timezone
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import sys
+
+HERE = Path(__file__).resolve().parent
+CAMPAIGN = HERE.parent
+RCI = CAMPAIGN.parent
+REPO = RCI.parents[1]
+
+
+def identity(path):
+    path = Path(path).resolve()
+    return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+
+
+def save(path, raw):
+    with Path(path).open('xb') as stream:
+        stream.write(raw)
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def load_verifier():
+    spec = importlib.util.spec_from_file_location('certificate_admission', CAMPAIGN / 'admission.py')
+    verifier = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(verifier)
+    return verifier
+
+
+@contextmanager
+def qualification_validator(path):
+    """Use the fixed coordinator's read-only helpers without leaking its path edits."""
+    original_path = sys.path[:]
+    try:
+        spec = importlib.util.spec_from_file_location('certificate_final_qualification', path)
+        coordinator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(coordinator)
+        for name in ('admission', 'operate'):
+            module_path = Path(getattr(coordinator, name).__file__).resolve()
+            if module_path != (CAMPAIGN / (name + '.py')).resolve():
+                raise ValueError('Qualification validator imported a different operator module: ' + name)
+        yield coordinator
+    finally:
+        sys.path[:] = original_path
+
+
+def artifact_paths(snapshot, qualification_index, schedule):
+    return {
+        'protocol': CAMPAIGN / 'PLAN.md', 'schedule': schedule,
+        'source_snapshot': snapshot, 'source_archive': snapshot.with_name('code.zip'),
+        'approval': HERE / 'approval-source.md', 'base_assessor': CAMPAIGN / 'assessment/assess.py',
+        'smoke_assessor': CAMPAIGN / 'assessment/assess_smoke_v2.py',
+        'admission_verifier': CAMPAIGN / 'admission.py', 'operator': CAMPAIGN / 'operate.py',
+        'registry': CAMPAIGN / 'registry.py', 'settlement': CAMPAIGN / 'settle.py',
+        'campaign_coordinator': CAMPAIGN / 'run_campaign.py',
+        'qualification_coordinator': CAMPAIGN / 'qualification/run_final_qualification_v30.py',
+        'boundary_inventory_preparer': CAMPAIGN / 'qualification/prepare_boundary_v3.py',
+        'continuous_physics_method': CAMPAIGN / 'io-repair/DESIGN.md',
+        'qualification_readiness': CAMPAIGN / 'qualification/final-qualification-030-readiness.json',
+        'qualification_preflight': CAMPAIGN / 'qualification/final-qualification-030/preflight.json',
+        'qualification_completion': CAMPAIGN / 'qualification/final-qualification-030/completed.json',
+        'storage_policy': HERE / 'storage-policy.json',
+        'storage_monitor': RCI / 'campaign-001/admission/storage-guard/storage_guard.py',
+        'storage_baseline': HERE / 'storage-baseline-001.json',
+        'qualification_index': qualification_index, 'asset_refresh': HERE / 'asset-refresh.json',
+        'asset_verifier': HERE / 'verify_assets.py', 'certificate_preparer': Path(__file__),
+        'qualification_index_preparer': HERE / 'prepare_index.py',
+        'timing_method': CAMPAIGN / 'timing-repair.md',
+        'transport_method': CAMPAIGN / 'transport-repair.md',
+        'source_read_method': CAMPAIGN / 'qualification/smoke-001-read-diagnosis.md',
+        'source_read_recognition_method': CAMPAIGN / 'io-repair/smoke-003-read-recognition-analysis.md',
+        'source_read_recognition_evidence': CAMPAIGN / 'io-repair/smoke-003-read-recognition-analysis.json',
+        'literal_read_method': CAMPAIGN / 'io-repair/READ_EVIDENCE_V2.md',
+        'literal_read_diagnosis': CAMPAIGN / 'io-repair/smoke-004-read-recognition-analysis.json',
+        'transport_evidence_method': CAMPAIGN / 'io-repair/TRANSPORT_EVIDENCE_V2.md',
+        'transport_failure_diagnosis': CAMPAIGN / 'io-repair/smoke-005-failure-analysis.json',
+        'transport_failure_reproduction': CAMPAIGN / 'io-repair/transport-005-reproduction.json',
+        'transport_runtime_parity': CAMPAIGN / 'io-repair/transport-runtime-source-parity.json',
+        'process_sequence_method': CAMPAIGN / 'io-repair/PROCESS_SEQUENCE_EVIDENCE_V1.md',
+        'process_sequence_diagnosis': CAMPAIGN / 'io-repair/smoke-006-live-read-analysis.json',
+        'conventional_admission_method': CAMPAIGN / 'io-repair/CONVENTIONAL_ADMISSION_ORDER_V1.md',
+        'conventional_admission_diagnosis': CAMPAIGN / 'io-repair/native-008-admission-analysis.json',
+        'conventional_admission_diagnosis_report': CAMPAIGN / 'io-repair/native-008-admission-analysis.md',
+        'raw_tool_result_method': CAMPAIGN / 'io-repair/RAW_TOOL_RESULT_EVIDENCE_V1.md',
+        'raw_event_runtime_parity': CAMPAIGN / 'io-repair/raw-event-source-parity.json',
+        'channel_transport_method': CAMPAIGN / 'io-repair/CODEHOST_CHANNEL_TRANSPORT_V3.md',
+        'channel_transport_qualification_contract': CAMPAIGN / 'io-repair/CHANNEL_TRANSPORT_V3_QUALIFICATION_001.md',
+        'channel_transport_runtime_parity': CAMPAIGN / 'io-repair/channel-transport-source-parity.json',
+        'channel_transport_failure_diagnosis': CAMPAIGN / 'io-repair/smoke-009-transport-failure-analysis.json',
+        'channel_client_failure_diagnosis': CAMPAIGN / 'io-repair/smoke-009-client-failure-analysis.json',
+        'channel_native_source_analysis': CAMPAIGN / 'io-repair/codehost-channel-source-001/analysis.json',
+        'channel_startup_repair_method': CAMPAIGN / 'io-repair/CHANNEL_TRANSPORT_STARTUP_REPAIR_V1.md',
+        'channel_startup_failure_diagnosis': CAMPAIGN / 'io-repair/raw-preflight-002-failure-analysis.json',
+        'channel_probe_process_identity_method': CAMPAIGN / 'io-repair/CHANNEL_PROBE_PROCESS_IDENTITY_V1.md',
+        'channel_probe_process_identity_diagnosis': CAMPAIGN / 'io-repair/transport-probe-006-failure-analysis.json',
+        'channel_finish_frontier_method': CAMPAIGN / 'io-repair/CHANNEL_FINISH_FRONTIER_VALIDATION_V1.md',
+        'channel_finish_frontier_failure_diagnosis': CAMPAIGN / 'io-repair/transport-probe-007-failure-analysis.json',
+        'channel_probe_sequence_method': CAMPAIGN / 'io-repair/CHANNEL_PROBE_SEQUENCE_SYNCHRONIZATION_V1.md',
+        'channel_probe_sequence_failure_diagnosis': CAMPAIGN / 'io-repair/transport-probe-008-failure-analysis.json',
+        'channel_owner_drain_method': CAMPAIGN / 'io-repair/CHANNEL_OWNER_DRAIN_V1.md',
+        'channel_owner_drain_failure_diagnosis': CAMPAIGN / 'io-repair/smoke-014-shutdown-failure-analysis.json',
+        'channel_probe_shutdown_accounting_diagnosis': CAMPAIGN / 'io-repair/transport-probe-010-failure-analysis.json',
+        'native_thread_quiescence_method': CAMPAIGN / 'io-repair/NATIVE_THREAD_QUIESCENCE_V1.md',
+        'native_thread_quiescence_diagnosis': CAMPAIGN / 'io-repair/shutdown-diagnostic-001-failure-analysis.json',
+        'native_thread_unload_scheduling_method': CAMPAIGN / 'io-repair/NATIVE_THREAD_UNLOAD_SCHEDULING_V1.md',
+        'native_thread_unload_scheduling_diagnosis': CAMPAIGN / 'io-repair/raw-preflight-009-failure-analysis.json',
+        'preflight_v3_lifecycle_join_method': CAMPAIGN / 'io-repair/PREFLIGHT_V3_LIFECYCLE_JOIN_V1.md',
+        'preflight_v3_lifecycle_join_diagnosis': CAMPAIGN / 'io-repair/raw-preflight-010-failure-analysis.json',
+        'normal_closed_cancel_method': CAMPAIGN / 'io-repair/NORMAL_CLOSED_CANCEL_V1.md',
+        'normal_closed_cancel_diagnosis': CAMPAIGN / 'io-repair/shutdown-diagnostic-002-failure-analysis.json',
+        'native_cleanup_cancellation_method': CAMPAIGN / 'io-repair/NATIVE_CLEANUP_CANCELLATION_V1.md',
+        'native_cleanup_cancellation_diagnosis': CAMPAIGN / 'io-repair/smoke-020-transport-failure-analysis.json',
+        'prepared_startup_segments_method': CAMPAIGN / 'io-repair/PREPARED_STARTUP_SEGMENTS_V1.md',
+        'epoch_revocation_index_shorthand_method': CAMPAIGN / 'io-repair/EPOCH_REVOCATION_AND_INDEX_SHORTHAND_V1.md',
+        'canary_readback_exclusivity_method': CAMPAIGN / 'io-repair/CANARY_READBACK_EXCLUSIVITY_V1.md',
+        'prepared_index_labels_method': CAMPAIGN / 'io-repair/PREPARED_INDEX_LABELS_V1.md',
+        'pilot_retirement_inventory_method': CAMPAIGN / 'io-repair/PILOT_RETIREMENT_INVENTORY_V1.md',
+        'native_pre_exit_drain_method': CAMPAIGN / 'io-repair/native-pre-exit-drain-001/DECLARATION.md',
+        'native_pre_exit_drain_assessor': CAMPAIGN / 'assessment/pre_exit_integrity.py',
+        'native_process_drain_method': CAMPAIGN / 'io-repair/GRACEFUL_PROCESS_DRAIN_V1.md',
+        'native_process_drain_assessor': CAMPAIGN / 'assessment/process_integrity.py',
+        'native_process_drain_diagnostic_proof': CAMPAIGN / 'io-repair/graceful-process-assessment-001/transport-proof.json',
+        'native_process_drain_diagnostic_result': CAMPAIGN / 'io-repair/graceful-process-assessment-001/terminal-result.json',
+        'pilot_stock024_lifecycle_diagnosis': CAMPAIGN / 'io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.json',
+        'pilot_stock024_lifecycle_diagnosis_report': CAMPAIGN / 'io-repair/pilot-stock024-lifecycle-diagnosis-001/diagnosis.md',
+        'smoke024_read_diagnosis': CAMPAIGN / 'io-repair/smoke-024-read-diagnosis-001/analysis.json',
+        'smoke024_read_diagnosis_report': CAMPAIGN / 'io-repair/smoke-024-read-diagnosis-001/analysis.md',
+        'smoke023_read_proof_diagnosis': CAMPAIGN / 'io-repair/smoke-023-read-proof-diagnosis.json',
+        'smoke023_read_proof_diagnosis_report': CAMPAIGN / 'io-repair/smoke-023-read-proof-diagnosis.md',
+        'smoke023_transport_diagnosis': CAMPAIGN / 'io-repair/smoke-023-transport-diagnosis.json',
+        'smoke023_transport_diagnosis_report': CAMPAIGN / 'io-repair/smoke-023-transport-diagnosis.md',
+        'smoke023_canary_diagnosis': CAMPAIGN / 'io-repair/smoke-023-canary-diagnosis.json',
+        'prepared_startup_segments_diagnosis': CAMPAIGN / 'io-repair/smoke-022-read-proof-diagnosis.json',
+        'prepared_startup_segments_diagnosis_report': CAMPAIGN / 'io-repair/smoke-022-read-proof-diagnosis.md',
+        'prepared_startup_native_manifest': CAMPAIGN / 'io-repair/native-output-source-003/manifest.json',
+        'prepared_startup_native_analysis': CAMPAIGN / 'io-repair/native-output-source-003/findings.json',
+        'prepared_startup_native_analysis_report': CAMPAIGN / 'io-repair/native-output-source-003/findings.md',
+        'initial_read_evidence_method': CAMPAIGN / 'io-repair/READ_EVIDENCE_V3.md',
+        'initial_read_evidence_diagnosis': CAMPAIGN / 'io-repair/smoke-021-read-proof-diagnosis.json',
+        'initial_read_evidence_diagnosis_report': CAMPAIGN / 'io-repair/smoke-021-read-proof-diagnosis.md',
+        'initial_read_chronology_analysis': CAMPAIGN / 'io-repair/smoke-021-chronology-analysis.json',
+        'initial_read_chronology_analysis_report': CAMPAIGN / 'io-repair/smoke-021-chronology-analysis.md',
+        'startup_output_delivery_diagnosis': CAMPAIGN / 'io-repair/smoke-008-output-delivery-analysis.json',
+        'startup_output_delivery_diagnosis_report': CAMPAIGN / 'io-repair/smoke-008-output-delivery-analysis.md',
+        'prepared_tool_result_native_analysis': CAMPAIGN / 'io-repair/native-output-source-002/raw-tool-result-analysis.json',
+        'prepared_tool_result_native_analysis_report': CAMPAIGN / 'io-repair/native-output-source-002/raw-tool-result-analysis.md',
+    }
+
+
+def verify_final_lineage(snapshot_path, index, paths):
+    """Cross-check trusted operator records before creating any candidate or seal.
+
+    These records extend the externally sealed certificate's provenance. They do
+    not replace the independent verifier's native, boundary, smoke or pilot gates.
+    """
+    names = ('qualification_coordinator', 'qualification_readiness', 'qualification_preflight',
+             'qualification_completion', 'qualification_index')
+    bindings = {name: identity(paths[name]) for name in names}
+    read = lambda path: json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    preflight = read(paths['qualification_preflight'])
+    completed = read(paths['qualification_completion'])
+    if (preflight.get('schema') != 'campaign002-final-qualification-preflight-1'
+            or preflight.get('coordinator') != bindings['qualification_coordinator']
+            or preflight.get('readiness') != bindings['qualification_readiness']
+            or preflight.get('readiness_sha256') != bindings['qualification_readiness']['sha256']):
+        raise ValueError('Qualification preflight does not bind the exact coordinator and readiness')
+    if (completed.get('schema') != 'campaign002-final-qualification-completed-1'
+            or not isinstance(completed.get('pilots'), list) or len(completed['pilots']) != 2
+            or any(not isinstance(completed.get(key), dict) for key in ('native', 'boundary', 'smoke'))
+            or any(completed.get(key) != index.get(key) for key in ('native', 'boundary', 'smoke', 'pilots'))
+            or read(paths['qualification_index']) != index):
+        raise ValueError('Qualification completion differs from the exact ordered qualification index')
+    with qualification_validator(paths['qualification_coordinator']) as coordinator:
+        readiness = coordinator.load_readiness(paths['qualification_readiness'], preflight['readiness_sha256'])
+        for field in ('source_snapshot', 'stages', 'diagnostic', 'repair_test_receipt', 'transport_diagnostic',
+                      'raw_event_preflight'):
+            if field not in readiness or preflight.get(field) != readiness[field]:
+                raise ValueError('Qualification preflight differs from declared readiness: ' + field)
+        entries = [completed['native'], completed['boundary'], completed['smoke'], *completed['pilots']]
+        final_snapshot = identity(snapshot_path)
+        for stage, entry in zip(readiness['stages'], entries):
+            name, kind, revision, seed = stage
+            expected = coordinator.entry_for(name, kind, revision)
+            if not isinstance(entry, dict):
+                raise ValueError('Malformed completed qualification entry: ' + name)
+            for key in ('manifest', 'snapshot', 'queue', 'assessment'):
+                if not isinstance(entry.get(key), dict) or entry[key].get('path') != str(expected[key].resolve()):
+                    raise ValueError('Completed qualification stage path differs: ' + name + '/' + key)
+            if entry.get('evidence') != str(expected['evidence'].resolve()):
+                raise ValueError('Completed qualification evidence differs: ' + name)
+            manifest = read(coordinator.admission.artifact(entry['manifest']))
+            frozen = read(coordinator.admission.artifact(entry['snapshot']))
+            if (manifest.get('run_id') != expected['run_id'] or manifest.get('framework_revision') != revision
+                    or frozen.get('revision') != revision):
+                raise ValueError('Completed qualification identity or revision differs: ' + name)
+            if kind not in ('native', 'boundary'):
+                if (entry['snapshot'] != final_snapshot or type(manifest.get('noise_seed')) is not int
+                        or manifest['noise_seed'] != seed
+                        or entry.get('host_evidence') != str(expected['host'].resolve())):
+                    raise ValueError('Completed model qualification final source, seed or host differs: ' + name)
+                if kind in ('stock', 'home') and entry.get('family') != {
+                        'stock': 'misplaced-stock', 'home': 'blocked-insert-home'}[kind]:
+                    raise ValueError('Completed pilot family differs: ' + name)
+        coordinator.assert_sources(readiness, snapshot_path)
+        # The existing helper authenticates official integer-zero completion before
+        # reading the diagnostic result, then independently replays the three fixed cases.
+        coordinator.verify_transport_probe(readiness['transport_diagnostic'],
+                                            coordinator.admission.artifact(readiness['source_snapshot']))
+        coordinator.verify_raw_preflight(readiness['raw_event_preflight'],
+                                         coordinator.admission.artifact(readiness['source_snapshot']))
+    if any(identity(paths[name]) != binding for name, binding in bindings.items()):
+        raise ValueError('Qualification lineage changed during pre-seal validation')
+    return bindings
+
+
+def publish_seal(raw, digest, revision):
+    """Expose certificate and seal together; interrupted staging stays distinct."""
+    final = HERE / 'sealed-v1'
+    pending = HERE / 'sealed-v1.pending'
+    if final.exists() or pending.exists():
+        raise ValueError('Existing seal or pending seal is immutable; reconcile it explicitly')
+    pending.mkdir()
+    save(pending / 'certificate.json', raw)
+    save(pending / 'seal.json', (json.dumps({'schema': 'campaign002-seal-1', 'certificate_sha256': digest,
+         'source_revision': revision, 'release_revision': 'RCI001-C02-frozen-001',
+         'sealed_utc': datetime.now(timezone.utc).isoformat()}, indent=2) + '\n').encode('utf-8'))
+    os.rename(pending, final)
+    return final / 'certificate.json'
+
+
+def prepare(snapshot_path, qualification_index, candidate, *, schedule=None, execution_plan=None, candidate_only=False):
+    snapshot_path, qualification_index, candidate = map(Path, (snapshot_path, qualification_index, candidate))
+    schedule = Path(schedule) if schedule is not None else CAMPAIGN / 'predeclared-v1/schedule.json'
+    execution_plan = Path(execution_plan) if execution_plan is not None else CAMPAIGN / 'execution-plan.json'
+    if (HERE / 'sealed-v1').exists() or (HERE / 'sealed-v1.pending').exists():
+        raise ValueError('Existing seal or pending seal is immutable; reconcile it explicitly')
+    if candidate.exists():
+        raise FileExistsError(candidate)
+    snapshot = json.loads(snapshot_path.read_text(encoding='utf-8-sig'))
+    plan = json.loads(execution_plan.read_text(encoding='utf-8-sig'))
+    index = json.loads(qualification_index.read_text(encoding='utf-8-sig'))
+    if (plan.get('schema') != 'campaign002-execution-plan-1' or plan.get('campaign_id') != 'RCI001-Campaign002'
+            or plan.get('framework_revision') != snapshot.get('revision')
+            or plan.get('release_revision') != 'RCI001-C02-frozen-001'):
+        raise ValueError('Execution plan source or release revision differs from final snapshot')
+    if (index.get('schema') != 'campaign002-qualification-index-1'
+            or index.get('source_revision') != snapshot.get('revision')
+            or index.get('final_source_snapshot') != identity(snapshot_path)):
+        raise ValueError('Qualification index is not bound to this final source snapshot')
+    paths = artifact_paths(snapshot_path, qualification_index, schedule)
+    paths['execution_plan'] = execution_plan
+    lineage = verify_final_lineage(snapshot_path, index, paths)
+    approval = HERE / 'approval-source.md'
+    if not approval.exists():
+        source = REPO / 'chats/Codex-Human/Robot-Codex Campaign 002/Robot-Codex Campaign 002 - Active.md'
+        save(approval, source.read_bytes())
+    artifacts = {key: identity(path) for key, path in paths.items()}
+    if any(artifacts[key] != binding for key, binding in lineage.items()):
+        raise ValueError('Qualification lineage changed before candidate creation')
+    value = {'schema': 'campaign002-admission-1', 'created_at': datetime.now(timezone.utc).isoformat(),
+             'campaign_id': 'RCI001-Campaign002', 'source_revision': snapshot['revision'],
+             'release_revision': 'RCI001-C02-frozen-001', 'artifacts': artifacts,
+             'attempts': plan['attempts'], 'scope': 'Twenty fresh known-fixture repeats of the unchanged Robot-Codex recovery inputs. All qualification, prospective evidence corrections and operator sources are bound before the first scored launch.'}
+    raw = (json.dumps(value, indent=2, allow_nan=False) + '\n').encode('utf-8')
+    candidate.parent.mkdir(parents=True, exist_ok=True)
+    save(candidate, raw)
+    digest = hashlib.sha256(raw).hexdigest()
+    load_verifier().verify_certificate(candidate, digest)
+    certificate = candidate if candidate_only else publish_seal(raw, digest, snapshot['revision'])
+    return {'certificate_sha256': digest, 'certificate': str(certificate.resolve()),
+            'attempts': len(plan['attempts']), 'sealed': not candidate_only}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--snapshot', type=Path, required=True)
+    parser.add_argument('--qualification-index', type=Path, required=True)
+    parser.add_argument('--candidate', type=Path, required=True)
+    parser.add_argument('--schedule', type=Path)
+    parser.add_argument('--execution-plan', type=Path)
+    parser.add_argument('--candidate-only', action='store_true', help='Verify and retain a candidate without publishing the final seal')
+    args = parser.parse_args(argv)
+    print(json.dumps(prepare(args.snapshot, args.qualification_index, args.candidate,
+        schedule=args.schedule, execution_plan=args.execution_plan, candidate_only=args.candidate_only)))
+
+
+if __name__ == '__main__':
+    main()

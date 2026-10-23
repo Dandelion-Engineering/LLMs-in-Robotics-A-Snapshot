@@ -1,0 +1,32 @@
+--- launch_final_prepared_index_label_qualification.py
++++ launch_final_pilot_retirement_inventory_qualification.py
+@@ -1,4 +1,4 @@
+-"""Retain the single V27 coordinator invocation and its streamed native output."""
++"""Retain the single V28 coordinator invocation and its streamed native output."""
+ import importlib.util
+ import json
+ from pathlib import Path
+@@ -6,7 +6,7 @@
+ import sys
+ 
+ IO = Path(__file__).resolve().parent
+-spec = importlib.util.spec_from_file_location('native_cleanup_prerequisite_control', IO / 'control_prepared_index_label_qualification.py')
++spec = importlib.util.spec_from_file_location('native_cleanup_prerequisite_control', IO / 'control_pilot_retirement_inventory_qualification.py')
+ control = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(control)
+ c = control.c
+@@ -14,11 +14,11 @@
+ 
+ def main():
+     control.bound_declaration()
+-    readiness = control.Q / 'final-qualification-027-readiness.json'
+-    passed = c.read(IO / 'v27-readiness-preflight-001.json')
++    readiness = control.Q / 'final-qualification-028-readiness.json'
++    passed = c.read(IO / 'v28-readiness-preflight-001.json')
+     c.require(passed.get('passed') is True and passed['readiness'] == c.identity(readiness),
+               'Missing or changed prerequisite preflight')
+-    coordinator = control.Q / 'run_final_qualification_v27.py'
++    coordinator = control.Q / 'run_final_qualification_v28.py'
+     c.require(passed['coordinator'] == c.identity(coordinator), 'Coordinator changed after preflight')
+     argv = c.python(coordinator, '--readiness', readiness, '--readiness-sha256', c.sha(readiness))
+     intent = c.LEDGER / 'coordinator-launch-intent.json'

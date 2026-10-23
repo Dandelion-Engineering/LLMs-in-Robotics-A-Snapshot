@@ -1,0 +1,32 @@
+{
+  "at": "2026-09-29T02:19:41.221745+00:00",
+  "commands": [
+    {
+      "argv": [
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "-c",
+        "from pathlib import Path\nimport sys,shutil,json\nimport test_transport\nt=test_transport.TransportChecks('test_actual_queued_status_loses_epoch_after_operator_retirement')\nt.setUp()\ntry:\n t.test_actual_queued_status_loses_epoch_after_operator_retirement()\n for name in ['mirror-requests.jsonl','mirror-replies.jsonl','authority-revocation.json','broker-requests.jsonl','broker-events.jsonl','stage-result.json','runtime-input-hashes.json','paired-history.json','paired-registry.json']:\n  shutil.copyfile(t.value.evidence/name,Path(sys.argv[1])/name)\n print(json.dumps({'fixture':'actual queued HTTP GET and source Supervisor retirement','passed':True}))\nfinally:t.doCleanups()\n",
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\epoch-revocation-development-001\\actual-paired-002"
+      ],
+      "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "-c",
+        "from pathlib import Path\nimport sys,json\nimport assess\np=Path(sys.argv[1]);j=lambda n:json.loads((p/n).read_text(encoding='utf-8'))\nresult=assess.verify_transport(p,j('paired-registry.json'),j('paired-history.json'))\n(p/'independent-proof.json').write_text(json.dumps(result,indent=2)+'\\n',encoding='utf-8')\nprint(json.dumps({'passed':result['passed'],'proof':result['mirror_epoch_denial']}))\n",
+        "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\epoch-revocation-development-001\\actual-paired-002"
+      ],
+      "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment",
+      "exit_code": 0
+    }
+  ],
+  "scope": "Bounded synthetic source Supervisor and queued loopback HTTP; no native/model/WSL/queue/physics."
+}

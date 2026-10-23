@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-c",
+    "import json,subprocess\ncommands=[['/usr/bin/date','--iso-8601=seconds'],['/usr/bin/id'],['/usr/bin/getent','passwd'],['/usr/bin/stat','-c','%F %a %n','/bin','/sbin','/lib','/lib64','/etc/ld.so.cache','/etc/ld.so.preload'],['/usr/bin/du','-s','-B1','/usr/bin','/usr/lib/python3.12','/usr/lib/x86_64-linux-gnu','/usr/lib/wsl','/usr/share/doc'],['/usr/bin/dpkg-query','-W','-f=${binary:Package}\\t${Version}\\t${Architecture}\\n','python3-minimal','python3.12','bubblewrap','libseccomp2','dash','coreutils','mount','util-linux','libc-bin']]\nfor command in commands:\n    argv=[r'C:\\Windows\\system32\\wsl.exe','--distribution','Ubuntu-24.04','--exec',*command]\n    r=subprocess.run(argv,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=45,creationflags=subprocess.CREATE_NO_WINDOW)\n    print(json.dumps({'argv':command,'exit_status':r.returncode,'stdout':r.stdout.decode('utf-8','replace'),'stderr':r.stderr.decode('utf-8','replace')}),flush=True)"
+  ],
+  "cancel_requested_at": null,
+  "child_pid": 7476,
+  "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics",
+  "ended_at": "2026-09-23T14:06:37.357801Z",
+  "error": null,
+  "exit_status": 0,
+  "id": "20260923T140629692617Z-ff805a67",
+  "log_path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\runtime\\logs\\20260923T140629692617Z-ff805a67.log",
+  "resolved_executable": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+  "started_at": "2026-09-23T14:06:30.139298Z",
+  "state": "succeeded",
+  "submitted_at": "2026-09-23T14:06:29.692617Z",
+  "submitting_project": "LLMs-in-Robotics",
+  "worker_pid": 25888
+}

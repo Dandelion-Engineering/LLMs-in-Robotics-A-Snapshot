@@ -1,0 +1,354 @@
+"""Synthetic metadata/outcome gates and append-only accounting identities."""
+import copy
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import patch
+
+import refresh_session14_accounting as a
+
+
+class AccountingTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = self.enterContext(tempfile.TemporaryDirectory())
+        self.repo = Path(self.temp).resolve()
+        self.c = self.repo / 'Experiment/Integration/campaign-002'
+        (self.c / 'registration').mkdir(parents=True)
+        self.prior = {'schema': 'campaign002-session14-accounting-1', 'as_of': '2026-09-28T00:00:00Z',
+            'inclusion_rule': {'queue_project': 'LLMs-in-Robotics', 'submitted_not_before': '2026-09-28T01:00:00Z'},
+            'rows': [], 'source_bindings': {'old-history': {'path': 'old-history', 'sha256': 'old', 'bytes': 1}},
+            'totals': {'diagnostic_only_observed_turn_start_requests': 1}, 'storage': {'old': 'retained'},
+            'preserved_session13_baseline': {'unchanged': True, 'old_counts': 13}}
+
+    def put(self, relative, value):
+        path = self.c / relative; path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value), encoding='utf-8')
+        return path
+
+    def job(self, number=1, script='raw_event_preflight.py', state='succeeded', exit_status=0, extra=()):
+        return {'id': f'20260928T07000000000{number}Z-abcdef0{number}', 'state': state, 'exit_status': exit_status,
+                'argv': [str(self.repo / 'python.exe'), '-X', 'utf8', '-B', str(self.c / 'harness' / script), *extra],
+                'cwd': str(self.repo), 'resolved_executable': str(self.repo / 'python.exe'),
+                'submitting_project': 'LLMs-in-Robotics', 'submitted_at': '2026-09-28T07:00:00Z',
+                'started_at': '2026-09-28T07:00:01Z', 'ended_at': '2026-09-28T07:00:04Z' if state == 'succeeded' else None}
+
+    def refresh(self, discovered, provider, reader=a.consume_success):
+        return a.build_refresh(self.prior, discovered, self.c, self.repo, provider, reader)
+
+    def diagnostic_input(self, job):
+        source=self.put('io-repair/smoke-diagnostic-analysis.json',
+                        {'queue_job_id':job['id'],'client_completion':{'model_started':True}})
+        value={'schema':'campaign002-diagnostic-start-accounting-1','queue_job_id':job['id'],
+               'official_status':job,'diagnostic_analysis':a.identity(source),
+               'observation':{'json_pointer':'/client_completion/model_started','value':True,
+                              'observed_model_starts_lower_bound':1,'scope':'diagnostic_only',
+                              'qualification':'unassessed','task_outcome':'unknown'}}
+        return self.put('registration/diagnostic-start-input-test-001.json',value),source
+
+    def test_new_diagnostic_ledger_report_and_future_execution_discovery(self):
+        jobs = [self.job(i) for i in range(1, 5)]
+        self.put('io-repair/raw-preflight-001/records/queue-submit.json', jobs[0])
+        self.put('qualification/final-qualification-999/native-999/submit-receipt.json',
+                 {'exit_code': 0, 'stdout': json.dumps(jobs[1]), 'outputs': []})
+        self.put('investigation/qualification-report-build-099-submit.json', jobs[2])
+        self.put('execution/RCI001-C02-stock-001/queue-submit.json', jobs[3])
+        found = a.discover(self.c, self.prior)
+        self.assertEqual(set(found), {j['id'] for j in jobs})
+        self.assertTrue(a.classify(jobs[3], found[jobs[3]['id']], self.c, self.repo)['scored'])
+
+    def test_discovery_deduplicates_submit_status_and_wrapper(self):
+        job = self.job()
+        self.put('io-repair/probe/records/queue-submit.json', {**job, 'state': 'running', 'exit_status': None})
+        self.put('io-repair/probe/records/official-status.json', job)
+        self.put('qualification/final-qualification-011/native-010/submit-receipt.json',
+                 {'exit_code': 0, 'stdout': json.dumps(job)})
+        found = a.discover(self.c, self.prior)
+        self.assertEqual(len(found), 1)
+        self.assertEqual(len(found[job['id']]['receipts']), 3)
+        result = self.refresh(found, lambda _: job)
+        self.assertEqual(result['totals']['official_jobs'], 1)
+        self.assertEqual(result['totals']['terminal_queue_wall_s'], 3)
+
+    def test_single_interrupt_identity_uses_dispatch_metadata_without_outputs(self):
+        run = 'RCI001-C02-shutdown-diagnostic-003'
+        evidence = self.c.parent / 'local-evidence/campaign002/io-repair' / run / 'orchestrator'
+        manifest = self.c / 'io-repair/shutdown-diagnostic-003/manifest.json'
+        job = self.job(script='run.py', state='failed', exit_status=1,
+                       extra=['--manifest', str(manifest), '--evidence', str(evidence)])
+        job['argv'][4] = str(self.c / 'io-repair/single-interrupt-diagnostic-v3/run.py')
+        with patch.object(a, 'read', side_effect=AssertionError('No outcome read allowed')):
+            info = a.classify(job, {'prior': None, 'receipts': []}, self.c, self.repo)
+            self.assertEqual(info['run_id'], run)
+            self.assertEqual(info['category'], 'unclassified_queue_job')
+            wrong = copy.deepcopy(job); wrong['argv'][-1] = str(evidence / 'wrong')
+            self.assertNotEqual(a.classify(wrong, {'prior': None, 'receipts': []}, self.c, self.repo)['run_id'], run)
+
+    def test_final_frame_export_and_qa_receipts_are_report_support(self):
+        for number, script in enumerate(('export_frames.py', 'qa.py'), 1):
+            job = self.job(number, script=script)
+            job['argv'][4] = str(self.c / 'investigation' / script)
+            self.put('investigation/final-' + script.removesuffix('.py') + '-queue.json', job)
+        found = a.discover(self.c, self.prior)
+        self.assertEqual(len(found), 2)
+        for jid, entry in found.items():
+            info = a.classify(entry['submitted'], entry, self.c, self.repo)
+            self.assertEqual(info['category'], 'report_support')
+            self.assertEqual(info['run_id'], 'investigation')
+            self.assertFalse(info['scored'])
+
+    def test_conflicting_duplicate_or_official_command_rejected(self):
+        job = self.job()
+        self.put('io-repair/probe/records/queue-submit.json', job)
+        bad = copy.deepcopy(job); bad['argv'].append('--different')
+        self.put('io-repair/probe/records/official-status.json', bad)
+        with self.assertRaisesRegex(ValueError, 'Conflicting'):
+            a.discover(self.c, self.prior)
+        with self.assertRaisesRegex(ValueError, 'immutable'):
+            a.authenticate(job['id'], {'submitted': job}, lambda _: bad)
+
+    def test_prior_session_and_empirical_subfolders_excluded(self):
+        job = self.job()
+        self.put('qualification/prior/queue-submit.json', {**job, 'submitted_at': '2026-09-27T00:00:00Z'})
+        self.put('io-repair/probe/evidence/official-status.json', job)
+        self.put('investigation/build-006-retained/official-status.json', job)
+        self.put('execution/fake/client/official-status.json', job)
+        self.assertFalse(a.discover(self.c, self.prior))
+
+    def test_failed_active_boolean_exit_and_nonzero_never_read_outcomes(self):
+        for state, code in [('failed', 1), ('running', None), ('queued', None), ('succeeded', False), ('succeeded', 3)]:
+            with self.subTest(state=state, code=code):
+                job = self.job(script='physical.py', state=state, exit_status=code,
+                               extra=['--mode', 'smoke', '--evidence', str(self.c / 'bad-output')])
+                entry = {job['id']: {'prior': None, 'receipts': [], 'submitted': job}}
+                def denied(*args):
+                    self.fail('Outcome reader entered without succeeded integer zero')
+                result = self.refresh(entry, lambda _: job, denied)
+                self.assertFalse(result['rows'][0]['empirical_results_consumed'])
+                self.assertIsNone(result['rows'][0]['known_model_invocations_started'])
+                self.assertIsNone(result['totals']['model_invocations_started_total'])
+
+    def test_all_authentication_precedes_every_outcome_read(self):
+        jobs = [self.job(i) for i in (1, 2)]; events = []
+        entries = {j['id']: {'prior': None, 'receipts': [], 'submitted': j} for j in jobs}
+        def provider(jid):
+            events.append('auth'); return next(j for j in jobs if j['id'] == jid)
+        def reader(*args):
+            events.append('read'); return {}
+        self.refresh(entries, provider, reader)
+        self.assertEqual(events, ['auth', 'auth', 'read', 'read'])
+
+    def test_raw_preflight_result_and_source_revision_are_bound(self):
+        output = self.c / 'io-repair/raw-preflight-001/evidence'
+        job = self.job(extra=['--run-id', 'RCI001-C02-raw-preflight-001', '--framework-revision', 'RCI001-C02-dev-038', '--output', str(output)])
+        self.put('io-repair/raw-preflight-001/evidence/result.json',
+                 {'run_id': 'RCI001-C02-raw-preflight-001', 'passed': True, 'model_calls': 0})
+        self.put('io-repair/raw-preflight-001/records/queue-submit.json', job)
+        result = self.refresh(a.discover(self.c, self.prior), lambda _: job)
+        row = result['rows'][0]
+        self.assertEqual(row['category'], 'non_physics_raw_event_preflight')
+        self.assertEqual(row['framework_revision'], 'RCI001-C02-dev-038')
+        self.assertEqual(row['known_model_invocations_started'], 0)
+        self.assertEqual(row['qualification_or_diagnostic_status'], 'passed')
+        self.assertIn(str(output / 'result.json'), result['refresh_provenance']['current_bindings'])
+
+    def test_new_preflight_and_shared_transport_probe_are_discovered_no_model(self):
+        jobs=[]
+        for number,script,category in ((1,'raw_event_preflight_v2.py','non_physics_raw_event_preflight'),
+                                       (2,'codehost_transport_probe_v3.py','non_physics_transport_diagnostic')):
+            output=self.c/f'io-repair/new-{number}/evidence'
+            job=self.job(number,script=script,extra=['--run-id',f'RCI001-C02-new-{number}','--output',str(output)])
+            jobs.append(job)
+            self.put(f'io-repair/new-{number}/records/queue-submit.json',job)
+            self.put(f'io-repair/new-{number}/evidence/result.json',{'passed':True,'model_calls':0})
+            info=a.classify(job,{'prior':None,'receipts':[]},self.c,self.repo)
+            self.assertEqual(info['category'],category);self.assertEqual(info['manifest'],output.parent/'manifest.json')
+        result=self.refresh(a.discover(self.c,self.prior),lambda jid:next(j for j in jobs if j['id']==jid))
+        self.assertEqual(len(result['rows']),2)
+        self.assertTrue(all(r['known_model_invocations_started']==0 for r in result['rows']))
+        self.assertEqual(result['totals']['known_qualification_model_invocations_started'],0)
+
+    def test_failed_diagnosis_model_start_is_separate_idempotent_lower_bound(self):
+        job=self.job(script='physical.py',state='failed',exit_status=1,extra=['--mode','smoke'])
+        job['ended_at']='2026-09-28T07:00:04Z'
+        path,source=self.diagnostic_input(job)
+        entries={job['id']:{'prior':None,'receipts':[],'submitted':job}}
+        def denied(*args):self.fail('Failed raw outcomes must not be read')
+        original=copy.deepcopy(self.prior)
+        first=self.refresh(entries,lambda _:job,denied)
+        self.assertEqual(first['totals']['diagnostic_only_observed_turn_start_requests'],1)
+        self.assertEqual(first['totals']['diagnostic_only_observed_model_starts_lower_bound'],2)
+        self.assertEqual(first['totals']['observed_model_starts_lower_bound_from_assessable_and_diagnostic_receipts'],2)
+        self.assertEqual(first['totals']['observed_turn_start_requests_from_assessable_and_diagnostic_receipts'],1)
+        self.assertIsNone(first['totals']['model_invocations_started_total'])
+        self.assertFalse(first['rows'][0]['empirical_results_consumed'])
+        self.assertEqual(first['rows'][0]['qualification_or_diagnostic_status'],'outcome_not_consumed')
+        self.assertIn(str(source),first['refresh_provenance']['current_bindings'])
+        self.assertEqual(self.prior,original)
+        self.prior=first
+        entries[job['id']]['prior']=first['rows'][0]
+        second=self.refresh(entries,lambda _:job,denied)
+        self.assertEqual(second['diagnostic_observed_model_starts'],first['diagnostic_observed_model_starts'])
+        self.assertEqual(second['totals']['diagnostic_only_observed_model_starts_lower_bound'],2)
+        self.assertEqual(second['preserved_session13_baseline'],original['preserved_session13_baseline'])
+        for key,binding in first['source_bindings'].items():self.assertEqual(second['source_bindings'][key],binding)
+
+    def test_diagnostic_input_requires_fresh_terminal_failed_integer_one(self):
+        job=self.job(script='physical.py',state='failed',exit_status=1)
+        job['ended_at']='2026-09-28T07:00:04Z';self.diagnostic_input(job)
+        entries={job['id']:{'prior':None,'receipts':[],'submitted':job}}
+        for state,code in [('running',None),('queued',None),('succeeded',0),('failed',True),('failed',2)]:
+            with self.subTest(state=state,code=code):
+                with self.assertRaisesRegex(ValueError,'fresh failed/integer-one'):
+                    self.refresh(entries,lambda _:{**job,'state':state,'exit_status':code},lambda *args:self.fail('No outcome reads'))
+
+    def test_diagnostic_hash_change_or_duplicate_input_is_rejected(self):
+        job=self.job(script='physical.py',state='failed',exit_status=1)
+        job['ended_at']='2026-09-28T07:00:04Z';path,source=self.diagnostic_input(job)
+        entries={job['id']:{'prior':None,'receipts':[],'submitted':job}}
+        old=source.read_bytes();source.write_bytes(old+b' ')
+        with self.assertRaisesRegex(ValueError,'hash binding'):self.refresh(entries,lambda _:job)
+        source.write_bytes(old)
+        self.put('registration/diagnostic-start-input-duplicate.json',json.loads(path.read_text()))
+        with self.assertRaisesRegex(ValueError,'Duplicate'):self.refresh(entries,lambda _:job)
+
+    def test_diagnostic_observation_cannot_replace_literal_legacy_count(self):
+        job=self.job(script='physical.py',state='failed',exit_status=1)
+        job['ended_at']='2026-09-28T07:00:04Z';self.diagnostic_input(job)
+        self.prior['rows']=[{'official_queue':job,'diagnostic_only_accounting':{'observed_turn_start_requests':1}}]
+        entries={job['id']:{'prior':None,'receipts':[],'submitted':job}}
+        with self.assertRaisesRegex(ValueError,'Duplicate'):self.refresh(entries,lambda _:job)
+
+    def test_invocation_starts_distinct_from_preserved_diagnostic_count(self):
+        root = self.c / 'synthetic-evidence'
+        for phase in ('interrupt', 'resume'):
+            path = self.put('synthetic-evidence/' + phase + '/client/result.json', {'model_started': True})
+            path.with_name('events.jsonl').write_text(json.dumps({'kind': 'request', 'method': 'turn/start', 'id': 11})+'\n')
+        job = self.job(script='physical.py', extra=['--mode', 'smoke', '--evidence', str(root)])
+        entries = {job['id']: {'prior': None, 'receipts': [], 'submitted': job}}
+        result = self.refresh(entries, lambda _: job)
+        self.assertEqual(result['totals']['known_qualification_model_invocations_started'], 2)
+        self.assertEqual(result['totals']['diagnostic_only_observed_turn_start_requests'], 1)
+        self.assertEqual(result['totals']['observed_turn_start_requests_from_assessable_and_diagnostic_receipts'], 3)
+        self.assertIsNone(result['totals']['model_invocations_started_total'])
+
+    def test_start_result_disagreement_is_not_fabricated_zero(self):
+        path = self.put('synthetic-evidence/client/result.json', {'model_started': False})
+        path.with_name('events.jsonl').write_text(json.dumps({'kind': 'request', 'method': 'turn/start'})+'\n')
+        with self.assertRaisesRegex(ValueError, 'disagreement'):
+            a.invocation_receipts(path.parent.parent, lambda _: None)
+
+    def test_original_bindings_baseline_and_checkpoint_objects_preserved(self):
+        history = self.put('investigation/qualification-history.json', {'changed': True})
+        self.prior['source_bindings'][str(history)] = {'path': str(history), 'sha256': 'historical', 'bytes': 99}
+        old = copy.deepcopy(self.prior)
+        result = self.refresh({}, lambda _: self.fail('Unexpected queue read'))
+        self.assertEqual(self.prior, old)
+        for key, binding in old['source_bindings'].items(): self.assertEqual(result['source_bindings'][key], binding)
+        self.assertEqual(result['preserved_session13_baseline'], old['preserved_session13_baseline'])
+        self.assertNotEqual(result['refresh_provenance']['current_bindings'][str(history)]['sha256'], 'historical')
+        self.assertEqual(result['prior_accounting_checkpoints'][-1]['storage'], old['storage'])
+
+    def test_exact_checkpoint_bytes_are_not_rewritten(self):
+        path = self.c / 'registration/session14-accounting.json'
+        raw = b'{\r\n  "old": true\r\n}\r\n'; path.write_bytes(raw)
+        first = a.retain_checkpoint(path)
+        self.assertEqual(Path(first['path']).read_bytes(), raw)
+        self.assertEqual(a.retain_checkpoint(path), first)
+        self.assertEqual(path.read_bytes(), raw)
+
+    def test_stat_only_exclusions_and_nonadditive_disjoint_scope(self):
+        root = self.c / 'sizes'; root.mkdir()
+        (root / 'kept.bin').write_bytes(b'abc')
+        active = root / 'active'; active.mkdir(); (active / 'output.bin').write_bytes(b'12345')
+        with patch.object(Path, 'read_bytes', side_effect=AssertionError('Footprint read content')):
+            result = a.footprint(root, [active])
+        self.assertEqual((result['files'], result['logical_bytes']), (1, 3))
+
+    def test_scored_registration_is_inventory_not_model_launch(self):
+        registration = self.put('registration/frozen-registration.json', {'attempts': [{'run_id': 'slot-1'}, {'run_id': 'slot-2'}]})
+        self.prior['scored_registry_inventory'] = {'frozen_scored_registration_path': str(registration)}
+        result = self.refresh({}, lambda _: self.fail('Unexpected queue read'))
+        self.assertEqual(result['totals']['scored_slots_registered'], 2)
+        self.assertEqual(result['totals']['scored_slots_started_in_recorded_registry'], 0)
+
+    def test_failed_admission_overrides_raw_suite_pass(self):
+        output = self.c / 'synthetic-evidence'
+        job = self.job(script='boundary_suite.py', extra=['--run-id', 'RCI001-C02-boundary-011', '--output', str(output)])
+        self.put('synthetic-evidence/suite-result.json', {'run_id': 'RCI001-C02-boundary-011', 'passed': True})
+        self.put('qualification/final-qualification-011/boundary-011/disposition.json',
+                 {'run_id': 'RCI001-C02-boundary-011', 'passed': False, 'error': 'Source binding mismatch'})
+        entries = {job['id']: {'prior': None, 'receipts': [], 'submitted': job}}
+        result = self.refresh(entries, lambda _: job)
+        self.assertTrue(result['rows'][0]['retained_assessment_fields']['passed'])
+        self.assertEqual(result['rows'][0]['qualification_or_diagnostic_status'], 'failed')
+        self.assertEqual(result['totals']['successful_queue_jobs_with_failed_qualification'], 1)
+
+    def test_versioned_boundary_suite_preserves_legacy_category_and_result_path(self):
+        jobs=[]
+        for number,script in enumerate(('boundary_suite.py','boundary_suite_v3.py'),1):
+            output=self.c/f'synthetic-boundary-{number}'
+            job=self.job(number,script=script,extra=['--run-id',f'RCI001-C02-boundary-99{number}','--output',str(output)])
+            jobs.append(job)
+            self.put(f'synthetic-boundary-{number}/suite-result.json',{'passed':True})
+            self.put(f'qualification/boundary-99{number}-queue.json',job)
+        result=self.refresh(a.discover(self.c,self.prior),lambda jid:next(j for j in jobs if j['id']==jid))
+        self.assertEqual(len(result['rows']),2)
+        self.assertTrue(all(r['category']=='non_model_boundary' and r['known_model_invocations_started']==0
+                            and r['qualification_or_diagnostic_status']=='passed' for r in result['rows']))
+        self.assertEqual(sum(r['empirical_results_consumed'] for r in result['rows']),2)
+
+    def test_actual_boundary_output_only_cli_binds_manifest_and_final_admission(self):
+        for number,script,passed in ((1,'boundary_suite.py',True),(2,'boundary_suite_v3.py',False)):
+            with self.subTest(script=script):
+                run=f'RCI001-C02-boundary-99{number}'
+                output=self.c.parent/'local-evidence/campaign002/qualification'/run
+                output.mkdir(parents=True)
+                (output/'suite-result.json').write_text(json.dumps({'qualified':True}))
+                manifest=self.put(f'qualification/boundary-99{number}-manifest.json',
+                                  {'run_id':run,'framework_revision':'RCI001-C02-dev-999'})
+                self.put(f'qualification/final-qualification-999/boundary-99{number}/disposition.json',
+                         {'run_id':run,'passed':passed,'error':None if passed else 'Admission source mismatch'})
+                job=self.job(number,script=script,extra=['--output',str(output)])
+                entries={job['id']:{'prior':None,'receipts':[],'submitted':job}}
+                result=self.refresh(entries,lambda _:job);row=result['rows'][0]
+                self.assertEqual(row['run_id'],run);self.assertEqual(row['framework_revision'],'RCI001-C02-dev-999')
+                self.assertEqual(row['known_model_invocations_started'],0)
+                self.assertTrue(row['retained_assessment_fields']['qualified'])
+                self.assertEqual(row['qualification_or_diagnostic_status'],'passed' if passed else 'failed')
+                self.assertIn(str(manifest),result['refresh_provenance']['current_bindings'])
+
+    def test_boundary_path_derivation_is_exact_and_manifest_mismatch_fails_closed(self):
+        run='RCI001-C02-boundary-999'
+        proper=self.c.parent/'local-evidence/campaign002/qualification'/run
+        job=self.job(script='boundary_suite_v3.py',extra=['--output',str(proper)])
+        entry={'prior':None,'receipts':[],'submitted':job}
+        self.assertEqual(a.classify(job,entry,self.c,self.repo)['run_id'],job['id'])
+        self.put('qualification/boundary-999-manifest.json',{'run_id':'RCI001-C02-boundary-998'})
+        wrong={**job,'argv':job['argv'][:-1]+[str(self.c/'other'/run)]}
+        self.assertEqual(a.classify(wrong,entry,self.c,self.repo)['run_id'],job['id'])
+        with self.assertRaisesRegex(ValueError,'manifest/output run identity mismatch'):
+            self.refresh({job['id']:entry},lambda _:job)
+
+    def test_failed_boundary_does_not_read_existing_manifest_or_suite(self):
+        run='RCI001-C02-boundary-999'
+        output=self.c.parent/'local-evidence/campaign002/qualification'/run
+        output.mkdir(parents=True);(output/'suite-result.json').write_text('NOT JSON - do not read')
+        manifest=self.put('qualification/boundary-999-manifest.json',{})
+        manifest.write_text('NOT JSON - do not read')
+        job=self.job(script='boundary_suite_v3.py',state='failed',exit_status=1,extra=['--output',str(output)])
+        entries={job['id']:{'prior':None,'receipts':[],'submitted':job}}
+        result=self.refresh(entries,lambda _:job)
+        self.assertEqual(result['rows'][0]['run_id'],run)
+        self.assertFalse(result['rows'][0]['empirical_results_consumed'])
+        self.assertEqual(result['rows'][0]['qualification_or_diagnostic_status'],'outcome_not_consumed')
+
+    def test_existing_full_run_id_manifest_name_is_not_prefixed_twice(self):
+        manifest = self.c / 'manifests/RCI001-C02-stock-001.json'
+        job = self.job(script='physical.py', extra=['--manifest', str(manifest), '--mode', 'pilot'])
+        info = a.classify(job, {'prior': None, 'receipts': []}, self.c, self.repo)
+        self.assertEqual(info['run_id'], 'RCI001-C02-stock-001')
+
+
+if __name__ == '__main__':
+    unittest.main()

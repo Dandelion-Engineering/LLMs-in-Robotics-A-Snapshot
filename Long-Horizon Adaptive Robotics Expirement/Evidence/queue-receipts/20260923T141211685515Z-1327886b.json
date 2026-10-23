@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-c",
+    "from pathlib import Path\nimport subprocess,sys\nexp=Path.cwd()/'Long-Horizon Adaptive Robotics Expirement'\ncommands=[[sys.executable,'-X','utf8','-B','-m','unittest','discover','-s',str(exp/'Engineering Investigation 003'),'-p','test_*.py','-v'],[sys.executable,'-X','utf8','-B','-m','unittest','discover','-s',str(exp/'Batch 01/Release Analysis 003'),'-p','test_*.py','-v'],[sys.executable,'-X','utf8','-B',str(exp/'Batch 01/Release Environment Repair 001/coordinator/run_regressions.py')]]\nfailed=False\nfor command in commands:\n    reply=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8',errors='replace',creationflags=subprocess.CREATE_NO_WINDOW)\n    print('COMMAND',repr(command),flush=True);print(reply.stdout,flush=True);print(reply.stderr,flush=True)\n    print('EXIT_STATUS',reply.returncode,flush=True);failed=failed or reply.returncode!=0\nraise SystemExit(1 if failed else 0)"
+  ],
+  "cancel_requested_at": null,
+  "child_pid": 26856,
+  "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics",
+  "ended_at": "2026-09-23T14:13:02.535140Z",
+  "error": null,
+  "exit_status": 0,
+  "id": "20260923T141211685515Z-1327886b",
+  "log_path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\runtime\\logs\\20260923T141211685515Z-1327886b.log",
+  "resolved_executable": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\venv\\Scripts\\python.exe",
+  "started_at": "2026-09-23T14:12:12.129786Z",
+  "state": "succeeded",
+  "submitted_at": "2026-09-23T14:12:11.685515Z",
+  "submitting_project": "LLMs-in-Robotics",
+  "worker_pid": 26704
+}

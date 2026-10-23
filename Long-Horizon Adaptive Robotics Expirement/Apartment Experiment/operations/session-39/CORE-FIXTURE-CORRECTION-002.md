@@ -1,0 +1,7 @@
+# Joint doorway and drawer clearance
+
+The proposed first correction in `CORE-FIXTURE-CORRECTION.md` was incomplete. `core002` remains failed, exit 1: its descent at `x=9.85` intersects the east side of the bathroom–kitchen opening, where `wall9` begins at `x=9.9`. The blocked pose was `(9.82041, 5.38193)`. Both usable charger approaches and all four toy cycles passed again; the last three regression groups remain not run. No failed attempt is reclassified.
+
+The new fixture must account for both constraints together. In the unchanged scene, the doorway spans `x=8.1` to `9.9`, while the east drawer bank reaches at most `x=8.79`. The base's rotational half diagonal is `sqrt(0.28^2 + 0.24^2) = 0.368782` m. A shared corridor center of `x=9.35` leaves at least `0.55 - 0.368782 = 0.181218` m of conservative planar clearance from these constraints. The route descends through the doorway at that center before turning east into the wider counter aisle. This geometric calculation motivates the fixture; actual ordinary physical controls must still pass.
+
+For `core003`, start from the preserved `core001` fixture and change only `(9.1,5.6)` to `(9.35,5.6)` and `(9.1,4.05)` to `(9.35,4.05)`. All other waypoints, all four rooms, both usable charger approaches, final physical docking, the 3,600-second reserve and exact 10× tour gate remain unchanged. All five regression groups run on the same frozen production source. No fixture route or geometry enters a native guest.

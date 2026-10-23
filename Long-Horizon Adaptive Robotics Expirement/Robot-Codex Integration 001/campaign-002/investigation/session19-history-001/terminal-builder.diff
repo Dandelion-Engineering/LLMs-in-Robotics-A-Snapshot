@@ -1,0 +1,26 @@
+--- build_candidate_v2.py
++++ build_terminal_candidate.py
+@@ -1,4 +1,4 @@
+-"""Build a source-bound history/report candidate; never write canonical history."""
++"""Build a terminal-status companion without changing any historical attempt row."""
+ import argparse
+ from datetime import datetime,timezone
+ import importlib.util
+@@ -29,6 +29,7 @@
+     parser=argparse.ArgumentParser();parser.add_argument('action',choices=['submit','run']);parser.add_argument('--plan',type=Path,required=True)
+     args=parser.parse_args();plan=args.plan.resolve();v=base.read(plan)
+     assert v['schema']=='campaign002-history-candidate-plan-1'
++    assert v['row_packets']==[] and v['current_status']['state']=='campaign_terminal'
+     out=HERE/v['directory'];assert out.parent==HERE and not out.exists()
+     intent=HERE/(v['directory']+'-intent.json');submit=HERE/(v['directory']+'-submit.json')
+     assert base.digest(base.HISTORY)==v['history_sha256']
+@@ -59,7 +60,8 @@
+     for row in all_rows:s.authenticate(row,auth,jobs)
+     base.save(out/'fresh-official.json',{'jobs':jobs,'stage_jobs':stage_jobs})
+     addition=',\n'+',\n'.join('    '+json.dumps(r,indent=2,ensure_ascii=False).replace('\n','\n    ') for r in rows)
+-    last=old_spans[-1][3];text=text[:last]+addition+text[last:]
++    assert not rows  # Status-only: preserve the complete attempts array byte-for-byte.
++    last=old_spans[-1][3]
+     text=replace_value(text,'updated_at',datetime.now(timezone.utc).isoformat())
+     text=replace_value(text,'current_status',v['current_status'])
+     candidate=text.encode('utf-8');_,spans,_=s.raw_rows(candidate)

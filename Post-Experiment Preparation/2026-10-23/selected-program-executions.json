@@ -1,0 +1,405 @@
+[
+  {
+    "condition": "baseline",
+    "session": 1,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00001\\native\\executor-1-requests.jsonl",
+    "id": 142,
+    "process_id": "88637",
+    "tool_call_id": "exec-1e4fdacb-b4bb-45d6-b47b-9dde7f3f9c1b",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 - <<'PY'\nimport sys,time,json,runpy\nfrom pathlib import Path\nsys.path.insert(0,'/')\nfrom robot_client import call\ndef run(kind,p):\n s=call('status',{})\n if s['battery']['low_warning']:raise SystemExit('Battery warning')\n r=call('command',{'kind':kind,'parameters':p})\n if not r.get('accepted'):raise SystemExit(json.dumps(r))\n while call('status',{}).get('action') is not None:time.sleep(.2)\n time.sleep(.3)\n s=call('status',{});print(json.dumps({'kind':kind,'sim_time':s['sim_time'],'gripper':s['gripper']}),flush=True)\n return s\nrun('position_grasp',{'x':.60,'y':0,'z':.935})\ns=run('gripper',{'width':.025,'duration':.7})\nif not s['gripper']['bilateral_contact']:raise SystemExit('No bilateral contact')\ns=run('arm',{'x':.60,'y':0,'z':1.20,'duration':1.2})\nif not s['gripper']['secure_lift_confirmed']:raise SystemExit('No secure lift')\nrun('arm',{'x':.30,'y':0,'z':1.15,'duration':1.2})\nrun('base',{'turn':1.25})\nPath('Artifacts').mkdir(exist_ok=True)\nwith open('Artifacts/session-001-trial-5.jsonl','x') as f:\n original=sys.stdout\n try:\n  sys.stdout=f\n  runpy.run_path('Programs/Learned/throw_orange.py',run_name='__main__')\n finally:sys.stdout=original\nprint(Path('Artifacts/session-001-trial-5.jsonl').read_text(),flush=True)\nPY"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 1,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00001\\native\\executor-1-requests.jsonl",
+    "id": 153,
+    "process_id": "94254",
+    "tool_call_id": "exec-c4b3cb86-0888-4187-9c1d-2906e742480c",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 - <<'PY'\nimport sys,time,json,runpy\nfrom pathlib import Path\nsys.path.insert(0,'/')\nfrom robot_client import call\ndef run(kind,p):\n s=call('status',{})\n if s['battery']['low_warning']:raise SystemExit('Battery warning')\n r=call('command',{'kind':kind,'parameters':p})\n if not r.get('accepted'):raise SystemExit(json.dumps(r))\n while call('status',{}).get('action') is not None:time.sleep(.2)\n time.sleep(.3)\n s=call('status',{});print(json.dumps({'kind':kind,'sim_time':s['sim_time'],'gripper':s['gripper']}),flush=True)\n return s\nrun('position_grasp',{'x':.60,'y':0,'z':.935})\ns=run('gripper',{'width':.025,'duration':.7})\nif not s['gripper']['bilateral_contact']:raise SystemExit('No bilateral contact')\ns=run('arm',{'x':.60,'y':0,'z':1.20,'duration':1.2})\nif not s['gripper']['secure_lift_confirmed']:raise SystemExit('No secure lift')\nrun('arm',{'x':.30,'y':0,'z':1.15,'duration':1.2})\nrun('base',{'turn':1.25})\nwith open('Artifacts/session-001-trial-6.jsonl','x') as f:\n original=sys.stdout\n try:\n  sys.stdout=f\n  sys.argv=['throw_orange.py','--accelerate','.28','--release','.135']\n  runpy.run_path('Programs/Learned/throw_orange.py',run_name='__main__')\n finally:sys.stdout=original\nprint(Path('Artifacts/session-001-trial-6.jsonl').read_text(),flush=True)\nPY"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 6,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00006\\native\\executor-1-requests.jsonl",
+    "id": 109,
+    "process_id": "45540",
+    "tool_call_id": "exec-cef3db3f-9c30-4451-9b58-e6704b69df34",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py | tee /workspace/Artifacts/session-006-trial-1.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 6,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00006\\native\\executor-1-requests.jsonl",
+    "id": 123,
+    "process_id": "40010",
+    "tool_call_id": "exec-e2c3b9fd-28cb-4387-ab67-a0bb5046ea54",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .135 | tee /workspace/Artifacts/session-006-trial-2.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 6,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00006\\native\\executor-1-requests.jsonl",
+    "id": 133,
+    "process_id": "5081",
+    "tool_call_id": "exec-3b879cc5-7ce4-4823-a3ea-47ffdcc75810",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .135 | tee /workspace/Artifacts/session-006-trial-3.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 6,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00006\\native\\executor-1-requests.jsonl",
+    "id": 143,
+    "process_id": "57110",
+    "tool_call_id": "exec-61adb910-5b0c-4a11-a4f7-3fab0e937756",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .29 --release .135 | tee /workspace/Artifacts/session-006-trial-4.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 6,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00006\\native\\executor-1-requests.jsonl",
+    "id": 153,
+    "process_id": "48236",
+    "tool_call_id": "exec-25ffc3d5-31b6-496e-8cc1-f122e3310871",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .14 | tee /workspace/Artifacts/session-006-trial-5.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 6,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00006\\native\\executor-1-requests.jsonl",
+    "id": 163,
+    "process_id": "65210",
+    "tool_call_id": "exec-410a514c-c0a8-4daf-9542-2e91d76205da",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .137 | tee /workspace/Artifacts/session-006-trial-6.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 6,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00006\\native\\executor-1-requests.jsonl",
+    "id": 173,
+    "process_id": "31062",
+    "tool_call_id": "exec-c4286df0-f891-45bb-bea8-4ce4ec02fc62",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .137 | tee /workspace/Artifacts/session-006-trial-7.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 9,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00009\\native\\executor-1-requests.jsonl",
+    "id": 107,
+    "process_id": "77181",
+    "tool_call_id": "exec-f3e5a544-e88e-45db-9bf6-65060345a91e",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py > /workspace/Artifacts/session-009-trial-1.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 9,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00009\\native\\executor-1-requests.jsonl",
+    "id": 119,
+    "process_id": "17878",
+    "tool_call_id": "exec-74d510b1-cc87-4f37-b0f2-a73cccc59c55",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py > /workspace/Artifacts/session-009-trial-2.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 9,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00009\\native\\executor-1-requests.jsonl",
+    "id": 129,
+    "process_id": "72266",
+    "tool_call_id": "exec-303349e5-593b-47a7-ab74-714bdaad6aca",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .136 > /workspace/Artifacts/session-009-trial-3.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 9,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00009\\native\\executor-1-requests.jsonl",
+    "id": 139,
+    "process_id": "90343",
+    "tool_call_id": "exec-5bfb02fd-722d-4ae7-bc54-5edf5e2c41f4",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .138 > /workspace/Artifacts/session-009-trial-4.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 9,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00009\\native\\executor-1-requests.jsonl",
+    "id": 149,
+    "process_id": "71033",
+    "tool_call_id": "exec-dfde2f1a-7bb9-4a4e-9ebc-298026d80ef9",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .138 > /workspace/Artifacts/session-009-trial-5.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 9,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00009\\native\\executor-1-requests.jsonl",
+    "id": 159,
+    "process_id": "42002",
+    "tool_call_id": "exec-cd60ba20-c94f-4318-baea-af4cd430292b",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py --accelerate .28 --release .136 > /workspace/Artifacts/session-009-trial-6.jsonl"
+    ]
+  },
+  {
+    "condition": "baseline",
+    "session": 9,
+    "source": "D:\\Dandelion Engineering\\LLMs in Robotics\\Dandelion-Apartment-Experiment\\official\\apartment-v4\\baseline\\sessions\\session-00009\\native\\executor-1-requests.jsonl",
+    "id": 169,
+    "process_id": "80763",
+    "tool_call_id": "exec-b83c1b7c-1a68-4992-b7eb-f581fb190804",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_orange.py > /workspace/Artifacts/session-009-trial-7.jsonl"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 1,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00001\\native\\executor-1-requests.jsonl",
+    "id": 155,
+    "process_id": "87204",
+    "tool_call_id": "exec-a30f7436-0275-462b-b174-ef6228c5b1fb",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 1,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00001\\native\\executor-1-requests.jsonl",
+    "id": 163,
+    "process_id": "1592",
+    "tool_call_id": "exec-d7c0471b-fae7-4e53-9ba0-1e3f7f4c0f32",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 1,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00001\\native\\executor-1-requests.jsonl",
+    "id": 171,
+    "process_id": "84551",
+    "tool_call_id": "exec-16997e85-39e8-4b83-9a99-ae37df5035b0",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .20"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 1,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00001\\native\\executor-1-requests.jsonl",
+    "id": 179,
+    "process_id": "60611",
+    "tool_call_id": "exec-1ebf58df-351c-409f-bb0f-188ad5dae2b1",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .19"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 1,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00001\\native\\executor-1-requests.jsonl",
+    "id": 187,
+    "process_id": "62557",
+    "tool_call_id": "exec-5a588025-5875-4116-a5cb-e1d0a81889fc",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .185"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 124,
+    "process_id": "79253",
+    "tool_call_id": "exec-243a635d-ed4f-4110-b913-7298bd348fef",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .18"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 132,
+    "process_id": "12396",
+    "tool_call_id": "exec-b424b870-50ed-486e-9044-4308d43019a6",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .18"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 140,
+    "process_id": "69204",
+    "tool_call_id": "exec-722d5f41-a7e4-4e76-b2fa-ae1ca8c3f37b",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .20"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 148,
+    "process_id": "32359",
+    "tool_call_id": "exec-56dae316-187f-4fac-8d0c-aa615746c7c0",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .19"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 156,
+    "process_id": "87585",
+    "tool_call_id": "exec-ffa20a4a-fda4-4c71-8051-9c80a18a215b",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .182"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 164,
+    "process_id": "91240",
+    "tool_call_id": "exec-fb0730b4-15f5-4a81-8f18-9aa86b79adc9",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .183"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 172,
+    "process_id": "97536",
+    "tool_call_id": "exec-cf23c41c-c4cf-4610-8398-a74f6dbd7cef",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .184"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 180,
+    "process_id": "90393",
+    "tool_call_id": "exec-63c27ca6-a4e9-4838-80d8-a7716e3a5d4e",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .184"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 188,
+    "process_id": "97008",
+    "tool_call_id": "exec-0ebdf097-8cb3-4383-bac6-19196a06e3c1",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .184 --y .065"
+    ]
+  },
+  {
+    "condition": "maps",
+    "session": 7,
+    "source": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Local Experiment Data\\apartment-v4-maps\\recovery-session63\\recovered-run\\sessions\\session-00007\\native\\executor-1-requests.jsonl",
+    "id": 196,
+    "process_id": "44180",
+    "tool_call_id": "exec-a69011b7-404e-4bf9-902b-eb583a3e9df9",
+    "argv": [
+      "/usr/bin/bash",
+      "-lc",
+      "python3 /workspace/Programs/Learned/throw_horizontal.py --duration .184"
+    ]
+  }
+]

@@ -1,0 +1,5595 @@
+{
+  "created_at": "2026-09-26T06:42:02.650256+00:00",
+  "events": {
+    "action_requests_missing_id": 0,
+    "avoidable_duplicate_work": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Repeated admitted processing can be required rework; correctness and avoidability need independent adjudication",
+      "unit": "count",
+      "value": null
+    },
+    "avoidable_observation_requests": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "No frozen visibility/change criterion establishes redundant sensing",
+      "unit": "count",
+      "value": null
+    },
+    "candidate_resolution_reports": 31,
+    "context_io": {
+      "context_read": {
+        "known_reported_bytes": 0,
+        "observed_events": 0,
+        "reported_bytes": 0,
+        "scope": "Candidate reported serialization bytes; not complete OS disk I/O"
+      },
+      "context_write": {
+        "known_reported_bytes": 5911294,
+        "observed_events": 694,
+        "reported_bytes": 5911294,
+        "scope": "Candidate reported serialization bytes; not complete OS disk I/O"
+      }
+    },
+    "duplicate_suppression_events": 0,
+    "event_counts": {
+      "action_admission": 35,
+      "action_requested": 35,
+      "candidate_input": 670,
+      "candidate_ready": 1,
+      "candidate_reply": 670,
+      "candidate_runtime_diagnostics": 1,
+      "candidate_runtime_usage_summary": 1,
+      "completion_claim_check": 4,
+      "episode_clock_started": 1,
+      "final_world": 1,
+      "independent_completion": 1,
+      "initial_world": 1,
+      "initial_world_validation": 1,
+      "observation": 3091,
+      "physical_service_event": 63,
+      "resource_sampling_finished": 1,
+      "resource_sampling_started": 1,
+      "scenario_configuration": 1,
+      "world_snapshot": 310
+    },
+    "help": {
+      "manual_human_time": {
+        "basis": "not established by supplied evidence",
+        "missing_reason": "Scripted responses do not measure human workload",
+        "unit": "s",
+        "value": null
+      },
+      "recorded_summary": {
+        "accepted_requests": 0,
+        "actual_human_time_missing_reason": "Scripted assistance; no manual diagnostic human time measured",
+        "actual_human_time_s": null,
+        "answers": [],
+        "any_help_requested": false,
+        "nominal_delay_s": 15.0,
+        "pending_responses": 0,
+        "physical_rescue_actions": 0,
+        "policy_id": "public-reobserve-advice-v1",
+        "rejected_before_assistance_service": 0,
+        "requests": 0,
+        "responses": 0,
+        "simulated_assistance": true,
+        "summed_scripted_wait_wall_s": 0,
+        "wait_interpretation": "Sum of request waits, including unfinished waits; concurrent waits may overlap"
+      },
+      "scripted_answers": 0,
+      "unique_action_requests": 0
+    },
+    "independently_correct_resolution_count": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Candidate resolution reports are claims, not independent correctness evidence",
+      "unit": "count",
+      "value": null
+    },
+    "interventions": {
+      "admissible_exposure_count": {
+        "basis": "Explicit recorded admissibility flags only; no new adjudication",
+        "missing_reason": null,
+        "unit": "count",
+        "value": 0
+      },
+      "known_admissible_exposure_count": 0,
+      "order_amendment_count": 0,
+      "required_restart": false,
+      "restart_actual_cut_counts": {},
+      "restart_begin_count": 0,
+      "restart_configured_milestone_exercised_count": 0,
+      "restart_deadline_fallback_count": 0,
+      "restart_exposure_records": [],
+      "restart_ready_count": 0,
+      "restart_release_cut_count": 0,
+      "scenario_exposure_event_count": 0,
+      "scenario_exposure_record_count": 0,
+      "scenario_exposure_records": [],
+      "scenario_exposure_scope": "Protected trigger/fallback records; not additional restarts, admissibility decisions or recovered events",
+      "successful_recovery_count": {
+        "basis": "not established by supplied evidence",
+        "missing_reason": "Requires independent disturbance-to-restored-validity-and-useful-progress annotation",
+        "unit": "count",
+        "value": null
+      },
+      "unknown_admissibility_count": 0
+    },
+    "observe_requests": 0,
+    "old_incarnation_rejections": 0,
+    "physical_service_counts": {
+      "cycle_complete": 6,
+      "feedback": 35,
+      "setup_return_observed": 1,
+      "setup_waiting_for_fresh_capture": 1,
+      "trajectory_dispatched": 20
+    },
+    "recognition_mechanism": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "No internal reasoning or recognition mechanism is inferred from behavior",
+      "unit": "label",
+      "value": null
+    },
+    "repeated_cycle_admissions_same_part_recipe": 0,
+    "repeated_request_id_count": 0,
+    "stale_order_rejections": 0
+  },
+  "implementation": {
+    "bytes": 42287,
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Runtime 004\\diagnostics.py",
+    "sha256": "68a2c54d47d4a6dcc21ab0e4fc7ad3d570d4c99abdc1260001c56169bba168b8"
+  },
+  "integrity_findings": [],
+  "interpretation": "Measured diagnostics only; no validity upgrade, winner, causal attribution or candidate-visible data",
+  "limitations": [
+    "Source hashes establish byte identity, not scientific validity or truthful sensors",
+    "100 Hz extrema and path lengths may miss native-rate transients",
+    "Trajectory completion does not establish physical task success",
+    "Inference/process overlap does not establish pause cause",
+    "Disturbance admissibility, detection and recovery remain unknown without independent annotations"
+  ],
+  "method": {
+    "boundary_warning": "Interior support and excluded boundary time are reported; full-duration jerk outside support is unknown",
+    "derivatives": "successive finite differences at interval midpoint timestamps",
+    "gap_rule": "No interpolation or differentiation across non-nominal 100 Hz gaps",
+    "id": "robot-motion-diagnostics-1.0",
+    "integral": "trapezoidal squared Cartesian jerk on available interior",
+    "near_zero_path_m": 0.001,
+    "normalized_jerk": "T^5/L^2 * interior integral; T entire completed trajectory, L raw sampled TCP path",
+    "position_filter": "centered five-sample valid moving average; no padding"
+  },
+  "models": {
+    "cache_hit_calls": {
+      "basis": "Calls with measured cached_prompt_tokens >0",
+      "missing_reason": null,
+      "unit": "calls",
+      "value": 0
+    },
+    "cached_prompt_tokens": {
+      "basis": "Measured cached token counters; disabled cache configuration alone is not a measurement",
+      "missing_reason": null,
+      "unit": "tokens",
+      "value": 0
+    },
+    "calls": [],
+    "calls_with_unknown_tokens": 0,
+    "known_total_tokens": 0,
+    "latency_summary_s": {
+      "maximum": null,
+      "mean": null,
+      "median": null,
+      "missing_calls": 0,
+      "observed_calls": 0,
+      "p95": null,
+      "scope": "Measured per-call latency only; missing/failed-call latencies excluded and counted"
+    },
+    "observed_request_count": 0,
+    "total_tokens": {
+      "basis": "Sum of uniquely linked terminal usage counters",
+      "missing_reason": null,
+      "unit": "tokens",
+      "value": 0
+    },
+    "unlinked_terminal_event_ids": []
+  },
+  "motion": {
+    "effort_saturation": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Actuator limits and native-rate threshold crossing evidence are not supplied",
+      "unit": "count",
+      "value": null
+    },
+    "filtered_joint_acceleration_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "rad/s^2 per joint",
+      "value": [
+        6.301253935616421,
+        8.115119048407168,
+        6.66884732068601,
+        4.9851987032191385,
+        6.221895022160951,
+        6.656183152896341,
+        5.459238572278378
+      ]
+    },
+    "filtered_joint_speed_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "rad/s per joint",
+      "value": [
+        1.036185873818812,
+        1.0409980857784513,
+        0.8639143475610561,
+        0.6840304862189651,
+        0.871768998653505,
+        1.0124893957043806,
+        1.006466211676628
+      ]
+    },
+    "filtered_tcp_acceleration_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "m/s^2",
+      "value": 3.042788657612381
+    },
+    "filtered_tcp_speed_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "m/s",
+      "value": 0.7147680919288424
+    },
+    "first_sim_time_s": 0.5020000000000003,
+    "joint_adjacent_pairs": 30908,
+    "joint_tracking_peak_abs": {
+      "basis": "Recorded target minus q at 100 Hz",
+      "missing_reason": null,
+      "unit": "rad per joint",
+      "value": [
+        0.1019136618563202,
+        0.1097488558588634,
+        0.08492952079169475,
+        0.07198081199132256,
+        0.08635887897100424,
+        0.09872591101624639,
+        0.09925372291586876
+      ]
+    },
+    "joint_tracking_rms": {
+      "basis": "Recorded target minus q; target meaning follows frozen controller",
+      "missing_reason": null,
+      "unit": "rad per joint",
+      "value": [
+        0.02034193199525176,
+        0.0324719296130286,
+        0.020819278839495883,
+        0.02025487416439497,
+        0.019236015224372186,
+        0.029061352883639868,
+        0.029313648002193923
+      ]
+    },
+    "joint_travel_rad": {
+      "basis": "Sum of absolute raw q differences within regular sampled blocks; lower bound",
+      "missing_reason": null,
+      "unit": "rad per joint",
+      "value": [
+        40.39472393490015,
+        71.83001554307072,
+        42.68244980604261,
+        35.15552825467708,
+        38.4767622656708,
+        61.53574790313943,
+        60.413675344629226
+      ]
+    },
+    "joint_travel_total_rad": {
+      "basis": "Sum across seven joint-travel values",
+      "missing_reason": null,
+      "unit": "rad",
+      "value": 350.48890305213
+    },
+    "last_sim_time_s": 309.5820000007501,
+    "maximum_sample_gap_s": 0.010000000000047748,
+    "nominal_sample_period_s": 0.01,
+    "non_nominal_sample_intervals": 0,
+    "path_adjacent_pairs": 30908,
+    "pause_analyzable_time_s": 309.03000000075,
+    "regular_block_count": 1,
+    "sample_count": 30909,
+    "sample_period_tolerance_s": 1e-05,
+    "sampled_effort_peak": {
+      "basis": "Absolute maximum among recorded 100 Hz values; may miss between-sample peaks",
+      "missing_reason": null,
+      "missing_samples": 0,
+      "observed_samples": 30909,
+      "unit": "N*m per joint",
+      "value": [
+        16.57053079025701,
+        69.05861145804374,
+        17.691675813804068,
+        29.068995060322777,
+        4.788083557629761,
+        6.91294326894058,
+        5.295510365518112
+      ]
+    },
+    "starts_stops_reversals": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Calibrated hysteresis/dwell thresholds and matched-motion interpretation are not frozen in this method",
+      "unit": "count",
+      "value": null
+    },
+    "tcp_path_m": {
+      "basis": "Sum of raw TCP distances within regular sampled blocks; lower bound",
+      "missing_reason": null,
+      "unit": "m",
+      "value": 37.76863913461578
+    },
+    "telemetry_joint_speed_peak": {
+      "basis": "Absolute maximum among recorded 100 Hz values; may miss between-sample peaks",
+      "missing_reason": null,
+      "missing_samples": 0,
+      "observed_samples": 30909,
+      "unit": "rad/s per joint",
+      "value": [
+        1.0365113687696168,
+        1.0413716556607422,
+        0.8645565535559563,
+        0.6842870406343382,
+        0.8761043897088501,
+        1.0133538194350915,
+        1.0076573587238185
+      ]
+    }
+  },
+  "pauses": {
+    "analyzed_support_s": 309.03000000075,
+    "coverage": "Valid filtered joint/TCP support only; gaps and boundary samples excluded",
+    "eligible_pause_time": {
+      "basis": "Low motion while work eligibility is explicitly annotated",
+      "missing_reason": "Eligibility is unknown for one or more low-motion intervals",
+      "unit": "s simulation",
+      "value": null
+    },
+    "intervals": [
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 9.539999999996358,
+        "end_sim_s": 23.686999999997752,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 9.310999999996483,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 14.147000000001395,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 1.810000000002205,
+        "end_sim_s": 36.65699999999883,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 34.846999999996626,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 9.469999999995721,
+        "end_sim_s": 68.45700000002185,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 9.300999999996122,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 58.98700000002613,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 1.8099999999957674,
+        "end_sim_s": 81.45699999999155,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 79.64699999999578,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 9.469999999977915,
+        "end_sim_s": 112.65699999991884,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 9.302999999978312,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 103.18699999994092,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 1.8199999999957583,
+        "end_sim_s": 125.65699999988854,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 123.83699999989278,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 9.560000000045648,
+        "end_sim_s": 190.6870000001824,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 9.30300000004442,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 181.12700000013675,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 1.8200000000086902,
+        "end_sim_s": 203.65700000024432,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 201.83700000023563,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 9.540000000045552,
+        "end_sim_s": 237.85700000040762,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 9.309000000044449,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 228.31700000036207,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 1.830000000008738,
+        "end_sim_s": 250.84700000046965,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 249.0170000004609,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 9.530000000045447,
+        "end_sim_s": 283.4670000006254,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 9.299000000044373,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 273.9370000005799,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 1.8300000000087948,
+        "end_sim_s": 296.47700000068755,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 294.64700000067876,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.34000000000162345,
+        "end_sim_s": 309.55700000075,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 309.2170000007484,
+        "work_eligible": null
+      }
+    ],
+    "observed_low_motion_time_s": 68.37000000012821,
+    "thresholds": {
+      "duration_strictly_greater_s": 0.25,
+      "max_joint_speed_rad_s": 0.01,
+      "tcp_speed_m_s": 0.001
+    }
+  },
+  "process": {
+    "accepted_cycle_count": 6,
+    "intervals": [
+      {
+        "cycle_id": 1,
+        "end_event_id": 465,
+        "end_sim_s": 23.457999999997877,
+        "right_censored": false,
+        "start_event_id": 169,
+        "start_sim_s": 13.790000000001275,
+        "terminal_type": "cycle_complete"
+      },
+      {
+        "cycle_id": 2,
+        "end_event_id": 1195,
+        "end_sim_s": 68.28800000002225,
+        "right_censored": false,
+        "start_event_id": 899,
+        "start_sim_s": 58.62000000002568,
+        "terminal_type": "cycle_complete"
+      },
+      {
+        "cycle_id": 3,
+        "end_event_id": 1914,
+        "end_sim_s": 112.48999999991923,
+        "right_censored": false,
+        "start_event_id": 1620,
+        "start_sim_s": 102.82199999994177,
+        "terminal_type": "cycle_complete"
+      },
+      {
+        "cycle_id": 4,
+        "end_event_id": 3022,
+        "end_sim_s": 190.43000000018117,
+        "right_censored": false,
+        "start_event_id": 2723,
+        "start_sim_s": 180.762000000135,
+        "terminal_type": "cycle_complete"
+      },
+      {
+        "cycle_id": 5,
+        "end_event_id": 3781,
+        "end_sim_s": 237.62600000040652,
+        "right_censored": false,
+        "start_event_id": 3481,
+        "start_sim_s": 227.95800000036036,
+        "terminal_type": "cycle_complete"
+      },
+      {
+        "cycle_id": 6,
+        "end_event_id": 4523,
+        "end_sim_s": 283.2360000006243,
+        "right_censored": false,
+        "start_event_id": 4222,
+        "start_sim_s": 273.56800000057814,
+        "terminal_type": "cycle_complete"
+      }
+    ],
+    "known_busy_time_s": 58.008000000109135,
+    "observed_busy_time": {
+      "basis": "Union of accepted cycle intervals through cycle_complete/fault or episode end; unfinished cycles right-censored",
+      "missing_reason": null,
+      "unit": "s simulation",
+      "value": 58.008000000109135
+    },
+    "overlapping_cycle_interval_pairs": 0,
+    "productive_utilization": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Eligible available machine time and correct-process contribution are not established",
+      "unit": "fraction",
+      "value": null
+    },
+    "unmatched_terminal_cycle_events": 0
+  },
+  "recorded_contact": {
+    "contact_impulse_Ns": 2844.5275557111836,
+    "contact_peak_N": 16.435890472713535,
+    "scope": "Original result values only; not classified as unintended collision"
+  },
+  "recorded_outcome": {
+    "completion_after_help": false,
+    "completion_time_s": 309.08378740001353,
+    "execution_status": "completed",
+    "independent_outcome": {
+      "accepted": {
+        "tray1": [
+          "A1",
+          "A3",
+          "A5"
+        ],
+        "tray2": [
+          "B2",
+          "B4",
+          "B6"
+        ]
+      },
+      "accepted_count": 6,
+      "calibration_assumptions": {
+        "angular_speed_rad_s": 0.1,
+        "arm_speed_rad_s": 0.02,
+        "finger_speed_m_s": 0.01,
+        "linear_speed_m_s": 0.05,
+        "maximum_snapshot_gap_s": 0.2,
+        "rim_interpretation": "declared virtual scoring plane; current flat tray markers are not physical walls",
+        "scoring_floor_z_m": -0.003,
+        "scoring_rim_z_m": 0.08
+      },
+      "first_success": {
+        "clock_scope": "protected state captured at evaluator call; no physical sub-tick interpolation",
+        "order_version": 1,
+        "required_dwell_s": 0.5,
+        "sim_time_s": 309.5840000007501,
+        "snapshot_sha256": "cfb626640fa1582681aa1c61aaf98489d7f47762e502d39e189ac0a12abe6c98",
+        "stable_since_sim_s": 309.0840000007477,
+        "wall_monotonic_s": 155940.3793088
+      },
+      "immediate_ready": true,
+      "order_version": 1,
+      "parking_occupancy": {
+        "parking1": [],
+        "parking2": []
+      },
+      "partial": {
+        "accepted_count": 6,
+        "extra_delivery_ids": [],
+        "processed_uninspected_ids": [],
+        "quarantined_ids": [],
+        "rework_required_ids": [],
+        "unmet_quantities": [
+          {
+            "accepted_settled": 3,
+            "family": "A",
+            "recipe": "A",
+            "required": 3,
+            "requirement_id": "R1",
+            "tray": "tray1",
+            "unmet": 0
+          },
+          {
+            "accepted_settled": 3,
+            "family": "B",
+            "recipe": "B",
+            "required": 3,
+            "requirement_id": "R2",
+            "tray": "tray2",
+            "unmet": 0
+          }
+        ]
+      },
+      "qualified_before_dwell": {
+        "tray1": [
+          "A1",
+          "A3",
+          "A5"
+        ],
+        "tray2": [
+          "B2",
+          "B4",
+          "B6"
+        ]
+      },
+      "reasons": [],
+      "requirements": [
+        {
+          "qualified_ids": [
+            "A1",
+            "A3",
+            "A5"
+          ],
+          "requirement_id": "R1",
+          "settled_ids": [
+            "A1",
+            "A3",
+            "A5"
+          ]
+        },
+        {
+          "qualified_ids": [
+            "B2",
+            "B4",
+            "B6"
+          ],
+          "requirement_id": "R2",
+          "settled_ids": [
+            "B2",
+            "B4",
+            "B6"
+          ]
+        }
+      ],
+      "schema_version": "robot-independent-outcome-1.0",
+      "settling": {
+        "coverage": "protected snapshots; physics-monitor invalidation hook covers detected inter-snapshot transients",
+        "last_external_invalidation": null,
+        "observed_s": 0.5000000000023874,
+        "required_s": 0.5,
+        "sample_gap_reset": false,
+        "stable_since": 309.0840000007477
+      },
+      "sim_time": 309.5840000007501,
+      "success": true,
+      "violations": []
+    },
+    "outcome": "success",
+    "sim_duration_s": 309.0840000007501,
+    "termination_reason": "independent_completion",
+    "unassisted_completion": true,
+    "validity": "valid",
+    "validity_reason": "Verified frozen evaluation authorization and runtime timing checks passed",
+    "wall_duration_s": 309.084752499999
+  },
+  "recorded_resources": {
+    "bytes": 149413,
+    "closed_at": "2026-09-25T01:08:12.424425+00:00",
+    "coverage": "run_episode startup through cell/candidate cleanup; model-server startup and normal shutdown excluded",
+    "coverage_wall_s": 309.83333920000587,
+    "energy_joules": null,
+    "energy_missing_reason": "Unmeasured",
+    "episode_end_offset_s": 309.7192087000003,
+    "episode_start_offset_s": 0.6344562000012957,
+    "failure": null,
+    "limitations": [
+      "GPU metrics cover all applications",
+      "Windows RSS does not include candidate Linux process",
+      "Five-second sampling may miss transient peaks"
+    ],
+    "path": "resources.jsonl",
+    "peaks_are_lower_bounds": true,
+    "period_s": 5.0,
+    "resource_caps_enforced": false,
+    "sample_count": 62,
+    "sampled_peaks": {
+      "harness_sampled_peak_rss_bytes": 482136064
+    },
+    "sampler_stopped": true,
+    "sha256": "90bfefbfde307ee018afd530620a8c75db4cf038b19a77421a87c74001ca3634",
+    "started_at": "2026-09-25T01:03:02.589344+00:00"
+  },
+  "responsiveness": {
+    "action_observation_ages": [
+      {
+        "acquisition_to_admission_sim_s": 0.08600000000000008,
+        "acquisition_to_dispatch_sim_s": 0.16400000000000015,
+        "acquisition_to_request_sim_s": 0.08600000000000008,
+        "action_event_id": 11,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 12,
+        "declared_observation_sequence": 1,
+        "dispatch_event_id": 15,
+        "matched_candidate_input_event_id": 9,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "bc148ec4-ce36-49ce-b880-de3701c7df9d",
+        "request_to_dispatch_sim_s": 0.07800000000000007,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.09000000000003006,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.09000000000003006,
+        "action_event_id": 166,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 167,
+        "declared_observation_sequence": 133,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 164,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "4a53c5cc-00c2-4962-b9e4-55dd4a4fbcb7",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.17999999999990024,
+        "acquisition_to_dispatch_sim_s": 0.22599999999987475,
+        "acquisition_to_request_sim_s": 0.17999999999990024,
+        "action_event_id": 472,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 473,
+        "declared_observation_sequence": 230,
+        "dispatch_event_id": 476,
+        "matched_candidate_input_event_id": 469,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "f5bf9484-5578-41a8-8ab8-3412c78b4c20",
+        "request_to_dispatch_sim_s": 0.045999999999974506,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.126000000000154,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.126000000000154,
+        "action_event_id": 602,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 603,
+        "declared_observation_sequence": 340,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 600,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "fd6c268c-c642-43be-bdcc-3c92e70117c1",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16200000000019799,
+        "acquisition_to_dispatch_sim_s": 0.19800000000024198,
+        "acquisition_to_request_sim_s": 0.16200000000019799,
+        "action_event_id": 633,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 634,
+        "declared_observation_sequence": 360,
+        "dispatch_event_id": 638,
+        "matched_candidate_input_event_id": 631,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "1afa3275-ad2b-4e97-b76a-221c4a08ee41",
+        "request_to_dispatch_sim_s": 0.036000000000044,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10000000000012221,
+        "acquisition_to_dispatch_sim_s": 0.1580000000001931,
+        "acquisition_to_request_sim_s": 0.10000000000012221,
+        "action_event_id": 756,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 757,
+        "declared_observation_sequence": 463,
+        "dispatch_event_id": 760,
+        "matched_candidate_input_event_id": 754,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "b001e2f6-fdf2-404f-aa2f-587ebe6e6303",
+        "request_to_dispatch_sim_s": 0.058000000000070884,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12000000000014666,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12000000000014666,
+        "action_event_id": 896,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 897,
+        "declared_observation_sequence": 581,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 894,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "525db4f7-06d0-4432-9f60-4663d59b46b6",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1499999999996504,
+        "acquisition_to_dispatch_sim_s": 0.19999999999953388,
+        "acquisition_to_request_sim_s": 0.1499999999996504,
+        "action_event_id": 1198,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1199,
+        "declared_observation_sequence": 678,
+        "dispatch_event_id": 1203,
+        "matched_candidate_input_event_id": 1196,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "053ee608-f696-4fb7-a6fd-7709f5d214b0",
+        "request_to_dispatch_sim_s": 0.04999999999988347,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11999999999972033,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11999999999972033,
+        "action_event_id": 1329,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1330,
+        "declared_observation_sequence": 788,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1327,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "baff9519-45f5-4648-a7cb-2706aad249f5",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.15799999999963177,
+        "acquisition_to_dispatch_sim_s": 0.1959999999995432,
+        "acquisition_to_request_sim_s": 0.15799999999963177,
+        "action_event_id": 1360,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1361,
+        "declared_observation_sequence": 808,
+        "dispatch_event_id": 1365,
+        "matched_candidate_input_event_id": 1358,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "9181fbdf-01b8-4f55-ada7-fbef34168750",
+        "request_to_dispatch_sim_s": 0.03799999999991144,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11199999999973898,
+        "acquisition_to_dispatch_sim_s": 0.16599999999961312,
+        "acquisition_to_request_sim_s": 0.11199999999973898,
+        "action_event_id": 1483,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1484,
+        "declared_observation_sequence": 910,
+        "dispatch_event_id": 1488,
+        "matched_candidate_input_event_id": 1480,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "9533e13c-e7e6-41de-8101-279af1325f08",
+        "request_to_dispatch_sim_s": 0.05399999999987415,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12199999999971567,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12199999999971567,
+        "action_event_id": 1617,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1618,
+        "declared_observation_sequence": 1023,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1615,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "b9176928-11d7-4d89-9fb9-aecbe73001c5",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13999999999967372,
+        "acquisition_to_dispatch_sim_s": 0.19199999999955253,
+        "acquisition_to_request_sim_s": 0.13999999999967372,
+        "action_event_id": 1918,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1919,
+        "declared_observation_sequence": 1120,
+        "dispatch_event_id": 1923,
+        "matched_candidate_input_event_id": 1916,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "71559e6d-a4e8-4b01-8665-63f21bac621e",
+        "request_to_dispatch_sim_s": 0.05199999999987881,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11599999999972965,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11599999999972965,
+        "action_event_id": 2049,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2050,
+        "declared_observation_sequence": 1230,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 2046,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "a46bb5eb-09fe-4e6e-9b9f-ad24b8041ae6",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1599999999996271,
+        "acquisition_to_dispatch_sim_s": 0.19799999999953855,
+        "acquisition_to_request_sim_s": 0.1599999999996271,
+        "action_event_id": 2080,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2081,
+        "declared_observation_sequence": 1250,
+        "dispatch_event_id": 2085,
+        "matched_candidate_input_event_id": 2078,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "f84f88e8-5a98-4bed-a3fb-4101e203db53",
+        "request_to_dispatch_sim_s": 0.03799999999991144,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12000000000057298,
+        "acquisition_to_dispatch_sim_s": 0.19200000000091677,
+        "acquisition_to_request_sim_s": 0.12000000000057298,
+        "action_event_id": 2202,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2203,
+        "declared_observation_sequence": 1352,
+        "dispatch_event_id": 2207,
+        "matched_candidate_input_event_id": 2200,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "12da5c0f-27d2-4740-9569-70907ea544bc",
+        "request_to_dispatch_sim_s": 0.07200000000034379,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.22400000000106957,
+        "acquisition_to_dispatch_sim_s": 0.28800000000137516,
+        "acquisition_to_request_sim_s": 0.22400000000106957,
+        "action_event_id": 2578,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2579,
+        "declared_observation_sequence": 1681,
+        "dispatch_event_id": 2583,
+        "matched_candidate_input_event_id": 2575,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "260aa638-64b1-4068-9cbc-3721d7611c52",
+        "request_to_dispatch_sim_s": 0.06400000000030559,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16200000000077353,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.16200000000077353,
+        "action_event_id": 2720,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2721,
+        "declared_observation_sequence": 1802,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 2718,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "c203cc1f-5d0a-4910-83d7-c7bcfef0348f",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.17000000000081172,
+        "acquisition_to_dispatch_sim_s": 0.22200000000106002,
+        "acquisition_to_request_sim_s": 0.17000000000081172,
+        "action_event_id": 3029,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3030,
+        "declared_observation_sequence": 1900,
+        "dispatch_event_id": 3033,
+        "matched_candidate_input_event_id": 3026,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "a127663f-903d-4160-a2a7-564d69ad07c7",
+        "request_to_dispatch_sim_s": 0.05200000000024829,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12200000000058253,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12200000000058253,
+        "action_event_id": 3159,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3160,
+        "declared_observation_sequence": 2010,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 3156,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "3f03d4c0-8e50-42fc-82e1-211f82f11220",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.15600000000074488,
+        "acquisition_to_dispatch_sim_s": 0.20000000000095497,
+        "acquisition_to_request_sim_s": 0.15600000000074488,
+        "action_event_id": 3190,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3191,
+        "declared_observation_sequence": 2030,
+        "dispatch_event_id": 3195,
+        "matched_candidate_input_event_id": 3188,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "d16e72c4-d818-4e64-9c26-26f6bb0d2eac",
+        "request_to_dispatch_sim_s": 0.04400000000021009,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.18800000000089767,
+        "acquisition_to_dispatch_sim_s": 0.24800000000118416,
+        "acquisition_to_request_sim_s": 0.18800000000089767,
+        "action_event_id": 3323,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3324,
+        "declared_observation_sequence": 2141,
+        "dispatch_event_id": 3327,
+        "matched_candidate_input_event_id": 3320,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "f52a200a-fa76-49fc-b9d3-cdd6eb19b502",
+        "request_to_dispatch_sim_s": 0.06000000000028649,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.15800000000075443,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.15800000000075443,
+        "action_event_id": 3478,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3479,
+        "declared_observation_sequence": 2274,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 3476,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "421a0057-55d2-4391-8a09-d131611ac964",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.14200000000067803,
+        "acquisition_to_dispatch_sim_s": 0.19600000000093587,
+        "acquisition_to_request_sim_s": 0.14200000000067803,
+        "action_event_id": 3786,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3787,
+        "declared_observation_sequence": 2372,
+        "dispatch_event_id": 3791,
+        "matched_candidate_input_event_id": 3784,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "17aa2898-6170-471e-b70f-d8148e444c54",
+        "request_to_dispatch_sim_s": 0.05400000000025784,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10200000000048703,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10200000000048703,
+        "action_event_id": 3917,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3918,
+        "declared_observation_sequence": 2482,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 3915,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "7cf86310-fd16-446e-9feb-640675b82771",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13800000000065893,
+        "acquisition_to_dispatch_sim_s": 0.18600000000088812,
+        "acquisition_to_request_sim_s": 0.13800000000065893,
+        "action_event_id": 3948,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3949,
+        "declared_observation_sequence": 2502,
+        "dispatch_event_id": 3953,
+        "matched_candidate_input_event_id": 3946,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "83fe5c5e-c0d2-454b-bfd1-ca6b888dd4b8",
+        "request_to_dispatch_sim_s": 0.04800000000022919,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13800000000065893,
+        "acquisition_to_dispatch_sim_s": 0.19600000000093587,
+        "acquisition_to_request_sim_s": 0.13800000000065893,
+        "action_event_id": 4088,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4089,
+        "declared_observation_sequence": 2620,
+        "dispatch_event_id": 4093,
+        "matched_candidate_input_event_id": 4086,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "072eb069-d8e1-4d3b-baf0-3bc450ff0200",
+        "request_to_dispatch_sim_s": 0.05800000000027694,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16800000000080217,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.16800000000080217,
+        "action_event_id": 4219,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4220,
+        "declared_observation_sequence": 2730,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 4217,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "47d2827c-2376-417e-91ca-857afce0e72d",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.14800000000070668,
+        "acquisition_to_dispatch_sim_s": 0.20400000000097407,
+        "acquisition_to_request_sim_s": 0.14800000000070668,
+        "action_event_id": 4528,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4529,
+        "declared_observation_sequence": 2828,
+        "dispatch_event_id": 4533,
+        "matched_candidate_input_event_id": 4526,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "101c6d06-ea16-426a-954e-889ac10a8276",
+        "request_to_dispatch_sim_s": 0.05600000000026739,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13000000000062073,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.13000000000062073,
+        "action_event_id": 4659,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4660,
+        "declared_observation_sequence": 2938,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 4657,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "90a2ccbb-e874-40b2-acc3-798ef2e66296",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.17000000000081172,
+        "acquisition_to_dispatch_sim_s": 0.21600000000103137,
+        "acquisition_to_request_sim_s": 0.17000000000081172,
+        "action_event_id": 4690,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4691,
+        "declared_observation_sequence": 2958,
+        "dispatch_event_id": 4695,
+        "matched_candidate_input_event_id": 4688,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "79615720-8617-49ea-bcd4-661b1d65323d",
+        "request_to_dispatch_sim_s": 0.04600000000021964,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16600000000079262,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.16600000000079262,
+        "action_event_id": 4839,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4841,
+        "declared_observation_sequence": 3084,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 4837,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "29aff462-1ed1-455e-8e31-ed281dd63fc6",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13600000000064938,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.13600000000064938,
+        "action_event_id": 4851,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4853,
+        "declared_observation_sequence": 3086,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 4849,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "30b36ac3-5798-4d88-9baf-7807bbf9656b",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10800000000051568,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10800000000051568,
+        "action_event_id": 4863,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4865,
+        "declared_observation_sequence": 3088,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 4861,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "47acd7de-cea3-4e4b-9285-c08a2091a213",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.18200000000086902,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.18200000000086902,
+        "action_event_id": 4874,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4876,
+        "declared_observation_sequence": 3089,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 4872,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "1bfff52a-27ca-4bef-83ba-6231167f1155",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      }
+    ],
+    "effective_physical_correction_latency": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Needs an independently defined corrective physical event and disturbance relationship",
+      "unit": "s",
+      "value": null
+    },
+    "packet_deliveries": [
+      {
+        "acquisition_to_delivery_sim_s": 0.06800000000000006,
+        "event_id": 9,
+        "missing_reason": null,
+        "sequence": 1
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06800000000002271,
+        "event_id": 164,
+        "missing_reason": null,
+        "sequence": 133
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 174,
+        "missing_reason": null,
+        "sequence": 134
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 177,
+        "missing_reason": null,
+        "sequence": 135
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 180,
+        "missing_reason": null,
+        "sequence": 136
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 183,
+        "missing_reason": null,
+        "sequence": 137
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 186,
+        "missing_reason": null,
+        "sequence": 138
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 189,
+        "missing_reason": null,
+        "sequence": 139
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 193,
+        "missing_reason": null,
+        "sequence": 140
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 196,
+        "missing_reason": null,
+        "sequence": 141
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 199,
+        "missing_reason": null,
+        "sequence": 142
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 202,
+        "missing_reason": null,
+        "sequence": 143
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 205,
+        "missing_reason": null,
+        "sequence": 144
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 208,
+        "missing_reason": null,
+        "sequence": 145
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 211,
+        "missing_reason": null,
+        "sequence": 146
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 214,
+        "missing_reason": null,
+        "sequence": 147
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 217,
+        "missing_reason": null,
+        "sequence": 148
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 220,
+        "missing_reason": null,
+        "sequence": 149
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 224,
+        "missing_reason": null,
+        "sequence": 150
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 227,
+        "missing_reason": null,
+        "sequence": 151
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 230,
+        "missing_reason": null,
+        "sequence": 152
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 233,
+        "missing_reason": null,
+        "sequence": 153
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000004675,
+        "event_id": 236,
+        "missing_reason": null,
+        "sequence": 154
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14200000000000834,
+        "event_id": 239,
+        "missing_reason": null,
+        "sequence": 155
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999999202,
+        "event_id": 242,
+        "missing_reason": null,
+        "sequence": 156
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14599999999991908,
+        "event_id": 245,
+        "missing_reason": null,
+        "sequence": 157
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14799999999991797,
+        "event_id": 248,
+        "missing_reason": null,
+        "sequence": 158
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14999999999991687,
+        "event_id": 251,
+        "missing_reason": null,
+        "sequence": 159
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999991576,
+        "event_id": 255,
+        "missing_reason": null,
+        "sequence": 160
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15399999999991465,
+        "event_id": 258,
+        "missing_reason": null,
+        "sequence": 161
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999991354,
+        "event_id": 261,
+        "missing_reason": null,
+        "sequence": 162
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15799999999991243,
+        "event_id": 264,
+        "missing_reason": null,
+        "sequence": 163
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15999999999991132,
+        "event_id": 267,
+        "missing_reason": null,
+        "sequence": 164
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06199999999996564,
+        "event_id": 271,
+        "missing_reason": null,
+        "sequence": 166
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06399999999996453,
+        "event_id": 274,
+        "missing_reason": null,
+        "sequence": 167
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06599999999996342,
+        "event_id": 277,
+        "missing_reason": null,
+        "sequence": 168
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06799999999996231,
+        "event_id": 280,
+        "missing_reason": null,
+        "sequence": 169
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08799999999995123,
+        "event_id": 283,
+        "missing_reason": null,
+        "sequence": 170
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08999999999995012,
+        "event_id": 287,
+        "missing_reason": null,
+        "sequence": 171
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09199999999994901,
+        "event_id": 290,
+        "missing_reason": null,
+        "sequence": 172
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11199999999993793,
+        "event_id": 293,
+        "missing_reason": null,
+        "sequence": 173
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11399999999993682,
+        "event_id": 296,
+        "missing_reason": null,
+        "sequence": 174
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11599999999993571,
+        "event_id": 299,
+        "missing_reason": null,
+        "sequence": 175
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1179999999999346,
+        "event_id": 302,
+        "missing_reason": null,
+        "sequence": 176
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1199999999999335,
+        "event_id": 305,
+        "missing_reason": null,
+        "sequence": 177
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12199999999993238,
+        "event_id": 308,
+        "missing_reason": null,
+        "sequence": 178
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12399999999993128,
+        "event_id": 311,
+        "missing_reason": null,
+        "sequence": 179
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12599999999993017,
+        "event_id": 315,
+        "missing_reason": null,
+        "sequence": 180
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12799999999992906,
+        "event_id": 318,
+        "missing_reason": null,
+        "sequence": 181
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999992795,
+        "event_id": 321,
+        "missing_reason": null,
+        "sequence": 182
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13199999999992684,
+        "event_id": 324,
+        "missing_reason": null,
+        "sequence": 183
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13399999999992573,
+        "event_id": 327,
+        "missing_reason": null,
+        "sequence": 184
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13599999999992463,
+        "event_id": 330,
+        "missing_reason": null,
+        "sequence": 185
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13799999999992352,
+        "event_id": 333,
+        "missing_reason": null,
+        "sequence": 186
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1399999999999224,
+        "event_id": 336,
+        "missing_reason": null,
+        "sequence": 187
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1419999999999213,
+        "event_id": 339,
+        "missing_reason": null,
+        "sequence": 188
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999999202,
+        "event_id": 342,
+        "missing_reason": null,
+        "sequence": 189
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14599999999991908,
+        "event_id": 346,
+        "missing_reason": null,
+        "sequence": 190
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14799999999991797,
+        "event_id": 349,
+        "missing_reason": null,
+        "sequence": 191
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14999999999991687,
+        "event_id": 352,
+        "missing_reason": null,
+        "sequence": 192
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999991576,
+        "event_id": 355,
+        "missing_reason": null,
+        "sequence": 193
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0699999999999612,
+        "event_id": 359,
+        "missing_reason": null,
+        "sequence": 195
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0719999999999601,
+        "event_id": 362,
+        "missing_reason": null,
+        "sequence": 196
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07399999999995899,
+        "event_id": 365,
+        "missing_reason": null,
+        "sequence": 197
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07599999999995788,
+        "event_id": 368,
+        "missing_reason": null,
+        "sequence": 198
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07799999999995677,
+        "event_id": 371,
+        "missing_reason": null,
+        "sequence": 199
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07999999999995566,
+        "event_id": 374,
+        "missing_reason": null,
+        "sequence": 200
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09999999999994458,
+        "event_id": 378,
+        "missing_reason": null,
+        "sequence": 201
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10199999999994347,
+        "event_id": 381,
+        "missing_reason": null,
+        "sequence": 202
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10399999999994236,
+        "event_id": 384,
+        "missing_reason": null,
+        "sequence": 203
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10599999999994125,
+        "event_id": 387,
+        "missing_reason": null,
+        "sequence": 204
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10799999999994014,
+        "event_id": 390,
+        "missing_reason": null,
+        "sequence": 205
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10999999999993904,
+        "event_id": 393,
+        "missing_reason": null,
+        "sequence": 206
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11199999999993793,
+        "event_id": 396,
+        "missing_reason": null,
+        "sequence": 207
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11399999999993682,
+        "event_id": 399,
+        "missing_reason": null,
+        "sequence": 208
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11599999999993571,
+        "event_id": 402,
+        "missing_reason": null,
+        "sequence": 209
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1179999999999346,
+        "event_id": 406,
+        "missing_reason": null,
+        "sequence": 210
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1199999999999335,
+        "event_id": 409,
+        "missing_reason": null,
+        "sequence": 211
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12199999999993238,
+        "event_id": 412,
+        "missing_reason": null,
+        "sequence": 212
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12399999999993128,
+        "event_id": 415,
+        "missing_reason": null,
+        "sequence": 213
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12599999999993017,
+        "event_id": 418,
+        "missing_reason": null,
+        "sequence": 214
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12799999999992906,
+        "event_id": 421,
+        "missing_reason": null,
+        "sequence": 215
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999992795,
+        "event_id": 424,
+        "missing_reason": null,
+        "sequence": 216
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13199999999992684,
+        "event_id": 427,
+        "missing_reason": null,
+        "sequence": 217
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13399999999992573,
+        "event_id": 430,
+        "missing_reason": null,
+        "sequence": 218
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13599999999992463,
+        "event_id": 433,
+        "missing_reason": null,
+        "sequence": 219
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13799999999992352,
+        "event_id": 437,
+        "missing_reason": null,
+        "sequence": 220
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1399999999999224,
+        "event_id": 440,
+        "missing_reason": null,
+        "sequence": 221
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1419999999999213,
+        "event_id": 443,
+        "missing_reason": null,
+        "sequence": 222
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999999202,
+        "event_id": 446,
+        "missing_reason": null,
+        "sequence": 223
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14599999999991908,
+        "event_id": 449,
+        "missing_reason": null,
+        "sequence": 224
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14799999999991797,
+        "event_id": 452,
+        "missing_reason": null,
+        "sequence": 225
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14999999999991687,
+        "event_id": 455,
+        "missing_reason": null,
+        "sequence": 226
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999991576,
+        "event_id": 458,
+        "missing_reason": null,
+        "sequence": 227
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15399999999991465,
+        "event_id": 461,
+        "missing_reason": null,
+        "sequence": 228
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999991354,
+        "event_id": 464,
+        "missing_reason": null,
+        "sequence": 229
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15799999999991243,
+        "event_id": 469,
+        "missing_reason": null,
+        "sequence": 230
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10200000000012466,
+        "event_id": 600,
+        "missing_reason": null,
+        "sequence": 340
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13800000000016865,
+        "event_id": 631,
+        "missing_reason": null,
+        "sequence": 360
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07800000000009533,
+        "event_id": 754,
+        "missing_reason": null,
+        "sequence": 463
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000011244,
+        "event_id": 894,
+        "missing_reason": null,
+        "sequence": 581
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07000000000008555,
+        "event_id": 905,
+        "missing_reason": null,
+        "sequence": 583
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09000000000010999,
+        "event_id": 908,
+        "missing_reason": null,
+        "sequence": 584
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09000000000010999,
+        "event_id": 911,
+        "missing_reason": null,
+        "sequence": 585
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 914,
+        "missing_reason": null,
+        "sequence": 586
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 917,
+        "missing_reason": null,
+        "sequence": 587
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 920,
+        "missing_reason": null,
+        "sequence": 588
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 923,
+        "missing_reason": null,
+        "sequence": 589
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 927,
+        "missing_reason": null,
+        "sequence": 590
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 930,
+        "missing_reason": null,
+        "sequence": 591
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 933,
+        "missing_reason": null,
+        "sequence": 592
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 936,
+        "missing_reason": null,
+        "sequence": 593
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 939,
+        "missing_reason": null,
+        "sequence": 594
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 942,
+        "missing_reason": null,
+        "sequence": 595
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 945,
+        "missing_reason": null,
+        "sequence": 596
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 948,
+        "missing_reason": null,
+        "sequence": 597
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 951,
+        "missing_reason": null,
+        "sequence": 598
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 954,
+        "missing_reason": null,
+        "sequence": 599
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 958,
+        "missing_reason": null,
+        "sequence": 600
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 961,
+        "missing_reason": null,
+        "sequence": 601
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 964,
+        "missing_reason": null,
+        "sequence": 602
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 967,
+        "missing_reason": null,
+        "sequence": 603
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000013688,
+        "event_id": 970,
+        "missing_reason": null,
+        "sequence": 604
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 973,
+        "missing_reason": null,
+        "sequence": 605
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 976,
+        "missing_reason": null,
+        "sequence": 606
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 979,
+        "missing_reason": null,
+        "sequence": 607
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 982,
+        "missing_reason": null,
+        "sequence": 608
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 985,
+        "missing_reason": null,
+        "sequence": 609
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 989,
+        "missing_reason": null,
+        "sequence": 610
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 992,
+        "missing_reason": null,
+        "sequence": 611
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 995,
+        "missing_reason": null,
+        "sequence": 612
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 998,
+        "missing_reason": null,
+        "sequence": 613
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1001,
+        "missing_reason": null,
+        "sequence": 614
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1004,
+        "missing_reason": null,
+        "sequence": 615
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1007,
+        "missing_reason": null,
+        "sequence": 616
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1010,
+        "missing_reason": null,
+        "sequence": 617
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1013,
+        "missing_reason": null,
+        "sequence": 618
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1016,
+        "missing_reason": null,
+        "sequence": 619
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1020,
+        "missing_reason": null,
+        "sequence": 620
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1023,
+        "missing_reason": null,
+        "sequence": 621
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1026,
+        "missing_reason": null,
+        "sequence": 622
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1029,
+        "missing_reason": null,
+        "sequence": 623
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1032,
+        "missing_reason": null,
+        "sequence": 624
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1035,
+        "missing_reason": null,
+        "sequence": 625
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1038,
+        "missing_reason": null,
+        "sequence": 626
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1041,
+        "missing_reason": null,
+        "sequence": 627
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1044,
+        "missing_reason": null,
+        "sequence": 628
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1047,
+        "missing_reason": null,
+        "sequence": 629
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1051,
+        "missing_reason": null,
+        "sequence": 630
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1054,
+        "missing_reason": null,
+        "sequence": 631
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1057,
+        "missing_reason": null,
+        "sequence": 632
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1060,
+        "missing_reason": null,
+        "sequence": 633
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000019065,
+        "event_id": 1063,
+        "missing_reason": null,
+        "sequence": 634
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15799999999997993,
+        "event_id": 1066,
+        "missing_reason": null,
+        "sequence": 635
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.059999999999860165,
+        "event_id": 1070,
+        "missing_reason": null,
+        "sequence": 637
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08199999999980889,
+        "event_id": 1073,
+        "missing_reason": null,
+        "sequence": 638
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08399999999980423,
+        "event_id": 1076,
+        "missing_reason": null,
+        "sequence": 639
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08599999999979957,
+        "event_id": 1079,
+        "missing_reason": null,
+        "sequence": 640
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08799999999979491,
+        "event_id": 1083,
+        "missing_reason": null,
+        "sequence": 641
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08999999999979025,
+        "event_id": 1086,
+        "missing_reason": null,
+        "sequence": 642
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09199999999978559,
+        "event_id": 1089,
+        "missing_reason": null,
+        "sequence": 643
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09399999999978093,
+        "event_id": 1092,
+        "missing_reason": null,
+        "sequence": 644
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09599999999977626,
+        "event_id": 1095,
+        "missing_reason": null,
+        "sequence": 645
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11799999999972499,
+        "event_id": 1098,
+        "missing_reason": null,
+        "sequence": 646
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11999999999972033,
+        "event_id": 1101,
+        "missing_reason": null,
+        "sequence": 647
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12199999999971567,
+        "event_id": 1104,
+        "missing_reason": null,
+        "sequence": 648
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12399999999971101,
+        "event_id": 1107,
+        "missing_reason": null,
+        "sequence": 649
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12599999999970635,
+        "event_id": 1111,
+        "missing_reason": null,
+        "sequence": 650
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12799999999970169,
+        "event_id": 1114,
+        "missing_reason": null,
+        "sequence": 651
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999969702,
+        "event_id": 1117,
+        "missing_reason": null,
+        "sequence": 652
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13199999999969236,
+        "event_id": 1120,
+        "missing_reason": null,
+        "sequence": 653
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1339999999996877,
+        "event_id": 1123,
+        "missing_reason": null,
+        "sequence": 654
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13599999999968304,
+        "event_id": 1126,
+        "missing_reason": null,
+        "sequence": 655
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13799999999967838,
+        "event_id": 1129,
+        "missing_reason": null,
+        "sequence": 656
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13999999999967372,
+        "event_id": 1132,
+        "missing_reason": null,
+        "sequence": 657
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14199999999966906,
+        "event_id": 1135,
+        "missing_reason": null,
+        "sequence": 658
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999996644,
+        "event_id": 1138,
+        "missing_reason": null,
+        "sequence": 659
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14599999999965974,
+        "event_id": 1142,
+        "missing_reason": null,
+        "sequence": 660
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14799999999965507,
+        "event_id": 1145,
+        "missing_reason": null,
+        "sequence": 661
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1499999999996504,
+        "event_id": 1148,
+        "missing_reason": null,
+        "sequence": 662
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999964575,
+        "event_id": 1151,
+        "missing_reason": null,
+        "sequence": 663
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1539999999996411,
+        "event_id": 1154,
+        "missing_reason": null,
+        "sequence": 664
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999963643,
+        "event_id": 1157,
+        "missing_reason": null,
+        "sequence": 665
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15799999999963177,
+        "event_id": 1160,
+        "missing_reason": null,
+        "sequence": 666
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.059999999999860165,
+        "event_id": 1164,
+        "missing_reason": null,
+        "sequence": 668
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06399999999985084,
+        "event_id": 1167,
+        "missing_reason": null,
+        "sequence": 669
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08399999999980423,
+        "event_id": 1170,
+        "missing_reason": null,
+        "sequence": 670
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08599999999979957,
+        "event_id": 1174,
+        "missing_reason": null,
+        "sequence": 671
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08799999999979491,
+        "event_id": 1177,
+        "missing_reason": null,
+        "sequence": 672
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10999999999974364,
+        "event_id": 1180,
+        "missing_reason": null,
+        "sequence": 673
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11199999999973898,
+        "event_id": 1183,
+        "missing_reason": null,
+        "sequence": 674
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11399999999973431,
+        "event_id": 1186,
+        "missing_reason": null,
+        "sequence": 675
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11599999999972965,
+        "event_id": 1189,
+        "missing_reason": null,
+        "sequence": 676
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11799999999972499,
+        "event_id": 1192,
+        "missing_reason": null,
+        "sequence": 677
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11999999999972033,
+        "event_id": 1196,
+        "missing_reason": null,
+        "sequence": 678
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09599999999977626,
+        "event_id": 1327,
+        "missing_reason": null,
+        "sequence": 788
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1339999999996877,
+        "event_id": 1358,
+        "missing_reason": null,
+        "sequence": 808
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08399999999980423,
+        "event_id": 1480,
+        "missing_reason": null,
+        "sequence": 910
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09399999999978093,
+        "event_id": 1615,
+        "missing_reason": null,
+        "sequence": 1023
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07399999999982754,
+        "event_id": 1626,
+        "missing_reason": null,
+        "sequence": 1025
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07599999999982288,
+        "event_id": 1629,
+        "missing_reason": null,
+        "sequence": 1026
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07799999999981821,
+        "event_id": 1632,
+        "missing_reason": null,
+        "sequence": 1027
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09999999999976694,
+        "event_id": 1635,
+        "missing_reason": null,
+        "sequence": 1028
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10199999999976228,
+        "event_id": 1638,
+        "missing_reason": null,
+        "sequence": 1029
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10399999999975762,
+        "event_id": 1642,
+        "missing_reason": null,
+        "sequence": 1030
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10599999999975296,
+        "event_id": 1645,
+        "missing_reason": null,
+        "sequence": 1031
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12599999999970635,
+        "event_id": 1648,
+        "missing_reason": null,
+        "sequence": 1032
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12799999999970169,
+        "event_id": 1651,
+        "missing_reason": null,
+        "sequence": 1033
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999969702,
+        "event_id": 1654,
+        "missing_reason": null,
+        "sequence": 1034
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13199999999969236,
+        "event_id": 1657,
+        "missing_reason": null,
+        "sequence": 1035
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1339999999996877,
+        "event_id": 1660,
+        "missing_reason": null,
+        "sequence": 1036
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13599999999968304,
+        "event_id": 1663,
+        "missing_reason": null,
+        "sequence": 1037
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13799999999967838,
+        "event_id": 1666,
+        "missing_reason": null,
+        "sequence": 1038
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13999999999967372,
+        "event_id": 1669,
+        "missing_reason": null,
+        "sequence": 1039
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14199999999966906,
+        "event_id": 1673,
+        "missing_reason": null,
+        "sequence": 1040
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999996644,
+        "event_id": 1676,
+        "missing_reason": null,
+        "sequence": 1041
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14599999999965974,
+        "event_id": 1679,
+        "missing_reason": null,
+        "sequence": 1042
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14799999999965507,
+        "event_id": 1682,
+        "missing_reason": null,
+        "sequence": 1043
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1499999999996504,
+        "event_id": 1685,
+        "missing_reason": null,
+        "sequence": 1044
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999964575,
+        "event_id": 1688,
+        "missing_reason": null,
+        "sequence": 1045
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1539999999996411,
+        "event_id": 1691,
+        "missing_reason": null,
+        "sequence": 1046
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999963643,
+        "event_id": 1694,
+        "missing_reason": null,
+        "sequence": 1047
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15799999999963177,
+        "event_id": 1697,
+        "missing_reason": null,
+        "sequence": 1048
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.059999999999860165,
+        "event_id": 1701,
+        "missing_reason": null,
+        "sequence": 1050
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06399999999985084,
+        "event_id": 1705,
+        "missing_reason": null,
+        "sequence": 1051
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06599999999984618,
+        "event_id": 1708,
+        "missing_reason": null,
+        "sequence": 1052
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06799999999984152,
+        "event_id": 1711,
+        "missing_reason": null,
+        "sequence": 1053
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06999999999983686,
+        "event_id": 1714,
+        "missing_reason": null,
+        "sequence": 1054
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09199999999978559,
+        "event_id": 1717,
+        "missing_reason": null,
+        "sequence": 1055
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09399999999978093,
+        "event_id": 1720,
+        "missing_reason": null,
+        "sequence": 1056
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09599999999977626,
+        "event_id": 1723,
+        "missing_reason": null,
+        "sequence": 1057
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11799999999972499,
+        "event_id": 1726,
+        "missing_reason": null,
+        "sequence": 1058
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11999999999972033,
+        "event_id": 1729,
+        "missing_reason": null,
+        "sequence": 1059
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12199999999971567,
+        "event_id": 1733,
+        "missing_reason": null,
+        "sequence": 1060
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12399999999971101,
+        "event_id": 1736,
+        "missing_reason": null,
+        "sequence": 1061
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12599999999970635,
+        "event_id": 1739,
+        "missing_reason": null,
+        "sequence": 1062
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12799999999970169,
+        "event_id": 1742,
+        "missing_reason": null,
+        "sequence": 1063
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999969702,
+        "event_id": 1745,
+        "missing_reason": null,
+        "sequence": 1064
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999964575,
+        "event_id": 1748,
+        "missing_reason": null,
+        "sequence": 1065
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1539999999996411,
+        "event_id": 1751,
+        "missing_reason": null,
+        "sequence": 1066
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999963643,
+        "event_id": 1754,
+        "missing_reason": null,
+        "sequence": 1067
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15799999999963177,
+        "event_id": 1757,
+        "missing_reason": null,
+        "sequence": 1068
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.059999999999860165,
+        "event_id": 1761,
+        "missing_reason": null,
+        "sequence": 1070
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06399999999985084,
+        "event_id": 1765,
+        "missing_reason": null,
+        "sequence": 1071
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06599999999984618,
+        "event_id": 1768,
+        "missing_reason": null,
+        "sequence": 1072
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06799999999984152,
+        "event_id": 1771,
+        "missing_reason": null,
+        "sequence": 1073
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06999999999983686,
+        "event_id": 1774,
+        "missing_reason": null,
+        "sequence": 1074
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08999999999979025,
+        "event_id": 1777,
+        "missing_reason": null,
+        "sequence": 1075
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09199999999978559,
+        "event_id": 1780,
+        "missing_reason": null,
+        "sequence": 1076
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09399999999978093,
+        "event_id": 1783,
+        "missing_reason": null,
+        "sequence": 1077
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09399999999978093,
+        "event_id": 1786,
+        "missing_reason": null,
+        "sequence": 1078
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0979999999997716,
+        "event_id": 1789,
+        "missing_reason": null,
+        "sequence": 1079
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0979999999997716,
+        "event_id": 1792,
+        "missing_reason": null,
+        "sequence": 1080
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10199999999976228,
+        "event_id": 1796,
+        "missing_reason": null,
+        "sequence": 1081
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10399999999975762,
+        "event_id": 1799,
+        "missing_reason": null,
+        "sequence": 1082
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10599999999975296,
+        "event_id": 1802,
+        "missing_reason": null,
+        "sequence": 1083
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1079999999997483,
+        "event_id": 1805,
+        "missing_reason": null,
+        "sequence": 1084
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12599999999970635,
+        "event_id": 1808,
+        "missing_reason": null,
+        "sequence": 1085
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12799999999970169,
+        "event_id": 1811,
+        "missing_reason": null,
+        "sequence": 1086
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999969702,
+        "event_id": 1814,
+        "missing_reason": null,
+        "sequence": 1087
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13199999999969236,
+        "event_id": 1817,
+        "missing_reason": null,
+        "sequence": 1088
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1339999999996877,
+        "event_id": 1820,
+        "missing_reason": null,
+        "sequence": 1089
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13599999999968304,
+        "event_id": 1824,
+        "missing_reason": null,
+        "sequence": 1090
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13799999999967838,
+        "event_id": 1827,
+        "missing_reason": null,
+        "sequence": 1091
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13999999999967372,
+        "event_id": 1830,
+        "missing_reason": null,
+        "sequence": 1092
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14199999999966906,
+        "event_id": 1833,
+        "missing_reason": null,
+        "sequence": 1093
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999996644,
+        "event_id": 1836,
+        "missing_reason": null,
+        "sequence": 1094
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14599999999965974,
+        "event_id": 1839,
+        "missing_reason": null,
+        "sequence": 1095
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14799999999965507,
+        "event_id": 1842,
+        "missing_reason": null,
+        "sequence": 1096
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1499999999996504,
+        "event_id": 1845,
+        "missing_reason": null,
+        "sequence": 1097
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999964575,
+        "event_id": 1848,
+        "missing_reason": null,
+        "sequence": 1098
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1539999999996411,
+        "event_id": 1851,
+        "missing_reason": null,
+        "sequence": 1099
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999963643,
+        "event_id": 1855,
+        "missing_reason": null,
+        "sequence": 1100
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15799999999963177,
+        "event_id": 1858,
+        "missing_reason": null,
+        "sequence": 1101
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1599999999996271,
+        "event_id": 1861,
+        "missing_reason": null,
+        "sequence": 1102
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08399999999980423,
+        "event_id": 1865,
+        "missing_reason": null,
+        "sequence": 1104
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08599999999979957,
+        "event_id": 1868,
+        "missing_reason": null,
+        "sequence": 1105
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08799999999979491,
+        "event_id": 1871,
+        "missing_reason": null,
+        "sequence": 1106
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08999999999979025,
+        "event_id": 1874,
+        "missing_reason": null,
+        "sequence": 1107
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09199999999978559,
+        "event_id": 1877,
+        "missing_reason": null,
+        "sequence": 1108
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09399999999978093,
+        "event_id": 1880,
+        "missing_reason": null,
+        "sequence": 1109
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09599999999977626,
+        "event_id": 1883,
+        "missing_reason": null,
+        "sequence": 1110
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0979999999997716,
+        "event_id": 1887,
+        "missing_reason": null,
+        "sequence": 1111
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0979999999997716,
+        "event_id": 1890,
+        "missing_reason": null,
+        "sequence": 1112
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10199999999976228,
+        "event_id": 1893,
+        "missing_reason": null,
+        "sequence": 1113
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10399999999975762,
+        "event_id": 1896,
+        "missing_reason": null,
+        "sequence": 1114
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10599999999975296,
+        "event_id": 1899,
+        "missing_reason": null,
+        "sequence": 1115
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1079999999997483,
+        "event_id": 1902,
+        "missing_reason": null,
+        "sequence": 1116
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10999999999974364,
+        "event_id": 1905,
+        "missing_reason": null,
+        "sequence": 1117
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11199999999973898,
+        "event_id": 1908,
+        "missing_reason": null,
+        "sequence": 1118
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11399999999973431,
+        "event_id": 1911,
+        "missing_reason": null,
+        "sequence": 1119
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11599999999972965,
+        "event_id": 1916,
+        "missing_reason": null,
+        "sequence": 1120
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08799999999979491,
+        "event_id": 2046,
+        "missing_reason": null,
+        "sequence": 1230
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999969702,
+        "event_id": 2078,
+        "missing_reason": null,
+        "sequence": 1250
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 2200,
+        "missing_reason": null,
+        "sequence": 1352
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09800000000046794,
+        "event_id": 2575,
+        "missing_reason": null,
+        "sequence": 1681
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13800000000065893,
+        "event_id": 2718,
+        "missing_reason": null,
+        "sequence": 1802
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2729,
+        "missing_reason": null,
+        "sequence": 1804
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2732,
+        "missing_reason": null,
+        "sequence": 1805
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2735,
+        "missing_reason": null,
+        "sequence": 1806
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2738,
+        "missing_reason": null,
+        "sequence": 1807
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2741,
+        "missing_reason": null,
+        "sequence": 1808
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2744,
+        "missing_reason": null,
+        "sequence": 1809
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2748,
+        "missing_reason": null,
+        "sequence": 1810
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2751,
+        "missing_reason": null,
+        "sequence": 1811
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2754,
+        "missing_reason": null,
+        "sequence": 1812
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2757,
+        "missing_reason": null,
+        "sequence": 1813
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2760,
+        "missing_reason": null,
+        "sequence": 1814
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2763,
+        "missing_reason": null,
+        "sequence": 1815
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2766,
+        "missing_reason": null,
+        "sequence": 1816
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2769,
+        "missing_reason": null,
+        "sequence": 1817
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2772,
+        "missing_reason": null,
+        "sequence": 1818
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2775,
+        "missing_reason": null,
+        "sequence": 1819
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2779,
+        "missing_reason": null,
+        "sequence": 1820
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2782,
+        "missing_reason": null,
+        "sequence": 1821
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2785,
+        "missing_reason": null,
+        "sequence": 1822
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2788,
+        "missing_reason": null,
+        "sequence": 1823
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2791,
+        "missing_reason": null,
+        "sequence": 1824
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2794,
+        "missing_reason": null,
+        "sequence": 1825
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2797,
+        "missing_reason": null,
+        "sequence": 1826
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2800,
+        "missing_reason": null,
+        "sequence": 1827
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2803,
+        "missing_reason": null,
+        "sequence": 1828
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2806,
+        "missing_reason": null,
+        "sequence": 1829
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2810,
+        "missing_reason": null,
+        "sequence": 1830
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2813,
+        "missing_reason": null,
+        "sequence": 1831
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2816,
+        "missing_reason": null,
+        "sequence": 1832
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2819,
+        "missing_reason": null,
+        "sequence": 1833
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2822,
+        "missing_reason": null,
+        "sequence": 1834
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2825,
+        "missing_reason": null,
+        "sequence": 1835
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2828,
+        "missing_reason": null,
+        "sequence": 1836
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2831,
+        "missing_reason": null,
+        "sequence": 1837
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2834,
+        "missing_reason": null,
+        "sequence": 1838
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2837,
+        "missing_reason": null,
+        "sequence": 1839
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2841,
+        "missing_reason": null,
+        "sequence": 1840
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2844,
+        "missing_reason": null,
+        "sequence": 1841
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2847,
+        "missing_reason": null,
+        "sequence": 1842
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2850,
+        "missing_reason": null,
+        "sequence": 1843
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2853,
+        "missing_reason": null,
+        "sequence": 1844
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2856,
+        "missing_reason": null,
+        "sequence": 1845
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2859,
+        "missing_reason": null,
+        "sequence": 1846
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2862,
+        "missing_reason": null,
+        "sequence": 1847
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2865,
+        "missing_reason": null,
+        "sequence": 1848
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2868,
+        "missing_reason": null,
+        "sequence": 1849
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2872,
+        "missing_reason": null,
+        "sequence": 1850
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2875,
+        "missing_reason": null,
+        "sequence": 1851
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2878,
+        "missing_reason": null,
+        "sequence": 1852
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2881,
+        "missing_reason": null,
+        "sequence": 1853
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2884,
+        "missing_reason": null,
+        "sequence": 1854
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2887,
+        "missing_reason": null,
+        "sequence": 1855
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2890,
+        "missing_reason": null,
+        "sequence": 1856
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2893,
+        "missing_reason": null,
+        "sequence": 1857
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2896,
+        "missing_reason": null,
+        "sequence": 1858
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2899,
+        "missing_reason": null,
+        "sequence": 1859
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2903,
+        "missing_reason": null,
+        "sequence": 1860
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2906,
+        "missing_reason": null,
+        "sequence": 1861
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2909,
+        "missing_reason": null,
+        "sequence": 1862
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 2912,
+        "missing_reason": null,
+        "sequence": 1863
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2915,
+        "missing_reason": null,
+        "sequence": 1864
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2918,
+        "missing_reason": null,
+        "sequence": 1865
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2921,
+        "missing_reason": null,
+        "sequence": 1866
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2924,
+        "missing_reason": null,
+        "sequence": 1867
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2927,
+        "missing_reason": null,
+        "sequence": 1868
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2930,
+        "missing_reason": null,
+        "sequence": 1869
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2934,
+        "missing_reason": null,
+        "sequence": 1870
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2937,
+        "missing_reason": null,
+        "sequence": 1871
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2940,
+        "missing_reason": null,
+        "sequence": 1872
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2943,
+        "missing_reason": null,
+        "sequence": 1873
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2946,
+        "missing_reason": null,
+        "sequence": 1874
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2949,
+        "missing_reason": null,
+        "sequence": 1875
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 2952,
+        "missing_reason": null,
+        "sequence": 1876
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2955,
+        "missing_reason": null,
+        "sequence": 1877
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2958,
+        "missing_reason": null,
+        "sequence": 1878
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2961,
+        "missing_reason": null,
+        "sequence": 1879
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2965,
+        "missing_reason": null,
+        "sequence": 1880
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2968,
+        "missing_reason": null,
+        "sequence": 1881
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2971,
+        "missing_reason": null,
+        "sequence": 1882
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2974,
+        "missing_reason": null,
+        "sequence": 1883
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2977,
+        "missing_reason": null,
+        "sequence": 1884
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2980,
+        "missing_reason": null,
+        "sequence": 1885
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2983,
+        "missing_reason": null,
+        "sequence": 1886
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2986,
+        "missing_reason": null,
+        "sequence": 1887
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2989,
+        "missing_reason": null,
+        "sequence": 1888
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2992,
+        "missing_reason": null,
+        "sequence": 1889
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15600000000074488,
+        "event_id": 2996,
+        "missing_reason": null,
+        "sequence": 1890
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07800000000037244,
+        "event_id": 3000,
+        "missing_reason": null,
+        "sequence": 1892
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07800000000037244,
+        "event_id": 3003,
+        "missing_reason": null,
+        "sequence": 1893
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09800000000046794,
+        "event_id": 3006,
+        "missing_reason": null,
+        "sequence": 1894
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09600000000045839,
+        "event_id": 3009,
+        "missing_reason": null,
+        "sequence": 1895
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12000000000057298,
+        "event_id": 3012,
+        "missing_reason": null,
+        "sequence": 1896
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12200000000058253,
+        "event_id": 3015,
+        "missing_reason": null,
+        "sequence": 1897
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12200000000058253,
+        "event_id": 3018,
+        "missing_reason": null,
+        "sequence": 1898
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12200000000058253,
+        "event_id": 3021,
+        "missing_reason": null,
+        "sequence": 1899
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14200000000067803,
+        "event_id": 3026,
+        "missing_reason": null,
+        "sequence": 1900
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09400000000044884,
+        "event_id": 3156,
+        "missing_reason": null,
+        "sequence": 2010
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000063983,
+        "event_id": 3188,
+        "missing_reason": null,
+        "sequence": 2030
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 3320,
+        "missing_reason": null,
+        "sequence": 2141
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12800000000061118,
+        "event_id": 3476,
+        "missing_reason": null,
+        "sequence": 2274
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3487,
+        "missing_reason": null,
+        "sequence": 2276
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3490,
+        "missing_reason": null,
+        "sequence": 2277
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3493,
+        "missing_reason": null,
+        "sequence": 2278
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3496,
+        "missing_reason": null,
+        "sequence": 2279
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3500,
+        "missing_reason": null,
+        "sequence": 2280
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3503,
+        "missing_reason": null,
+        "sequence": 2281
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3506,
+        "missing_reason": null,
+        "sequence": 2282
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3509,
+        "missing_reason": null,
+        "sequence": 2283
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3512,
+        "missing_reason": null,
+        "sequence": 2284
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3515,
+        "missing_reason": null,
+        "sequence": 2285
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3518,
+        "missing_reason": null,
+        "sequence": 2286
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3521,
+        "missing_reason": null,
+        "sequence": 2287
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3524,
+        "missing_reason": null,
+        "sequence": 2288
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3527,
+        "missing_reason": null,
+        "sequence": 2289
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3531,
+        "missing_reason": null,
+        "sequence": 2290
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3534,
+        "missing_reason": null,
+        "sequence": 2291
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3537,
+        "missing_reason": null,
+        "sequence": 2292
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3540,
+        "missing_reason": null,
+        "sequence": 2293
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3543,
+        "missing_reason": null,
+        "sequence": 2294
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3546,
+        "missing_reason": null,
+        "sequence": 2295
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3549,
+        "missing_reason": null,
+        "sequence": 2296
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3552,
+        "missing_reason": null,
+        "sequence": 2297
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3555,
+        "missing_reason": null,
+        "sequence": 2298
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13000000000062073,
+        "event_id": 3558,
+        "missing_reason": null,
+        "sequence": 2299
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13000000000062073,
+        "event_id": 3562,
+        "missing_reason": null,
+        "sequence": 2300
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13000000000062073,
+        "event_id": 3565,
+        "missing_reason": null,
+        "sequence": 2301
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13000000000062073,
+        "event_id": 3568,
+        "missing_reason": null,
+        "sequence": 2302
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13000000000062073,
+        "event_id": 3571,
+        "missing_reason": null,
+        "sequence": 2303
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3574,
+        "missing_reason": null,
+        "sequence": 2304
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3577,
+        "missing_reason": null,
+        "sequence": 2305
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3580,
+        "missing_reason": null,
+        "sequence": 2306
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3583,
+        "missing_reason": null,
+        "sequence": 2307
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3586,
+        "missing_reason": null,
+        "sequence": 2308
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3589,
+        "missing_reason": null,
+        "sequence": 2309
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3593,
+        "missing_reason": null,
+        "sequence": 2310
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3596,
+        "missing_reason": null,
+        "sequence": 2311
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3599,
+        "missing_reason": null,
+        "sequence": 2312
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3602,
+        "missing_reason": null,
+        "sequence": 2313
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3605,
+        "missing_reason": null,
+        "sequence": 2314
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3608,
+        "missing_reason": null,
+        "sequence": 2315
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3611,
+        "missing_reason": null,
+        "sequence": 2316
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3614,
+        "missing_reason": null,
+        "sequence": 2317
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3617,
+        "missing_reason": null,
+        "sequence": 2318
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3620,
+        "missing_reason": null,
+        "sequence": 2319
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3624,
+        "missing_reason": null,
+        "sequence": 2320
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15400000000073533,
+        "event_id": 3627,
+        "missing_reason": null,
+        "sequence": 2321
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07400000000035334,
+        "event_id": 3631,
+        "missing_reason": null,
+        "sequence": 2323
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07400000000035334,
+        "event_id": 3634,
+        "missing_reason": null,
+        "sequence": 2324
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07400000000035334,
+        "event_id": 3637,
+        "missing_reason": null,
+        "sequence": 2325
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3640,
+        "missing_reason": null,
+        "sequence": 2326
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3643,
+        "missing_reason": null,
+        "sequence": 2327
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3646,
+        "missing_reason": null,
+        "sequence": 2328
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3649,
+        "missing_reason": null,
+        "sequence": 2329
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3652,
+        "missing_reason": null,
+        "sequence": 2330
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3656,
+        "missing_reason": null,
+        "sequence": 2331
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3659,
+        "missing_reason": null,
+        "sequence": 2332
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3662,
+        "missing_reason": null,
+        "sequence": 2333
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3665,
+        "missing_reason": null,
+        "sequence": 2334
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3668,
+        "missing_reason": null,
+        "sequence": 2335
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3671,
+        "missing_reason": null,
+        "sequence": 2336
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3674,
+        "missing_reason": null,
+        "sequence": 2337
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3677,
+        "missing_reason": null,
+        "sequence": 2338
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3680,
+        "missing_reason": null,
+        "sequence": 2339
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3683,
+        "missing_reason": null,
+        "sequence": 2340
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3687,
+        "missing_reason": null,
+        "sequence": 2341
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3690,
+        "missing_reason": null,
+        "sequence": 2342
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3693,
+        "missing_reason": null,
+        "sequence": 2343
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3696,
+        "missing_reason": null,
+        "sequence": 2344
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3699,
+        "missing_reason": null,
+        "sequence": 2345
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3702,
+        "missing_reason": null,
+        "sequence": 2346
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3705,
+        "missing_reason": null,
+        "sequence": 2347
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3708,
+        "missing_reason": null,
+        "sequence": 2348
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3711,
+        "missing_reason": null,
+        "sequence": 2349
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3714,
+        "missing_reason": null,
+        "sequence": 2350
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3718,
+        "missing_reason": null,
+        "sequence": 2351
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3721,
+        "missing_reason": null,
+        "sequence": 2352
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3724,
+        "missing_reason": null,
+        "sequence": 2353
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3727,
+        "missing_reason": null,
+        "sequence": 2354
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3730,
+        "missing_reason": null,
+        "sequence": 2355
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3733,
+        "missing_reason": null,
+        "sequence": 2356
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3736,
+        "missing_reason": null,
+        "sequence": 2357
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3739,
+        "missing_reason": null,
+        "sequence": 2358
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3742,
+        "missing_reason": null,
+        "sequence": 2359
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3745,
+        "missing_reason": null,
+        "sequence": 2360
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3749,
+        "missing_reason": null,
+        "sequence": 2361
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3752,
+        "missing_reason": null,
+        "sequence": 2362
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3755,
+        "missing_reason": null,
+        "sequence": 2363
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3758,
+        "missing_reason": null,
+        "sequence": 2364
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 3761,
+        "missing_reason": null,
+        "sequence": 2365
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11000000000052523,
+        "event_id": 3764,
+        "missing_reason": null,
+        "sequence": 2366
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 3767,
+        "missing_reason": null,
+        "sequence": 2367
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 3770,
+        "missing_reason": null,
+        "sequence": 2368
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 3773,
+        "missing_reason": null,
+        "sequence": 2369
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 3777,
+        "missing_reason": null,
+        "sequence": 2370
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 3780,
+        "missing_reason": null,
+        "sequence": 2371
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11200000000053478,
+        "event_id": 3784,
+        "missing_reason": null,
+        "sequence": 2372
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07400000000035334,
+        "event_id": 3915,
+        "missing_reason": null,
+        "sequence": 2482
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11400000000054433,
+        "event_id": 3946,
+        "missing_reason": null,
+        "sequence": 2502
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11400000000054433,
+        "event_id": 4086,
+        "missing_reason": null,
+        "sequence": 2620
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14400000000068758,
+        "event_id": 4217,
+        "missing_reason": null,
+        "sequence": 2730
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4228,
+        "missing_reason": null,
+        "sequence": 2732
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4231,
+        "missing_reason": null,
+        "sequence": 2733
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4234,
+        "missing_reason": null,
+        "sequence": 2734
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4237,
+        "missing_reason": null,
+        "sequence": 2735
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4240,
+        "missing_reason": null,
+        "sequence": 2736
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4243,
+        "missing_reason": null,
+        "sequence": 2737
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4246,
+        "missing_reason": null,
+        "sequence": 2738
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4249,
+        "missing_reason": null,
+        "sequence": 2739
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4253,
+        "missing_reason": null,
+        "sequence": 2740
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4256,
+        "missing_reason": null,
+        "sequence": 2741
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4259,
+        "missing_reason": null,
+        "sequence": 2742
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4262,
+        "missing_reason": null,
+        "sequence": 2743
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4265,
+        "missing_reason": null,
+        "sequence": 2744
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4268,
+        "missing_reason": null,
+        "sequence": 2745
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4271,
+        "missing_reason": null,
+        "sequence": 2746
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4274,
+        "missing_reason": null,
+        "sequence": 2747
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4277,
+        "missing_reason": null,
+        "sequence": 2748
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4280,
+        "missing_reason": null,
+        "sequence": 2749
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4284,
+        "missing_reason": null,
+        "sequence": 2750
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4287,
+        "missing_reason": null,
+        "sequence": 2751
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4290,
+        "missing_reason": null,
+        "sequence": 2752
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4293,
+        "missing_reason": null,
+        "sequence": 2753
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4296,
+        "missing_reason": null,
+        "sequence": 2754
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4299,
+        "missing_reason": null,
+        "sequence": 2755
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4302,
+        "missing_reason": null,
+        "sequence": 2756
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4305,
+        "missing_reason": null,
+        "sequence": 2757
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4308,
+        "missing_reason": null,
+        "sequence": 2758
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4311,
+        "missing_reason": null,
+        "sequence": 2759
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4315,
+        "missing_reason": null,
+        "sequence": 2760
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4318,
+        "missing_reason": null,
+        "sequence": 2761
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4321,
+        "missing_reason": null,
+        "sequence": 2762
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4324,
+        "missing_reason": null,
+        "sequence": 2763
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4327,
+        "missing_reason": null,
+        "sequence": 2764
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4330,
+        "missing_reason": null,
+        "sequence": 2765
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4333,
+        "missing_reason": null,
+        "sequence": 2766
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4336,
+        "missing_reason": null,
+        "sequence": 2767
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4339,
+        "missing_reason": null,
+        "sequence": 2768
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4342,
+        "missing_reason": null,
+        "sequence": 2769
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4346,
+        "missing_reason": null,
+        "sequence": 2770
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4349,
+        "missing_reason": null,
+        "sequence": 2771
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4352,
+        "missing_reason": null,
+        "sequence": 2772
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4355,
+        "missing_reason": null,
+        "sequence": 2773
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4358,
+        "missing_reason": null,
+        "sequence": 2774
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4361,
+        "missing_reason": null,
+        "sequence": 2775
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4364,
+        "missing_reason": null,
+        "sequence": 2776
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4367,
+        "missing_reason": null,
+        "sequence": 2777
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4370,
+        "missing_reason": null,
+        "sequence": 2778
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4373,
+        "missing_reason": null,
+        "sequence": 2779
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4377,
+        "missing_reason": null,
+        "sequence": 2780
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4380,
+        "missing_reason": null,
+        "sequence": 2781
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4383,
+        "missing_reason": null,
+        "sequence": 2782
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4386,
+        "missing_reason": null,
+        "sequence": 2783
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4389,
+        "missing_reason": null,
+        "sequence": 2784
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4392,
+        "missing_reason": null,
+        "sequence": 2785
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4395,
+        "missing_reason": null,
+        "sequence": 2786
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4398,
+        "missing_reason": null,
+        "sequence": 2787
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4401,
+        "missing_reason": null,
+        "sequence": 2788
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4404,
+        "missing_reason": null,
+        "sequence": 2789
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4408,
+        "missing_reason": null,
+        "sequence": 2790
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4411,
+        "missing_reason": null,
+        "sequence": 2791
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4414,
+        "missing_reason": null,
+        "sequence": 2792
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4417,
+        "missing_reason": null,
+        "sequence": 2793
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4420,
+        "missing_reason": null,
+        "sequence": 2794
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4423,
+        "missing_reason": null,
+        "sequence": 2795
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4426,
+        "missing_reason": null,
+        "sequence": 2796
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4429,
+        "missing_reason": null,
+        "sequence": 2797
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4432,
+        "missing_reason": null,
+        "sequence": 2798
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4435,
+        "missing_reason": null,
+        "sequence": 2799
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4439,
+        "missing_reason": null,
+        "sequence": 2800
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4442,
+        "missing_reason": null,
+        "sequence": 2801
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4445,
+        "missing_reason": null,
+        "sequence": 2802
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4448,
+        "missing_reason": null,
+        "sequence": 2803
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4451,
+        "missing_reason": null,
+        "sequence": 2804
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4454,
+        "missing_reason": null,
+        "sequence": 2805
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4457,
+        "missing_reason": null,
+        "sequence": 2806
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4460,
+        "missing_reason": null,
+        "sequence": 2807
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4463,
+        "missing_reason": null,
+        "sequence": 2808
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4466,
+        "missing_reason": null,
+        "sequence": 2809
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4470,
+        "missing_reason": null,
+        "sequence": 2810
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4473,
+        "missing_reason": null,
+        "sequence": 2811
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4476,
+        "missing_reason": null,
+        "sequence": 2812
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4479,
+        "missing_reason": null,
+        "sequence": 2813
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4482,
+        "missing_reason": null,
+        "sequence": 2814
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4485,
+        "missing_reason": null,
+        "sequence": 2815
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4488,
+        "missing_reason": null,
+        "sequence": 2816
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4491,
+        "missing_reason": null,
+        "sequence": 2817
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4494,
+        "missing_reason": null,
+        "sequence": 2818
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4497,
+        "missing_reason": null,
+        "sequence": 2819
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4501,
+        "missing_reason": null,
+        "sequence": 2820
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4504,
+        "missing_reason": null,
+        "sequence": 2821
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4507,
+        "missing_reason": null,
+        "sequence": 2822
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4510,
+        "missing_reason": null,
+        "sequence": 2823
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4513,
+        "missing_reason": null,
+        "sequence": 2824
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4516,
+        "missing_reason": null,
+        "sequence": 2825
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4519,
+        "missing_reason": null,
+        "sequence": 2826
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4522,
+        "missing_reason": null,
+        "sequence": 2827
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000056343,
+        "event_id": 4526,
+        "missing_reason": null,
+        "sequence": 2828
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10000000000047748,
+        "event_id": 4657,
+        "missing_reason": null,
+        "sequence": 2938
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14200000000067803,
+        "event_id": 4688,
+        "missing_reason": null,
+        "sequence": 2958
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14200000000067803,
+        "event_id": 4837,
+        "missing_reason": null,
+        "sequence": 3084
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11600000000055388,
+        "event_id": 4849,
+        "missing_reason": null,
+        "sequence": 3086
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08600000000041064,
+        "event_id": 4861,
+        "missing_reason": null,
+        "sequence": 3088
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15800000000075443,
+        "event_id": 4872,
+        "missing_reason": null,
+        "sequence": 3089
+      }
+    ]
+  },
+  "run_id": "batch01-eval-r4-C10-rep1-baseline-persistent",
+  "schema_version": "robot-motion-diagnostics-1.0",
+  "sources": {
+    "events.jsonl": {
+      "bytes": 297378898,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C10-rep1-baseline-persistent\\evidence\\events.jsonl",
+      "sha256": "77ce2e288771194780aeb5c4d6edb1def9a5209be7b5de4e7b6e42329ac75c8e"
+    },
+    "manifest.json": {
+      "bytes": 76100,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C10-rep1-baseline-persistent\\evidence\\manifest.json",
+      "sha256": "f9c3638ceec3fb76f81b57d20aaf57b766f9afe1542a4a9b3af766024d4c0437"
+    },
+    "motion.jsonl": {
+      "bytes": 21815839,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C10-rep1-baseline-persistent\\evidence\\motion.jsonl",
+      "sha256": "6aeae148021f4d0e78ae8f14a54e7c8d06f900b9eaefc34cc6f09151984fcbab"
+    },
+    "result.json": {
+      "bytes": 577911,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C10-rep1-baseline-persistent\\evidence\\result.json",
+      "sha256": "49b4b204d898027ee0aca5bf4df29556e9cb50c11d0290768d97d37fb0df7158"
+    }
+  },
+  "stage": "evaluation",
+  "transports": {
+    "comparison_warning": "Compare matched source/destination, payload and obstacle conditions; no reference optimum or aggregate winner is inferred",
+    "complete_uninterrupted_count": 18,
+    "normalized_jerk_omitted_count": 0,
+    "normalized_jerk_usable_count": 18,
+    "requested_transport_count": 18,
+    "segments": [
+      {
+        "action_event_id": 11,
+        "complete_uninterrupted": true,
+        "destination": "fixture",
+        "dispatch_event_id": 15,
+        "end_sim_s": 13.754000000001263,
+        "motion": {
+          "analysis_end_sim_s": 13.71700000000125,
+          "analysis_start_sim_s": 0.7070000000000005,
+          "analysis_support_s": 13.010000000001249,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 617266680.4879748
+          },
+          "duration_s": 13.088000000001262,
+          "excluded_boundary_duration_s": 0.07800000000001361,
+          "interior_coverage_fraction": 0.9940403422982881,
+          "omission_reason": null,
+          "path_length_m": 2.3312253118572417,
+          "sample_count": 1309,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 8735.241232256485
+          }
+        },
+        "part_id": "A1",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "bc148ec4-ce36-49ce-b880-de3701c7df9d",
+        "start_sim_s": 0.6660000000000005,
+        "terminal_event_id": 160
+      },
+      {
+        "action_event_id": 472,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 476,
+        "end_sim_s": 34.487999999996184,
+        "motion": {
+          "analysis_end_sim_s": 34.44699999999614,
+          "analysis_start_sim_s": 23.666999999997763,
+          "analysis_support_s": 10.779999999998374,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 314292820.8041502
+          },
+          "duration_s": 10.8619999999984,
+          "excluded_boundary_duration_s": 0.08200000000002561,
+          "interior_coverage_fraction": 0.9924507457190169,
+          "omission_reason": null,
+          "path_length_m": 1.7429728850283595,
+          "sample_count": 1086,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 6314.903675797519
+          }
+        },
+        "part_id": "A1",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "f5bf9484-5578-41a8-8ab8-3412c78b4c20",
+        "start_sim_s": 23.625999999997784,
+        "terminal_event_id": 596
+      },
+      {
+        "action_event_id": 633,
+        "complete_uninterrupted": true,
+        "destination": "tray1",
+        "dispatch_event_id": 638,
+        "end_sim_s": 46.76400000001119,
+        "motion": {
+          "analysis_end_sim_s": 46.727000000011145,
+          "analysis_start_sim_s": 36.63699999999881,
+          "analysis_support_s": 10.090000000012338,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 164503752.9336563
+          },
+          "duration_s": 10.166000000012424,
+          "excluded_boundary_duration_s": 0.07600000000008578,
+          "interior_coverage_fraction": 0.9925240999409805,
+          "omission_reason": null,
+          "path_length_m": 1.3455011610113696,
+          "sample_count": 1017,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 2742.795555829013
+          }
+        },
+        "part_id": "A1",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "1afa3275-ad2b-4e97-b76a-221c4a08ee41",
+        "start_sim_s": 36.59799999999876,
+        "terminal_event_id": 751
+      },
+      {
+        "action_event_id": 756,
+        "complete_uninterrupted": true,
+        "destination": "fixture",
+        "dispatch_event_id": 760,
+        "end_sim_s": 58.578000000025625,
+        "motion": {
+          "analysis_end_sim_s": 58.53700000002557,
+          "analysis_start_sim_s": 46.897000000011346,
+          "analysis_support_s": 11.640000000014226,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 301252077.6711713
+          },
+          "duration_s": 11.720000000014323,
+          "excluded_boundary_duration_s": 0.08000000000009777,
+          "interior_coverage_fraction": 0.9931740614334471,
+          "omission_reason": null,
+          "path_length_m": 2.287135026465411,
+          "sample_count": 1172,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 7126.488724927045
+          }
+        },
+        "part_id": "A3",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "b001e2f6-fdf2-404f-aa2f-587ebe6e6303",
+        "start_sim_s": 46.8580000000113,
+        "terminal_event_id": 891
+      },
+      {
+        "action_event_id": 1198,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 1203,
+        "end_sim_s": 79.28199999999663,
+        "motion": {
+          "analysis_end_sim_s": 79.24699999999672,
+          "analysis_start_sim_s": 68.4370000000219,
+          "analysis_support_s": 10.80999999997482,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 313223353.93190706
+          },
+          "duration_s": 10.881999999974639,
+          "excluded_boundary_duration_s": 0.07199999999981799,
+          "interior_coverage_fraction": 0.9933835691968401,
+          "omission_reason": null,
+          "path_length_m": 1.7446634170576878,
+          "sample_count": 1089,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 6247.89665090104
+          }
+        },
+        "part_id": "A3",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "053ee608-f696-4fb7-a6fd-7709f5d214b0",
+        "start_sim_s": 68.40000000002199,
+        "terminal_event_id": 1324
+      },
+      {
+        "action_event_id": 1360,
+        "complete_uninterrupted": true,
+        "destination": "tray1",
+        "dispatch_event_id": 1365,
+        "end_sim_s": 91.46999999996822,
+        "motion": {
+          "analysis_end_sim_s": 91.42699999996833,
+          "analysis_start_sim_s": 81.4369999999916,
+          "analysis_support_s": 9.989999999976732,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 148103837.28647405
+          },
+          "duration_s": 10.073999999976522,
+          "excluded_boundary_duration_s": 0.08399999999979002,
+          "interior_coverage_fraction": 0.9916617033948794,
+          "omission_reason": null,
+          "path_length_m": 1.3744373013228035,
+          "sample_count": 1007,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 2696.5373778975763
+          }
+        },
+        "part_id": "A3",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "9181fbdf-01b8-4f55-ada7-fbef34168750",
+        "start_sim_s": 81.3959999999917,
+        "terminal_event_id": 1477
+      },
+      {
+        "action_event_id": 1483,
+        "complete_uninterrupted": true,
+        "destination": "fixture",
+        "dispatch_event_id": 1488,
+        "end_sim_s": 102.77999999994186,
+        "motion": {
+          "analysis_end_sim_s": 102.73699999994196,
+          "analysis_start_sim_s": 91.60699999996791,
+          "analysis_support_s": 11.129999999974046,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 290832906.4445597
+          },
+          "duration_s": 11.213999999973865,
+          "excluded_boundary_duration_s": 0.08399999999981844,
+          "interior_coverage_fraction": 0.9925093632958789,
+          "omission_reason": null,
+          "path_length_m": 2.1257628345735364,
+          "sample_count": 1121,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 7410.890636531518
+          }
+        },
+        "part_id": "A5",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "9533e13c-e7e6-41de-8101-279af1325f08",
+        "start_sim_s": 91.565999999968,
+        "terminal_event_id": 1612
+      },
+      {
+        "action_event_id": 1918,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 1923,
+        "end_sim_s": 123.47599999989363,
+        "motion": {
+          "analysis_end_sim_s": 123.43699999989371,
+          "analysis_start_sim_s": 112.62699999991892,
+          "analysis_support_s": 10.809999999974792,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 317948311.4202334
+          },
+          "duration_s": 10.883999999974634,
+          "excluded_boundary_duration_s": 0.07399999999984175,
+          "interior_coverage_fraction": 0.9932010290334423,
+          "omission_reason": null,
+          "path_length_m": 1.7446726837359092,
+          "sample_count": 1089,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 6336.388252078663
+          }
+        },
+        "part_id": "A5",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "71559e6d-a4e8-4b01-8665-63f21bac621e",
+        "start_sim_s": 112.591999999919,
+        "terminal_event_id": 2043
+      },
+      {
+        "action_event_id": 2080,
+        "complete_uninterrupted": true,
+        "destination": "tray1",
+        "dispatch_event_id": 2085,
+        "end_sim_s": 135.67799999991973,
+        "motion": {
+          "analysis_end_sim_s": 135.63699999991954,
+          "analysis_start_sim_s": 125.63699999988859,
+          "analysis_support_s": 10.000000000030951,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 121392459.29278634
+          },
+          "duration_s": 10.080000000031049,
+          "excluded_boundary_duration_s": 0.08000000000009777,
+          "interior_coverage_fraction": 0.9920634920635069,
+          "omission_reason": null,
+          "path_length_m": 1.4316883115969061,
+          "sample_count": 1008,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 2391.035411233641
+          }
+        },
+        "part_id": "A5",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "f84f88e8-5a98-4bed-a3fb-4101e203db53",
+        "start_sim_s": 125.59799999988869,
+        "terminal_event_id": 2197
+      },
+      {
+        "action_event_id": 2578,
+        "complete_uninterrupted": true,
+        "destination": "fixture",
+        "dispatch_event_id": 2583,
+        "end_sim_s": 180.72400000013482,
+        "motion": {
+          "analysis_end_sim_s": 180.68700000013465,
+          "analysis_start_sim_s": 168.82700000007802,
+          "analysis_support_s": 11.86000000005663,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 343243307.4061886
+          },
+          "duration_s": 11.936000000056993,
+          "excluded_boundary_duration_s": 0.07600000000036289,
+          "interior_coverage_fraction": 0.993632707774799,
+          "omission_reason": null,
+          "path_length_m": 2.298929880778459,
+          "sample_count": 1194,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 7487.890377110485
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "260aa638-64b1-4068-9cbc-3721d7611c52",
+        "start_sim_s": 168.78800000007783,
+        "terminal_event_id": 2715
+      },
+      {
+        "action_event_id": 3029,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 3033,
+        "end_sim_s": 201.48000000023393,
+        "motion": {
+          "analysis_end_sim_s": 201.43700000023372,
+          "analysis_start_sim_s": 190.65700000018225,
+          "analysis_support_s": 10.780000000051473,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 315199792.3099786
+          },
+          "duration_s": 10.858000000051845,
+          "excluded_boundary_duration_s": 0.07800000000037244,
+          "interior_coverage_fraction": 0.992816356603426,
+          "omission_reason": null,
+          "path_length_m": 1.742913174026512,
+          "sample_count": 1086,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 6344.366177843976
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "a127663f-903d-4160-a2a7-564d69ad07c7",
+        "start_sim_s": 190.62200000018208,
+        "terminal_event_id": 3153
+      },
+      {
+        "action_event_id": 3190,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 3195,
+        "end_sim_s": 214.6480000002968,
+        "motion": {
+          "analysis_end_sim_s": 214.6070000002966,
+          "analysis_start_sim_s": 203.63700000024423,
+          "analysis_support_s": 10.97000000005238,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 195469310.30353215
+          },
+          "duration_s": 11.048000000052753,
+          "excluded_boundary_duration_s": 0.07800000000037244,
+          "interior_coverage_fraction": 0.9929398986241854,
+          "omission_reason": null,
+          "path_length_m": 1.58279148283685,
+          "sample_count": 1105,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 2975.141746853368
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "d16e72c4-d818-4e64-9c26-26f6bb0d2eac",
+        "start_sim_s": 203.60000000024405,
+        "terminal_event_id": 3317
+      },
+      {
+        "action_event_id": 3323,
+        "complete_uninterrupted": true,
+        "destination": "fixture",
+        "dispatch_event_id": 3327,
+        "end_sim_s": 227.91400000036015,
+        "motion": {
+          "analysis_end_sim_s": 227.87700000035997,
+          "analysis_start_sim_s": 214.78700000029747,
+          "analysis_support_s": 13.090000000062503,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 709539209.1908585
+          },
+          "duration_s": 13.166000000062866,
+          "excluded_boundary_duration_s": 0.07600000000036289,
+          "interior_coverage_fraction": 0.9942275558256114,
+          "omission_reason": null,
+          "path_length_m": 2.1685756116769515,
+          "sample_count": 1317,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 8434.440606755417
+          }
+        },
+        "part_id": "B4",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "f52a200a-fa76-49fc-b9d3-cdd6eb19b502",
+        "start_sim_s": 214.74800000029728,
+        "terminal_event_id": 3473
+      },
+      {
+        "action_event_id": 3786,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 3791,
+        "end_sim_s": 248.6600000004592,
+        "motion": {
+          "analysis_end_sim_s": 248.617000000459,
+          "analysis_start_sim_s": 237.83700000040753,
+          "analysis_support_s": 10.780000000051473,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 318269979.6965086
+          },
+          "duration_s": 10.864000000051874,
+          "excluded_boundary_duration_s": 0.08400000000040109,
+          "interior_coverage_fraction": 0.9922680412371134,
+          "omission_reason": null,
+          "path_length_m": 1.7430761524231704,
+          "sample_count": 1086,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 6389.687433537743
+          }
+        },
+        "part_id": "B4",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "17aa2898-6170-471e-b70f-d8148e444c54",
+        "start_sim_s": 237.79600000040733,
+        "terminal_event_id": 3911
+      },
+      {
+        "action_event_id": 3948,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 3953,
+        "end_sim_s": 262.5000000005253,
+        "motion": {
+          "analysis_end_sim_s": 262.4570000005251,
+          "analysis_start_sim_s": 250.82700000046955,
+          "analysis_support_s": 11.63000000005556,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 263644776.36648646
+          },
+          "duration_s": 11.714000000055933,
+          "excluded_boundary_duration_s": 0.08400000000037267,
+          "interior_coverage_fraction": 0.9928290933925242,
+          "omission_reason": null,
+          "path_length_m": 1.6807149463068725,
+          "sample_count": 1171,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 3376.6122905609077
+          }
+        },
+        "part_id": "B4",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "83fe5c5e-c0d2-454b-bfd1-ca6b888dd4b8",
+        "start_sim_s": 250.78600000046936,
+        "terminal_event_id": 4082
+      },
+      {
+        "action_event_id": 4088,
+        "complete_uninterrupted": true,
+        "destination": "fixture",
+        "dispatch_event_id": 4093,
+        "end_sim_s": 273.53000000057796,
+        "motion": {
+          "analysis_end_sim_s": 273.4870000005777,
+          "analysis_start_sim_s": 262.637000000526,
+          "analysis_support_s": 10.85000000005175,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 231717432.13370487
+          },
+          "duration_s": 10.934000000052208,
+          "excluded_boundary_duration_s": 0.08400000000045793,
+          "interior_coverage_fraction": 0.9923175416133111,
+          "omission_reason": null,
+          "path_length_m": 2.1146378880039,
+          "sample_count": 1093,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 6630.333562286371
+          }
+        },
+        "part_id": "B6",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "072eb069-d8e1-4d3b-baf0-3bc450ff0200",
+        "start_sim_s": 262.59600000052575,
+        "terminal_event_id": 4214
+      },
+      {
+        "action_event_id": 4528,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 4533,
+        "end_sim_s": 294.28600000067706,
+        "motion": {
+          "analysis_end_sim_s": 294.24700000067685,
+          "analysis_start_sim_s": 283.4470000006253,
+          "analysis_support_s": 10.800000000051568,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 313424909.2002852
+          },
+          "duration_s": 10.88200000005196,
+          "excluded_boundary_duration_s": 0.08200000000039154,
+          "interior_coverage_fraction": 0.9924646204741775,
+          "omission_reason": null,
+          "path_length_m": 1.7445379219436756,
+          "sample_count": 1088,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 6251.017714173364
+          }
+        },
+        "part_id": "B6",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "101c6d06-ea16-426a-954e-889ac10a8276",
+        "start_sim_s": 283.4040000006251,
+        "terminal_event_id": 4654
+      },
+      {
+        "action_event_id": 4690,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 4695,
+        "end_sim_s": 308.928000000747,
+        "motion": {
+          "analysis_end_sim_s": 308.88700000074675,
+          "analysis_start_sim_s": 296.45700000068746,
+          "analysis_support_s": 12.430000000059295,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 361225355.55175054
+          },
+          "duration_s": 12.512000000059743,
+          "excluded_boundary_duration_s": 0.08200000000044838,
+          "interior_coverage_fraction": 0.9934462915600978,
+          "omission_reason": null,
+          "path_length_m": 1.7872249678771115,
+          "sample_count": 1251,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 3762.729467906356
+          }
+        },
+        "part_id": "B6",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "79615720-8617-49ea-bcd4-661b1d65323d",
+        "start_sim_s": 296.41600000068723,
+        "terminal_event_id": 4834
+      }
+    ]
+  },
+  "unmeasured": {
+    "collision_only_impulse": null,
+    "electricity_cost": null,
+    "energy_joules": null,
+    "reason": "No direct measurement/reference supplied; raw contact includes intended contacts",
+    "reference_optimal_path_cost": null
+  }
+}

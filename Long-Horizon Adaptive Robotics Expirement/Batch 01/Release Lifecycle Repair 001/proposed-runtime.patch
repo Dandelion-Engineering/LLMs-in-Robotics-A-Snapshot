@@ -1,0 +1,693 @@
+--- Runtime/experiment.py
++++ Runtime/experiment.py
+@@ -8,6 +8,7 @@
+ import copy
+ from collections import deque
+ from concurrent.futures import ThreadPoolExecutor
++from dataclasses import asdict
+ from datetime import datetime,timezone
+ import hashlib
+ import json
+@@ -24,6 +25,7 @@
+ from initial_conditions import initial_world_report,RestartOpportunity
+ from png import write_png
+ from resources import ResourceSampler
++from model_runtime import ModelLifecycleSnapshot,ModelRequestTimeout,ModelRequestTimeoutError
+ from restart_state import capture_restart_state,classify_restart
+ from restart_calibration_loader import (VerifiedRestartQualification,CalibrationInputError,
+     select_restart_calibration,absence_observation,first_control_endpoint)
+@@ -35,7 +37,7 @@
+ from development_storage import location as development_location
+ EVALUATION_AUTHORIZATION_VERSION='robot-evaluation-authorization-1.0'
+ GIB=1024**3
+-RESOURCE_POLICY={'version':'robot-runtime-resource-policy-003','resource_caps_enforced':False,
++RESOURCE_POLICY={'version':'robot-runtime-resource-policy-004','resource_caps_enforced':False,
+     'sampled_watchdog':{'harness_rss_bytes':4*GIB,'model_private_commit_bytes':12*GIB,'whole_device_gpu_memory_bytes':14*GIB,
+         'target_supervisor_check_interval_s':.25,'observation_period_s':5.,'gpu_query_timeout_s':2.,
+         'initial_observation_grace_s':7.,'maximum_sample_age_s':7.,
+@@ -47,14 +49,44 @@
+     'candidate_context':{'checkpoint_bytes':8*1024**2,'context_allowance_bytes':256*1024**2,
+         'bounded_fixed_code_estimate_bytes':48*1024**2,'scope':'fixed candidate checkpoint/temp behavior and at most one restart; not a measured filesystem peak'},
+     'candidate_cpu':'Single process/thread admitted by sandbox no-clone policy; aggregate observed CPU retains missing final interval',
+-    'sampler_compatibility':'resources.jsonl budget_observations are descriptive; this versioned supervisor watchdog defines current stop thresholds'}
++    'sampler_compatibility':'resources.jsonl budget_observations are descriptive; this versioned supervisor watchdog defines current stop thresholds',
++    'model_timeout':'Protected fixed-request-budget exhaustion is terminal model_request_timeout; caps and unexplained unavailable observations remain infrastructure failures. No restart or budget extension.'}
+ 
+ def utc():return datetime.now(timezone.utc).isoformat()
+ def canonical(value):return json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+ 
+ 
+-def resource_breaches(sample,*,now_monotonic_s,sampler_started_monotonic_s,model_required=False,model_pid=None):
++def protected_model_snapshot(model):
++    """Candidate packets cannot supply this typed protected adapter state."""
++    if model is None:return None
++    getter=getattr(model,'lifecycle_snapshot',None)
++    snapshot=getter() if callable(getter) else None
++    if isinstance(snapshot,ModelLifecycleSnapshot):return snapshot
++    # Compatibility for existing isolated unit fixtures; never trusts a dict cause.
++    process=getattr(model,'process',None)
++    pid=getattr(process,'pid',None)
++    pid=pid if type(pid) is int and pid>0 else None
++    return ModelLifecycleSnapshot('untracked',pid,pid,None)
++
++
++def model_lifecycle_failure(snapshot,*,at_monotonic_s,settled_end_monotonic_s=None):
++    """No future wait; a settled episode cannot be rewritten by late teardown."""
++    if settled_end_monotonic_s is not None or snapshot is None:return None
++    if snapshot.stop_error:
++        return {'classification':'infrastructure_failure','reason':'Owned model teardown failed',
++                'stop_error':snapshot.stop_error}
++    cause=snapshot.request_timeout
++    if isinstance(cause,ModelRequestTimeout) and cause.observed_monotonic_s<=at_monotonic_s:
++        return {'classification':'model_request_timeout','reason':'Fixed model request budget exhausted',
++                'request_timeout':asdict(cause)}
++    if snapshot.process_returncode is not None:
++        return {'classification':'infrastructure_failure','reason':'Owned model exited without an authorized request-timeout stop',
++                'owned_pid':snapshot.owned_pid,'returncode':snapshot.process_returncode}
++    return None
++
++
++def resource_breaches(sample,*,now_monotonic_s,sampler_started_monotonic_s,model_required=False,model_pid=None,model_lifecycle=None):
+     """Inspect an already-finished sample only; never query OS/GPU or wait here."""
+     policy=RESOURCE_POLICY['sampled_watchdog'];out=[]
+     def number(value):return type(value) in (int,float) and math.isfinite(value) and value>=0
+@@ -70,6 +102,9 @@
+         if not grace:unavailable('sampler','sample','no completed resource sample after initial grace',sampler_elapsed_s=since_start)
+         return out
+     captured=sample.get('capture_monotonic_s')
++    timeout=(model_lifecycle.request_timeout if isinstance(model_lifecycle,ModelLifecycleSnapshot) else None)
++    if not isinstance(timeout,ModelRequestTimeout) or timeout.observed_monotonic_s>now_monotonic_s:timeout=None
++    if timeout is not None:model_pid=timeout.owned_pid
+     if not number(captured):
+         if not grace:unavailable('sampler','capture_monotonic_s','missing or invalid capture clock')
+     elif captured>now_monotonic_s or captured<sampler_started_monotonic_s:
+@@ -86,7 +121,15 @@
+         if number(observed) and observed>limit:
+             out.append({'role':role,'metric':key,'observed':observed,'limit':limit,'classification':'infrastructure_failure'})
+         if required and not grace:
+-            if not number(observed):
++            # Only absence after a *completed*, trusted stop has no active model
++            # resource requirement. Pre-stop missing reads and all cap/clock/GPU
++            # checks remain failures. The sampler retains the owned PID.
++            intentional_absence=(role=='model' and timeout is not None
++                and model_lifecycle.state=='timeout_stopped' and not model_lifecycle.stop_error
++                and number(captured) and captured>=timeout.observed_monotonic_s
++                and number(model_lifecycle.stopped_monotonic_s) and captured>=model_lifecycle.stopped_monotonic_s
++                and record.get('pid')==timeout.owned_pid and observed is None)
++            if not number(observed) and not intentional_absence:
+                 unavailable(role,key,'mandatory resource value unavailable',missing_reason=record.get('missing_reason'))
+             if role=='model' and (type(model_pid) is not int or model_pid<=0 or type(record.get('pid')) is not int or record.get('pid')!=model_pid):
+                 unavailable('model','pid','active model observation has no matching owned process',
+@@ -497,12 +540,34 @@
+     final=None;started_at=utc();episode_ended_at=None;episode_end_wall=None;sim_at_end=None
+     resource_sampler=None;resource_summary=None;resource_started_at=None;resource_started_counter=None
+     resource_watchdog_events=[];next_resource_check_wall=0.
++    model_lifecycle_terminal=None
+     completion_landmark=None
+     assistance=ScriptedAssistance();help_request_ids=set()
+ 
+     def model_pid():
+-        process=getattr(model,'process',None) if model is not None else None
+-        return getattr(process,'pid',None) if process is not None else None
++        snapshot=protected_model_snapshot(model)
++        return snapshot.resource_pid if snapshot is not None else None
++
++    def enforce_resources(snapshot):
++        checked=time.perf_counter();sample=resource_sampler.latest()
++        breaches=resource_breaches(sample,now_monotonic_s=checked,
++            sampler_started_monotonic_s=resource_started_counter,model_required=model is not None,
++            model_pid=snapshot.resource_pid if snapshot is not None else None,model_lifecycle=snapshot)
++        if breaches:
++            observed={'sample':sample,'breaches':breaches,'policy':RESOURCE_POLICY['version'],
++                      'checked_monotonic_s':checked,'sampler_started_monotonic_s':resource_started_counter,
++                      'model_lifecycle':asdict(snapshot) if snapshot is not None else None}
++            resource_watchdog_events.append(observed)
++            evidence.emit('resource_watchdog_exceeded',observed,sim_now(),'supervisor')
++            raise EpisodeFailure(breaches[0]['classification'],'Sampled resource watchdog failed: '+str(breaches))
++
++    def terminate_model_failure(failure,snapshot):
++        nonlocal model_lifecycle_terminal
++        model_lifecycle_terminal={**failure,'snapshot':asdict(snapshot),
++            'observed_monotonic_s':time.perf_counter(),'model_request_event_id':model_parent}
++        evidence.emit('model_lifecycle_terminal',model_lifecycle_terminal,sim_now(),'supervisor',
++                      [model_parent] if model_parent else [])
++        raise EpisodeFailure(failure['classification'],failure['reason'])
+ 
+     def sim_now():return float(cell.data.time) if cell is not None else 0.
+     def record_restart_absence(endpoint,landmark,parents=None,control=None):
+@@ -538,6 +603,11 @@
+                 or type(sim) not in (int,float) or not math.isfinite(sim) or sim<base_sim
+                 or abs(sim-sim_now())>1e-9):
+             raise EpisodeFailure('infrastructure_failure','Independent completion landmark lacks its exact live tick/clock')
++        snapshot=protected_model_snapshot(model)
++        if (snapshot is not None and snapshot.request_timeout is not None
++                and snapshot.request_timeout.observed_monotonic_s<=wall):
++            enforce_resources(snapshot)
++            terminate_model_failure(model_lifecycle_failure(snapshot,at_monotonic_s=wall),snapshot)
+         completion_landmark={**first,'wall_elapsed_s':wall-start,'sim_elapsed_s':sim-base_sim,
+                              'within_wall_cap':wall-start<=cap,'native_timestep_s':DT}
+         event_id=evidence.emit('independent_completion',completion_landmark,sim,'evaluator')
+@@ -587,7 +657,14 @@
+             if late and not future.done() and model is not None:
+                 try:model.stop()
+                 except Exception as stop_exc:cleanup_errors.append('model timeout cleanup: '+str(stop_exc))
++            if isinstance(exc,ModelRequestTimeoutError):
++                metadata['request_timeout']=asdict(exc.cause)
++                if exc.stop_error:cleanup_errors.append('model timeout cleanup: '+exc.stop_error)
+             evidence.emit('stale_model_error_discarded' if stale else 'model_error',{'error':str(exc),**metadata},sim_now(),'local_model',[model_parent] if model_parent else [])
++            if isinstance(exc,ModelRequestTimeoutError) and not late:
++                snapshot=protected_model_snapshot(model)
++                enforce_resources(snapshot)
++                terminate_model_failure(model_lifecycle_failure(snapshot,at_monotonic_s=time.perf_counter()),snapshot)
+             # Explicit invalid output consumes the candidate's bounded malformed-
+             # output attempt. It cannot silently substitute a control policy.
+             return '{}' if not stale and not late else None
+@@ -648,19 +725,14 @@
+         evidence.emit('initial_world',cell.truth_snapshot(),sim_now(),'evaluator')
+         while True:
+             elapsed=time.perf_counter()-start
+-            if elapsed>=cap:break
+-            if elapsed>=next_resource_check_wall:
++            snapshot=protected_model_snapshot(model)
++            failure=model_lifecycle_failure(snapshot,at_monotonic_s=min(start+elapsed,start+cap))
++            if elapsed>=cap and failure is None:break
++            if elapsed>=next_resource_check_wall or failure is not None:
+                 phase='resource_watchdog';next_resource_check_wall=elapsed+RESOURCE_POLICY['sampled_watchdog']['target_supervisor_check_interval_s']
+-                sample=resource_sampler.latest()
+-                resource_checked_at=time.perf_counter()
+-                breaches=resource_breaches(sample,now_monotonic_s=resource_checked_at,
+-                    sampler_started_monotonic_s=resource_started_counter,model_required=model is not None,model_pid=model_pid())
+-                if breaches:
+-                    observed={'sample':sample,'breaches':breaches,'policy':RESOURCE_POLICY['version'],
+-                              'checked_monotonic_s':resource_checked_at,'sampler_started_monotonic_s':resource_started_counter}
+-                    resource_watchdog_events.append(observed)
+-                    evidence.emit('resource_watchdog_exceeded',observed,sim_now(),'supervisor')
+-                    raise EpisodeFailure(breaches[0]['classification'],'Sampled resource watchdog failed: '+str(breaches))
++                enforce_resources(snapshot)
++                if failure is not None:
++                    phase='model_lifecycle';terminate_model_failure(failure,snapshot)
+             phase='physics';target=base_sim+elapsed;steps=0
+             while cell.data.time<target and steps<50:
+                 cell.tick();steps+=1
+@@ -879,7 +951,8 @@
+                 else:evidence.emit('stale_raw_sensor_output_discarded',{'request_id':raw_task['request'].get('request_id')},sim,parents=[raw_response_event])
+                 raw_task=None
+             if model_pending is not None and model_pending.done() and pending is None and not restart_pending:
+-                text=collect_model(model_pending);model_pending=None
++                finished=model_pending;model_pending=None
++                text=collect_model(finished)
+                 if text is not None:
+                     pending=dispatch_candidate({'type':'model_response','text':text},[model_delivery_parent] if model_delivery_parent else []);pending_type='model_response'
+             if pending is None and model_pending is None and not restart_pending and raw_task is None:
+@@ -929,9 +1002,9 @@
+             except Exception as exc:
+                 cleanup_errors.append('final evaluator evidence: '+str(exc));failure_class='infrastructure_failure'
+         if model_pending is not None:
+-            try:collect_model(model_pending,late=True)
++            finished=model_pending;model_pending=None
++            try:collect_model(finished,late=True)
+             except Exception as exc:cleanup_errors.append('late model evidence: '+str(exc))
+-            model_pending=None
+         if pending is not None and pending_type!='restart':
+             try:
+                 late_reply=pending.result(timeout=1.)
+@@ -1017,6 +1090,7 @@
+             'initial_world_validation':initial_validity,'restart_opportunity':restart_tracker.configuration(),'restart_exposure':restart_exposure,
+             'candidate_runtime_usage':usage.summary(),'evaluation_authorization':evaluation_authorization,
+             'resource_policy':RESOURCE_POLICY,'resource_watchdog_events':resource_watchdog_events,
++            'model_lifecycle_terminal':model_lifecycle_terminal,
+             'assistance':help_summary,'unassisted_completion':success and not help_request_ids,
+             'completion_after_help':success and bool(help_request_ids),
+             'outcome':('success' if success else ('partial' if final and final['accepted_count'] else 'failure')) if final is not None else 'unknown',
+--- Runtime/model_runtime.py
++++ Runtime/model_runtime.py
+@@ -114,6 +114,44 @@
+     startup_timeout_s: float = 180.0
+ 
+ 
++@dataclass(frozen=True)
++class ModelRequestTimeout:
++    """Protected adapter provenance, published before an owned timeout stop."""
++    request_id: int
++    owned_pid: int
++    started_monotonic_s: float
++    deadline_monotonic_s: float
++    observed_monotonic_s: float
++    budget_s: float
++    request_path: str
++    kind: str = 'model_request_timeout'
++
++
++@dataclass(frozen=True)
++class ModelLifecycleSnapshot:
++    """One atomic process/lifecycle observation; immutable across threads."""
++    state: str
++    process_pid: int | None
++    owned_pid: int | None
++    process_returncode: int | None
++    request_timeout: ModelRequestTimeout | None = None
++    stop_error: str | None = None
++    stopped_monotonic_s: float | None = None
++
++    @property
++    def resource_pid(self):
++        # An intentional timeout does not erase the identity of its last sample.
++        return self.owned_pid if self.request_timeout is not None else self.process_pid
++
++
++class ModelRequestTimeoutError(TimeoutError):
++    def __init__(self, cause: ModelRequestTimeout, *, stop_error: str | None = None):
++        self.cause = cause
++        self.stop_error = stop_error
++        detail = 'owned server stopped' if stop_error is None else 'owned server stop failed: ' + stop_error
++        super().__init__('Local inference timed out; ' + detail)
++
++
+ class LocalModel:
+     def __init__(self, config: ModelConfig | None = None, *, log_path: str | Path | None = None, port: int = 0):
+         self.config = config or ModelConfig()
+@@ -122,11 +160,45 @@
+         self.process: subprocess.Popen | None = None
+         self._log = None
+         self._lock = threading.Lock()
++        self._lifecycle_lock = threading.Lock()
++        self._lifecycle_state = 'created'
++        self._owned_pid = None
++        self._request_number = 0
++        self._request_timeout = None
++        self._stop_error = None
++        self._stopped_monotonic_s = None
+         self.startup_latency_s = None
+         self._opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+         self._manifest = None
+         self._windows_job = None
+         self.gpu_allocation_report = None
++
++    def lifecycle_snapshot(self) -> ModelLifecycleSnapshot:
++        # poll() is nonblocking. Never hold this lock across terminate/wait or HTTP.
++        with self._lifecycle_lock:
++            process = self.process
++            pid = getattr(process, 'pid', None)
++            pid = pid if type(pid) is int and pid > 0 else None
++            returncode = process.poll() if process is not None else None
++            return ModelLifecycleSnapshot(self._lifecycle_state, pid, self._owned_pid or pid,
++                                          returncode, self._request_timeout, self._stop_error,
++                                          self._stopped_monotonic_s)
++
++    def _publish_request_timeout(self, *, request_id, started, budget, path):
++        with self._lifecycle_lock:
++            process = self.process
++            # A server already observed dead is not reclassified as an owned stop.
++            if process is None or process.poll() is not None:
++                raise RuntimeError('Model process unavailable before request-timeout shutdown')
++            pid = getattr(process, 'pid', None)
++            if type(pid) is not int or pid <= 0:
++                raise RuntimeError('Model request-timeout shutdown lacks owned process identity')
++            self._owned_pid = pid
++            cause = ModelRequestTimeout(request_id, pid, started, started + budget,
++                                        time.perf_counter(), budget, path)
++            self._request_timeout = cause
++            self._lifecycle_state = 'timeout_stopping'
++            return cause
+ 
+     @property
+     def identity(self) -> dict:
+@@ -150,7 +222,7 @@
+             return json.loads(response.read())
+ 
+     def start(self) -> "LocalModel":
+-        if self.process is not None:
++        if self.process is not None or self._request_timeout is not None:
+             raise RuntimeError("This LocalModel has already started")
+         self._manifest = json.loads((VENDOR / "asset_manifest.json").read_text(encoding="utf-8"))
+         model_path = VENDOR / MODEL_FILE
+@@ -177,9 +249,13 @@
+         # Do not inherit LLAMA_ARG overrides from an interactive host environment.
+         env = {k: v for k, v in os.environ.items() if not k.startswith("LLAMA_")}
+         try:
+-            self.process = subprocess.Popen(args, cwd=server_path.parent, stdin=subprocess.DEVNULL,
+-                                            stdout=self._log, stderr=subprocess.STDOUT, env=env,
+-                                            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
++            process = subprocess.Popen(args, cwd=server_path.parent, stdin=subprocess.DEVNULL,
++                                       stdout=self._log, stderr=subprocess.STDOUT, env=env,
++                                       creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
++            with self._lifecycle_lock:
++                self.process = process
++                self._owned_pid = process.pid
++                self._lifecycle_state = 'starting'
+             self._windows_job = _windows_kill_on_close_job(self.process,self.config.process_memory_bytes,self.config.cpu_cores)
+             atexit.register(self.stop)
+             while time.perf_counter() - started < self.config.startup_timeout_s:
+@@ -189,6 +265,8 @@
+                     if self._request("/health").get("status") == "ok":
+                         self.gpu_allocation_report=gpu_buffer_report(self.log_path.read_text(encoding='utf-8',errors='replace'),self.config.gpu_reported_buffer_budget_bytes)
+                         self.startup_latency_s = time.perf_counter() - started
++                        with self._lifecycle_lock:
++                            self._lifecycle_state = 'running'
+                         return self
+                 except (OSError, urllib.error.URLError):
+                     pass
+@@ -237,9 +315,15 @@
+         started = time.perf_counter()
+         if not self._lock.acquire(timeout=budget):
+             raise TimeoutError("Local inference timed out waiting for the request slot")
++        with self._lifecycle_lock:
++            self._request_number += 1
++            request_id = self._request_number
++        request_path = 'request_slot'
+         try:
+             try:
+                 def bounded_request(path,body):
++                    nonlocal request_path
++                    request_path = path
+                     remaining = budget - (time.perf_counter() - started)
+                     if remaining <= 0:
+                         raise TimeoutError("Local inference request budget exhausted")
+@@ -258,8 +342,13 @@
+             except (TimeoutError, socket.timeout) as error:
+                 # Terminating the owned server guarantees the timed-out generation
+                 # cannot keep consuming GPU or return into a later incarnation.
+-                self.stop()
+-                raise TimeoutError("Local inference timed out; owned server stopped") from error
++                cause = self._publish_request_timeout(request_id=request_id, started=started,
++                                                       budget=budget, path=request_path)
++                try:
++                    self.stop()
++                except Exception as stop_error:
++                    raise ModelRequestTimeoutError(cause, stop_error=str(stop_error)) from error
++                raise ModelRequestTimeoutError(cause) from error
+         finally:
+             self._lock.release()
+         elapsed = time.perf_counter() - started
+@@ -282,22 +371,37 @@
+                 "seed": used_seed, "finish_reason": choice.get("finish_reason")}
+ 
+     def stop(self) -> None:
+-        process, self.process = self.process, None
+-        if process is not None and process.poll() is None:
+-            process.terminate()
+-            try:
+-                process.wait(timeout=10)
+-            except subprocess.TimeoutExpired:
+-                process.kill()
+-                process.wait(timeout=10)
+-        if self._log is not None:
+-            self._log.close()
+-            self._log = None
+-        if self._windows_job is not None:
+-            kernel, handle = self._windows_job
+-            kernel.CloseHandle(handle)
+-            self._windows_job = None
+-        atexit.unregister(self.stop)
++        with self._lifecycle_lock:
++            process, self.process = self.process, None
++            log, self._log = self._log, None
++            job, self._windows_job = self._windows_job, None
++            if process is None and log is None and job is None:
++                return  # A concurrent caller must not mark unfinished teardown done.
++            self._lifecycle_state = 'timeout_stopping' if self._request_timeout else 'stopping'
++        error = None
++        try:
++            if process is not None and process.poll() is None:
++                process.terminate()
++                try:
++                    process.wait(timeout=10)
++                except subprocess.TimeoutExpired:
++                    process.kill()
++                    process.wait(timeout=10)
++        except Exception as exc:
++            error = exc
++        finally:
++            for close in ([log.close] if log is not None else []) + ([lambda: job[0].CloseHandle(job[1])] if job is not None else []):
++                try:
++                    close()
++                except Exception as exc:
++                    error = error or exc
++            with self._lifecycle_lock:
++                self._stop_error = str(error) if error is not None else None
++                self._stopped_monotonic_s = time.perf_counter() if error is None else None
++                self._lifecycle_state = 'stop_failed' if error else ('timeout_stopped' if self._request_timeout else 'stopped')
++            atexit.unregister(self.stop)
++        if error is not None:
++            raise error
+ 
+     def __enter__(self) -> "LocalModel":
+         return self.start()
+--- /dev/null
++++ Runtime/test_model_lifecycle.py
+@@ -0,0 +1,243 @@
++"""Deterministic lifecycle counterexamples; fake HTTP/process/cell, no physics.
++
++Run through run_staged_tests.py to select the staged modules and base dependencies.
++"""
++from concurrent.futures import ThreadPoolExecutor
++import contextlib
++import io
++import json
++from pathlib import Path
++import tempfile
++import threading
++import time
++import unittest
++from unittest.mock import MagicMock, patch
++
++import experiment
++import model_runtime
++import sandbox
++from model_runtime import (LocalModel, ModelConfig, ModelLifecycleSnapshot,
++                           ModelRequestTimeout, ModelRequestTimeoutError)
++from test_experiment import Clock, FakeResourceSampler, ImmediateExecutor, fake_cell
++
++
++def fake_model():
++    model=LocalModel()
++    model.process=MagicMock()
++    model.process.pid=27772
++    model.process.poll.return_value=None
++    model._manifest={'installed_files':[{'path':'server.exe','sha256':'synthetic'}],
++                     'server_relative_path':'server.exe'}
++    return model
++
++
++def fresh_sample(captured,pid=27772):
++    return {'capture_monotonic_s':captured,
++            'harness':{'rss_bytes':1000},
++            'model':{'pid':pid,'private_commit_bytes':2000},
++            'gpu':{'devices':[{'index':0,'memory_used_bytes':3000}]}}
++
++
++def check_resources(snapshot,sample,now):
++    return experiment.resource_breaches(sample,now_monotonic_s=now,
++        sampler_started_monotonic_s=now-20.,model_required=True,
++        model_pid=snapshot.resource_pid,model_lifecycle=snapshot)
++
++
++class ModelLifecycleTests(unittest.TestCase):
++    def test_frozen_request_limits_unchanged(self):
++        config=ModelConfig()
++        self.assertEqual((config.request_timeout_s,config.max_output_tokens,config.context_tokens),(30.,1024,16384))
++
++    def test_timeout_snapshot_available_while_owned_termination_is_blocked(self):
++        for watchdog_first in (True,False):
++            with self.subTest(watchdog_first=watchdog_first):
++                model=fake_model();process=model.process
++                entered=threading.Event();release=threading.Event()
++                def terminate():
++                    entered.set()
++                    if not release.wait(3.):raise RuntimeError('test synchronization timed out')
++                process.terminate.side_effect=terminate
++                model._request=MagicMock(side_effect=TimeoutError('synthetic HTTP deadline'))
++                with ThreadPoolExecutor(max_workers=2) as pool:
++                    future=pool.submit(model.complete,[{'role':'user','content':'wait'}],{'type':'object'})
++                    try:
++                        self.assertTrue(entered.wait(2.))
++                        if not watchdog_first:
++                            release.set()
++                            with self.assertRaises(ModelRequestTimeoutError):future.result(timeout=2.)
++                        # Separate thread + bounded result proves no teardown-held lock.
++                        snapshot=pool.submit(model.lifecycle_snapshot).result(timeout=.5)
++                        self.assertIsNone(snapshot.process_pid)
++                        self.assertEqual(snapshot.owned_pid,27772)
++                        self.assertEqual(snapshot.state,'timeout_stopping' if watchdog_first else 'timeout_stopped')
++                        if watchdog_first:self.assertFalse(future.done())
++                        cause=snapshot.request_timeout
++                        self.assertEqual(cause.request_id,1)
++                        self.assertEqual(cause.budget_s,30.)
++                        sample=fresh_sample(cause.observed_monotonic_s-.01)
++                        now=cause.observed_monotonic_s+.02
++                        self.assertEqual(check_resources(snapshot,sample,now),[])
++                        failure=experiment.model_lifecycle_failure(snapshot,at_monotonic_s=now)
++                        self.assertEqual(failure['classification'],'model_request_timeout')
++                    finally:
++                        release.set()
++                    with self.assertRaises(ModelRequestTimeoutError):future.result(timeout=2.)
++                process.terminate.assert_called_once()
++                self.assertEqual(model.lifecycle_snapshot().request_timeout,cause)
++
++    def test_timeout_does_not_relabel_a_process_already_observed_exited(self):
++        model=fake_model();process=model.process
++        def request(*args):
++            process.poll.return_value=7
++            raise TimeoutError('socket failure while server is dead')
++        model._request=MagicMock(side_effect=request)
++        with self.assertRaisesRegex(RuntimeError,'unavailable before request-timeout'):
++            model.complete([{'role':'user','content':'wait'}],{'type':'object'})
++        snapshot=model.lifecycle_snapshot()
++        self.assertIsNone(snapshot.request_timeout)
++        self.assertEqual(experiment.model_lifecycle_failure(snapshot,at_monotonic_s=time.perf_counter())['classification'],'infrastructure_failure')
++        process.terminate.assert_not_called()
++
++    def test_failed_owned_teardown_is_infrastructure_even_with_timeout_cause(self):
++        model=fake_model()
++        model.process.terminate.side_effect=OSError('synthetic termination denial')
++        model._request=MagicMock(side_effect=TimeoutError('synthetic deadline'))
++        with self.assertRaises(ModelRequestTimeoutError) as caught:
++            model.complete([{'role':'user','content':'wait'}],{'type':'object'})
++        self.assertIn('termination denial',caught.exception.stop_error)
++        snapshot=model.lifecycle_snapshot()
++        self.assertEqual(snapshot.state,'stop_failed')
++        self.assertEqual(experiment.model_lifecycle_failure(snapshot,at_monotonic_s=time.perf_counter())['classification'],'infrastructure_failure')
++
++    def test_genuine_resource_breaches_are_not_hidden_by_timeout(self):
++        cause=ModelRequestTimeout(1,27772,40.,70.,70.,30.,'/v1/chat/completions')
++        snapshot=ModelLifecycleSnapshot('timeout_stopped',None,27772,None,cause,stopped_monotonic_s=70.05)
++        cases={
++            'missing whole sample':None,
++            'stale whole sample':fresh_sample(62.),
++            'unknown PID':fresh_sample(70.1,pid=None),
++            'different PID':fresh_sample(70.1,pid=27773),
++        }
++        cases['model cap']=fresh_sample(70.1);cases['model cap']['model']['private_commit_bytes']=12*experiment.GIB+1
++        cases['harness cap']=fresh_sample(70.1);cases['harness cap']['harness']['rss_bytes']=4*experiment.GIB+1
++        cases['GPU cap']=fresh_sample(70.1);cases['GPU cap']['gpu']['devices'][0]['memory_used_bytes']=14*experiment.GIB+1
++        cases['missing harness']=fresh_sample(70.1);cases['missing harness']['harness']={}
++        cases['missing GPU']=fresh_sample(70.1);cases['missing GPU']['gpu']={}
++        cases['pre-timeout missing model']=fresh_sample(69.9);cases['pre-timeout missing model']['model']['private_commit_bytes']=None
++        cases['during-stop missing model']=fresh_sample(70.01);cases['during-stop missing model']['model']['private_commit_bytes']=None
++        cases['nonfinite model']=fresh_sample(70.1);cases['nonfinite model']['model']['private_commit_bytes']=float('nan')
++        for name,sample in cases.items():
++            with self.subTest(name=name):
++                breaches=check_resources(snapshot,sample,70.2)
++                self.assertTrue(breaches)
++                self.assertTrue(all(b['classification'] in ('infrastructure_failure','host_resource_invalid') for b in breaches))
++        sample=fresh_sample(70.1);sample['model']['private_commit_bytes']=None
++        self.assertEqual(check_resources(snapshot,sample,70.2),[])
++        # The same absent metric while stop is unfinished cannot assert absence.
++        unfinished=ModelLifecycleSnapshot('timeout_stopping',None,27772,None,cause)
++        self.assertTrue(check_resources(unfinished,sample,70.2))
++        unexplained=ModelLifecycleSnapshot('stopped',None,27772,None)
++        self.assertTrue(check_resources(unexplained,fresh_sample(70.1),70.2))
++
++    def test_dict_or_late_cause_cannot_reclassify_a_settled_episode(self):
++        cause=ModelRequestTimeout(1,27772,40.,70.,70.,30.,'/v1/chat/completions')
++        snapshot=ModelLifecycleSnapshot('timeout_stopped',None,27772,None,cause)
++        self.assertIsNone(experiment.model_lifecycle_failure(snapshot,at_monotonic_s=69.9))
++        self.assertIsNone(experiment.model_lifecycle_failure(snapshot,at_monotonic_s=71.,settled_end_monotonic_s=69.9))
++        model=MagicMock();model.process=None;model.lifecycle_snapshot.return_value={'request_timeout':{'kind':'model_request_timeout'}}
++        self.assertIsNone(experiment.protected_model_snapshot(model).request_timeout)
++        validity=experiment.result_validity(failure_class='model_request_timeout',cleanup_errors=[],timing_failed=False,evaluation_authorized=True)
++        self.assertEqual(validity['validity'],'valid')
++        self.assertFalse(validity['infrastructure_invalid'])
++
++
++class TimeoutFuture:
++    """Choose the exact synchronous boundary at which the deadline is published."""
++    def __init__(self,model,clock,ordering):
++        self.model=model;self.clock=clock;self.ordering=ordering;self.error=None;self.result_calls=0
++    def publish(self):
++        if self.error is None:
++            # Short unit-fixture timeout only; production ModelConfig stays 30s.
++            cause=self.model._publish_request_timeout(request_id=1,started=max(0.,self.clock.t-.01),
++                                                       budget=.005,path='/v1/chat/completions')
++            self.model.stop();self.error=ModelRequestTimeoutError(cause)
++    def done(self):
++        if self.ordering=='future_first':self.publish();return True
++        return False
++    def result(self,timeout=None):
++        self.result_calls+=1;self.publish();raise self.error
++
++
++class TimeoutExecutor(ImmediateExecutor):
++    def __init__(self,model,deferred):
++        super().__init__(model,deferred);self.request_seen=False
++    def submit(self,function,*args,**kwargs):
++        if function==self.model.complete:
++            self.request_seen=True
++            if self.deferred.ordering=='watchdog_first':self.deferred.publish()
++        return super().submit(function,*args,**kwargs)
++
++
++class SupervisorTimeoutTests(unittest.TestCase):
++    def run_fixture(self,ordering,complete=False):
++        clock=Clock();cell=fake_cell();worker=MagicMock();worker.alive=True;model=fake_model()
++        worker.receive.return_value={'type':'step','response':{'type':'model','messages':[{'role':'user','content':'wait'}],'schema':{'type':'object'}}}
++        future=TimeoutFuture(model,clock,ordering);executor=TimeoutExecutor(model,future)
++        if complete:
++            def tick():
++                cell.data.time+=.002
++                if executor.request_seen and cell.evaluator.first_success is None:
++                    if ordering=='tick_before_completion':future.publish()
++                    cell.evaluator.first_success={'sim_time_s':cell.data.time,'wall_monotonic_s':clock.t,
++                        'protected_snapshot':{'synthetic':True},'outcome':{'success':True,'accepted_count':3}}
++            cell.tick.side_effect=tick
++        with tempfile.TemporaryDirectory() as directory, \
++             patch.object(experiment,'EVIDENCE',Path(directory)), \
++             patch.object(experiment,'Cell',return_value=cell), \
++             patch.object(sandbox,'CandidateSandbox',return_value=worker), \
++             patch.object(experiment,'ResourceSampler',FakeResourceSampler), \
++             patch.object(experiment,'initial_world_report',return_value={'valid':True,'errors':[]}), \
++             patch.object(experiment,'ThreadPoolExecutor',return_value=executor), \
++             patch.object(experiment.time,'perf_counter',side_effect=clock.now), \
++             contextlib.redirect_stdout(io.StringIO()):
++            result=experiment.run_episode(kind='A2',model=model,run_id='synthetic-lifecycle-'+ordering,cap=.4)
++            events=[json.loads(line) for line in (Path(directory)/('synthetic-lifecycle-'+ordering)/'events.jsonl').read_text().splitlines()]
++        return result,events,future
++
++    def test_both_observation_orderings_have_one_terminal_failure_and_one_accounting_entry(self):
++        for ordering in ('watchdog_first','future_first'):
++            with self.subTest(ordering=ordering):
++                result,events,future=self.run_fixture(ordering)
++                self.assertEqual(result['failure_class'],'model_request_timeout')
++                self.assertEqual(result['termination_reason'],'model_request_timeout')
++                self.assertFalse(result['infrastructure_invalid'])
++                self.assertEqual((result['model_calls'],result['model_responses'],result['model_failed_calls'],result['unknown_token_calls']),(1,0,1,1))
++                self.assertEqual(future.result_calls,1)
++                self.assertEqual(result['resource_watchdog_events'],[])
++                self.assertEqual(sum(e['event_type']=='model_lifecycle_terminal' for e in events),1)
++                self.assertEqual(sum(e['event_type']=='model_error' for e in events),1)
++                self.assertFalse(any(e['event_type']=='candidate_input' and e['payload']['message']['type']=='model_response' for e in events))
++
++    def test_timeout_first_observed_in_cleanup_preserves_completion_and_cap(self):
++        for complete in (False,True):
++            with self.subTest(complete=complete):
++                result,events,future=self.run_fixture('late',complete=complete)
++                self.assertIsNone(result['failure_class'])
++                self.assertIsNone(result['model_lifecycle_terminal'])
++                self.assertEqual(result['termination_reason'],'independent_completion' if complete else 'time_cap')
++                self.assertEqual(result['outcome']=='success',complete)
++                self.assertEqual((result['model_failed_calls'],result['unknown_token_calls']),(1,1))
++                self.assertEqual(future.result_calls,1)
++                self.assertFalse(any(e['event_type']=='model_lifecycle_terminal' for e in events))
++
++    def test_timeout_published_before_completion_tick_cannot_become_success(self):
++        result,events,future=self.run_fixture('tick_before_completion',complete=True)
++        self.assertEqual(result['failure_class'],'model_request_timeout')
++        self.assertNotEqual(result['outcome'],'success')
++        self.assertIsNone(result['completion_landmark'])
++        self.assertEqual((result['model_failed_calls'],result['unknown_token_calls'],future.result_calls),(1,1,1))
++        self.assertFalse(any(e['event_type']=='independent_completion' for e in events))
++
++
++if __name__=='__main__':unittest.main()
+--- Runtime/test_model_runtime.py
++++ Runtime/test_model_runtime.py
+@@ -17,7 +17,7 @@
+ 
+     def model(self,count=20,actual=None):
+         model=LocalModel(ModelConfig(context_tokens=64,max_output_tokens=16))
+-        model.process=MagicMock();model.process.poll.return_value=None
++        model.process=MagicMock();model.process.pid=12345;model.process.poll.return_value=None
+         model._manifest={'installed_files':[{'path':'server.exe','sha256':'test-only'}],'server_relative_path':'server.exe'}
+         actual=count if actual is None else actual
+         def request(path,payload,timeout):

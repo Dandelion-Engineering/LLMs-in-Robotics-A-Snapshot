@@ -1,0 +1,13 @@
+Agent-authored test continuity.
+
+
+<!-- Machine-authored terminal record -->
+{"accepted_event_id":406,"accepted_sim_time_s":34.765999999996524,"appended_wall_unix_ns":1791067286820362823,"author":"framework","authority_epoch":4,"claim":"Handback accepted; conventional control resumed. This is framework evidence, not an agent claim.","handback_request_id":"handback-deterministic-session-1","record_id":"a54746af2ccb05e254b06282f21694c1b788191179c567f0093261e857763ab5","resumed_sim_time_s":34.8279999999966,"resumed_wall_unix_ns":1791067288393982200,"resumption_event_id":411,"resumption_evidence_sha256":"031083a1ba09ca7bdf30f8f6a3369ac9f92656343378876509f1e80b079ec061","retirement_evidence_sha256":"b0456154e4a14f458f3d9226f004a04b16a6c66c12a714d78f605aef31c9f366","run_id":"system-003","schema":"campaign003-framework-terminal-1","session_id":"deterministic-session-1"}
+
+
+<!-- Machine-authored terminal record -->
+{"accepted_event_id":1225,"accepted_sim_time_s":104.7799999999372,"appended_wall_unix_ns":1791067358343574398,"author":"framework","authority_epoch":7,"claim":"Handback accepted; conventional control resumed. This is framework evidence, not an agent claim.","handback_request_id":"handback-deterministic-session-2","record_id":"8f6652838822f744589c9b350379d256eefebe71b73cdc9c4b3c0495b833d8bc","resumed_sim_time_s":104.80999999993713,"resumed_wall_unix_ns":1791067358375358800,"resumption_event_id":1230,"resumption_evidence_sha256":"38b6c3a9a373dfab7e29ecf0891ad44334ef33940120a17368f931bf30fb858f","retirement_evidence_sha256":"c5406e743d254c2549e27148e3157acd1aa2ed58c1f038670e45a8d5b26997dc","run_id":"system-003","schema":"campaign003-framework-terminal-1","session_id":"deterministic-session-2"}
+
+
+<!-- Machine-authored terminal record -->
+{"accepted_event_id":1878,"accepted_sim_time_s":158.95000000003085,"appended_wall_unix_ns":1791067411444005637,"author":"framework","authority_epoch":10,"claim":"Handback accepted; conventional control resumed. This is framework evidence, not an agent claim.","handback_request_id":"handback-deterministic-session-3","record_id":"e692751b3d38dd7ff10459b88c644e732584037845cf7dd9d9db94190d34c3f1","resumed_sim_time_s":158.97600000003098,"resumed_wall_unix_ns":1791067412542458500,"resumption_event_id":1883,"resumption_evidence_sha256":"9e99ce499bb6f6ad39fac7feb87e44783da634057849cdc012b16a71d71387fe","retirement_evidence_sha256":"0471d5ecaedafd457748219cb4027362278436cff0414dd8abe6169de011cce4","run_id":"system-003","schema":"campaign003-framework-terminal-1","session_id":"deterministic-session-3"}

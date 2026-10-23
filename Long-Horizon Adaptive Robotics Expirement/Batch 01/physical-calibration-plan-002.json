@@ -1,0 +1,19 @@
+{
+  "schema_version": "physical-calibration-plan-1.0",
+  "attempt_id": "physical-calibration-002",
+  "registered_before_execution": true,
+  "prior_attempt": "physical-calibration-001",
+  "purpose": "Repeat all seven declared shared prerequisite probes after documented driver, native-target hold, RGB-D mark, lossless wrist-payload and measured common observation-posture corrections",
+  "posture_selection": {"source": "../Evidence/calibration/posture-screen-001/summary.json", "queue_job_id": "20260923T052516243097Z-acbc48e0", "selected": "posture-12", "home_q_rad": [0.8, -0.5, 0, -2.2, 0, 1.7, 0.7854], "rule": "All fixed criteria then minimum joint distance from previous HOME; static screen is not manipulation qualification"},
+  "driver": "Calibration Tools/physical_calibration.py",
+  "mode": "all",
+  "seed": 0,
+  "output": "../Evidence/calibration/physical-calibration-002",
+  "static_worlds": [[3, 0], [6, 1], [10, 2]],
+  "hard_child_wall_caps_s": [225, 225, 225, 105, 65, 90, 85],
+  "source_identity": "Driver bundles and hashes exact Runtime, Calibration Tools and Panda files before probes; files remain fixed throughout",
+  "changed_measurement": "Arm position-family check explicitly measures local displacement accuracy at unchanged 0.005rad tolerance and separately reports absolute native setpoint error; prior trace still fails revised check",
+  "unchanged_rules": ["No object teleport/weld", "Exact containment and 0.5s settling predicates", "One-second absence for primitive held recovery", "Native lossless RGB/float32 depth and unchanged IPC cap", "Actual-host timing thresholds", "Static collection pass is not a perception-readiness claim"],
+  "failure_policy": "Retain every failure and unknown. No original overwrite or scored retry. Inspect official receipt and each physical result before use.",
+  "scored_ready_claimed": false
+}

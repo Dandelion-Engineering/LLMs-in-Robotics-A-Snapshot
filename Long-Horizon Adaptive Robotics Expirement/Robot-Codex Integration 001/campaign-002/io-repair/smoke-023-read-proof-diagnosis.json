@@ -1,0 +1,940 @@
+{
+  "schema": "campaign002-smoke-read-proof-diagnosis-1",
+  "created_at": "2026-09-29T02:03:11.512826+00:00",
+  "run_id": "RCI001-C02-smoke-023",
+  "revision": "RCI001-C02-dev-078",
+  "job_id": "20260929T014234165833Z-cba1e8b0",
+  "diagnostic_only": true,
+  "original_assessment_unchanged": true,
+  "qualification_claim": false,
+  "scope": "Resume Tasks.md and Robot.md read evidence only; no canary, transport, task outcome or qualification reassessment.",
+  "original_startup": {
+    "Tasks.md": {
+      "verified": false,
+      "evidence": [],
+      "expected_sha256": "d345328f40aa2b15752087f222708f97ad2eaff1100009e598044a7685d4c7bf"
+    },
+    "Robot.md": {
+      "verified": false,
+      "evidence": [],
+      "expected_sha256": "56caf91887e512fd7caa5533017081aaecf61bb643180b897c482c41a1992eef"
+    }
+  },
+  "original_rejections": {
+    "prepared_tool_result_error": "Raw event redacted/truncated/failed",
+    "prepared_startup_segments_error": "Unknown index property"
+  },
+  "source_parser_rejection": "Unknown index property",
+  "actual_script": "const results = await Promise.allSettled([\n  tools.exec_command({cmd:\"cat Tasks.md Robot.md Tools.md\",workdir:\"/workspace\",max_output_tokens:15000}),\n  tools.exec_command({cmd:\"cat live/activation.json live/state.json Continuity.md\",workdir:\"/workspace\",max_output_tokens:8500})\n]);\nfor (let i=0;i<results.length;i++) text({i,...results[i]});\n",
+  "actual_script_sha256": "a293e5c2598a1fa7352150cd7a4c46409d4d7c27229325581a5c57acab546cc5",
+  "raw_call_line": 118,
+  "raw_output_line": 125,
+  "raw_call_id": "call_UIJ8m3sRj49LsaZl7vt308Ya",
+  "raw_call_item_sha256": "981ce061e21734decf6482bc905d6bdf46520770d6ae15be7c6e045ed42d1a6b",
+  "raw_output_item_sha256": "9b18fb64753926f16e010c1c9d2742c4a212796531a34c367cb04da9336e26f8",
+  "thread_id": "01a0ead9-00b0-7950-8161-d75a9ecb4bda",
+  "turn_id": "01a0ead9-1394-7312-883a-c94133df0ac1",
+  "raw_call_emitted_ms": 1790646508083,
+  "raw_output_emitted_ms": 1790646508200,
+  "children": [
+    {
+      "index": 0,
+      "tool_call_id": "exec-c1826839-35f5-46e8-a223-bfc7571da1fb",
+      "native_start_line": 120,
+      "native_complete_line": 122,
+      "argv": [
+        "/usr/bin/bash",
+        "-lc",
+        "cat Tasks.md Robot.md Tools.md"
+      ],
+      "options": {
+        "cmd": "cat Tasks.md Robot.md Tools.md",
+        "workdir": "/workspace",
+        "max_output_tokens": 15000
+      },
+      "provenance": {
+        "file": "executor-2-capture.jsonl",
+        "sha256": "253dae58c5790bb9f7b5be4a52b2de4061b331eeac70d13334b33efcd79f70c3",
+        "connection_id": "2",
+        "records": 651,
+        "request_sequence": 223,
+        "request_id": 65,
+        "process_id": "58066",
+        "tool_call_id": "exec-c1826839-35f5-46e8-a223-bfc7571da1fb",
+        "process_sequences": 5,
+        "stdout_bytes": 20920,
+        "stdout_sha256": "ee124639b1f782ab3c12139b5f8616641105cb9df5529a4f38fdb45a52e72234",
+        "process_sequence_order": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "output_sequence_order": [
+          1,
+          3,
+          4
+        ],
+        "closed_sequence": 5,
+        "exit_sequence": 2,
+        "exit_interleaved_out_of_sequence": false,
+        "app_projection_bytes": 4837,
+        "app_projection_sha256": "2ab73a92fe9d4586154e2b8eeae2e41f40a90b5907fd41af3be36135c30dcea3",
+        "app_projection_equals_executor": false,
+        "scope": "Complete source process stdout with websocket send completion; no app acknowledgment inferred; app/model projection recorded separately."
+      },
+      "execution": {
+        "cwd": "file:///workspace",
+        "argv": [
+          "/usr/bin/bash",
+          "-lc",
+          "cat Tasks.md Robot.md Tools.md"
+        ],
+        "env": {
+          "CODEX_CI": "1",
+          "CODEX_SESSION_ID": "01a0ead9-00b0-7950-8161-d75a9ecb4bda",
+          "CODEX_THREAD_ID": "01a0ead9-00b0-7950-8161-d75a9ecb4bda",
+          "CODEX_VERSION": "0.157.1",
+          "COLORTERM": "",
+          "GH_PAGER": "cat",
+          "GIT_PAGER": "cat",
+          "LANG": "C.UTF-8",
+          "LC_ALL": "C.UTF-8",
+          "LC_CTYPE": "C.UTF-8",
+          "NO_COLOR": "1",
+          "PAGER": "cat",
+          "TERM": "dumb"
+        },
+        "envPolicy": {
+          "exclude": [
+            "CODEX_PERMISSION_PROFILE",
+            "CODEX_VERSION",
+            "CODEX_APPLY_PATCH_PRESERVE_LINE_ENDINGS",
+            "CODEX_PLUGIN_METRICS_OUTPUT"
+          ],
+          "ignoreDefaultExcludes": false,
+          "includeOnly": [],
+          "inherit": "none",
+          "set": {
+            "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S": "8e172ec9f458f2e636fc69a1b8c68c217f6bb8d10c41f70a05a0878b73863701"
+          }
+        },
+        "scope": "No PATH/HOME/PYTHON/loader/shell-function overrides; fixed readonly root and standard imports.",
+        "request_wall_unix_s": 1790646508.1288686,
+        "closed_wall_unix_s": 1790646508.1419811,
+        "closed_capture_sequence": 235,
+        "app_emitted_at_ms": 1790646508148,
+        "app_complete_wall_unix_s": 1790646508.148,
+        "app_emission_interval": {
+          "lower_numerator_ms": 1790646508148,
+          "upper_numerator_ms": 1790646508149,
+          "denominator": 1000,
+          "lower_decimal_seconds": "1790646508.148",
+          "upper_decimal_seconds": "1790646508.149",
+          "lower_inclusive": true,
+          "upper_exclusive": true
+        },
+        "required_delivery_capture_sequences": [
+          226,
+          228,
+          230,
+          232,
+          234,
+          236
+        ],
+        "required_delivery_wall_unix_s": [
+          1790646508.133887,
+          1790646508.136397,
+          1790646508.1374023,
+          1790646508.1399105,
+          1790646508.1419811,
+          1790646508.1429858
+        ],
+        "evidence_complete_upper_decimal_seconds": "1790646508.149",
+        "evidence_complete_upper_wall_unix_s": 1790646508.1490002,
+        "completion_chronology_source": {
+          "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\completion_chronology.py",
+          "sha256": "ead520d1479aab88dcc2b926215105d87aa2eb0032dcf0434e24abf6124bc904",
+          "bytes": 6614
+        },
+        "completion_chronology_scope": "Conservative evidence bound; not actual app emission time or acknowledgment. No universal closed-before-completed claim; no epsilon."
+      }
+    },
+    {
+      "index": 1,
+      "tool_call_id": "exec-3294f78d-c29a-4cc5-b726-c080135218b2",
+      "native_start_line": 123,
+      "native_complete_line": 124,
+      "argv": [
+        "/usr/bin/bash",
+        "-lc",
+        "cat live/activation.json live/state.json Continuity.md"
+      ],
+      "options": {
+        "cmd": "cat live/activation.json live/state.json Continuity.md",
+        "workdir": "/workspace",
+        "max_output_tokens": 8500
+      },
+      "provenance": {
+        "file": "executor-2-capture.jsonl",
+        "sha256": "253dae58c5790bb9f7b5be4a52b2de4061b331eeac70d13334b33efcd79f70c3",
+        "connection_id": "2",
+        "records": 651,
+        "request_sequence": 224,
+        "request_id": 66,
+        "process_id": "39412",
+        "tool_call_id": "exec-3294f78d-c29a-4cc5-b726-c080135218b2",
+        "process_sequences": 6,
+        "stdout_bytes": 21549,
+        "stdout_sha256": "4c5486580568c024e2f462b8616c0dc1bc8b02e3b5c96ffb0888756aed5c962e",
+        "process_sequence_order": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "output_sequence_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "closed_sequence": 6,
+        "exit_sequence": 5,
+        "exit_interleaved_out_of_sequence": false,
+        "app_projection_bytes": 21549,
+        "app_projection_sha256": "4c5486580568c024e2f462b8616c0dc1bc8b02e3b5c96ffb0888756aed5c962e",
+        "app_projection_equals_executor": true,
+        "scope": "Complete source process stdout with websocket send completion; no app acknowledgment inferred; app/model projection recorded separately."
+      },
+      "execution": {
+        "cwd": "file:///workspace",
+        "argv": [
+          "/usr/bin/bash",
+          "-lc",
+          "cat live/activation.json live/state.json Continuity.md"
+        ],
+        "env": {
+          "CODEX_CI": "1",
+          "CODEX_SESSION_ID": "01a0ead9-00b0-7950-8161-d75a9ecb4bda",
+          "CODEX_THREAD_ID": "01a0ead9-00b0-7950-8161-d75a9ecb4bda",
+          "CODEX_VERSION": "0.157.1",
+          "COLORTERM": "",
+          "GH_PAGER": "cat",
+          "GIT_PAGER": "cat",
+          "LANG": "C.UTF-8",
+          "LC_ALL": "C.UTF-8",
+          "LC_CTYPE": "C.UTF-8",
+          "NO_COLOR": "1",
+          "PAGER": "cat",
+          "TERM": "dumb"
+        },
+        "envPolicy": {
+          "exclude": [
+            "CODEX_PERMISSION_PROFILE",
+            "CODEX_VERSION",
+            "CODEX_APPLY_PATCH_PRESERVE_LINE_ENDINGS",
+            "CODEX_PLUGIN_METRICS_OUTPUT"
+          ],
+          "ignoreDefaultExcludes": false,
+          "includeOnly": [],
+          "inherit": "none",
+          "set": {
+            "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S": "8e172ec9f458f2e636fc69a1b8c68c217f6bb8d10c41f70a05a0878b73863701"
+          }
+        },
+        "scope": "No PATH/HOME/PYTHON/loader/shell-function overrides; fixed readonly root and standard imports.",
+        "request_wall_unix_s": 1790646508.1298747,
+        "closed_wall_unix_s": 1790646508.1522307,
+        "closed_capture_sequence": 249,
+        "app_emitted_at_ms": 1790646508176,
+        "app_complete_wall_unix_s": 1790646508.176,
+        "app_emission_interval": {
+          "lower_numerator_ms": 1790646508176,
+          "upper_numerator_ms": 1790646508177,
+          "denominator": 1000,
+          "lower_decimal_seconds": "1790646508.176",
+          "upper_decimal_seconds": "1790646508.177",
+          "lower_inclusive": true,
+          "upper_exclusive": true
+        },
+        "required_delivery_capture_sequences": [
+          238,
+          240,
+          242,
+          244,
+          246,
+          248,
+          250
+        ],
+        "required_delivery_wall_unix_s": [
+          1790646508.143985,
+          1790646508.1450367,
+          1790646508.1475458,
+          1790646508.1490483,
+          1790646508.1500523,
+          1790646508.1522307,
+          1790646508.1522307
+        ],
+        "evidence_complete_upper_decimal_seconds": "1790646508.177",
+        "evidence_complete_upper_wall_unix_s": 1790646508.177,
+        "completion_chronology_source": {
+          "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\completion_chronology.py",
+          "sha256": "ead520d1479aab88dcc2b926215105d87aa2eb0032dcf0434e24abf6124bc904",
+          "bytes": 6614
+        },
+        "completion_chronology_scope": "Conservative evidence bound; not actual app emission time or acknowledgment. No universal closed-before-completed claim; no epsilon."
+      }
+    }
+  ],
+  "decoder_scope": "Original unchanged frozen decoder plus explicit analyst recipe for byte observation; unsupported JS grammar remains rejected.",
+  "analyst_recipe": {
+    "schema": "prepared-wrapper-1",
+    "mode": "parallel",
+    "children": [
+      {
+        "cmd": "cat Tasks.md Robot.md Tools.md",
+        "workdir": "/workspace",
+        "max_output_tokens": 15000
+      },
+      {
+        "cmd": "cat live/activation.json live/state.json Continuity.md",
+        "workdir": "/workspace",
+        "max_output_tokens": 8500
+      }
+    ],
+    "output_only": false,
+    "emission": "indexed_loop",
+    "index_key": "i",
+    "max_output_tokens": 10000,
+    "pragma": {}
+  },
+  "prepared_body_sha256": "f2cb7cc5d941e61af1d36b80f2fffac18aff2e051ffed2ea8c49eefcf6c90925",
+  "prepared_body_bytes": 40153,
+  "truncation": {
+    "original_approximate_tokens": 11135,
+    "original_lines": 2,
+    "budget_tokens": 10000,
+    "budget_bytes": 40000,
+    "head_start_byte": 126,
+    "head_end_byte": 20126,
+    "head_sha256": "5574525e1378e9261afd8b81a8ea478f0bbfa27afbb2094ea1954db79b762ef4",
+    "marker_start_byte": 20126,
+    "marker_bytes": 27,
+    "marker_sha256": "8bf78e34c26396b02892becfadf5ac36a45b267987058f54754ce11f69777fd3",
+    "suffix_bytes": 20000,
+    "suffix_sha256": "fb398932a25cd088c668f7766c9ccb634a226af078a958cc26fdeae9ac72c6ea",
+    "suffix_consumed_as_evidence": false
+  },
+  "observed_stdout_prefix_bytes": 19698,
+  "observed_stdout_prefix_sha256": "eda2b744e8fd36e7618faea55bbd65226934493ca6643baef8cb00ba4dc546e9",
+  "prefix_rounding": {
+    "validated": true,
+    "mode": "exact_head_budget",
+    "nominal_head_bytes": 20000,
+    "observed_head_bytes": 20000,
+    "remaining_budget_bytes": 0
+  },
+  "segments": [
+    {
+      "path": "Tasks.md",
+      "start_byte": 0,
+      "end_byte": 2155,
+      "bytes": 2155,
+      "sha256": "d345328f40aa2b15752087f222708f97ad2eaff1100009e598044a7685d4c7bf",
+      "complete_in_observed_prefix": true,
+      "encoded_span": {
+        "start_byte": 265,
+        "end_byte": 2433
+      }
+    },
+    {
+      "path": "Robot.md",
+      "start_byte": 2155,
+      "end_byte": 7891,
+      "bytes": 5736,
+      "sha256": "56caf91887e512fd7caa5533017081aaecf61bb643180b897c482c41a1992eef",
+      "complete_in_observed_prefix": true,
+      "encoded_span": {
+        "start_byte": 2433,
+        "end_byte": 8221
+      }
+    },
+    {
+      "path": "Tools.md",
+      "start_byte": 7891,
+      "end_byte": 20920,
+      "bytes": 13029,
+      "sha256": "68f879b2d94fd34b536968ed3a8bb4b78e64ec73871b473914c5200ca7566b47",
+      "complete_in_observed_prefix": false,
+      "encoded_span": null
+    }
+  ],
+  "executor_integrity": {
+    "verified": true,
+    "errors": [],
+    "files": [
+      {
+        "file": "executor-1-capture.jsonl",
+        "sha256": "48e09a698edf0e13bd7f38027bfd74864dbc941dd2814fc41ce5c4ad01d1d956",
+        "connection_id": "1",
+        "records": 33
+      },
+      {
+        "file": "executor-2-capture.jsonl",
+        "sha256": "253dae58c5790bb9f7b5be4a52b2de4061b331eeac70d13334b33efcd79f70c3",
+        "connection_id": "2",
+        "records": 651
+      }
+    ]
+  },
+  "source_contract": [
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__context.rs",
+      "sha256": "9a9acc6daab2112bd9ca1a07a1e1f2105b20a7f565878157c726ee0d7a3e00cc"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__output.rs",
+      "sha256": "071a30e1811bb43939e59f910c180b5377e9aa2f99f5e2bc658032bf1d319c77"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/isolation-session-9/native/app-server-schema/v2/RawResponseItemCompletedNotification.json",
+      "sha256": "e41475a93885572579b0963718e46783b07f9ddb9e61f0669dac09da4d59185e"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/RAW_TOOL_RESULT_EVIDENCE_V1.md",
+      "sha256": "e96ac64f3f451ceb0b0470a66306b60462bab89c026a24d139ced969b30ec128"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v3.py",
+      "sha256": "a44db8031771c4ff380b52d2abc031a015eb0afcb6e06b13d486272ea3fb0e5d"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v4.py",
+      "sha256": "a08f0b820c5ce30c0a68bc8ea7fc19102b29834a6b9b0dd447157568060706ad"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/native_quiescence.py",
+      "sha256": "d51e7ead1c6a3101cc0233e142d1669927f7de26aca2c2f572ec17dbc6d7fd00"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/native_cleanup_protocol.py",
+      "sha256": "c3c6afaa394ec8c0ff627784369721bd51acf6ada9fec86c09a68027e6702275"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/raw_tool_result_reads.py",
+      "sha256": "5d461dee88498d96d0135811b2b2d91e2bbec07314641758f1ffb55336bf0d93"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/PREPARED_STARTUP_SEGMENTS_V1.md",
+      "sha256": "39287ceb982a9a2077863c5107c15bc4744e1fc544aafd9d32f014cc25e5dd7f"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__mod.rs",
+      "sha256": "13b5bda6e93a65fe999a3f07b3c5ee4a05850bfca57e4090876d70b310d8ba9e"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__utils__output-truncation__src__lib.rs",
+      "sha256": "e2e23cc1b3c9153bef0855cb3c7c91c68e6e43117647c3e97feefda92026a38e"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__utils__string__src__truncate.rs",
+      "sha256": "d5755286344f10d10b4bd9f93bb3bff6f1b85270a15df378254051b147ad38ad"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__core__src__unified_exec__mod.rs",
+      "sha256": "b44a827c63f6906f4b76e69f2095cb207b4989e67a8a5fcd521a1150443ad240"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__code-mode-protocol__src__description.rs",
+      "sha256": "2dbd58a3210c05fab918dca4426c3947a6732ec48e80a05344d432e314546c95"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__code-mode-protocol__src__runtime.rs",
+      "sha256": "a64d60e9e7d2c1812ace64825d4009f12d1d4ef572c5ba04602acc44658e1094"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-003/codex-rs__core__src__tools__code_mode__response_adapter.rs",
+      "sha256": "702b85e1a50baf24470f5018c355f27d7630134a2a9ea7b9a938c292702568f7"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/prepared_result_segments.py",
+      "sha256": "82b7cb6a0928395314a781c5c171d7087c78d4040c2a0950aca5cbb0a94c05fa"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/prepared_startup_segments.py",
+      "sha256": "0a7466b921496b4b45d49ade03a6695c7b7c4049351997691069ccbd5ea2fdae"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/literal_read_segments.py",
+      "sha256": "2240736b89a62f762a1aaba188e9403bffc3805c17c443fc71ea3952d047dc59"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/retained_reads.py",
+      "sha256": "c63f840c1c2de044f93c773a2d9f6d03a8478a6694764a328e59f9e54e27139d"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/empty_startup_reads.py",
+      "sha256": "eae3f853f0a910ea8567e626c3322bc260c14bbc908ad1ef76a7e58ab2765320"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/completion_chronology.py",
+      "sha256": "ead520d1479aab88dcc2b926215105d87aa2eb0032dcf0434e24abf6124bc904"
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/PREPARED_STARTUP_SEGMENTS_V1.md",
+      "sha256": "39287ceb982a9a2077863c5107c15bc4744e1fc544aafd9d32f014cc25e5dd7f"
+    }
+  ],
+  "assessment_source_bindings": {
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess.py": {
+      "sha256": "62b26c5c9c74eba50855218e28174c31684a197f1d005058bd7efce4b64b164f",
+      "bytes": 39038
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess_smoke_v2.py": {
+      "sha256": "fd60127fab1ccd77aafaeacb876810d655ad90eb73dea061bbbc1e32c74605e8",
+      "bytes": 39703
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/canary_exit_proof.py": {
+      "sha256": "fd42080b62f9ae00249367753e67e034b8d062d167a2629635e47782e439bac1",
+      "bytes": 13060
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/cleanup_transport.py": {
+      "sha256": "8073564dab01d338d3223966be36029fe46d93bbd0ca67163aeb32592442a20c",
+      "bytes": 32141
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/client_quiescence.py": {
+      "sha256": "5af29b04b045111baf3fc5ad507d0799a43e5a1f2435335620a246c88a6eef01",
+      "bytes": 22695
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/completion_chronology.py": {
+      "sha256": "ead520d1479aab88dcc2b926215105d87aa2eb0032dcf0434e24abf6124bc904",
+      "bytes": 6614
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/continuous_integrity.py": {
+      "sha256": "07a5650d4ae724e600e281219938fe647c636be59efc7cf1788901cf8a9cb141",
+      "bytes": 14936
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/empty_startup_reads.py": {
+      "sha256": "eae3f853f0a910ea8567e626c3322bc260c14bbc908ad1ef76a7e58ab2765320",
+      "bytes": 15231
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/initial_read_composition.py": {
+      "sha256": "62ea0ae3e0fb17669f36758452d296a2180886def6d2f2ae169d83f2793b1736",
+      "bytes": 11107
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/literal_read_segments.py": {
+      "sha256": "2240736b89a62f762a1aaba188e9403bffc3805c17c443fc71ea3952d047dc59",
+      "bytes": 19730
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/prepared_result_segments.py": {
+      "sha256": "82b7cb6a0928395314a781c5c171d7087c78d4040c2a0950aca5cbb0a94c05fa",
+      "bytes": 24071
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/prepared_startup_segments.py": {
+      "sha256": "0a7466b921496b4b45d49ade03a6695c7b7c4049351997691069ccbd5ea2fdae",
+      "bytes": 16023
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/raw_tool_result_reads.py": {
+      "sha256": "5d461dee88498d96d0135811b2b2d91e2bbec07314641758f1ffb55336bf0d93",
+      "bytes": 21037
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/resource_integrity.py": {
+      "sha256": "2c91bb289dfd0ef53d30a9b4d2663cb17723ef41cb87aab96d4e802f5ba1e845",
+      "bytes": 14337
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/retained_reads.py": {
+      "sha256": "c63f840c1c2de044f93c773a2d9f6d03a8478a6694764a328e59f9e54e27139d",
+      "bytes": 16191
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_assess.py": {
+      "sha256": "a4fffc1411ac493d2e4beaef4f4bba26c069c367308adb8445d24e8e5c676713",
+      "bytes": 27886
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_canary_exit_proof.py": {
+      "sha256": "c5f2d59721e90ec53ea12259e6a84aab52fd8c8192a75d9612ada228a384b1d7",
+      "bytes": 17287
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_cleanup_transport.py": {
+      "sha256": "337542e231498f415b7b349beac70e98b4c105cbac0f579c199ff3eb67f287ab",
+      "bytes": 20913
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_client_quiescence.py": {
+      "sha256": "30350a16753d0cdbb7a31bf00f38b19f35717616792800f69cb3890893551fca",
+      "bytes": 16158
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_completion_chronology.py": {
+      "sha256": "f5eac3d1fe2ff2dd9d60758ef033da41a746e77ea12666b94f1d988402ad99bb",
+      "bytes": 7194
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_continuous_integrity.py": {
+      "sha256": "e4af6ed55694ffaf8fdc3ab2fb4d5faf902854ffb8ea9d32fd60f3a544a6ff8b",
+      "bytes": 13516
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_empty_startup_reads.py": {
+      "sha256": "7298a05603d872cb1ea3e0e3efc8ec33eb3608026968c8e8fb412e376cfab660",
+      "bytes": 17388
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_initial_read_composition.py": {
+      "sha256": "20e95c57fe50bf35470c504ab45ded5e6972160075df09ab14969aea7669789b",
+      "bytes": 16610
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_literal_read_segments.py": {
+      "sha256": "6840f901a6c1957e5f0e99ae7ca2b4e7e4d0a51a8807e676fceec7af630b48b7",
+      "bytes": 20406
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_prepared_result_segments.py": {
+      "sha256": "993276adcc1ad9c71b42e9f9b3a50c88dd7dab1160250823b2c74c167938fb0a",
+      "bytes": 24119
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_prepared_startup_segments.py": {
+      "sha256": "e8f1e954b61a4b49cb2945f6b2a2b4f9c611c9bb059852c00f4881b6267bd981",
+      "bytes": 18341
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_raw_tool_result_reads.py": {
+      "sha256": "f3b97c721f847f6ec6b90de1bff5b88f1bfcf85902a16c9da759f039d2186dd3",
+      "bytes": 18414
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_resource_integrity.py": {
+      "sha256": "2475f3e33543b2265ebdfd3c2f649072d1df0031e81209a6b4f68963c16058ab",
+      "bytes": 13349
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_retained_reads.py": {
+      "sha256": "bed886a988789db816b913b09ad8891c02a0c4fe9b9d444f251744e3ef5cdc7d",
+      "bytes": 30431
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_shared_host_retirement_inventory.py": {
+      "sha256": "e9a63e13a34240a9b58198b51ee2f1ee65416ca51a4c2feb247c25dffe31d0ac",
+      "bytes": 1938
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_smoke_v2.py": {
+      "sha256": "3eb19bcdd5d539474c32f6b4eeec46451cbf9f90ae2c673b6448f7311cf5151e",
+      "bytes": 15079
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_transport_dispatch.py": {
+      "sha256": "3052edee19bce91185b2841e868ee46557213779dff009e92d4e6705d7538b74",
+      "bytes": 1862
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_transport_integrity.py": {
+      "sha256": "ddd5159e6b7d0de24aca8e2b135bca79445df636bfa86855ee02dd2ea99aeca6",
+      "bytes": 16105
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_transport_integrity_v3.py": {
+      "sha256": "33b0dda26c42669875bc4becde226cb812a8b13c6cac331f7bdadd4ba05489f6",
+      "bytes": 91898
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/transport_dispatch.py": {
+      "sha256": "8200a63d42fd87155c9134d00ae7d8b63d23435ae1bbc1b76d395fadaed33e70",
+      "bytes": 669
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/transport_integrity.py": {
+      "sha256": "a2537b44b69f269ceba82d4e7b903f3f231a90f772e30f0f1dbc298119b585cb",
+      "bytes": 21375
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/transport_integrity_v3.py": {
+      "sha256": "758a936c2d1bfad6389589cdf80e83e92950353c47418e65abd47a432a88c18e",
+      "bytes": 122910
+    }
+  },
+  "input_bindings": [
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\smoke-023-read-proof-diagnosis-records-001\\official-replay-status.json",
+      "sha256": "4af536291015b7f6759805b2c50da90e893f1d2a027cab242483dffaa8e083c6",
+      "bytes": 1907,
+      "role": "fresh official successful integer-zero gate, before empirical reads"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-023-assessment.json",
+      "sha256": "aa0b4ceb104e4cefd6d8bac1d0fca424ae555401e7d8a3dcd2846ab0b745c733",
+      "bytes": 546668,
+      "role": "unchanged failed independent qualification"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-078\\snapshot.json",
+      "sha256": "13375ee3c4a252406ce00f18cc0d211775763d00e6eff4dbb477516afb879df6",
+      "bytes": 230078,
+      "role": "actual dev078 source snapshot"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-078\\code.zip",
+      "sha256": "fa31d9c8f8a0090304774c53d30dfe7631a7547e70e0b84e0ecf2538183629d4",
+      "bytes": 3476193,
+      "role": "actual dev078 frozen source archive"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\assess.py",
+      "sha256": "62b26c5c9c74eba50855218e28174c31684a197f1d005058bd7efce4b64b164f",
+      "bytes": 39038,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\assess_smoke_v2.py",
+      "sha256": "fd60127fab1ccd77aafaeacb876810d655ad90eb73dea061bbbc1e32c74605e8",
+      "bytes": 39703,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\canary_exit_proof.py",
+      "sha256": "fd42080b62f9ae00249367753e67e034b8d062d167a2629635e47782e439bac1",
+      "bytes": 13060,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\cleanup_transport.py",
+      "sha256": "8073564dab01d338d3223966be36029fe46d93bbd0ca67163aeb32592442a20c",
+      "bytes": 32141,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\client_quiescence.py",
+      "sha256": "5af29b04b045111baf3fc5ad507d0799a43e5a1f2435335620a246c88a6eef01",
+      "bytes": 22695,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\completion_chronology.py",
+      "sha256": "ead520d1479aab88dcc2b926215105d87aa2eb0032dcf0434e24abf6124bc904",
+      "bytes": 6614,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\continuous_integrity.py",
+      "sha256": "07a5650d4ae724e600e281219938fe647c636be59efc7cf1788901cf8a9cb141",
+      "bytes": 14936,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\empty_startup_reads.py",
+      "sha256": "eae3f853f0a910ea8567e626c3322bc260c14bbc908ad1ef76a7e58ab2765320",
+      "bytes": 15231,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\initial_read_composition.py",
+      "sha256": "62ea0ae3e0fb17669f36758452d296a2180886def6d2f2ae169d83f2793b1736",
+      "bytes": 11107,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\literal_read_segments.py",
+      "sha256": "2240736b89a62f762a1aaba188e9403bffc3805c17c443fc71ea3952d047dc59",
+      "bytes": 19730,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\prepared_result_segments.py",
+      "sha256": "82b7cb6a0928395314a781c5c171d7087c78d4040c2a0950aca5cbb0a94c05fa",
+      "bytes": 24071,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\prepared_startup_segments.py",
+      "sha256": "0a7466b921496b4b45d49ade03a6695c7b7c4049351997691069ccbd5ea2fdae",
+      "bytes": 16023,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\raw_tool_result_reads.py",
+      "sha256": "5d461dee88498d96d0135811b2b2d91e2bbec07314641758f1ffb55336bf0d93",
+      "bytes": 21037,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\resource_integrity.py",
+      "sha256": "2c91bb289dfd0ef53d30a9b4d2663cb17723ef41cb87aab96d4e802f5ba1e845",
+      "bytes": 14337,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\retained_reads.py",
+      "sha256": "c63f840c1c2de044f93c773a2d9f6d03a8478a6694764a328e59f9e54e27139d",
+      "bytes": 16191,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_assess.py",
+      "sha256": "a4fffc1411ac493d2e4beaef4f4bba26c069c367308adb8445d24e8e5c676713",
+      "bytes": 27886,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_canary_exit_proof.py",
+      "sha256": "c5f2d59721e90ec53ea12259e6a84aab52fd8c8192a75d9612ada228a384b1d7",
+      "bytes": 17287,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_cleanup_transport.py",
+      "sha256": "337542e231498f415b7b349beac70e98b4c105cbac0f579c199ff3eb67f287ab",
+      "bytes": 20913,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_client_quiescence.py",
+      "sha256": "30350a16753d0cdbb7a31bf00f38b19f35717616792800f69cb3890893551fca",
+      "bytes": 16158,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_completion_chronology.py",
+      "sha256": "f5eac3d1fe2ff2dd9d60758ef033da41a746e77ea12666b94f1d988402ad99bb",
+      "bytes": 7194,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_continuous_integrity.py",
+      "sha256": "e4af6ed55694ffaf8fdc3ab2fb4d5faf902854ffb8ea9d32fd60f3a544a6ff8b",
+      "bytes": 13516,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_empty_startup_reads.py",
+      "sha256": "7298a05603d872cb1ea3e0e3efc8ec33eb3608026968c8e8fb412e376cfab660",
+      "bytes": 17388,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_initial_read_composition.py",
+      "sha256": "20e95c57fe50bf35470c504ab45ded5e6972160075df09ab14969aea7669789b",
+      "bytes": 16610,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_literal_read_segments.py",
+      "sha256": "6840f901a6c1957e5f0e99ae7ca2b4e7e4d0a51a8807e676fceec7af630b48b7",
+      "bytes": 20406,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_prepared_result_segments.py",
+      "sha256": "993276adcc1ad9c71b42e9f9b3a50c88dd7dab1160250823b2c74c167938fb0a",
+      "bytes": 24119,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_prepared_startup_segments.py",
+      "sha256": "e8f1e954b61a4b49cb2945f6b2a2b4f9c611c9bb059852c00f4881b6267bd981",
+      "bytes": 18341,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_raw_tool_result_reads.py",
+      "sha256": "f3b97c721f847f6ec6b90de1bff5b88f1bfcf85902a16c9da759f039d2186dd3",
+      "bytes": 18414,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_resource_integrity.py",
+      "sha256": "2475f3e33543b2265ebdfd3c2f649072d1df0031e81209a6b4f68963c16058ab",
+      "bytes": 13349,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_retained_reads.py",
+      "sha256": "bed886a988789db816b913b09ad8891c02a0c4fe9b9d444f251744e3ef5cdc7d",
+      "bytes": 30431,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_shared_host_retirement_inventory.py",
+      "sha256": "e9a63e13a34240a9b58198b51ee2f1ee65416ca51a4c2feb247c25dffe31d0ac",
+      "bytes": 1938,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_smoke_v2.py",
+      "sha256": "3eb19bcdd5d539474c32f6b4eeec46451cbf9f90ae2c673b6448f7311cf5151e",
+      "bytes": 15079,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_dispatch.py",
+      "sha256": "3052edee19bce91185b2841e868ee46557213779dff009e92d4e6705d7538b74",
+      "bytes": 1862,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_integrity.py",
+      "sha256": "ddd5159e6b7d0de24aca8e2b135bca79445df636bfa86855ee02dd2ea99aeca6",
+      "bytes": 16105,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_transport_integrity_v3.py",
+      "sha256": "33b0dda26c42669875bc4becde226cb812a8b13c6cac331f7bdadd4ba05489f6",
+      "bytes": 91898,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\transport_dispatch.py",
+      "sha256": "8200a63d42fd87155c9134d00ae7d8b63d23435ae1bbc1b76d395fadaed33e70",
+      "bytes": 669,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\transport_integrity.py",
+      "sha256": "a2537b44b69f269ceba82d4e7b903f3f231a90f772e30f0f1dbc298119b585cb",
+      "bytes": 21375,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\transport_integrity_v3.py",
+      "sha256": "758a936c2d1bfad6389589cdf80e83e92950353c47418e65abd47a432a88c18e",
+      "bytes": 122910,
+      "role": "frozen assessment source verified before import"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-023\\orchestrator\\resume\\client\\events.jsonl",
+      "sha256": "7a1b5bf221737e7a628d7a267e592cebc39d50cbdf95ccf24a144f68b7ad8007",
+      "bytes": 1237807,
+      "role": "actual native public/raw event journal"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-023\\orchestrator\\resume\\client\\launch.json",
+      "sha256": "e8ecdc69764a0223f22a89f4e6916944523dc43c0b1dbdf1bb0cada640660186",
+      "bytes": 3362,
+      "role": "native raw-event request receipt"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-023\\orchestrator\\resume\\client\\preflight.json",
+      "sha256": "1d2884174b4e764b39f7c2218886b73af484a670c043822dbe1f1917b9344e07",
+      "bytes": 1302,
+      "role": "native accepted raw-event preflight receipt"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-023\\orchestrator\\resume\\runtime-input-hashes.json",
+      "sha256": "b17d1fe137fd2e164273acdec7ad46edeeb8b448a5d3d0e84cdb8ddb2c433f5b",
+      "bytes": 1450,
+      "role": "prepared initial file identities"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-023\\orchestrator\\resume\\runtime-before-close.json",
+      "sha256": "4450dd67ae23fc92421bed4bf583651e2d0dfdb04032f8223fad1e6582f22f64",
+      "bytes": 949143,
+      "role": "source-bound literal segment file inventory"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-023\\orchestrator\\resume\\executor-1-capture.jsonl",
+      "sha256": "48e09a698edf0e13bd7f38027bfd74864dbc941dd2814fc41ce5c4ad01d1d956",
+      "bytes": 29571,
+      "role": "authenticated executor capture, replayed with unchanged frozen reader"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-023\\orchestrator\\resume\\executor-2-capture.jsonl",
+      "sha256": "253dae58c5790bb9f7b5be4a52b2de4061b331eeac70d13334b33efcd79f70c3",
+      "bytes": 878933,
+      "role": "authenticated executor capture, replayed with unchanged frozen reader"
+    }
+  ],
+  "conclusion": "Both fixed files are completely present in the actual raw result prefix and exact authenticated child stdout. The frozen counted-loop grammar rejects the shorthand index property i. The separate app projection remains incomplete and false.",
+  "prospective_direction": "A separately declared finite shorthand index-property template bound to the exact loop counter could address this case while preserving unique child bijection, initial-file hashes, exact UTF8 prefix boundaries, source bindings, truncation limits and all other gates. No source is changed and no historical verdict is upgraded.",
+  "limitations": [
+    "No claim that the model attended to or reasoned over the bytes.",
+    "No raw-output suffix is used or reconstructed.",
+    "Tools.md is not complete in this prefix; its separate later read remains the original assessment evidence.",
+    "No current assessor rerun or accepted proof was generated."
+  ]
+}

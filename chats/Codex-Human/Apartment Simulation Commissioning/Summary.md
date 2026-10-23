@@ -1,0 +1,13 @@
+# Apartment Simulation Commissioning — concluded
+
+Date range: October 6–8, 2026. Participants: Randy and Codex. The complete append-only conversation is preserved in `Apartment Simulation Commissioning - Concluded.md`.
+
+Randy commissioned the long-lived apartment apparatus with ordinary v0.2 Baseline versus v0.2 Maps Edition, matched hidden assignments, isolated persistent learning, physical household tasks, throwing practice, live viewing, replay and deferred hibernation. Earlier v1 attempts failed and remain separate engineering evidence. The subsequent October 7 amendment added verified normal-boundary checkpoints, immutable infrastructure recovery, structured native errors and explicit clock/transport handling; it froze matched 360/600-second work windows and revised shared geometry in pristine apartment-v2.
+
+After commissioning, v2 Baseline launched once. Randy requested clean hibernation, which was independently verified at checkpoint 23 with 15/21 assignments and 23 normal sessions. His October 8, 07:08 PDT message explicitly authorized one authenticated continuation, preserving exact world/RNG, learned files and schedule/history, followed by 30-minute observations through the endpoint.
+
+Baseline completed all 21 assignments on October 8 at 10:16 PDT in 36 fresh sessions: 23 before hibernation and 13 after resume, all normal closures, with no abandoned starts, failed native turns or recovery branches. All 14 household assignments reached physical success; seven throwing-practice windows completed. The official queue and independent endpoint-audit queue succeeded with integer exit 0; all five verification gates passed, including exact identity/history, checkpoint, retirement and pristine Maps.
+
+Monitoring is paused, the runtime and live viewer retired, and the browser tab is closed. Session 34 closes at this endpoint. **Maps remains pristine and unlaunched and requires Randy's later explicit instruction.** Neither the single Baseline history nor completed throwing windows establishes a Maps effect, throwing mastery or real-robot capability. Secondary timing, throwing-feedback and causal learned-artifact analyses remain unassessed.
+
+Durable sources: `agents/Codex/Session Summaries/HumanReport34.md`, `Long-Horizon Adaptive Robotics Expirement/Apartment Experiment/operations/session-34/RESULT.md`, `endpoint.json` and `STATUS.md`, Architecture Map result `APARTMENT-v2-baseline-result-001`, and `D:/Dandelion-Apartment-Experiment/official/apartment-v2/operator/endpoint-audit-session34-001/`. A later authorized Maps launch or another new question should use a new focused conversation.

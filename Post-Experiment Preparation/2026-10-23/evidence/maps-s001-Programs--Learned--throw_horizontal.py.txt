@@ -1,0 +1,64 @@
+"""Perception-aligned horizontal throw; see Playbooks/Learned/HorizontalThrow.md."""
+import argparse
+import json
+import sys
+import time
+sys.path.insert(0, '/')
+import robot_client as robot
+
+
+def idle():
+    deadline = time.monotonic() + 35
+    while True:
+        status = robot.call('status', {})
+        if not status.get('ok'):
+            raise RuntimeError(status)
+        if not status.get('action'):
+            return status
+        if time.monotonic() > deadline:
+            raise RuntimeError('Action still active; inspect status before any further command')
+        time.sleep(.1)
+
+
+def command(kind, parameters):
+    status = idle()
+    if status['battery']['low_warning']:
+        raise RuntimeError('Low battery: stop practice and return to charging pad')
+    result = robot.call('command', {'kind': kind, 'parameters': parameters})
+    if not result.get('accepted'):
+        raise RuntimeError(result)
+    return idle()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--y', type=float, default=.10)
+    parser.add_argument('--duration', type=float, default=.18)
+    args = parser.parse_args()
+    if not -.30 <= args.y <= .30 or not .12 <= args.duration <= .30:
+        parser.error('Parameters outside limited practice envelope')
+    start = idle()
+    if not start['gripper']['secure_lift_confirmed'] or not start['gripper']['bilateral_contact']:
+        raise RuntimeError('Requires a currently confirmed held object')
+    if not .080 <= start['gripper']['width'] <= .100 or start['gripper']['effort'] < 10:
+        raise RuntimeError('Held object/contact differs from tested orange-object grasp')
+    prepared = command('arm', {'x': .36, 'y': args.y, 'z': 1.15, 'duration': .8})
+    if not prepared['gripper']['secure_lift_confirmed'] or not prepared['gripper']['bilateral_contact']:
+        raise RuntimeError('Object lost during preparation')
+    previous = prepared.get('throw_feedback')
+    command('trajectory', {'points': [
+        {'x': .65, 'y': args.y, 'z': 1.15, 'width': .04, 'duration': args.duration},
+        {'x': 1.0, 'y': args.y, 'z': 1.15, 'width': .15, 'duration': args.duration},
+    ]})
+    deadline = time.monotonic() + 4
+    final = idle()
+    while time.monotonic() < deadline:
+        if final.get('throw_feedback') and final['throw_feedback'] != previous:
+            break
+        time.sleep(.15)
+        final = idle()
+    print(json.dumps({'parameters': vars(args), 'before': prepared, 'after': final}))
+
+
+if __name__ == '__main__':
+    main()

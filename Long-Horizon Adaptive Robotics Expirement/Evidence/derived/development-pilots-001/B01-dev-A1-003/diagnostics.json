@@ -1,0 +1,4636 @@
+{
+  "created_at": "2026-09-23T04:54:26.635955+00:00",
+  "events": {
+    "action_requests_missing_id": 0,
+    "avoidable_duplicate_work": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Repeated admitted processing can be required rework; correctness and avoidability need independent adjudication",
+      "unit": "count",
+      "value": null
+    },
+    "avoidable_observation_requests": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "No frozen visibility/change criterion establishes redundant sensing",
+      "unit": "count",
+      "value": null
+    },
+    "candidate_resolution_reports": 61,
+    "context_io": {
+      "context_read": {
+        "known_reported_bytes": 0,
+        "observed_events": 0,
+        "reported_bytes": 0,
+        "scope": "Candidate reported serialization bytes; not complete OS disk I/O"
+      },
+      "context_write": {
+        "known_reported_bytes": 880510,
+        "observed_events": 397,
+        "reported_bytes": 880510,
+        "scope": "Candidate reported serialization bytes; not complete OS disk I/O"
+      }
+    },
+    "duplicate_suppression_events": 0,
+    "event_counts": {
+      "action_admission": 62,
+      "action_requested": 62,
+      "candidate_input": 396,
+      "candidate_ready": 1,
+      "candidate_reply": 396,
+      "candidate_runtime_diagnostics": 1,
+      "candidate_runtime_usage_summary": 1,
+      "episode_clock_started": 1,
+      "final_world": 1,
+      "initial_world": 1,
+      "initial_world_validation": 1,
+      "late_sensor_capture": 1,
+      "model_request": 62,
+      "model_response": 62,
+      "observation": 2997,
+      "physical_service_event": 81,
+      "resource_sampling_finished": 1,
+      "resource_sampling_started": 1,
+      "scenario_configuration": 1,
+      "world_snapshot": 300
+    },
+    "help": {
+      "manual_human_time": {
+        "basis": "not established by supplied evidence",
+        "missing_reason": "Scripted responses do not measure human workload",
+        "unit": "s",
+        "value": null
+      },
+      "recorded_summary": {
+        "accepted_requests": 0,
+        "actual_human_time_missing_reason": "Scripted assistance; no manual diagnostic human time measured",
+        "actual_human_time_s": null,
+        "answers": [],
+        "any_help_requested": false,
+        "nominal_delay_s": 15.0,
+        "pending_responses": 0,
+        "physical_rescue_actions": 0,
+        "policy_id": "public-reobserve-advice-v1",
+        "rejected_before_assistance_service": 0,
+        "requests": 0,
+        "responses": 0,
+        "simulated_assistance": true,
+        "summed_scripted_wait_wall_s": 0,
+        "wait_interpretation": "Sum of request waits, including unfinished waits; concurrent waits may overlap"
+      },
+      "scripted_answers": 0,
+      "unique_action_requests": 0
+    },
+    "independently_correct_resolution_count": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Candidate resolution reports are claims, not independent correctness evidence",
+      "unit": "count",
+      "value": null
+    },
+    "interventions": {
+      "admissible_exposure_count": {
+        "basis": "Explicit recorded admissibility flags only; no new adjudication",
+        "missing_reason": null,
+        "unit": "count",
+        "value": 0
+      },
+      "known_admissible_exposure_count": 0,
+      "order_amendment_count": 0,
+      "required_restart": false,
+      "restart_actual_cut_counts": {},
+      "restart_begin_count": 0,
+      "restart_configured_milestone_exercised_count": 0,
+      "restart_deadline_fallback_count": 0,
+      "restart_exposure_records": [],
+      "restart_ready_count": 0,
+      "restart_release_cut_count": 0,
+      "successful_recovery_count": {
+        "basis": "not established by supplied evidence",
+        "missing_reason": "Requires independent disturbance-to-restored-validity-and-useful-progress annotation",
+        "unit": "count",
+        "value": null
+      },
+      "unknown_admissibility_count": 0
+    },
+    "observe_requests": 0,
+    "old_incarnation_rejections": 0,
+    "physical_service_counts": {
+      "cycle_complete": 1,
+      "feedback": 61,
+      "sensor_capture_missed": 3,
+      "setup_waiting_for_fresh_capture": 1,
+      "trajectory_dispatched": 15
+    },
+    "recognition_mechanism": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "No internal reasoning or recognition mechanism is inferred from behavior",
+      "unit": "label",
+      "value": null
+    },
+    "repeated_cycle_admissions_same_part_recipe": 0,
+    "repeated_request_id_count": 0,
+    "stale_order_rejections": 0
+  },
+  "implementation": {
+    "bytes": 41003,
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Runtime\\diagnostics.py",
+    "sha256": "1f853fdf34faa07febe65a7dc9807c7fe21d44e1320faaf08cd2f282971a763a"
+  },
+  "integrity_findings": [],
+  "interpretation": "Measured diagnostics only; no validity upgrade, winner, causal attribution or candidate-visible data",
+  "limitations": [
+    "Source hashes establish byte identity, not scientific validity or truthful sensors",
+    "100 Hz extrema and path lengths may miss native-rate transients",
+    "Trajectory completion does not establish physical task success",
+    "Inference/process overlap does not establish pause cause",
+    "Disturbance admissibility, detection and recovery remain unknown without independent annotations"
+  ],
+  "method": {
+    "boundary_warning": "Interior support and excluded boundary time are reported; full-duration jerk outside support is unknown",
+    "derivatives": "successive finite differences at interval midpoint timestamps",
+    "gap_rule": "No interpolation or differentiation across non-nominal 100 Hz gaps",
+    "id": "robot-motion-diagnostics-1.0",
+    "integral": "trapezoidal squared Cartesian jerk on available interior",
+    "near_zero_path_m": 0.001,
+    "normalized_jerk": "T^5/L^2 * interior integral; T entire completed trajectory, L raw sampled TCP path",
+    "position_filter": "centered five-sample valid moving average; no padding"
+  },
+  "models": {
+    "cache_hit_calls": {
+      "basis": "Calls with measured cached_prompt_tokens >0",
+      "missing_reason": null,
+      "unit": "calls",
+      "value": 0
+    },
+    "cached_prompt_tokens": {
+      "basis": "Measured cached token counters; disabled cache configuration alone is not a measurement",
+      "missing_reason": null,
+      "unit": "tokens",
+      "value": 0
+    },
+    "calls": [
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8114100999664515,
+        "latency_s": 1.8093509000027552,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "a2d01f8242436715533d0d6707d159cfb3351a57837f4fbd98dbbb5e555859b3",
+        "prompt_tokens": 2405,
+        "request_event_id": 11,
+        "stale": false,
+        "terminal_event_id": 31,
+        "terminal_kind": "model_response",
+        "total_tokens": 2421
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.7942049999255687,
+        "latency_s": 1.7935946000507101,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "a4b8027cef5e440eb78a5c0f990f47f2dee18d75cbd3b2c205d7eb6b547b40d3",
+        "prompt_tokens": 2407,
+        "request_event_id": 48,
+        "stale": false,
+        "terminal_event_id": 68,
+        "terminal_kind": "model_response",
+        "total_tokens": 2423
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8200932999607176,
+        "latency_s": 1.8180167000973597,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "0686d2073b35629f814e2f39e99b6b46c20d7e2585580df085e064694743061e",
+        "prompt_tokens": 2398,
+        "request_event_id": 85,
+        "stale": false,
+        "terminal_event_id": 105,
+        "terminal_kind": "model_response",
+        "total_tokens": 2414
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8077942000236362,
+        "latency_s": 1.8073682999238372,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "48b626c91621b35cb3e396a268c7eadced6dad61c7d3acf1a085ff1d8a5ee737",
+        "prompt_tokens": 2407,
+        "request_event_id": 122,
+        "stale": false,
+        "terminal_event_id": 142,
+        "terminal_kind": "model_response",
+        "total_tokens": 2423
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8111973999766633,
+        "latency_s": 1.8092272999929264,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "410c017f6811b5aa25907cca65bc198395b0bc2ef8ebd1163843cec93a7fa75e",
+        "prompt_tokens": 2404,
+        "request_event_id": 159,
+        "stale": false,
+        "terminal_event_id": 179,
+        "terminal_kind": "model_response",
+        "total_tokens": 2420
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8197397000622004,
+        "latency_s": 1.8186799000250176,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "b87a89284a044bf8d1bdfdef0d4c03bd28b47a727280e99d472358dfadc02603",
+        "prompt_tokens": 2397,
+        "request_event_id": 196,
+        "stale": false,
+        "terminal_event_id": 216,
+        "terminal_kind": "model_response",
+        "total_tokens": 2413
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8124591000378132,
+        "latency_s": 1.8114125999854878,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "e6d2d5934cd56111d166fbce7da96e9a68ee0365ea4f4af7b2f19e6154b57e2c",
+        "prompt_tokens": 2392,
+        "request_event_id": 233,
+        "stale": false,
+        "terminal_event_id": 253,
+        "terminal_kind": "model_response",
+        "total_tokens": 2408
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8740097000263631,
+        "latency_s": 1.8730915000196546,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "50f2ae61f8d7a1bf662c6bed3c2e3194aa6b49fa013ae3c7ff98fbc822aae843",
+        "prompt_tokens": 2412,
+        "request_event_id": 270,
+        "stale": false,
+        "terminal_event_id": 291,
+        "terminal_kind": "model_response",
+        "total_tokens": 2428
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8280556000536308,
+        "latency_s": 1.8258691999362782,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "16c73d5c4979ee48e0ba6b3394ab9091a824fd7c40e02de98c979f57e9c45d39",
+        "prompt_tokens": 2418,
+        "request_event_id": 307,
+        "stale": false,
+        "terminal_event_id": 328,
+        "terminal_kind": "model_response",
+        "total_tokens": 2434
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8157854999881238,
+        "latency_s": 1.8153562999796122,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "ab887431557cad2c3a755784a041b81f3db9fed31c5e748f0eefcb40c48d9949",
+        "prompt_tokens": 2413,
+        "request_event_id": 345,
+        "stale": false,
+        "terminal_event_id": 365,
+        "terminal_kind": "model_response",
+        "total_tokens": 2429
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8217200000071898,
+        "latency_s": 1.8203396000899374,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "a4edbe35948578bce428e378f5651215045823fec1c57bb4f3e04c62e305595c",
+        "prompt_tokens": 2416,
+        "request_event_id": 382,
+        "stale": false,
+        "terminal_event_id": 402,
+        "terminal_kind": "model_response",
+        "total_tokens": 2432
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.83317670004908,
+        "latency_s": 1.8320217999862507,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "7e22a4dcbedee3ed19adff41fb80454cc933b3df2fee4691038246e004fe9dc4",
+        "prompt_tokens": 2404,
+        "request_event_id": 419,
+        "stale": false,
+        "terminal_event_id": 440,
+        "terminal_kind": "model_response",
+        "total_tokens": 2420
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.823722600005567,
+        "latency_s": 1.8222624000627548,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "0f8befeca91ad0f051a2ea4b5a7983dcdd7e00ff21de799f05c46b65b109a19d",
+        "prompt_tokens": 2407,
+        "request_event_id": 456,
+        "stale": false,
+        "terminal_event_id": 477,
+        "terminal_kind": "model_response",
+        "total_tokens": 2423
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8215628999751061,
+        "latency_s": 1.8203827999532223,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "145a583e98d28b7be114b437b48776eff2017104d5f23d9499fee4cb81a14071",
+        "prompt_tokens": 2413,
+        "request_event_id": 493,
+        "stale": false,
+        "terminal_event_id": 514,
+        "terminal_kind": "model_response",
+        "total_tokens": 2429
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8437917000846937,
+        "latency_s": 1.84301479998976,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "b890d5729ed6bcabb2f919f26d04d2e8327f371cbd2f0e6ac1e803cf1232eb09",
+        "prompt_tokens": 2411,
+        "request_event_id": 530,
+        "stale": false,
+        "terminal_event_id": 552,
+        "terminal_kind": "model_response",
+        "total_tokens": 2427
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8237946999724954,
+        "latency_s": 1.8228888999437913,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "f8fdb3ac4fa1df4e70a07ac057e5df422b807ae3b9f3883b3f546a0a2f4487e7",
+        "prompt_tokens": 2416,
+        "request_event_id": 568,
+        "stale": false,
+        "terminal_event_id": 589,
+        "terminal_kind": "model_response",
+        "total_tokens": 2432
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8239162999670953,
+        "latency_s": 1.8220526999793947,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "dd431f45330bf9448c4736896a35b21caf222dee1e1f33d90892d36f6e150331",
+        "prompt_tokens": 2401,
+        "request_event_id": 605,
+        "stale": false,
+        "terminal_event_id": 626,
+        "terminal_kind": "model_response",
+        "total_tokens": 2417
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8080409000394866,
+        "latency_s": 1.8063952000811696,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "ddd083880c779b6aa5e500b433a9d730429225438310b879d4885ce71dae45c7",
+        "prompt_tokens": 2419,
+        "request_event_id": 642,
+        "stale": false,
+        "terminal_event_id": 663,
+        "terminal_kind": "model_response",
+        "total_tokens": 2435
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.828219800023362,
+        "latency_s": 1.8268406999995932,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "ce683883eef237a4b325d1c2d86a11e42b1976db5f68d41964936dee58acba8e",
+        "prompt_tokens": 2405,
+        "request_event_id": 679,
+        "stale": false,
+        "terminal_event_id": 700,
+        "terminal_kind": "model_response",
+        "total_tokens": 2421
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8516947999596596,
+        "latency_s": 1.8492701000068337,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "e1607f1e060172a0e416a93365c9a4386648339b0c12c06a17382dec0ccb60d0",
+        "prompt_tokens": 2416,
+        "request_event_id": 716,
+        "stale": false,
+        "terminal_event_id": 737,
+        "terminal_kind": "model_response",
+        "total_tokens": 2432
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.831344399950467,
+        "latency_s": 1.829206999973394,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "e45155f5f38f3999e07e49a697950a89e19a4509e4e121af071a49ed3aa8d062",
+        "prompt_tokens": 2416,
+        "request_event_id": 753,
+        "stale": false,
+        "terminal_event_id": 774,
+        "terminal_kind": "model_response",
+        "total_tokens": 2432
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8255246999906376,
+        "latency_s": 1.8231370999710634,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "b58bd7d630fff24faaf4442ad8de32ab42e8f538e094eaec30515b5e03c1acf7",
+        "prompt_tokens": 2402,
+        "request_event_id": 790,
+        "stale": false,
+        "terminal_event_id": 812,
+        "terminal_kind": "model_response",
+        "total_tokens": 2418
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8179871999891475,
+        "latency_s": 1.8169658000115305,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "870e773c6d9a3cb81355081f420b3635bc630ddc98d248e9166615057e1500e9",
+        "prompt_tokens": 2387,
+        "request_event_id": 827,
+        "stale": false,
+        "terminal_event_id": 849,
+        "terminal_kind": "model_response",
+        "total_tokens": 2403
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.824073399999179,
+        "latency_s": 1.8217884000623599,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "89f4281824e1138d25ea5b631bcf9cda9701b2195baae706d93f653a38c525a9",
+        "prompt_tokens": 2407,
+        "request_event_id": 865,
+        "stale": false,
+        "terminal_event_id": 886,
+        "terminal_kind": "model_response",
+        "total_tokens": 2423
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.839754500077106,
+        "latency_s": 1.8377397999865934,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "cfced5bbb374803564f70d2a4dcc676d237683382c241cbea6df146c00244400",
+        "prompt_tokens": 2430,
+        "request_event_id": 902,
+        "stale": false,
+        "terminal_event_id": 923,
+        "terminal_kind": "model_response",
+        "total_tokens": 2446
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8132245000451803,
+        "latency_s": 1.8112499000271782,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "c7c3969a82b895cd62f7388f7ddebe4f6352bfcbf24d4452319ec9cfd050cc0e",
+        "prompt_tokens": 2412,
+        "request_event_id": 939,
+        "stale": false,
+        "terminal_event_id": 960,
+        "terminal_kind": "model_response",
+        "total_tokens": 2428
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8136456001084298,
+        "latency_s": 1.8130610999651253,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "2fdbf2491a981ab082b97dff10da023fb658c871454f8c87f38648fb993f4930",
+        "prompt_tokens": 2399,
+        "request_event_id": 976,
+        "stale": false,
+        "terminal_event_id": 997,
+        "terminal_kind": "model_response",
+        "total_tokens": 2415
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8156405000481755,
+        "latency_s": 1.8150662999833003,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "bade732c99a3580603535c4bfe7eeb7315ebe69d1bf6d1c73afdc0a882b58af2",
+        "prompt_tokens": 2395,
+        "request_event_id": 1013,
+        "stale": false,
+        "terminal_event_id": 1034,
+        "terminal_kind": "model_response",
+        "total_tokens": 2411
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.815095099969767,
+        "latency_s": 1.812982799950987,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "0f498850a1440f86e581977e8623b23514a9b5298f59a9e77f972068931f3528",
+        "prompt_tokens": 2410,
+        "request_event_id": 1050,
+        "stale": false,
+        "terminal_event_id": 1071,
+        "terminal_kind": "model_response",
+        "total_tokens": 2426
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8333613000577316,
+        "latency_s": 1.8310303000034764,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "e0af331f35c074d660d8565211c6d81409dc3beead817d4daea209e3686a0a27",
+        "prompt_tokens": 2417,
+        "request_event_id": 1087,
+        "stale": false,
+        "terminal_event_id": 1108,
+        "terminal_kind": "model_response",
+        "total_tokens": 2433
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8047555999364704,
+        "latency_s": 1.8040078999474645,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "d4e73a2d0be68f038f70ca62a2253ab4e0a8508ad11d25b0b12b5dba5f1a6c91",
+        "prompt_tokens": 2410,
+        "request_event_id": 1124,
+        "stale": false,
+        "terminal_event_id": 1145,
+        "terminal_kind": "model_response",
+        "total_tokens": 2426
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8114025000249967,
+        "latency_s": 1.8107099999906495,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "d3e3a33481513dc98514ef3c797a15c0c3bccaad6f16aa481acdeec53242fe5a",
+        "prompt_tokens": 2411,
+        "request_event_id": 1161,
+        "stale": false,
+        "terminal_event_id": 1182,
+        "terminal_kind": "model_response",
+        "total_tokens": 2427
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.9098669999511912,
+        "latency_s": 1.9081932000117376,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "cf0f3da2042d0cdd6269ef0b6287e4ec9da8111cad90bc374debe358607579e2",
+        "prompt_tokens": 2415,
+        "request_event_id": 1198,
+        "stale": false,
+        "terminal_event_id": 1220,
+        "terminal_kind": "model_response",
+        "total_tokens": 2431
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8298154999502003,
+        "latency_s": 1.829193799989298,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "64e7d20a1eff65f60d4d956854ddc6b866a4dbdade0b4e9a1e8dc39c801496f6",
+        "prompt_tokens": 2410,
+        "request_event_id": 1236,
+        "stale": false,
+        "terminal_event_id": 1257,
+        "terminal_kind": "model_response",
+        "total_tokens": 2426
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.83347589999903,
+        "latency_s": 1.8325679000699893,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "8a577a0d993be355632bf69a3b6c811e512d36fa43897c4d024650fc6ad8ec1c",
+        "prompt_tokens": 2408,
+        "request_event_id": 1273,
+        "stale": false,
+        "terminal_event_id": 1295,
+        "terminal_kind": "model_response",
+        "total_tokens": 2424
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8400432000635192,
+        "latency_s": 1.8389465999789536,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "83ca04cff8a15dd83fd3b700503801ac87ae53bf7b75e6cb2ef0a19335fe5589",
+        "prompt_tokens": 2403,
+        "request_event_id": 1310,
+        "stale": false,
+        "terminal_event_id": 1332,
+        "terminal_kind": "model_response",
+        "total_tokens": 2419
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8234381000511348,
+        "latency_s": 1.8228598999558017,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "ca18b856156ffa42a924c321bfeb2d32c35d2bb382e4847db96e880ae43ad73a",
+        "prompt_tokens": 2402,
+        "request_event_id": 1348,
+        "stale": false,
+        "terminal_event_id": 1369,
+        "terminal_kind": "model_response",
+        "total_tokens": 2418
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.823595399968326,
+        "latency_s": 1.8222391000017524,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "2a22b784e11d052124497a96b41bad170b85dc579096dc91ac9fca44e81952c7",
+        "prompt_tokens": 2410,
+        "request_event_id": 1385,
+        "stale": false,
+        "terminal_event_id": 1406,
+        "terminal_kind": "model_response",
+        "total_tokens": 2426
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8313939999789,
+        "latency_s": 1.8307474000612274,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "49511c1db85b11848ce46327f4fa00902c4372bdb6ab6cc1f2a7c31f857f39b8",
+        "prompt_tokens": 2401,
+        "request_event_id": 1422,
+        "stale": false,
+        "terminal_event_id": 1443,
+        "terminal_kind": "model_response",
+        "total_tokens": 2417
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8365358000155538,
+        "latency_s": 1.8355322000570595,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "0dc1b5ef62e5a4c22b83af83c57720434126a5018708d753739e953a799b33f4",
+        "prompt_tokens": 2405,
+        "request_event_id": 1459,
+        "stale": false,
+        "terminal_event_id": 1481,
+        "terminal_kind": "model_response",
+        "total_tokens": 2421
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8039170999545604,
+        "latency_s": 1.8033851999789476,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "6f6e6721ece7868c7ee745f846adb59abe2ce7e4aefa68c0f9f067949f83fabe",
+        "prompt_tokens": 2404,
+        "request_event_id": 1497,
+        "stale": false,
+        "terminal_event_id": 1518,
+        "terminal_kind": "model_response",
+        "total_tokens": 2420
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8163685000035912,
+        "latency_s": 1.8159531001001596,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "635761dc77dd361c6698bfadc7e0bca2af0804b0ef2aedc19550abf2b5de5e76",
+        "prompt_tokens": 2404,
+        "request_event_id": 1533,
+        "stale": false,
+        "terminal_event_id": 1555,
+        "terminal_kind": "model_response",
+        "total_tokens": 2420
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.791090099955909,
+        "latency_s": 1.7899347000056878,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "016d5daaeb77c10cc6e735953c29ed32b6b5cac3c9098e7a5841fe718f0e57e3",
+        "prompt_tokens": 2399,
+        "request_event_id": 1571,
+        "stale": false,
+        "terminal_event_id": 1591,
+        "terminal_kind": "model_response",
+        "total_tokens": 2415
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8373957999283448,
+        "latency_s": 1.8351313999155536,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "e0ea0b709d92343def16a46b94083d5126599c270e71b6a142ae96cca510612f",
+        "prompt_tokens": 2414,
+        "request_event_id": 1607,
+        "stale": false,
+        "terminal_event_id": 1629,
+        "terminal_kind": "model_response",
+        "total_tokens": 2430
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8218894000165164,
+        "latency_s": 1.8201782000251114,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "024b1ae2588ae3ba5abc6af0f10645cf0838b755da04f34ee50e7714a7d6f84e",
+        "prompt_tokens": 2412,
+        "request_event_id": 1645,
+        "stale": false,
+        "terminal_event_id": 1666,
+        "terminal_kind": "model_response",
+        "total_tokens": 2428
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8299164000200108,
+        "latency_s": 1.8284355999203399,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "e04143b3fabbbd24105ee5ae9a524cf2703653eba0a415c25b8179c31cf43e65",
+        "prompt_tokens": 2406,
+        "request_event_id": 1682,
+        "stale": false,
+        "terminal_event_id": 1703,
+        "terminal_kind": "model_response",
+        "total_tokens": 2422
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 16,
+        "gateway_elapsed_wall_s": 1.8037152000470087,
+        "latency_s": 1.8021234000334516,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "6ebfce0cd6c51422503a060613dab53ad17062e3bcef09e50309ebbcd45d20fd",
+        "prompt_tokens": 2272,
+        "request_event_id": 1981,
+        "stale": false,
+        "terminal_event_id": 2003,
+        "terminal_kind": "model_response",
+        "total_tokens": 2288
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 1.953178200055845,
+        "latency_s": 1.9524646999780089,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "2f7cca057bcd4929dac03744f373aa439b4b8bd5d0596c4b46eb81aa0b12dea2",
+        "prompt_tokens": 2272,
+        "request_event_id": 2018,
+        "stale": false,
+        "terminal_event_id": 2041,
+        "terminal_kind": "model_response",
+        "total_tokens": 2296
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 2.0355607999954373,
+        "latency_s": 2.0335672999499366,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "5dc537af4cd4ef9f89b47f947b5022e455b9abb261002ef99b3fb68b425c8689",
+        "prompt_tokens": 2177,
+        "request_event_id": 2156,
+        "stale": false,
+        "terminal_event_id": 2180,
+        "terminal_kind": "model_response",
+        "total_tokens": 2201
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 2.2280638000229374,
+        "latency_s": 2.2270048999926075,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "95e074265b6884caceb2a90ab7d0e7842c741b9fdc442ec83a7c6e98600e8556",
+        "prompt_tokens": 2245,
+        "request_event_id": 2467,
+        "stale": false,
+        "terminal_event_id": 2492,
+        "terminal_kind": "model_response",
+        "total_tokens": 2269
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 18,
+        "gateway_elapsed_wall_s": 1.9338719000807032,
+        "latency_s": 1.9329979000613093,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "5cc0fdf1d32aeed4ad435b7cc153e038e2ecab9ab453712e3d005e95615500a0",
+        "prompt_tokens": 2352,
+        "request_event_id": 2614,
+        "stale": false,
+        "terminal_event_id": 2637,
+        "terminal_kind": "model_response",
+        "total_tokens": 2370
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 26,
+        "gateway_elapsed_wall_s": 2.0949197000591084,
+        "latency_s": 2.092885300051421,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "c617c1b4b965b9b12afb389b13234aa4ab8c1e4b4645c52215543ffba2e22968",
+        "prompt_tokens": 2443,
+        "request_event_id": 2673,
+        "stale": false,
+        "terminal_event_id": 2697,
+        "terminal_kind": "model_response",
+        "total_tokens": 2469
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 2.2692321999929845,
+        "latency_s": 2.267087500076741,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "13d11933d7fd8f5631411664c0c19251b28474f9494ce866b4634efa09aa5632",
+        "prompt_tokens": 2465,
+        "request_event_id": 2833,
+        "stale": false,
+        "terminal_event_id": 2859,
+        "terminal_kind": "model_response",
+        "total_tokens": 2489
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 26,
+        "gateway_elapsed_wall_s": 2.2797089000232518,
+        "latency_s": 2.2778139000292867,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "0640a7bf5ef113b9665241498969151d98ae58a72ea2a354d023ffb70da0f731",
+        "prompt_tokens": 2443,
+        "request_event_id": 3003,
+        "stale": false,
+        "terminal_event_id": 3029,
+        "terminal_kind": "model_response",
+        "total_tokens": 2469
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 2.2295322000281885,
+        "latency_s": 2.22716019989457,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "087b09dbcd03374281ed4723f77e60a2ed0efacec54df98590313864d2b491c0",
+        "prompt_tokens": 2457,
+        "request_event_id": 3167,
+        "stale": false,
+        "terminal_event_id": 3192,
+        "terminal_kind": "model_response",
+        "total_tokens": 2481
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 26,
+        "gateway_elapsed_wall_s": 2.2537569999694824,
+        "latency_s": 2.2526361000491306,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "bdd1f707a52fcee7a328e37a6650568deece699a27369127d7efee04fc51e236",
+        "prompt_tokens": 2447,
+        "request_event_id": 3336,
+        "stale": false,
+        "terminal_event_id": 3362,
+        "terminal_kind": "model_response",
+        "total_tokens": 2473
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 2.2602086000842974,
+        "latency_s": 2.258170299930498,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "99326f9861912cfbd8167b78c9eaf7e4800ece1cfba5f881073d153d19dccb2d",
+        "prompt_tokens": 2458,
+        "request_event_id": 3500,
+        "stale": false,
+        "terminal_event_id": 3526,
+        "terminal_kind": "model_response",
+        "total_tokens": 2482
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 26,
+        "gateway_elapsed_wall_s": 2.239633799996227,
+        "latency_s": 2.2387533999281004,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "45bf9427bfc51038580c106bd659e85a93905d28430e44d95d92a67f462defb6",
+        "prompt_tokens": 2442,
+        "request_event_id": 3671,
+        "stale": false,
+        "terminal_event_id": 3696,
+        "terminal_kind": "model_response",
+        "total_tokens": 2468
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 2.1977849999675527,
+        "latency_s": 2.1963402000255883,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "78a3764c5d429a5788c32de5e098752d14e747e2cd7eb03275123ee701e2739d",
+        "prompt_tokens": 2461,
+        "request_event_id": 3834,
+        "stale": false,
+        "terminal_event_id": 3859,
+        "terminal_kind": "model_response",
+        "total_tokens": 2485
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 26,
+        "gateway_elapsed_wall_s": 2.2494770999765024,
+        "latency_s": 2.2476142999948934,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "90a0cad83a48e68c0f000cae08bfa14e52d9e4138a7137e1ecf39b6a3b9db606",
+        "prompt_tokens": 2440,
+        "request_event_id": 4003,
+        "stale": false,
+        "terminal_event_id": 4029,
+        "terminal_kind": "model_response",
+        "total_tokens": 2466
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 24,
+        "gateway_elapsed_wall_s": 2.225578000070527,
+        "latency_s": 2.2243711000774056,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "0b94d0b22f6e0dfbd3c364c137e5ab2544abf2154c26b552340e00dc45954de2",
+        "prompt_tokens": 2456,
+        "request_event_id": 4167,
+        "stale": false,
+        "terminal_event_id": 4193,
+        "terminal_kind": "model_response",
+        "total_tokens": 2480
+      },
+      {
+        "after_episode_end": false,
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 26,
+        "gateway_elapsed_wall_s": 2.2819996000034735,
+        "latency_s": 2.2812637999886647,
+        "missing_reason": null,
+        "prompt_cache_configured": false,
+        "prompt_sha256": "7cee0c80b7797ac08478174e07137194f77549e753c84d251ae2acd611f0d7b5",
+        "prompt_tokens": 2436,
+        "request_event_id": 4336,
+        "stale": false,
+        "terminal_event_id": 4363,
+        "terminal_kind": "model_response",
+        "total_tokens": 2462
+      }
+    ],
+    "calls_with_unknown_tokens": 0,
+    "known_total_tokens": 150134,
+    "latency_summary_s": {
+      "maximum": 2.2812637999886647,
+      "mean": 1.9096763758082693,
+      "median": 1.8263549499679357,
+      "missing_calls": 0,
+      "observed_calls": 62,
+      "p95": 2.2578935899364296,
+      "scope": "Measured per-call latency only; missing/failed-call latencies excluded and counted"
+    },
+    "observed_request_count": 62,
+    "total_tokens": {
+      "basis": "Sum of uniquely linked terminal usage counters",
+      "missing_reason": null,
+      "unit": "tokens",
+      "value": 150134
+    },
+    "unlinked_terminal_event_ids": []
+  },
+  "motion": {
+    "effort_saturation": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Actuator limits and native-rate threshold crossing evidence are not supplied",
+      "unit": "count",
+      "value": null
+    },
+    "filtered_joint_acceleration_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "rad/s^2 per joint",
+      "value": [
+        2.0522586086879473,
+        7.646314125454455,
+        2.4931032343203676,
+        2.628974762137063,
+        2.768494646471862,
+        7.330470822140179,
+        2.5369880169416916
+      ]
+    },
+    "filtered_joint_speed_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "rad/s per joint",
+      "value": [
+        1.0128042986561125,
+        1.0318206717152425,
+        1.0234680818074864,
+        1.0166808026430412,
+        1.032965580134974,
+        1.0136534008867497,
+        1.0226086346370806
+      ]
+    },
+    "filtered_tcp_acceleration_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "m/s^2",
+      "value": 3.9706092646156814
+    },
+    "filtered_tcp_speed_peak": {
+      "basis": "Five-sample position filter then finite differences; sampled peak",
+      "missing_reason": null,
+      "unit": "m/s",
+      "value": 0.6587967505873129
+    },
+    "first_sim_time_s": 0.5020000000000003,
+    "joint_adjacent_pairs": 29999,
+    "joint_tracking_peak_abs": {
+      "basis": "Recorded target minus q at 100 Hz",
+      "missing_reason": null,
+      "unit": "rad per joint",
+      "value": [
+        0.09963300355737331,
+        0.10775078957679268,
+        0.09939893867710103,
+        0.1055012984821313,
+        0.10187508199668024,
+        0.1009441551004211,
+        0.1007903131442563
+      ]
+    },
+    "joint_tracking_rms": {
+      "basis": "Recorded target minus q; target meaning follows frozen controller",
+      "missing_reason": null,
+      "unit": "rad per joint",
+      "value": [
+        0.011096060367504603,
+        0.032449365197990764,
+        0.019236075614472044,
+        0.021003055782570872,
+        0.02701360378424136,
+        0.027953919775132948,
+        0.025438553553590062
+      ]
+    },
+    "joint_travel_rad": {
+      "basis": "Sum of absolute raw q differences within regular sampled blocks; lower bound",
+      "missing_reason": null,
+      "unit": "rad per joint",
+      "value": [
+        14.552259296565737,
+        52.816038657564775,
+        29.448771322514876,
+        25.059816288122754,
+        38.761607341673646,
+        45.159621300636225,
+        39.48405259604389
+      ]
+    },
+    "joint_travel_total_rad": {
+      "basis": "Sum across seven joint-travel values",
+      "missing_reason": null,
+      "unit": "rad",
+      "value": 245.2821668031219
+    },
+    "last_sim_time_s": 300.4920000007067,
+    "maximum_sample_gap_s": 0.010000000000047748,
+    "nominal_sample_period_s": 0.01,
+    "non_nominal_sample_intervals": 0,
+    "path_adjacent_pairs": 29999,
+    "pause_analyzable_time_s": 299.94000000070656,
+    "regular_block_count": 1,
+    "sample_count": 30000,
+    "sample_period_tolerance_s": 1e-05,
+    "sampled_effort_peak": {
+      "basis": "Absolute maximum among recorded 100 Hz values; may miss between-sample peaks",
+      "missing_reason": null,
+      "missing_samples": 0,
+      "observed_samples": 30000,
+      "unit": "N*m per joint",
+      "value": [
+        5.351951241515565,
+        87.0,
+        13.556913280568551,
+        30.32664680619837,
+        2.219927331464021,
+        12.0,
+        1.8252647302029459
+      ]
+    },
+    "starts_stops_reversals": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Calibrated hysteresis/dwell thresholds and matched-motion interpretation are not frozen in this method",
+      "unit": "count",
+      "value": null
+    },
+    "tcp_path_m": {
+      "basis": "Sum of raw TCP distances within regular sampled blocks; lower bound",
+      "missing_reason": null,
+      "unit": "m",
+      "value": 25.66147372928627
+    },
+    "telemetry_joint_speed_peak": {
+      "basis": "Absolute maximum among recorded 100 Hz values; may miss between-sample peaks",
+      "missing_reason": null,
+      "missing_samples": 0,
+      "observed_samples": 30000,
+      "unit": "rad/s per joint",
+      "value": [
+        1.0134364235375513,
+        1.0323542814883677,
+        1.024081027240743,
+        1.0174220700949108,
+        1.0333236585632894,
+        1.0144142082031231,
+        1.0232423243982829
+      ]
+    }
+  },
+  "pauses": {
+    "analyzed_support_s": 299.94000000070656,
+    "coverage": "Valid filtered joint/TCP support only; gaps and boundary samples excluded",
+    "eligible_pause_time": {
+      "basis": "Low motion while work eligibility is explicitly annotated",
+      "missing_reason": "Eligibility is unknown for one or more low-motion intervals",
+      "unit": "s simulation",
+      "value": null
+    },
+    "intervals": [
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 92.63999999996427,
+        "end_sim_s": 93.16699999996428,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 83.96399999996783,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 0.5270000000000004,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.39999999999906777,
+        "end_sim_s": 101.3069999999453,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 100.90699999994624,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.30999999999929173,
+        "end_sim_s": 109.66699999992582,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 109.35699999992653,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 3.7499999999912745,
+        "end_sim_s": 120.86699999989972,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 3.400999999992081,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 117.11699999990844,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 12.960000000061882,
+        "end_sim_s": 143.1669999999555,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 8.806000000042047,
+        "model_wait_overlap_s": 3.909000000018665,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 130.2069999998936,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.2700000000012892,
+        "end_sim_s": 146.63699999997206,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 146.36699999997077,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.30000000000143245,
+        "end_sim_s": 150.29699999998954,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 149.9969999999881,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 5.860000000027981,
+        "end_sim_s": 158.97700000003098,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 3.655000000017452,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 153.117000000003,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.26000000000124146,
+        "end_sim_s": 167.18700000007019,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 166.92700000006894,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.1300000000101704,
+        "end_sim_s": 172.24700000009435,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.9690000000094017,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 170.11700000008418,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.4300000000020532,
+        "end_sim_s": 180.80700000013522,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 180.37700000013317,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.100000000010027,
+        "end_sim_s": 186.2670000001613,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.9330000000092298,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 184.16700000015126,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.26000000000124146,
+        "end_sim_s": 194.6470000002013,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 194.38700000020006,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.0800000000099317,
+        "end_sim_s": 199.65700000022522,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.923000000009182,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 197.5770000002153,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.4300000000020532,
+        "end_sim_s": 208.22700000026614,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 207.7970000002641,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.060000000009836,
+        "end_sim_s": 213.65700000029207,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.8990000000090674,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 211.59700000028224,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.26000000000124146,
+        "end_sim_s": 222.03700000033209,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 221.77700000033084,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.140000000010218,
+        "end_sim_s": 227.1070000003563,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.9570000000093444,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 224.96700000034608,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.42000000000200544,
+        "end_sim_s": 235.65700000039712,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 235.2370000003951,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.0500000000097884,
+        "end_sim_s": 241.077000000423,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.8890000000090197,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 239.0270000004132,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.26000000000124146,
+        "end_sim_s": 249.457000000463,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 249.19700000046177,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.060000000009836,
+        "end_sim_s": 254.44700000048684,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.8930000000090388,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 252.387000000477,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.43000000000211,
+        "end_sim_s": 263.0370000005279,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 262.6070000005258,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.0700000000099408,
+        "end_sim_s": 268.47700000055386,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.903000000009115,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 266.4070000005439,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.26000000000124146,
+        "end_sim_s": 276.85700000059387,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 276.59700000059263,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.0800000000099317,
+        "end_sim_s": 281.86700000061774,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.921000000009201,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 279.7870000006078,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 0.42000000000200544,
+        "end_sim_s": 290.4170000006586,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 0.0,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 289.9970000006566,
+        "work_eligible": null
+      },
+      {
+        "causal_labels": [
+          "unknown"
+        ],
+        "duration_s": 2.0900000000100363,
+        "end_sim_s": 295.8770000006847,
+        "label_event_ids": [],
+        "machine_busy_overlap_s": 0.0,
+        "model_wait_overlap_s": 1.9310000000092487,
+        "overlap_interpretation": "Concurrent activity only; neither overlap proves required idleness or its cause",
+        "start_sim_s": 293.78700000067465,
+        "work_eligible": null
+      }
+    ],
+    "observed_low_motion_time_s": 140.78000000016266,
+    "thresholds": {
+      "duration_strictly_greater_s": 0.25,
+      "max_joint_speed_rad_s": 0.01,
+      "tcp_speed_m_s": 0.001
+    }
+  },
+  "process": {
+    "accepted_cycle_count": 1,
+    "intervals": [
+      {
+        "cycle_id": 1,
+        "end_event_id": 2463,
+        "end_sim_s": 140.7179999999438,
+        "right_censored": false,
+        "start_event_id": 2188,
+        "start_sim_s": 131.91199999990175,
+        "terminal_type": "cycle_complete"
+      }
+    ],
+    "known_busy_time_s": 8.806000000042047,
+    "observed_busy_time": {
+      "basis": "Union of accepted cycle intervals through cycle_complete/fault or episode end; unfinished cycles right-censored",
+      "missing_reason": null,
+      "unit": "s simulation",
+      "value": 8.806000000042047
+    },
+    "overlapping_cycle_interval_pairs": 0,
+    "productive_utilization": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Eligible available machine time and correct-process contribution are not established",
+      "unit": "fraction",
+      "value": null
+    },
+    "unmatched_terminal_cycle_events": 0
+  },
+  "recorded_contact": {
+    "contact_impulse_Ns": 2236.946254486829,
+    "contact_peak_N": 32.05478751328067,
+    "scope": "Original result values only; not classified as unintended collision"
+  },
+  "recorded_outcome": {
+    "completion_after_help": false,
+    "completion_time_s": null,
+    "execution_status": "completed",
+    "independent_outcome": {
+      "accepted": {
+        "tray1": [],
+        "tray2": []
+      },
+      "accepted_count": 0,
+      "calibration_assumptions": {
+        "angular_speed_rad_s": 0.1,
+        "arm_speed_rad_s": 0.02,
+        "finger_speed_m_s": 0.01,
+        "linear_speed_m_s": 0.05,
+        "maximum_snapshot_gap_s": 0.2,
+        "rim_interpretation": "declared virtual scoring plane; current flat tray markers are not physical walls",
+        "scoring_floor_z_m": -0.003,
+        "scoring_rim_z_m": 0.08
+      },
+      "immediate_ready": false,
+      "order_version": 1,
+      "parking_occupancy": {
+        "parking1": [],
+        "parking2": []
+      },
+      "partial": {
+        "accepted_count": 0,
+        "extra_delivery_ids": [],
+        "processed_uninspected_ids": [],
+        "quarantined_ids": [],
+        "rework_required_ids": [],
+        "unmet_quantities": [
+          {
+            "accepted_settled": 0,
+            "family": "A",
+            "recipe": "A",
+            "required": 2,
+            "requirement_id": "R1",
+            "tray": "tray1",
+            "unmet": 2
+          },
+          {
+            "accepted_settled": 0,
+            "family": "B",
+            "recipe": "B",
+            "required": 1,
+            "requirement_id": "R2",
+            "tray": "tray2",
+            "unmet": 1
+          }
+        ]
+      },
+      "qualified_before_dwell": {
+        "tray1": [],
+        "tray2": []
+      },
+      "reasons": [
+        "object_moving: movable object exceeds settled velocity limits",
+        "gripper_contact: object retains exact contact with a gripper body",
+        "object_not_resting: object collision bounds exceed declared resting height",
+        "multiple_installed_inserts: more than one insert occupies the fixture",
+        "quantity_or_qualification_mismatch: current requirement lacks enough distinct physically qualified parts: R1",
+        "quantity_or_qualification_mismatch: current requirement lacks enough distinct physically qualified parts: R2",
+        "outstanding_work: active, queued or delayed execution remains outstanding",
+        "arm_not_settled: arm joint velocity exceeds terminal threshold"
+      ],
+      "requirements": [
+        {
+          "qualified_ids": [],
+          "requirement_id": "R1",
+          "settled_ids": []
+        },
+        {
+          "qualified_ids": [],
+          "requirement_id": "R2",
+          "settled_ids": []
+        }
+      ],
+      "schema_version": "robot-independent-outcome-1.0",
+      "settling": {
+        "coverage": "protected snapshots; physics-monitor invalidation hook covers detected inter-snapshot transients",
+        "last_external_invalidation": null,
+        "observed_s": 0.0,
+        "required_s": 0.5,
+        "sample_gap_reset": false,
+        "stable_since": null
+      },
+      "sim_time": 300.50000000070673,
+      "success": false,
+      "violations": [
+        {
+          "code": "object_moving",
+          "detail": "movable object exceeds settled velocity limits",
+          "object_ids": [
+            "B2"
+          ]
+        },
+        {
+          "code": "gripper_contact",
+          "detail": "object retains exact contact with a gripper body",
+          "object_ids": [
+            "B2"
+          ]
+        },
+        {
+          "code": "object_not_resting",
+          "detail": "object collision bounds exceed declared resting height",
+          "object_ids": [
+            "B2"
+          ]
+        },
+        {
+          "code": "multiple_installed_inserts",
+          "detail": "more than one insert occupies the fixture",
+          "object_ids": [
+            "insert_A",
+            "insert_B"
+          ]
+        },
+        {
+          "code": "quantity_or_qualification_mismatch",
+          "detail": "current requirement lacks enough distinct physically qualified parts: R1",
+          "object_ids": []
+        },
+        {
+          "code": "quantity_or_qualification_mismatch",
+          "detail": "current requirement lacks enough distinct physically qualified parts: R2",
+          "object_ids": []
+        },
+        {
+          "code": "outstanding_work",
+          "detail": "active, queued or delayed execution remains outstanding",
+          "object_ids": []
+        },
+        {
+          "code": "arm_not_settled",
+          "detail": "arm joint velocity exceeds terminal threshold",
+          "object_ids": []
+        }
+      ]
+    },
+    "outcome": "failure",
+    "sim_duration_s": 300.00000000070673,
+    "termination_reason": "time_cap",
+    "unassisted_completion": false,
+    "validity": "unknown",
+    "validity_reason": "Development workcell has not passed all scored-readiness gates",
+    "wall_duration_s": 300.00012460001744
+  },
+  "recorded_resources": {
+    "bytes": 147648,
+    "closed_at": "2026-09-23T04:10:32.171608+00:00",
+    "coverage": "run_episode startup through cell/candidate cleanup; model-server startup and normal shutdown excluded",
+    "coverage_wall_s": 302.5256603999296,
+    "energy_joules": null,
+    "energy_missing_reason": "Unmeasured",
+    "episode_end_offset_s": 302.4199614999816,
+    "episode_start_offset_s": 2.419836899964139,
+    "failure": null,
+    "limitations": [
+      "GPU metrics cover all applications",
+      "Windows RSS does not include candidate Linux process",
+      "Five-second sampling may miss transient peaks"
+    ],
+    "path": "resources.jsonl",
+    "peaks_are_lower_bounds": true,
+    "period_s": 5.0,
+    "resource_caps_enforced": false,
+    "sample_count": 61,
+    "sampled_peaks": {
+      "harness_sampled_peak_rss_bytes": 394698752,
+      "model_sampled_peak_rss_bytes": 9067155456
+    },
+    "sampler_stopped": true,
+    "sha256": "bde75834db46fb96169c5b835a5eba12febda370a42b5b08f74bb688ded355ba",
+    "started_at": "2026-09-23T04:05:29.637212+00:00"
+  },
+  "responsiveness": {
+    "action_observation_ages": [
+      {
+        "acquisition_to_admission_sim_s": 0.13399999999998524,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.13399999999998524,
+        "action_event_id": 36,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 37,
+        "declared_observation_sequence": 19,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 34,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "73cd2085-b4ba-451e-9653-2b8d69291b25",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11599999999998722,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11599999999998722,
+        "action_event_id": 73,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 74,
+        "declared_observation_sequence": 39,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 71,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "be402eff-846b-43c9-bc46-9665c51a645f",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12599999999998612,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12599999999998612,
+        "action_event_id": 110,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 111,
+        "declared_observation_sequence": 59,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 108,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "8738bc0b-37fb-4c48-be56-9d92e4df6231",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12200000000004074,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12200000000004074,
+        "action_event_id": 147,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 148,
+        "declared_observation_sequence": 79,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 145,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "6a021b6b-8ba3-4037-a3d5-a48f27f3832f",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12000000000004007,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12000000000004007,
+        "action_event_id": 184,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 185,
+        "declared_observation_sequence": 99,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 182,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "46c0ebd0-449b-40f5-9fc5-779e25875b63",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12600000000004208,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12600000000004208,
+        "action_event_id": 221,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 222,
+        "declared_observation_sequence": 119,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 219,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "7eae72ec-259d-4854-bff3-b409aa96f349",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12600000000004208,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.12600000000004208,
+        "action_event_id": 258,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 259,
+        "declared_observation_sequence": 139,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 256,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "5b1f73d3-1acd-4afc-b033-1a7d2c65e664",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.08599999999995234,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.08599999999995234,
+        "action_event_id": 296,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 297,
+        "declared_observation_sequence": 160,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 294,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "161ab10d-b767-44df-a2d4-6892e76aba75",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10399999999994236,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10399999999994236,
+        "action_event_id": 334,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 335,
+        "declared_observation_sequence": 180,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 331,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "53762d3c-ae72-4f90-99fc-7fc0e0a9c857",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10799999999994014,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10799999999994014,
+        "action_event_id": 371,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 372,
+        "declared_observation_sequence": 200,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 368,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "92734df9-7239-453d-8e81-fad54441fa87",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1179999999999346,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1179999999999346,
+        "action_event_id": 408,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 409,
+        "declared_observation_sequence": 220,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 405,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "aebf6389-632e-407f-a851-880d3ed9de43",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1399999999999224,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1399999999999224,
+        "action_event_id": 445,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 446,
+        "declared_observation_sequence": 240,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 443,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "33c3cfb0-5566-4879-a886-0613d24d1172",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.15199999999991576,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.15199999999991576,
+        "action_event_id": 482,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 483,
+        "declared_observation_sequence": 260,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 480,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "8e11262f-daf7-4994-8177-2831e159c69c",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16199999999991022,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.16199999999991022,
+        "action_event_id": 520,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 521,
+        "declared_observation_sequence": 280,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 517,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "98293482-f36d-4006-b451-b7beb7d2d5da",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.0939999999999479,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.0939999999999479,
+        "action_event_id": 557,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 558,
+        "declared_observation_sequence": 301,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 555,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "c83ba577-9d91-4265-8082-8b476719fb2c",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10600000000012955,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10600000000012955,
+        "action_event_id": 594,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 595,
+        "declared_observation_sequence": 321,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 592,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "b8dece88-1f36-42f2-adbd-34d06b4c205f",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11600000000014177,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11600000000014177,
+        "action_event_id": 631,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 632,
+        "declared_observation_sequence": 341,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 629,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "032a390b-f61b-414b-9e26-144ab6940259",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11000000000013443,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11000000000013443,
+        "action_event_id": 668,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 669,
+        "declared_observation_sequence": 361,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 666,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "c3117e5e-ee02-4315-9292-8818754e5f95",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.126000000000154,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.126000000000154,
+        "action_event_id": 705,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 706,
+        "declared_observation_sequence": 381,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 703,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "d6d52a6f-6046-4879-ab26-87297c0ebf2a",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16400000000020043,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.16400000000020043,
+        "action_event_id": 743,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 744,
+        "declared_observation_sequence": 401,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 740,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "2b488da1-f2d7-430a-8993-5d890e843a6a",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.08200000000010021,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.08200000000010021,
+        "action_event_id": 780,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 781,
+        "declared_observation_sequence": 422,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 778,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "cb776783-430b-4419-b532-b1977765e399",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.09400000000011488,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.09400000000011488,
+        "action_event_id": 817,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 818,
+        "declared_observation_sequence": 442,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 815,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "d228d4f2-7c1a-4bea-bd0b-8e94a4f50709",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.09800000000011977,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.09800000000011977,
+        "action_event_id": 854,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 855,
+        "declared_observation_sequence": 462,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 852,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "122d76d1-bb57-4148-a315-1a17fe87c8dd",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10800000000013199,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10800000000013199,
+        "action_event_id": 891,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 892,
+        "declared_observation_sequence": 482,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 889,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "2276eb95-9303-4288-82c1-7d412e0c3d71",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1360000000001662,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1360000000001662,
+        "action_event_id": 928,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 929,
+        "declared_observation_sequence": 502,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 926,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "244a91ca-263c-416f-a2b9-d5fe4d741329",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1360000000001662,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1360000000001662,
+        "action_event_id": 965,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 966,
+        "declared_observation_sequence": 522,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 963,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "a0502d05-c572-46ca-87ae-49bced78c0ad",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1360000000001662,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1360000000001662,
+        "action_event_id": 1002,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1003,
+        "declared_observation_sequence": 542,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1000,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "f2f3e535-1527-431f-b442-738d34e7fd4e",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13800000000016865,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.13800000000016865,
+        "action_event_id": 1039,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1040,
+        "declared_observation_sequence": 562,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1037,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "7605a0a9-306a-4fa8-ad1c-4598aa0e522f",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1400000000001711,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1400000000001711,
+        "action_event_id": 1076,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1077,
+        "declared_observation_sequence": 582,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1074,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "2541ab6f-e672-4145-a0a2-221fae32515f",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16000000000019554,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.16000000000019554,
+        "action_event_id": 1114,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1115,
+        "declared_observation_sequence": 602,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1111,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "86287ea7-6d57-44b4-86d8-978faefc0b52",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.15200000000018576,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.15200000000018576,
+        "action_event_id": 1150,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1151,
+        "declared_observation_sequence": 622,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1148,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "6534c54d-f577-4f37-b9ae-a0f023bfd752",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1499999999996504,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1499999999996504,
+        "action_event_id": 1187,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1188,
+        "declared_observation_sequence": 642,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1185,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "0d36ca8c-33ae-4589-bf9e-f06f60376b41",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1499999999996504,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1499999999996504,
+        "action_event_id": 1225,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1226,
+        "declared_observation_sequence": 663,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1223,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "cf81472e-39c6-4a7c-a123-98bec6d530bd",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.16799999999960846,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.16799999999960846,
+        "action_event_id": 1263,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1264,
+        "declared_observation_sequence": 683,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1260,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "06a6431b-fe25-4ed3-bdb6-82750b53489d",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.08999999999979025,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.08999999999979025,
+        "action_event_id": 1300,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1301,
+        "declared_observation_sequence": 704,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1298,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "7d53aa88-dec6-4ee4-b6b5-3e28c960fa0a",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11799999999972499,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11799999999972499,
+        "action_event_id": 1337,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1338,
+        "declared_observation_sequence": 724,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1335,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "3f6c4d40-7a7c-42e9-b05e-caf6b4947171",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.14199999999966906,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.14199999999966906,
+        "action_event_id": 1374,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1375,
+        "declared_observation_sequence": 744,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1372,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "7b3b4b55-4c44-4f95-a924-f8603d4dd9ea",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.1539999999996411,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.1539999999996411,
+        "action_event_id": 1411,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1412,
+        "declared_observation_sequence": 764,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1409,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "e3f8587d-56d9-4ea8-8196-a5fb789d8aff",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.17399999999959448,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.17399999999959448,
+        "action_event_id": 1449,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1450,
+        "declared_observation_sequence": 784,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1446,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "9b01be9d-d0bf-4fa0-9f11-88e4a34f9132",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.09999999999976694,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.09999999999976694,
+        "action_event_id": 1486,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1487,
+        "declared_observation_sequence": 805,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1484,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "86f716db-e9d3-4cbc-ae1b-94768545735b",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.09199999999978559,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.09199999999978559,
+        "action_event_id": 1523,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1524,
+        "declared_observation_sequence": 825,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1521,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "c89d0c39-dd77-4dee-8abf-0f384ec51eab",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.0979999999997716,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.0979999999997716,
+        "action_event_id": 1560,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1561,
+        "declared_observation_sequence": 845,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1558,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "a2428d13-44c5-400b-aa95-a817f4726201",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.07799999999981821,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.07799999999981821,
+        "action_event_id": 1597,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1598,
+        "declared_observation_sequence": 865,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1595,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "49d3de81-bff9-4203-ac78-1e12b8a1215a",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10399999999975762,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10399999999975762,
+        "action_event_id": 1634,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1635,
+        "declared_observation_sequence": 885,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1632,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "2be0c865-a742-47a6-90ee-ef18390b0f52",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11399999999973431,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11399999999973431,
+        "action_event_id": 1671,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1672,
+        "declared_observation_sequence": 905,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 1669,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "95dce07d-b714-467f-9d07-d48245748275",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13199999999969236,
+        "acquisition_to_dispatch_sim_s": 0.14199999999966906,
+        "acquisition_to_request_sim_s": 0.13199999999969236,
+        "action_event_id": 1708,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 1709,
+        "declared_observation_sequence": 925,
+        "dispatch_event_id": 1711,
+        "matched_candidate_input_event_id": 1706,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "e12fc5c3-3d4e-4a2b-9526-c3cebd262d25",
+        "request_to_dispatch_sim_s": 0.009999999999976694,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.08799999999979491,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.08799999999979491,
+        "action_event_id": 2008,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2009,
+        "declared_observation_sequence": 1181,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 2006,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "81a1f2f3-0206-45b7-a152-3b3a45c2d47c",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12999999999969702,
+        "acquisition_to_dispatch_sim_s": 0.13599999999968304,
+        "acquisition_to_request_sim_s": 0.12999999999969702,
+        "action_event_id": 2046,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2047,
+        "declared_observation_sequence": 1202,
+        "dispatch_event_id": 2049,
+        "matched_candidate_input_event_id": 2044,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "f08ff977-6c2b-4f6f-85cb-67a5c51b3f76",
+        "request_to_dispatch_sim_s": 0.0059999999999860165,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11200000000053478,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.11200000000053478,
+        "action_event_id": 2185,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2186,
+        "declared_observation_sequence": 1314,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 2183,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "b9ecb086-5cf4-4177-a470-6c2c8e10ff31",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12800000000061118,
+        "acquisition_to_dispatch_sim_s": 0.13600000000064938,
+        "acquisition_to_request_sim_s": 0.12800000000061118,
+        "action_event_id": 2497,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2498,
+        "declared_observation_sequence": 1425,
+        "dispatch_event_id": 2500,
+        "matched_candidate_input_event_id": 2495,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "843fb783-a39c-41de-9c22-c3c6093b9605",
+        "request_to_dispatch_sim_s": 0.008000000000038199,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10000000000047748,
+        "acquisition_to_dispatch_sim_s": null,
+        "acquisition_to_request_sim_s": 0.10000000000047748,
+        "action_event_id": 2642,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2643,
+        "declared_observation_sequence": 1542,
+        "dispatch_event_id": null,
+        "matched_candidate_input_event_id": 2640,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "609ac480-67e5-43ba-bb1a-e50b2780b899",
+        "request_to_dispatch_sim_s": null,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.14600000000069713,
+        "acquisition_to_dispatch_sim_s": 0.15200000000072578,
+        "acquisition_to_request_sim_s": 0.14600000000069713,
+        "action_event_id": 2702,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2703,
+        "declared_observation_sequence": 1583,
+        "dispatch_event_id": 2705,
+        "matched_candidate_input_event_id": 2700,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "f1a053da-bb3b-48e4-9603-5bc938d16b36",
+        "request_to_dispatch_sim_s": 0.006000000000028649,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.11000000000052523,
+        "acquisition_to_dispatch_sim_s": 0.11800000000056343,
+        "acquisition_to_request_sim_s": 0.11000000000052523,
+        "action_event_id": 2864,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 2865,
+        "declared_observation_sequence": 1716,
+        "dispatch_event_id": 2867,
+        "matched_candidate_input_event_id": 2862,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "e351b518-5715-4b4e-83bb-6f6c1d2a968a",
+        "request_to_dispatch_sim_s": 0.008000000000038199,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12600000000060163,
+        "acquisition_to_dispatch_sim_s": 0.13400000000063983,
+        "acquisition_to_request_sim_s": 0.12600000000060163,
+        "action_event_id": 3034,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3035,
+        "declared_observation_sequence": 1856,
+        "dispatch_event_id": 3037,
+        "matched_candidate_input_event_id": 3032,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "054ee73a-90bd-4095-ab30-f265b0b62a3b",
+        "request_to_dispatch_sim_s": 0.008000000000038199,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12400000000059208,
+        "acquisition_to_dispatch_sim_s": 0.13000000000062073,
+        "acquisition_to_request_sim_s": 0.12400000000059208,
+        "action_event_id": 3198,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3199,
+        "declared_observation_sequence": 1990,
+        "dispatch_event_id": 3201,
+        "matched_candidate_input_event_id": 3196,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "feb31444-12dc-4790-9b2e-bef38c390c09",
+        "request_to_dispatch_sim_s": 0.006000000000028649,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.12000000000057298,
+        "acquisition_to_dispatch_sim_s": 0.12600000000060163,
+        "acquisition_to_request_sim_s": 0.12000000000057298,
+        "action_event_id": 3368,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3369,
+        "declared_observation_sequence": 2130,
+        "dispatch_event_id": 3371,
+        "matched_candidate_input_event_id": 3366,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "3ddd21d4-8d07-4643-98b1-509ed0f5bc19",
+        "request_to_dispatch_sim_s": 0.006000000000028649,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.15600000000074488,
+        "acquisition_to_dispatch_sim_s": 0.17400000000083082,
+        "acquisition_to_request_sim_s": 0.15600000000074488,
+        "action_event_id": 3531,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3532,
+        "declared_observation_sequence": 2264,
+        "dispatch_event_id": 3535,
+        "matched_candidate_input_event_id": 3529,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "d6f779c0-33af-4859-9d5a-cc62eed608a3",
+        "request_to_dispatch_sim_s": 0.018000000000085947,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.14000000000066848,
+        "acquisition_to_dispatch_sim_s": 0.14400000000068758,
+        "acquisition_to_request_sim_s": 0.14000000000066848,
+        "action_event_id": 3701,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3702,
+        "declared_observation_sequence": 2404,
+        "dispatch_event_id": 3704,
+        "matched_candidate_input_event_id": 3699,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "ab79007b-8dc6-4cd9-be03-bf3203fe7d31",
+        "request_to_dispatch_sim_s": 0.004000000000019099,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.10400000000049658,
+        "acquisition_to_dispatch_sim_s": 0.11400000000054433,
+        "acquisition_to_request_sim_s": 0.10400000000049658,
+        "action_event_id": 3864,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 3865,
+        "declared_observation_sequence": 2538,
+        "dispatch_event_id": 3867,
+        "matched_candidate_input_event_id": 3862,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "ea17658f-1e1c-4ab9-b9b5-dc14da8dd465",
+        "request_to_dispatch_sim_s": 0.010000000000047748,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13400000000063983,
+        "acquisition_to_dispatch_sim_s": 0.14400000000068758,
+        "acquisition_to_request_sim_s": 0.13400000000063983,
+        "action_event_id": 4034,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4035,
+        "declared_observation_sequence": 2678,
+        "dispatch_event_id": 4037,
+        "matched_candidate_input_event_id": 4032,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "d9510f4f-34db-4a3e-8940-0f48d31c572f",
+        "request_to_dispatch_sim_s": 0.010000000000047748,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.13200000000063028,
+        "acquisition_to_dispatch_sim_s": 0.14000000000066848,
+        "acquisition_to_request_sim_s": 0.13200000000063028,
+        "action_event_id": 4198,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4199,
+        "declared_observation_sequence": 2812,
+        "dispatch_event_id": 4202,
+        "matched_candidate_input_event_id": 4196,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "4bee755c-3945-4956-b58f-b97a4a8b329e",
+        "request_to_dispatch_sim_s": 0.008000000000038199,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      },
+      {
+        "acquisition_to_admission_sim_s": 0.14200000000067803,
+        "acquisition_to_dispatch_sim_s": 0.14800000000070668,
+        "acquisition_to_request_sim_s": 0.14200000000067803,
+        "action_event_id": 4368,
+        "actuation_wall_age_s": null,
+        "admission_event_id": 4369,
+        "declared_observation_sequence": 2952,
+        "dispatch_event_id": 4371,
+        "matched_candidate_input_event_id": 4366,
+        "provenance": "Action-declared sequence matched to exact delivered packet; does not prove every earlier model decision used this packet",
+        "request_id": "3fa7d9b2-5261-4f00-ab1d-817a5acde814",
+        "request_to_dispatch_sim_s": 0.006000000000028649,
+        "wall_age_missing_reason": "A trajectory dispatch simulation timestamp is not an independently timestamped wall actuation record"
+      }
+    ],
+    "effective_physical_correction_latency": {
+      "basis": "not established by supplied evidence",
+      "missing_reason": "Needs an independently defined corrective physical event and disturbance relationship",
+      "unit": "s",
+      "value": null
+    },
+    "packet_deliveries": [
+      {
+        "acquisition_to_delivery_sim_s": 0.08200000000000007,
+        "event_id": 9,
+        "missing_reason": null,
+        "sequence": 1
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11599999999998722,
+        "event_id": 34,
+        "missing_reason": null,
+        "sequence": 19
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08599999999999053,
+        "event_id": 46,
+        "missing_reason": null,
+        "sequence": 21
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0979999999999892,
+        "event_id": 71,
+        "missing_reason": null,
+        "sequence": 39
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06799999999999251,
+        "event_id": 83,
+        "missing_reason": null,
+        "sequence": 41
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1079999999999881,
+        "event_id": 108,
+        "missing_reason": null,
+        "sequence": 59
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07799999999999141,
+        "event_id": 120,
+        "missing_reason": null,
+        "sequence": 61
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10400000000003473,
+        "event_id": 145,
+        "missing_reason": null,
+        "sequence": 79
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07200000000002404,
+        "event_id": 157,
+        "missing_reason": null,
+        "sequence": 81
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10200000000003406,
+        "event_id": 182,
+        "missing_reason": null,
+        "sequence": 99
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07000000000002338,
+        "event_id": 194,
+        "missing_reason": null,
+        "sequence": 101
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000003607,
+        "event_id": 219,
+        "missing_reason": null,
+        "sequence": 119
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07600000000002538,
+        "event_id": 231,
+        "missing_reason": null,
+        "sequence": 121
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000003607,
+        "event_id": 256,
+        "missing_reason": null,
+        "sequence": 139
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07600000000002538,
+        "event_id": 268,
+        "missing_reason": null,
+        "sequence": 141
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06799999999996231,
+        "event_id": 294,
+        "missing_reason": null,
+        "sequence": 160
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13799999999992352,
+        "event_id": 305,
+        "missing_reason": null,
+        "sequence": 161
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08599999999995234,
+        "event_id": 331,
+        "missing_reason": null,
+        "sequence": 180
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999991354,
+        "event_id": 342,
+        "missing_reason": null,
+        "sequence": 181
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08999999999995012,
+        "event_id": 368,
+        "missing_reason": null,
+        "sequence": 200
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.05999999999996675,
+        "event_id": 380,
+        "missing_reason": null,
+        "sequence": 202
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09999999999994458,
+        "event_id": 405,
+        "missing_reason": null,
+        "sequence": 220
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0699999999999612,
+        "event_id": 417,
+        "missing_reason": null,
+        "sequence": 222
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12199999999993238,
+        "event_id": 443,
+        "missing_reason": null,
+        "sequence": 240
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09199999999994901,
+        "event_id": 454,
+        "missing_reason": null,
+        "sequence": 242
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13399999999992573,
+        "event_id": 480,
+        "missing_reason": null,
+        "sequence": 260
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10399999999994236,
+        "event_id": 491,
+        "missing_reason": null,
+        "sequence": 262
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999999202,
+        "event_id": 517,
+        "missing_reason": null,
+        "sequence": 280
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11399999999993682,
+        "event_id": 528,
+        "missing_reason": null,
+        "sequence": 282
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07599999999995788,
+        "event_id": 555,
+        "missing_reason": null,
+        "sequence": 301
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14599999999991908,
+        "event_id": 565,
+        "missing_reason": null,
+        "sequence": 302
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08800000000010755,
+        "event_id": 592,
+        "missing_reason": null,
+        "sequence": 321
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.05600000000006844,
+        "event_id": 603,
+        "missing_reason": null,
+        "sequence": 323
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09800000000011977,
+        "event_id": 629,
+        "missing_reason": null,
+        "sequence": 341
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06600000000008066,
+        "event_id": 640,
+        "missing_reason": null,
+        "sequence": 343
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000011244,
+        "event_id": 666,
+        "missing_reason": null,
+        "sequence": 361
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06000000000007333,
+        "event_id": 677,
+        "missing_reason": null,
+        "sequence": 363
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000013199,
+        "event_id": 703,
+        "missing_reason": null,
+        "sequence": 381
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07600000000009288,
+        "event_id": 714,
+        "missing_reason": null,
+        "sequence": 383
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14800000000018088,
+        "event_id": 740,
+        "missing_reason": null,
+        "sequence": 401
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11400000000013932,
+        "event_id": 751,
+        "missing_reason": null,
+        "sequence": 403
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06400000000007822,
+        "event_id": 778,
+        "missing_reason": null,
+        "sequence": 422
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13200000000016132,
+        "event_id": 788,
+        "missing_reason": null,
+        "sequence": 423
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07600000000009288,
+        "event_id": 815,
+        "missing_reason": null,
+        "sequence": 442
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.144000000000176,
+        "event_id": 825,
+        "missing_reason": null,
+        "sequence": 443
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08000000000009777,
+        "event_id": 852,
+        "missing_reason": null,
+        "sequence": 462
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14800000000018088,
+        "event_id": 862,
+        "missing_reason": null,
+        "sequence": 463
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09000000000010999,
+        "event_id": 889,
+        "missing_reason": null,
+        "sequence": 482
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.058000000000070884,
+        "event_id": 900,
+        "missing_reason": null,
+        "sequence": 484
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000014421,
+        "event_id": 926,
+        "missing_reason": null,
+        "sequence": 502
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0860000000001051,
+        "event_id": 937,
+        "missing_reason": null,
+        "sequence": 504
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000014421,
+        "event_id": 963,
+        "missing_reason": null,
+        "sequence": 522
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0860000000001051,
+        "event_id": 974,
+        "missing_reason": null,
+        "sequence": 524
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11800000000014421,
+        "event_id": 1000,
+        "missing_reason": null,
+        "sequence": 542
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0860000000001051,
+        "event_id": 1011,
+        "missing_reason": null,
+        "sequence": 544
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12000000000014666,
+        "event_id": 1037,
+        "missing_reason": null,
+        "sequence": 562
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08800000000010755,
+        "event_id": 1048,
+        "missing_reason": null,
+        "sequence": 564
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1220000000001491,
+        "event_id": 1074,
+        "missing_reason": null,
+        "sequence": 582
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09000000000010999,
+        "event_id": 1085,
+        "missing_reason": null,
+        "sequence": 584
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14200000000017354,
+        "event_id": 1111,
+        "missing_reason": null,
+        "sequence": 602
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11000000000013443,
+        "event_id": 1122,
+        "missing_reason": null,
+        "sequence": 604
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13400000000016377,
+        "event_id": 1148,
+        "missing_reason": null,
+        "sequence": 622
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10200000000012466,
+        "event_id": 1159,
+        "missing_reason": null,
+        "sequence": 624
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13199999999969236,
+        "event_id": 1185,
+        "missing_reason": null,
+        "sequence": 642
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10199999999976228,
+        "event_id": 1196,
+        "missing_reason": null,
+        "sequence": 644
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13199999999969236,
+        "event_id": 1223,
+        "missing_reason": null,
+        "sequence": 663
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10199999999976228,
+        "event_id": 1234,
+        "missing_reason": null,
+        "sequence": 665
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1499999999996504,
+        "event_id": 1260,
+        "missing_reason": null,
+        "sequence": 683
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11999999999972033,
+        "event_id": 1271,
+        "missing_reason": null,
+        "sequence": 685
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.0719999999998322,
+        "event_id": 1298,
+        "missing_reason": null,
+        "sequence": 704
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14199999999966906,
+        "event_id": 1308,
+        "missing_reason": null,
+        "sequence": 705
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09999999999976694,
+        "event_id": 1335,
+        "missing_reason": null,
+        "sequence": 724
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06999999999983686,
+        "event_id": 1346,
+        "missing_reason": null,
+        "sequence": 726
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12399999999971101,
+        "event_id": 1372,
+        "missing_reason": null,
+        "sequence": 744
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09399999999978093,
+        "event_id": 1383,
+        "missing_reason": null,
+        "sequence": 746
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13599999999968304,
+        "event_id": 1409,
+        "missing_reason": null,
+        "sequence": 764
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10599999999975296,
+        "event_id": 1420,
+        "missing_reason": null,
+        "sequence": 766
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999963643,
+        "event_id": 1446,
+        "missing_reason": null,
+        "sequence": 784
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12599999999970635,
+        "event_id": 1457,
+        "missing_reason": null,
+        "sequence": 786
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08199999999980889,
+        "event_id": 1484,
+        "missing_reason": null,
+        "sequence": 805
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15199999999964575,
+        "event_id": 1494,
+        "missing_reason": null,
+        "sequence": 806
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07399999999982754,
+        "event_id": 1521,
+        "missing_reason": null,
+        "sequence": 825
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1439999999996644,
+        "event_id": 1531,
+        "missing_reason": null,
+        "sequence": 826
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07999999999981355,
+        "event_id": 1558,
+        "missing_reason": null,
+        "sequence": 845
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.1499999999996504,
+        "event_id": 1568,
+        "missing_reason": null,
+        "sequence": 846
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.059999999999860165,
+        "event_id": 1595,
+        "missing_reason": null,
+        "sequence": 865
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12999999999969702,
+        "event_id": 1605,
+        "missing_reason": null,
+        "sequence": 866
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08599999999979957,
+        "event_id": 1632,
+        "missing_reason": null,
+        "sequence": 885
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15599999999963643,
+        "event_id": 1642,
+        "missing_reason": null,
+        "sequence": 886
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09599999999977626,
+        "event_id": 1669,
+        "missing_reason": null,
+        "sequence": 905
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06599999999984618,
+        "event_id": 1680,
+        "missing_reason": null,
+        "sequence": 907
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11399999999973431,
+        "event_id": 1706,
+        "missing_reason": null,
+        "sequence": 925
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14799999999965507,
+        "event_id": 1979,
+        "missing_reason": null,
+        "sequence": 1162
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06999999999983686,
+        "event_id": 2006,
+        "missing_reason": null,
+        "sequence": 1181
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13999999999967372,
+        "event_id": 2016,
+        "missing_reason": null,
+        "sequence": 1182
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11199999999973898,
+        "event_id": 2044,
+        "missing_reason": null,
+        "sequence": 1202
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14000000000066848,
+        "event_id": 2154,
+        "missing_reason": null,
+        "sequence": 1293
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09400000000044884,
+        "event_id": 2183,
+        "missing_reason": null,
+        "sequence": 1314
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 2193,
+        "missing_reason": null,
+        "sequence": 1315
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2197,
+        "missing_reason": null,
+        "sequence": 1317
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2200,
+        "missing_reason": null,
+        "sequence": 1318
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2203,
+        "missing_reason": null,
+        "sequence": 1319
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2206,
+        "missing_reason": null,
+        "sequence": 1320
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2210,
+        "missing_reason": null,
+        "sequence": 1321
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2213,
+        "missing_reason": null,
+        "sequence": 1322
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2216,
+        "missing_reason": null,
+        "sequence": 1323
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2219,
+        "missing_reason": null,
+        "sequence": 1324
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2222,
+        "missing_reason": null,
+        "sequence": 1325
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2225,
+        "missing_reason": null,
+        "sequence": 1326
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2228,
+        "missing_reason": null,
+        "sequence": 1327
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2231,
+        "missing_reason": null,
+        "sequence": 1328
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2234,
+        "missing_reason": null,
+        "sequence": 1329
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2237,
+        "missing_reason": null,
+        "sequence": 1330
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2241,
+        "missing_reason": null,
+        "sequence": 1331
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2244,
+        "missing_reason": null,
+        "sequence": 1332
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2247,
+        "missing_reason": null,
+        "sequence": 1333
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2250,
+        "missing_reason": null,
+        "sequence": 1334
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2253,
+        "missing_reason": null,
+        "sequence": 1335
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2256,
+        "missing_reason": null,
+        "sequence": 1336
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2259,
+        "missing_reason": null,
+        "sequence": 1337
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2262,
+        "missing_reason": null,
+        "sequence": 1338
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2265,
+        "missing_reason": null,
+        "sequence": 1339
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2268,
+        "missing_reason": null,
+        "sequence": 1340
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2272,
+        "missing_reason": null,
+        "sequence": 1341
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2275,
+        "missing_reason": null,
+        "sequence": 1342
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2278,
+        "missing_reason": null,
+        "sequence": 1343
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2281,
+        "missing_reason": null,
+        "sequence": 1344
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2284,
+        "missing_reason": null,
+        "sequence": 1345
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2287,
+        "missing_reason": null,
+        "sequence": 1346
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2290,
+        "missing_reason": null,
+        "sequence": 1347
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2293,
+        "missing_reason": null,
+        "sequence": 1348
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2296,
+        "missing_reason": null,
+        "sequence": 1349
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2299,
+        "missing_reason": null,
+        "sequence": 1350
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2303,
+        "missing_reason": null,
+        "sequence": 1351
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2306,
+        "missing_reason": null,
+        "sequence": 1352
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2309,
+        "missing_reason": null,
+        "sequence": 1353
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2312,
+        "missing_reason": null,
+        "sequence": 1354
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2315,
+        "missing_reason": null,
+        "sequence": 1355
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2318,
+        "missing_reason": null,
+        "sequence": 1356
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 2320,
+        "missing_reason": null,
+        "sequence": 1356
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 2323,
+        "missing_reason": null,
+        "sequence": 1357
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2327,
+        "missing_reason": null,
+        "sequence": 1359
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2330,
+        "missing_reason": null,
+        "sequence": 1360
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 2333,
+        "missing_reason": null,
+        "sequence": 1360
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2337,
+        "missing_reason": null,
+        "sequence": 1362
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2340,
+        "missing_reason": null,
+        "sequence": 1363
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2343,
+        "missing_reason": null,
+        "sequence": 1364
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2346,
+        "missing_reason": null,
+        "sequence": 1365
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2349,
+        "missing_reason": null,
+        "sequence": 1366
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2352,
+        "missing_reason": null,
+        "sequence": 1367
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2355,
+        "missing_reason": null,
+        "sequence": 1368
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 2357,
+        "missing_reason": null,
+        "sequence": 1368
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 2360,
+        "missing_reason": null,
+        "sequence": 1369
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2365,
+        "missing_reason": null,
+        "sequence": 1371
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2368,
+        "missing_reason": null,
+        "sequence": 1372
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2371,
+        "missing_reason": null,
+        "sequence": 1373
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2374,
+        "missing_reason": null,
+        "sequence": 1374
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2377,
+        "missing_reason": null,
+        "sequence": 1375
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2380,
+        "missing_reason": null,
+        "sequence": 1376
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2383,
+        "missing_reason": null,
+        "sequence": 1377
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.16200000000077353,
+        "event_id": 2385,
+        "missing_reason": null,
+        "sequence": 1377
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2389,
+        "missing_reason": null,
+        "sequence": 1379
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2392,
+        "missing_reason": null,
+        "sequence": 1380
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2396,
+        "missing_reason": null,
+        "sequence": 1381
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2399,
+        "missing_reason": null,
+        "sequence": 1382
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2402,
+        "missing_reason": null,
+        "sequence": 1383
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2405,
+        "missing_reason": null,
+        "sequence": 1384
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2408,
+        "missing_reason": null,
+        "sequence": 1385
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2411,
+        "missing_reason": null,
+        "sequence": 1386
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2414,
+        "missing_reason": null,
+        "sequence": 1387
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2417,
+        "missing_reason": null,
+        "sequence": 1388
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2420,
+        "missing_reason": null,
+        "sequence": 1389
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2423,
+        "missing_reason": null,
+        "sequence": 1390
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2427,
+        "missing_reason": null,
+        "sequence": 1391
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2430,
+        "missing_reason": null,
+        "sequence": 1392
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2433,
+        "missing_reason": null,
+        "sequence": 1393
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2436,
+        "missing_reason": null,
+        "sequence": 1394
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2439,
+        "missing_reason": null,
+        "sequence": 1395
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2442,
+        "missing_reason": null,
+        "sequence": 1396
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2445,
+        "missing_reason": null,
+        "sequence": 1397
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2448,
+        "missing_reason": null,
+        "sequence": 1398
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2451,
+        "missing_reason": null,
+        "sequence": 1399
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06200000000029604,
+        "event_id": 2454,
+        "missing_reason": null,
+        "sequence": 1400
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06400000000030559,
+        "event_id": 2458,
+        "missing_reason": null,
+        "sequence": 1401
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06400000000030559,
+        "event_id": 2461,
+        "missing_reason": null,
+        "sequence": 1402
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06400000000030559,
+        "event_id": 2465,
+        "missing_reason": null,
+        "sequence": 1403
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11000000000052523,
+        "event_id": 2495,
+        "missing_reason": null,
+        "sequence": 1425
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13000000000062073,
+        "event_id": 2612,
+        "missing_reason": null,
+        "sequence": 1522
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08200000000039154,
+        "event_id": 2640,
+        "missing_reason": null,
+        "sequence": 1542
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11400000000054433,
+        "event_id": 2671,
+        "missing_reason": null,
+        "sequence": 1562
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12800000000061118,
+        "event_id": 2700,
+        "missing_reason": null,
+        "sequence": 1583
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10400000000049658,
+        "event_id": 2831,
+        "missing_reason": null,
+        "sequence": 1693
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.09200000000043929,
+        "event_id": 2862,
+        "missing_reason": null,
+        "sequence": 1716
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3001,
+        "missing_reason": null,
+        "sequence": 1833
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10800000000051568,
+        "event_id": 3032,
+        "missing_reason": null,
+        "sequence": 1856
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15800000000075443,
+        "event_id": 3164,
+        "missing_reason": null,
+        "sequence": 1967
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10600000000050613,
+        "event_id": 3196,
+        "missing_reason": null,
+        "sequence": 1990
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13000000000062073,
+        "event_id": 3334,
+        "missing_reason": null,
+        "sequence": 2107
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.10200000000048703,
+        "event_id": 3366,
+        "missing_reason": null,
+        "sequence": 2130
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.15200000000072578,
+        "event_id": 3498,
+        "missing_reason": null,
+        "sequence": 2241
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.13200000000063028,
+        "event_id": 3529,
+        "missing_reason": null,
+        "sequence": 2264
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.06400000000030559,
+        "event_id": 3669,
+        "missing_reason": null,
+        "sequence": 2382
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12200000000058253,
+        "event_id": 3699,
+        "missing_reason": null,
+        "sequence": 2404
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07000000000033424,
+        "event_id": 3832,
+        "missing_reason": null,
+        "sequence": 2516
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.08600000000041064,
+        "event_id": 3862,
+        "missing_reason": null,
+        "sequence": 2538
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.14800000000070668,
+        "event_id": 4001,
+        "missing_reason": null,
+        "sequence": 2655
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11600000000055388,
+        "event_id": 4032,
+        "missing_reason": null,
+        "sequence": 2678
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.07000000000033424,
+        "event_id": 4165,
+        "missing_reason": null,
+        "sequence": 2790
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.11400000000054433,
+        "event_id": 4196,
+        "missing_reason": null,
+        "sequence": 2812
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12400000000059208,
+        "event_id": 4334,
+        "missing_reason": null,
+        "sequence": 2929
+      },
+      {
+        "acquisition_to_delivery_sim_s": 0.12400000000059208,
+        "event_id": 4366,
+        "missing_reason": null,
+        "sequence": 2952
+      }
+    ]
+  },
+  "run_id": "B01-dev-A1-003",
+  "schema_version": "robot-motion-diagnostics-1.0",
+  "sources": {
+    "events.jsonl": {
+      "bytes": 26562121,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\raw\\B01-dev-A1-003\\events.jsonl",
+      "sha256": "3caf16fd7b6bf972fe439f2ce83ddcaaf6f331eefaf8b244748baf5c6e9dd364"
+    },
+    "manifest.json": {
+      "bytes": 8686,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\raw\\B01-dev-A1-003\\manifest.json",
+      "sha256": "bcdde3620560c795c4f7cb3b40ecf014dc176c77575be91dc5d0e407f478b382"
+    },
+    "motion.jsonl": {
+      "bytes": 20845860,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\raw\\B01-dev-A1-003\\motion.jsonl",
+      "sha256": "d89affc19eb17da217b7a4f6d49b5009bd305e0711b1e55fbbd25b87cfa59fa8"
+    },
+    "result.json": {
+      "bytes": 559042,
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\raw\\B01-dev-A1-003\\result.json",
+      "sha256": "2b7ed964d43c1398123ec03fd3f0a21167c5c46070d060ee624b43e7e5395cc2"
+    }
+  },
+  "stage": "development",
+  "transports": {
+    "comparison_warning": "Compare matched source/destination, payload and obstacle conditions; no reference optimum or aggregate winner is inferred",
+    "complete_uninterrupted_count": 12,
+    "normalized_jerk_omitted_count": 1,
+    "normalized_jerk_usable_count": 12,
+    "requested_transport_count": 13,
+    "segments": [
+      {
+        "action_event_id": 2046,
+        "complete_uninterrupted": true,
+        "destination": "fixture",
+        "dispatch_event_id": 2049,
+        "end_sim_s": 129.8259999998918,
+        "motion": {
+          "analysis_end_sim_s": 129.7869999998916,
+          "analysis_start_sim_s": 120.77699999989991,
+          "analysis_support_s": 9.009999999991692,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 5129093.361873133
+          },
+          "duration_s": 9.089999999991775,
+          "excluded_boundary_duration_s": 0.08000000000008356,
+          "interior_coverage_fraction": 0.9911991199119741,
+          "omission_reason": null,
+          "path_length_m": 1.794103668180933,
+          "sample_count": 909,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 266.02120510636473
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "f08ff977-6c2b-4f6f-85cb-67a5c51b3f76",
+        "start_sim_s": 120.73599999990002,
+        "terminal_event_id": 2151
+      },
+      {
+        "action_event_id": 2497,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 2500,
+        "end_sim_s": 152.7160000000011,
+        "motion": {
+          "analysis_end_sim_s": 152.6770000000009,
+          "analysis_start_sim_s": 143.07699999995506,
+          "analysis_support_s": 9.600000000045839,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 4943614.246593316
+          },
+          "duration_s": 9.68000000004622,
+          "excluded_boundary_duration_s": 0.08000000000038199,
+          "interior_coverage_fraction": 0.9917355371900827,
+          "omission_reason": null,
+          "path_length_m": 1.6879851744545247,
+          "sample_count": 968,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 165.7314936277525
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "843fb783-a39c-41de-9c22-c3c6093b9605",
+        "start_sim_s": 143.03599999995487,
+        "terminal_event_id": 2609
+      },
+      {
+        "action_event_id": 2702,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 2705,
+        "end_sim_s": 169.7900000000826,
+        "motion": {
+          "analysis_end_sim_s": 169.7470000000824,
+          "analysis_start_sim_s": 158.88700000003055,
+          "analysis_support_s": 10.860000000051855,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 5515506.934359105
+          },
+          "duration_s": 10.938000000052227,
+          "excluded_boundary_duration_s": 0.07800000000037244,
+          "interior_coverage_fraction": 0.9928688974218322,
+          "omission_reason": null,
+          "path_length_m": 1.728739549556145,
+          "sample_count": 1094,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 105.28220576542847
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "f1a053da-bb3b-48e4-9603-5bc938d16b36",
+        "start_sim_s": 158.8520000000304,
+        "terminal_event_id": 2828
+      },
+      {
+        "action_event_id": 2864,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 2867,
+        "end_sim_s": 183.79400000014948,
+        "motion": {
+          "analysis_end_sim_s": 183.7570000001493,
+          "analysis_start_sim_s": 172.15700000009392,
+          "analysis_support_s": 11.600000000055388,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 7607740.452860802
+          },
+          "duration_s": 11.676000000055751,
+          "excluded_boundary_duration_s": 0.07600000000036289,
+          "interior_coverage_fraction": 0.9934909215484755,
+          "omission_reason": null,
+          "path_length_m": 1.7497535315760429,
+          "sample_count": 1168,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 107.33441993552168
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "e351b518-5715-4b4e-83bb-6f6c1d2a968a",
+        "start_sim_s": 172.11800000009373,
+        "terminal_event_id": 2998
+      },
+      {
+        "action_event_id": 3034,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 3037,
+        "end_sim_s": 197.2460000002137,
+        "motion": {
+          "analysis_end_sim_s": 197.20700000021353,
+          "analysis_start_sim_s": 186.17700000016086,
+          "analysis_support_s": 11.030000000052667,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 5757152.452669769
+          },
+          "duration_s": 11.112000000053058,
+          "excluded_boundary_duration_s": 0.08200000000039154,
+          "interior_coverage_fraction": 0.9926205903527717,
+          "omission_reason": null,
+          "path_length_m": 1.7404116852260307,
+          "sample_count": 1111,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 102.93203223349597
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "054ee73a-90bd-4095-ab30-f265b0b62a3b",
+        "start_sim_s": 186.13400000016065,
+        "terminal_event_id": 3161
+      },
+      {
+        "action_event_id": 3198,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 3201,
+        "end_sim_s": 211.21600000028042,
+        "motion": {
+          "analysis_end_sim_s": 211.17700000028023,
+          "analysis_start_sim_s": 199.5670000002248,
+          "analysis_support_s": 11.610000000055436,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 7602261.695840997
+          },
+          "duration_s": 11.686000000055799,
+          "excluded_boundary_duration_s": 0.07600000000036289,
+          "interior_coverage_fraction": 0.9934964915283245,
+          "omission_reason": null,
+          "path_length_m": 1.7484476467313879,
+          "sample_count": 1169,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 106.63964025032018
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "feb31444-12dc-4790-9b2e-bef38c390c09",
+        "start_sim_s": 199.53000000022462,
+        "terminal_event_id": 3331
+      },
+      {
+        "action_event_id": 3368,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 3371,
+        "end_sim_s": 224.6380000003445,
+        "motion": {
+          "analysis_end_sim_s": 224.5970000003443,
+          "analysis_start_sim_s": 213.56700000029164,
+          "analysis_support_s": 11.030000000052667,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 5751162.773997245
+          },
+          "duration_s": 11.112000000053058,
+          "excluded_boundary_duration_s": 0.08200000000039154,
+          "interior_coverage_fraction": 0.9926205903527717,
+          "omission_reason": null,
+          "path_length_m": 1.7405069579549148,
+          "sample_count": 1111,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 102.83620075816849
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "3ddd21d4-8d07-4643-98b1-509ed0f5bc19",
+        "start_sim_s": 213.52600000029145,
+        "terminal_event_id": 3495
+      },
+      {
+        "action_event_id": 3531,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 3535,
+        "end_sim_s": 238.6500000004114,
+        "motion": {
+          "analysis_end_sim_s": 238.6070000004112,
+          "analysis_start_sim_s": 227.01700000035586,
+          "analysis_support_s": 11.59000000005534,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 7648762.431530514
+          },
+          "duration_s": 11.676000000055751,
+          "excluded_boundary_duration_s": 0.08600000000041064,
+          "interior_coverage_fraction": 0.9926344638574854,
+          "omission_reason": null,
+          "path_length_m": 1.7493143960049244,
+          "sample_count": 1167,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 107.85902269453177
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "d6f779c0-33af-4859-9d5a-cc62eed608a3",
+        "start_sim_s": 226.97400000035566,
+        "terminal_event_id": 3665
+      },
+      {
+        "action_event_id": 3701,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 3704,
+        "end_sim_s": 252.05600000047542,
+        "motion": {
+          "analysis_end_sim_s": 252.01700000047524,
+          "analysis_start_sim_s": 240.98700000042257,
+          "analysis_support_s": 11.030000000052667,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 5755885.391542881
+          },
+          "duration_s": 11.112000000053058,
+          "excluded_boundary_duration_s": 0.08200000000039154,
+          "interior_coverage_fraction": 0.9926205903527717,
+          "omission_reason": null,
+          "path_length_m": 1.7404920734301146,
+          "sample_count": 1111,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 102.91888528983284
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "ab79007b-8dc6-4cd9-be03-bf3203fe7d31",
+        "start_sim_s": 240.94400000042236,
+        "terminal_event_id": 3829
+      },
+      {
+        "action_event_id": 3864,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 3867,
+        "end_sim_s": 266.03400000054216,
+        "motion": {
+          "analysis_end_sim_s": 265.997000000542,
+          "analysis_start_sim_s": 254.3570000004864,
+          "analysis_support_s": 11.640000000055608,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 7743472.32866796
+          },
+          "duration_s": 11.720000000055961,
+          "excluded_boundary_duration_s": 0.08000000000035357,
+          "interior_coverage_fraction": 0.9931740614334496,
+          "omission_reason": null,
+          "path_length_m": 1.7531785946251977,
+          "sample_count": 1172,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 107.6341316223496
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "ea17658f-1e1c-4ab9-b9b5-dc14da8dd465",
+        "start_sim_s": 254.3140000004862,
+        "terminal_event_id": 3998
+      },
+      {
+        "action_event_id": 4034,
+        "complete_uninterrupted": true,
+        "destination": "tray2",
+        "dispatch_event_id": 4037,
+        "end_sim_s": 279.45600000060625,
+        "motion": {
+          "analysis_end_sim_s": 279.4170000006061,
+          "analysis_start_sim_s": 268.38700000055337,
+          "analysis_support_s": 11.030000000052723,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 5758068.737496601
+          },
+          "duration_s": 11.112000000053058,
+          "excluded_boundary_duration_s": 0.0820000000003347,
+          "interior_coverage_fraction": 0.9926205903527769,
+          "omission_reason": null,
+          "path_length_m": 1.7404500190528882,
+          "sample_count": 1111,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 102.95294955116486
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "d9510f4f-34db-4a3e-8940-0f48d31c572f",
+        "start_sim_s": 268.3440000005532,
+        "terminal_event_id": 4161
+      },
+      {
+        "action_event_id": 4198,
+        "complete_uninterrupted": true,
+        "destination": "inspection",
+        "dispatch_event_id": 4202,
+        "end_sim_s": 293.4100000006729,
+        "motion": {
+          "analysis_end_sim_s": 293.36700000067265,
+          "analysis_start_sim_s": 281.77700000061736,
+          "analysis_support_s": 11.590000000055284,
+          "dimensionless_jerk": {
+            "basis": "T^5/L^2 times measured interior squared-jerk integral; T=dispatch-to-terminal, L=raw sampled TCP path",
+            "missing_reason": null,
+            "unit": "dimensionless",
+            "value": 7596724.439900437
+          },
+          "duration_s": 11.670000000055722,
+          "excluded_boundary_duration_s": 0.08000000000043883,
+          "interior_coverage_fraction": 0.9931448157669188,
+          "omission_reason": null,
+          "path_length_m": 1.7478875296076912,
+          "sample_count": 1167,
+          "squared_jerk_integral": {
+            "basis": "Trapezoidal squared-jerk integral on valid-filter/difference interior of completed trajectory",
+            "missing_reason": null,
+            "unit": "m^2/s^5",
+            "value": 107.22574214429261
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "4bee755c-3945-4956-b58f-b97a4a8b329e",
+        "start_sim_s": 281.74000000061716,
+        "terminal_event_id": 4331
+      },
+      {
+        "action_event_id": 4368,
+        "complete_uninterrupted": false,
+        "destination": "tray2",
+        "dispatch_event_id": 4371,
+        "end_sim_s": null,
+        "motion": {
+          "dimensionless_jerk": {
+            "basis": "not established by supplied evidence",
+            "missing_reason": "Exactly one terminal physical feedback event is required",
+            "unit": "dimensionless",
+            "value": null
+          },
+          "omission_reason": "Exactly one terminal physical feedback event is required",
+          "squared_jerk_integral": {
+            "basis": "not established by supplied evidence",
+            "missing_reason": "Exactly one terminal physical feedback event is required",
+            "unit": "m^2/s^5",
+            "value": null
+          }
+        },
+        "part_id": "B2",
+        "physical_transfer_missing_reason": "Trajectory acknowledgement is not an independent physical transfer predicate",
+        "physical_transfer_success": null,
+        "request_id": "3fa7d9b2-5261-4f00-ab1d-817a5acde814",
+        "start_sim_s": 295.74800000068404
+      }
+    ]
+  },
+  "unmeasured": {
+    "collision_only_impulse": null,
+    "electricity_cost": null,
+    "energy_joules": null,
+    "reason": "No direct measurement/reference supplied; raw contact includes intended contacts",
+    "reference_optimal_path_cost": null
+  }
+}

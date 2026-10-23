@@ -1,0 +1,1 @@
+Randy approved the exact four-file storage-plan.json in the direct session question: "Approve lossless compression". The action is transparent NTFS compression only, with original byte hashes, sizes and modification times required before and after. No delete, move, format conversion, new spending or relaxed launch threshold was authorized.

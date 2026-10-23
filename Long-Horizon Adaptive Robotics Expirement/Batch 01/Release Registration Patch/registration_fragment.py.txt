@@ -1,0 +1,57 @@
+def _registration_path(path):
+    """Reject aliases before resolve can hide a retained attachment junction."""
+    path=Path(path).absolute()
+    for current in reversed((path,*path.parents)):
+        try:metadata=current.lstat()
+        except FileNotFoundError:continue
+        if stat.S_ISLNK(metadata.st_mode) or getattr(metadata,'st_file_attributes',0)&0x400:
+            raise ReleaseError('Reparse path in retained registration: '+str(current))
+    return path.resolve()
+
+
+def _registration_file(path,expected):
+    _registration_path(path)
+    if not path.is_file() or digest(path)!=expected:
+        raise ReleaseError('Retained registration file is partial or differs: '+str(path))
+
+
+def _retain_registration_file(source,target,expected):
+    """Exclusive copy; leave every failed/partial file for explicit inspection."""
+    if not protocol.HASH_RE.fullmatch(str(expected)) or digest(source)!=expected:
+        raise ReleaseError('Original registration attachment identity differs')
+    _registration_path(target)
+    try:writer=target.open('xb')
+    except FileExistsError:
+        _registration_file(target,expected)
+        return
+    checksum=hashlib.sha256()
+    with writer,source.open('rb') as reader:
+        for block in iter(lambda:reader.read(8*1024*1024),b''):
+            writer.write(block);checksum.update(block)
+        writer.flush();os.fsync(writer.fileno())
+    if checksum.hexdigest()!=expected or digest(source)!=expected:
+        raise ReleaseError('Original registration attachment changed while retaining bytes')
+    _registration_file(target,expected)
+
+
+def retained_revision_attachments(map_root,release_id,bundle,bundle_sha,freeze_path,freeze_sha):
+    """Map-local exact copies only; original execution authority stays external."""
+    release_id=safe_id(release_id)
+    reserved={'CON','PRN','AUX','NUL',*('COM'+str(i) for i in range(1,10)),*('LPT'+str(i) for i in range(1,10))}
+    if release_id.endswith('.') or release_id.split('.')[0].upper() in reserved:
+        raise ReleaseError('Unsafe retained release directory')
+    root=_registration_path(map_root);directory=root/'releases'/release_id
+    if _registration_path(directory)!=directory or not directory.is_relative_to(root):
+        raise ReleaseError('Retained release directory escapes the map')
+    directory.mkdir(parents=True,exist_ok=True)
+    _registration_path(directory)
+    files=[(Path(bundle),directory/'code-bundle.zip',bundle_sha),(Path(freeze_path),directory/'freeze.json',freeze_sha)]
+    # Refuse any pre-existing partial file before creating another attachment.
+    for source,target,expected in files:
+        if digest(source)!=expected:raise ReleaseError('Original registration attachment identity differs')
+        if target.exists():_registration_file(target,expected)
+    for source,target,expected in files:_retain_registration_file(source,target,expected)
+    return [map_reference('Immutable executable source bundle',files[0][1],bundle_sha),
+            map_reference('Frozen release',files[1][1],freeze_sha)]
+
+

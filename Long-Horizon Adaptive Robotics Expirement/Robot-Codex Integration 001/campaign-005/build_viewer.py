@@ -1,0 +1,81 @@
+"""Build a self-contained, read-only viewer from authenticated retained bytes."""
+import base64
+import hashlib
+import json
+from pathlib import Path
+from common import HERE,sha,inherited_paths
+inherited_paths()
+from recorder import Reader
+
+def build(episode,replay,rows,journal_root):
+    episode=Path(episode);root=Path(journal_root)
+    reader=Reader(episode/'host/native-recording')
+    frames=[]
+    for entry in reader.images():
+        if entry['status']=='available':
+            raw=reader.image(entry['id'])['rgb']
+            frames.append({'time':entry['capture_time_s'],'id':entry['id'],'sha256':entry['rgb_sha256'],
+                           'image':'data:image/png;base64,'+base64.b64encode(raw).decode()})
+    reader.db.close()
+    events=[json.loads(s) for s in (episode/'host/public-history.jsonl').read_text().splitlines()]
+    selected=[e for e in events if e['type'] in ('job_released','control_owner_changed','conventional_resumed','framework_terminal_appended')]
+    initial=next(r for r in rows if r['type']=='initial')['state']
+    mutations=[r for r in rows if r['type']=='mutation'];content={}
+    states=[initial]+[s for _,s in replay['states']]
+    for state in states:
+        for path,inode in state['paths'].items():
+            if not path.startswith(('/notes/','/programs/','/.continuity/')):continue
+            node=state['nodes'][str(inode)];digest=node.get('sha256')
+            if digest and digest not in content:
+                raw=(root/'objects'/digest).read_bytes()
+                if len(raw)<=65536:
+                    try:content[digest]=raw.decode('utf-8')
+                    except UnicodeError:content[digest]='Binary bytes (base64): '+base64.b64encode(raw).decode()
+    result=json.loads((episode/'receipt.json').read_text());timing=result['independent_timing_replay']
+    data={'frames':frames,'events':selected,'initial':initial,'mutations':mutations,'content':content,
+          'episode':episode.name,'receipt_sha256':sha(episode/'receipt.json'),
+          'timing':{k:v for k,v in timing.items() if k!='timing'},'filesystem':result['filesystem']}
+    def exact(value):
+        if type(value) is int and abs(value)>2**53:return str(value)
+        if isinstance(value,dict):return {k:exact(v) for k,v in value.items()}
+        if isinstance(value,list):return [exact(v) for v in value]
+        return value
+    raw=json.dumps(exact(data),separators=(',',':'),ensure_ascii=False).replace('<','\\u003c')
+    html=HTML.replace('__DATA__',raw).replace('__MUTATIONS__',str(result['filesystem']['mutations']))
+    path=HERE/'Review.html';path.write_text(html,encoding='utf-8')
+    return {'path':str(path),'sha256':sha(path),'frames':len(frames),'last_frame_sim_time_s':frames[-1]['time'],'mutations':len(mutations),'image_bytes_verified':True}
+
+HTML=r'''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Campaign 005 · apparatus review</title>
+<style>
+:root{color-scheme:light;--ink:#17323b;--muted:#51676f;--line:#d4dfe0;--accent:#17686a;--paper:#f5f8f6}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,sans-serif}main{max-width:1260px;margin:auto;padding:32px}header{border-bottom:1px solid var(--line);padding-bottom:22px}small,.eyebrow{letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:var(--muted)}h1{font-size:clamp(28px,4vw,44px);line-height:1.1;max-width:830px;margin:14px 0}h2{margin-top:0;font-size:23px}p{max-width:85ch}.stats{display:flex;flex-wrap:wrap;gap:16px 35px;margin:20px 0}.stats strong{display:block;font-size:25px}.stats span{color:var(--muted);font-size:13px}nav{display:flex;gap:8px;margin:23px 0}button,select{font:inherit;padding:9px 14px;border:1px solid var(--line);border-radius:6px;background:white;color:var(--ink)}button{cursor:pointer}button[aria-selected=true],button.active{background:var(--accent);color:white;border-color:var(--accent)}button:disabled{opacity:.5;cursor:default}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #e6a953;outline-offset:2px}.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(270px,1fr);gap:24px}.box{border:1px solid var(--line);background:white;border-radius:10px;padding:20px}.camera{width:100%;aspect-ratio:4/3;object-fit:contain;background:#23313a;border-radius:7px;display:block}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}input[type=range]{width:100%;accent-color:var(--accent)}.muted{color:var(--muted)}.metadata{font:12px/1.45 ui-monospace,monospace;overflow-wrap:anywhere}.event{padding:10px 0;border-top:1px solid var(--line)}.event b{font-size:14px}.event small{display:block;letter-spacing:0;text-transform:none}.chain{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.chain span{padding:8px 12px;background:#e9f0ed;border-radius:5px}pre{background:#edf2f1;padding:14px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 ui-monospace,monospace;max-height:480px;overflow:auto}details{margin:15px 0}summary{cursor:pointer;font-weight:600}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}a{color:var(--accent)}footer{margin-top:28px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted)}[hidden]{display:none!important}@media(max-width:850px){main{padding:18px}.grid{grid-template-columns:1fr}.stats{gap:16px}nav{flex-wrap:wrap}.box{padding:14px}}
+</style><main><header><div class="eyebrow">Dandelion Engineering · Campaign 005 · review candidate</div>
+<h1>Can a new robot capability survive a fresh session?</h1><p>The apparatus now supports a novel C placement and later sessions that share the world and filesystem. These are recorded deterministic checks. Robot-Codex/Astra has not been launched.</p>
+<div class="stats"><div><strong>3</strong><span>C recoveries and handbacks</span></div><div><strong>5</strong><span>intervening A/B jobs</span></div><div><strong>__MUTATIONS__</strong><span>reconstructable file mutations</span></div><div><strong>0</strong><span>model runs</span></div></div></header>
+<nav role="tablist" aria-label="Review views"><button role="tab" data-tab="world" aria-selected="true">Inspect the workcell</button><button role="tab" data-tab="files" aria-selected="false">Inspect persistence</button><button role="tab" data-tab="evidence" aria-selected="false">Qualification & boundaries</button></nav>
+<section id="world" role="tabpanel"><div class="grid"><div class="box"><img id="camera" class="camera" alt="Recorded overhead simulator camera"><div class="controls"><button id="previous">Previous frame</button><button id="play">Play recorded frames</button><button id="next">Next frame</button><label>Jump <select id="jump" aria-label="Jump to C encounter"></select></label></div><label for="frame">Retained camera frame</label><input id="frame" type="range" min="0" value="0"><div id="frame-label" aria-live="polite"></div><details><summary>Image identity</summary><div id="image-identity" class="metadata"></div></details></div>
+<aside class="box"><h2>Same arm, new task</h2><p>C is the purple tagged parcel; its destination is the new gray pad. The original A/B workcell, arm, controls and contact physics remain.</p><p>The conventional controller asks for C assistance. It cannot call a C placement skill. The private developer witness uses twelve bounded low-level commands, then requests handback.</p><div id="world-events"></div><p class="muted">The slider shows retained rendered frames at their actual capture times. It does not interpolate motion or control the simulator.</p></aside></div></section>
+<section id="files" role="tabpanel" hidden><div class="chain"><span>Fresh process & conversation</span> + <span>Persistent world</span> + <span>Persistent filesystem</span></div><p>Move through acknowledged mutations. The tree is reconstructed from the initial state and durable deltas; overwritten and deleted content remains in the protected journal.</p><div class="grid"><div class="box"><label for="mutation">Exact workspace mutation</label><input id="mutation" type="range" min="0" value="0"><div id="mutation-label" aria-live="polite"></div><div class="controls"><label>Writable path <select id="path" aria-label="Workspace path"></select></label></div><pre id="file-content"></pre><div id="file-identity" class="metadata"></div></div><aside class="box"><h2>What a later session can inherit</h2><p>Agent-authored files survive unchanged unless a later write changes them. The framework appends its own receipt only after accepted handback, conventional resumption and retirement of the previous session.</p><p>This mechanical test uses neutral test files. It does not establish that a model would create or reuse a useful procedure.</p><details><summary>Scope and clocks</summary><p>This panel displays writable notes, programs and continuity. The archive also retains all trusted workspace versions, links and open-unlinked inode states. /tmp and process memory are outside the persistent workspace claim.</p><p>Mutation time uses Linux CLOCK_MONOTONIC. Camera and control evidence use simulation time and Windows clocks. Protected clock brackets retain the alignment uncertainty; these clocks are not equated.</p></details><a href="EVIDENCE.md">Read the evidence contract</a></aside></div></section>
+<section id="evidence" role="tabpanel" hidden><div class="box"><h2>Mechanical qualification passed; model behavior awaits review</h2><table><thead><tr><th>Question</th><th>Evidence</th></tr></thead><tbody>
+<tr><td>Can the same arm place C?</td><td>Three independent geometric acceptances through the fenced low-level interface; 12 commands per encounter. A/B transport completed five intervening jobs.</td></tr>
+<tr><td>Do image pixels reach the model interface?</td><td>The exact dynamic-tool dispatcher returned real PNG bytes. Protocol, pixel hashes, identity fences and rejected-path cases passed. No model visual reasoning was tested.</td></tr>
+<tr><td>Does context remain appropriately separate?</td><td>Three fresh executor/Code Mode namespaces, persistent journaled files, fresh scratch state, no thread-resume route. Protected paths and external network were denied.</td></tr>
+<tr><td>Can continuity falsely claim success?</td><td>Rejected, missing-resumption, interrupted, wrong-session and incomplete-cleanup cases could not append success. Accepted appends preserved preceding bytes and reconciled interrupted receipts.</td></tr>
+<tr><td>Can the evidence be trusted?</td><td id="audit-summary"></td></tr></tbody></table>
+<details><summary>Retained development failures</summary><p>dev-003 stopped on a missing schema-validation dependency. dev-004 exposed pad/tag confusion and final-view occlusion, plus a filesystem lock callback naming error. dev-005 exposed reused executor identity files across sessions. dev-006 completed all three recoveries but failed the final scheduler transition because of repeated done requests. Their source snapshots, receipts and evidence remain. dev-007 corrected those issues and passed the complete sequence. Replay inspection then identified a per-block camera allowance; dev-009 renews camera budgets per encounter and uses a warm clock relay for tighter alignment.</p></details>
+<div class="controls"><a href="README.md">Review handoff & all eleven gates</a><a href="CONTRACT.md">Experiment outcomes and stop rules</a><a href="qualification/system-005/receipt.json">Full deterministic receipt</a><a href="qualification/audit-002/receipt.json">Independent preservation audit</a></div>
+<p>The candidate does not measure learning, transfer, rediscovery, abstraction or biological/physical-world deployment. An artifact's presence alone is not evidence of use. The future campaign must preserve unknown and invalid outcomes.</p></div></section>
+<footer>Read-only local review. No model, robot or network command is started by this page. Campaign 002 remains immutable.<div id="source" class="metadata"></div></footer></main>
+<script id="data" type="application/json">__DATA__</script><script>
+"use strict";const D=JSON.parse(document.getElementById('data').textContent),$=id=>document.getElementById(id);let timer=null,state=null;
+function pause(){if(timer)clearInterval(timer);timer=null;$('play').textContent='Play recorded frames'}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{pause();document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));['world','files','evidence'].forEach(id=>$(id).hidden=id!==b.dataset.tab)}));
+function image(){let i=Number($('frame').value),f=D.frames[i];$('camera').src=f.image;$('frame-label').textContent=`Frame ${i+1} / ${D.frames.length} · simulation ${f.time.toFixed(3)} s`;$('image-identity').textContent=`${f.id}\nSHA256 ${f.sha256}`;$('previous').disabled=i===0;$('next').disabled=i===D.frames.length-1;let events=D.events.filter(e=>e.sim_time_s<=f.time).slice(-3);$('world-events').replaceChildren(...events.map(e=>{let div=document.createElement('div');div.className='event';let b=document.createElement('b');b.textContent=e.type.replaceAll('_',' ');let s=document.createElement('small');s.textContent=`${e.sim_time_s.toFixed(3)} s · event ${e.event_id} · ${e.owner}`;div.append(b,s);return div}))}
+$('frame').max=D.frames.length-1;$('frame').addEventListener('input',()=>{pause();image()});$('previous').onclick=()=>{pause();$('frame').stepDown();image()};$('next').onclick=()=>{pause();$('frame').stepUp();image()};$('play').onclick=()=>{if(timer)return pause();if(Number($('frame').value)===D.frames.length-1)$('frame').value=0;$('play').textContent='Pause';timer=setInterval(()=>{if(Number($('frame').value)>=D.frames.length-1)return pause();$('frame').stepUp();image()},350)};
+let starts=[{label:'Start of workcell',time:D.frames[0].time},...D.events.filter(e=>e.type==='control_owner_changed'&&e.owner==='robot').map((e,i)=>({label:`C encounter ${i+1}`,time:e.sim_time_s}))];starts.forEach(x=>{let o=document.createElement('option');o.textContent=x.label;o.value=D.frames.findIndex(f=>f.time>=x.time);$('jump').append(o)});$('jump').onchange=()=>{pause();$('frame').value=Math.max(0,Number($('jump').value));image()};
+function file(){let path=$('path').value,inode=state.paths[path],n=state.nodes[String(inode)];if(!n){$('file-content').textContent='No writable file at this state';$('file-identity').textContent='';return}$('file-content').textContent=n.target?`Symbolic link → ${n.target}`:(D.content[n.sha256]??'Content bytes are retained in the journal archive; this panel omits this payload.');$('file-identity').textContent=`inode ${inode} · ${n.size} bytes · SHA256 ${n.sha256||'not a regular file'}`}
+function mutation(){let n=Number($('mutation').value),old=$('path').value;state=structuredClone(D.initial);for(let i=0;i<n;i++){let r=D.mutations[i];for(let area of ['paths','nodes']){for(let k of r.delta[area].remove)delete state[area][k];Object.assign(state[area],r.delta[area].set)}}let r=D.mutations[n-1];$('mutation-label').textContent=r?`${n}/${D.mutations.length} · record ${r.sequence} · ${r.operation} · ${r.session_id} · Linux ${r.monotonic_ns} ns`:'Initial workspace · before any mutation';let paths=Object.keys(state.paths).filter(p=>['/notes/','/programs/','/.continuity/'].some(a=>p.startsWith(a))).sort();$('path').replaceChildren(...paths.map(p=>{let o=document.createElement('option');o.value=o.textContent=p;return o}));if(paths.includes(old))$('path').value=old;file()}
+$('mutation').max=D.mutations.length;$('mutation').addEventListener('input',mutation);$('path').onchange=file;
+$('audit-summary').textContent=`${D.filesystem.records} journal records; ${D.filesystem.mutations} mutations; ${D.filesystem.reads} content reads replayed. Maximum lag ${(D.timing.maximum_lag_s*1000).toFixed(2)} ms; ${D.timing.outside_rtf_tolerance_windows}/${D.timing.complete_wall_windows} bad full-second windows. Corrupt objects/records, missing records/final closure, wrong run and quota faults were detected.`;
+$('source').textContent=`Source episode ${D.episode} · receipt SHA256 ${D.receipt_sha256}`;image();mutation();
+</script></html>'''

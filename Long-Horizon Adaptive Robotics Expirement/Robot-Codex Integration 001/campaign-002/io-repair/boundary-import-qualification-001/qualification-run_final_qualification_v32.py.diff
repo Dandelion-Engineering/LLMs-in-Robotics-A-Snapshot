@@ -1,0 +1,93 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\run_final_qualification_v31.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\qualification\run_final_qualification_v32.py
+@@ -31,7 +31,7 @@
+ REPO = RCI.parents[1]
+ MAP = RCI.parent / 'Architecture Map'
+ RAW = RCI / 'local-evidence/campaign002/qualification'
+-LEDGER = HERE / 'final-qualification-031'
++LEDGER = HERE / 'final-qualification-032'
+ STARTUP_REPAIR_METHOD = CAMPAIGN / 'io-repair/CHANNEL_TRANSPORT_STARTUP_REPAIR_V1.md'
+ PROCESS_IDENTITY_METHOD = CAMPAIGN / 'io-repair/CHANNEL_PROBE_PROCESS_IDENTITY_V1.md'
+ FINISH_FRONTIER_METHOD = CAMPAIGN / 'io-repair/CHANNEL_FINISH_FRONTIER_VALIDATION_V1.md'
+@@ -52,11 +52,11 @@
+ COMPLETE_READER_METHOD = CAMPAIGN / 'io-repair/COMPLETE_PROCESS_AND_LITERAL_READS_V1.md'
+ PYTHON = REPO / 'venv/Scripts/python.exe'
+ QUEUE = Path('C:/Users/cresp/Documents/Dandelion Engineering/tools/compute_queue/compute_queue.py')
+-STAGE_IDENTITIES = (('native-030', 'native', 24000),
+-                    ('boundary-031', 'boundary', None),
+-                    ('smoke-029', 'smoke', 24101),
+-                    ('pilot-stock-028', 'stock', 24102),
+-                    ('pilot-home-028', 'home', 24103))
++STAGE_IDENTITIES = (('native-031', 'native', 24000),
++                    ('boundary-032', 'boundary', None),
++                    ('smoke-030', 'smoke', 24101),
++                    ('pilot-stock-029', 'stock', 24102),
++                    ('pilot-home-029', 'home', 24103))
+ READINESS_SCHEMA = 'campaign002-final-qualification-readiness-1'
+ TEST_RECEIPT_SCHEMA = 'campaign002-repair-test-receipt-1'
+ POLL_SECONDS = 15
+@@ -143,10 +143,10 @@
+     require(all(type(row[3]) is int if expected[2] is not None else row[3] is None
+                 for row, expected in zip(stages, STAGE_IDENTITIES)), 'Qualifier seeds must be exact integers')
+     revisions = [revision_number(row[2]) for row in stages]
+-    require(revisions == [104, 105, 106, 106, 106],
+-            'Qualifier revisions must be dev104, dev105 and shared final dev106')
++    require(revisions == [108, 109, 110, 110, 110],
++            'Qualifier revisions must be dev108, dev109 and shared final dev110')
+     diagnostic = value.get('diagnostic', {})
+-    require(diagnostic.get('run_id') == 'RCI001-C02-host-probe-031',
++    require(diagnostic.get('run_id') == 'RCI001-C02-host-probe-032',
+             'Readiness requires a fresh repaired-host diagnostic')
+     require(isinstance(diagnostic.get('job_id'), str) and bool(diagnostic['job_id'].strip()),
+             'Missing diagnostic official job identity')
+@@ -159,8 +159,8 @@
+     require(anchor == MAP / 'releases' / frozen['revision'] / 'snapshot.json',
+             'Repaired source anchor is outside its canonical release')
+     anchor_number = revision_number(frozen['revision'])
+-    require(anchor_number == 103 and revision_number(readiness['stages'][0][2]) == 104,
+-            'Repaired source anchor must be dev103 before native dev104')
++    require(anchor_number == 107 and revision_number(readiness['stages'][0][2]) == 108,
++            'Repaired source anchor must be dev107 before native dev108')
+     require(not admission.base.frozen_problems(anchor, frozen, frozen['revision']),
+             'Frozen repaired source/archive identity changed')
+     require(frozen['sources'].get(STARTUP_REPAIR_METHOD.relative_to(REPO).as_posix()) == {
+@@ -308,13 +308,13 @@
+ 
+ 
+ def verify_transport_probe(record, snapshot):
+-    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-transport-probe-024',
++    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-transport-probe-025',
+             'A fresh fixed no-model transport probe is required')
+     # Authenticate before reading any probe outcome, including its hash.
+     job = admission.base.queue_gate(official(record['job_id']), record['job_id'])
+     retained_queue = admission.artifact(record['queue'])
+     require(read(retained_queue) == job, 'Transport probe queue receipt differs from official status')
+-    output = CAMPAIGN / 'io-repair/transport-probe-024/evidence'
++    output = CAMPAIGN / 'io-repair/transport-probe-025/evidence'
+     script = CAMPAIGN / 'harness/codehost_transport_probe_v3.py'
+     frozen = read(snapshot)
+     expected = python(script, '--run-id', record['run_id'], '--framework-revision', frozen['revision'],
+@@ -341,20 +341,20 @@
+ 
+ 
+ def replay_raw_preflight(script, output, snapshot):
+-    spec = importlib.util.spec_from_file_location('final_raw_preflight_v31', script)
++    spec = importlib.util.spec_from_file_location('final_raw_preflight_v32', script)
+     probe = importlib.util.module_from_spec(spec)
+     spec.loader.exec_module(probe)
+     return probe.assess(output, snapshot)
+ 
+ 
+ def verify_raw_preflight(record, snapshot):
+-    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-raw-preflight-021',
++    require(isinstance(record, dict) and record.get('run_id') == 'RCI001-C02-raw-preflight-022',
+             'A fresh fixed no-model raw-event preflight is required')
+     # Authenticate before reading any empirical result or result hash.
+     job = admission.base.queue_gate(official(record['job_id']), record['job_id'])
+     require(read(admission.artifact(record['queue'])) == job,
+             'Raw-event preflight queue receipt differs from official status')
+-    output = CAMPAIGN / 'io-repair/raw-preflight-021/evidence'
++    output = CAMPAIGN / 'io-repair/raw-preflight-022/evidence'
+     script = CAMPAIGN / 'harness/raw_event_preflight_v2.py'
+     frozen = read(snapshot)
+     expected = python(script, '--run-id', record['run_id'], '--framework-revision', frozen['revision'],

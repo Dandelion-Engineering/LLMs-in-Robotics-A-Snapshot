@@ -1,0 +1,87 @@
+{
+  "schema": "robot-codex-development-manifest-1.0",
+  "stage": "development-only",
+  "run_id": "RCI001-C02-host-probe-001",
+  "family": "blocked-insert-home",
+  "mode": "serve",
+  "seed": 173,
+  "noise_seed": 24201,
+  "sim_cap_s": 720,
+  "wall_cap_s": 840,
+  "storage_cap_bytes": 536870912,
+  "physics_dt_s": 0.002,
+  "clock_mode": "wall-paced; physics continues independently of agent",
+  "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+  "operator_only_fixture": {
+    "part_count": 2,
+    "placements": [
+      {
+        "part_id": "A1",
+        "zone": "insert_home_A"
+      }
+    ],
+    "order": {
+      "version": 1,
+      "closed": true,
+      "requirements": [
+        {
+          "family": "B",
+          "recipe": "B",
+          "count": 1,
+          "tray": "tray2",
+          "max_rework_cycles": 0
+        }
+      ]
+    },
+    "reference_actions": [
+      {
+        "operation": "transport",
+        "part_id": "A1",
+        "destination": "parking1"
+      },
+      {
+        "operation": "setup",
+        "family": "B"
+      }
+    ],
+    "missing_rule": "Frozen setup returns insert A to its occupied home; baseline has no home-evacuation rule.",
+    "baseline_source": "Runtime 004/candidates.py:673-759; cell.py:342-349,537-550"
+  },
+  "limitations": [
+    "Development fixture; not sampled performance evidence",
+    "No collision safety certificate",
+    "Reference solution is protected operator evidence",
+    "Agent process restart only; supervisor restart is not implemented"
+  ],
+  "framework_revision": "RCI001-C02-dev-005",
+  "model_turns_max": 0,
+  "qualification_stage": "campaign002-host-probe-qualification",
+  "runtime_workspace": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Campaign002\\qualification\\RCI001-C02-host-probe-001",
+  "runtime_input_files": [
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess_smoke_v2.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/retained_reads.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_assess.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_retained_reads.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_smoke_v2.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/executor_capture.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/instrumented_journal.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_instrumented_journal.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_timing.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_transport.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/timing.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/qualification/assess_host_probe.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/qualification/host_probe.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_bootstrap.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_pilot.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_smoke.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/supplement_pilot.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_assessment.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_pilot_assessment.py",
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_smoke_assessment.py"
+  ],
+  "scope": "Fixed 720 simulation-second idle serve-mode diagnostic after failed smoke001. No model, operator recovery, task score or substitution for final qualification."
+}

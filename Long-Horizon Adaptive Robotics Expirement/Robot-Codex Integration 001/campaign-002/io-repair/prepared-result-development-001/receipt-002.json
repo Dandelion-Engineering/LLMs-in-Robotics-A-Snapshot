@@ -1,0 +1,37 @@
+{
+  "schema": "prepared-result-parser-development-2",
+  "completed_utc": "2026-09-29T01:20:23.913230+00:00",
+  "scope": "Finite parser and authenticated UTF8 head-rounding development only; no empirical launch or historical verdict change.",
+  "earlier_checkpoint": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\prepared-result-development-001\\receipt.json",
+    "bytes": 2945,
+    "sha256": "6da8b4f837178e7f5ec99c4190050aebbb4c7bae7b7e24c6913da272c2ae775a"
+  },
+  "method": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\PREPARED_STARTUP_SEGMENTS_V1.md",
+    "bytes": 12652,
+    "sha256": "39287ceb982a9a2077863c5107c15bc4744e1fc544aafd9d32f014cc25e5dd7f"
+  },
+  "sources": [
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\prepared_result_segments.py",
+      "bytes": 24071,
+      "sha256": "82b7cb6a0928395314a781c5c171d7087c78d4040c2a0950aca5cbb0a94c05fa"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\test_prepared_result_segments.py",
+      "bytes": 24119,
+      "sha256": "993276adcc1ad9c71b42e9f9b3a50c88dd7dab1160250823b2c74c167938fb0a"
+    }
+  ],
+  "final_check": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\prepared-result-development-001\\check-003.json",
+    "bytes": 1418,
+    "sha256": "9f1c1173b48bcdf5f4f98d47ee0e4d690f5ecdab1e1026ad574bec4e92afa9dc"
+  },
+  "final_test_count": 29,
+  "exit_code": 0,
+  "development_failures": [],
+  "tightening": "A code-review counterexample showed range-consistent short ASCII head did not prove native UTF8 rounding. Binder must now call validate_prefix_rounding for every record. Short heads require actual next authenticated Unicode scalar wider than remaining budget; ASCII escapes and complete-first-record unknown continuation fail closed. No continuation bytes are credited as delivered.",
+  "api_addition": "validate_prefix_rounding(record, authenticated_stdout_bytes, truncation_or_none) returns serializable validated/mode/lengths proof; caller retains it."
+}

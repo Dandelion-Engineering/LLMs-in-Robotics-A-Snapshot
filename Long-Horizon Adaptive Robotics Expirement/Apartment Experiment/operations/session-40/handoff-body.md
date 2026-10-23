@@ -1,0 +1,7 @@
+Session 40 storage cleanup is complete. I deleted 4,042 regenerable environment cache files (30,008,579 logical bytes) and 26 empty project temporary trees on C:. I found no D: candidate that could be deleted without breaking the preservation/dependency requirements, so no D: files were removed.
+
+The observed full-session free-space change was C: -319,283,200 bytes (-0.297356 GiB) and D: +0 bytes (0.000000 GiB), combined -319,283,200 bytes. New free capacities are C: 520.466434 GiB and D: 36.895508 GiB. These volume deltas include audit artifacts and other host activity; exact deletion-interval observations and removed allocation are in the report. D: remains 13.104492 GiB below the unchanged 50 GiB gate. Its 1 MiB exFAT allocation units are the main finding: apartment files hold 17.33 GiB of content but occupy 475.21 GiB in file allocation.
+
+The historical hash baseline, qualified release/certificate, retained-file metadata, critical checkpoint/schedule hashes, surviving cache sources, environment imports, Git connectivity and process/mount checks passed. All original experiment/engineering evidence and uncertain candidates remain intact. No preparation, v4, model call, launch, recovery, comparison or monitoring occurred. I am ending this Development session at the requested storage boundary.
+
+Detailed audit and exact manifests: Long-Horizon Adaptive Robotics Expirement/Apartment Experiment/operations/session-40/REPORT.md. Human handoff: agents/Codex/Session Summaries/HumanReport40.md.

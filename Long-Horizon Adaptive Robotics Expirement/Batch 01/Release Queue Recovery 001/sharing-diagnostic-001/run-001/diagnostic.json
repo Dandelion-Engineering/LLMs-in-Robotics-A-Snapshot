@@ -1,0 +1,104 @@
+{
+  "schema": "queue-file-sharing-diagnostic-1",
+  "ownership": {
+    "job_id": "20260924T214804182035Z-b787792c",
+    "child_pid": 30112,
+    "actual_pid": 31408,
+    "reader": "existing installed ExclusiveFileLock; share7 read; handle closed before lock release"
+  },
+  "sources_before": {
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Batch 01\\Release Queue Recovery 001\\sharing-diagnostic-001\\diagnose_sharing.py": "611027d7133724548aa97970cb0951e2e4e7713e9f9d30af5e53378c25d8b463",
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\compute_queue.py": "31997fc851494df62c2466cf189b5e945a6a933464f5cd43e69b3d877c029829",
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Runtime Recovery 001\\recovery_runner.py": "db0a6b6d3ae8ff59a20ac1def302ef6e2a6bce447a66686754322f157a958a1d"
+  },
+  "scope": "Owned files only; no episode, no installed state mutation, no adoption conclusion",
+  "native_cases": [
+    {
+      "sharing": 3,
+      "desired_access": "GENERIC_READ",
+      "subsequent_delete_access_open": {
+        "succeeded": false,
+        "error_type": "PermissionError",
+        "error": "[WinError 32] The process cannot access the file because it is being used by another process.",
+        "winerror": 32,
+        "elapsed_s": 0.0001105000264942646
+      },
+      "replace_while_destination_open": {
+        "succeeded": false,
+        "error_type": "PermissionError",
+        "error": "[WinError 5] Access is denied: 'C:\\\\Users\\\\cresp\\\\Documents\\\\Dandelion Engineering\\\\LLMs in Robotics\\\\Long-Horizon Adaptive Robotics Expirement\\\\Batch 01\\\\Release Queue Recovery 001\\\\sharing-diagnostic-001\\\\run-001\\\\sandbox\\\\sharing-3\\\\replacement.json' -> 'C:\\\\Users\\\\cresp\\\\Documents\\\\Dandelion Engineering\\\\LLMs in Robotics\\\\Long-Horizon Adaptive Robotics Expirement\\\\Batch 01\\\\Release Queue Recovery 001\\\\sharing-diagnostic-001\\\\run-001\\\\sandbox\\\\sharing-3\\\\target.json'",
+        "winerror": 5,
+        "elapsed_s": 0.00040359998820349574
+      },
+      "bytes_from_original_handle": "{\r\n  \"generation\": 1\r\n}\r\n",
+      "same_replacement_after_close": {
+        "succeeded": true,
+        "value": null,
+        "elapsed_s": 0.000242199981585145
+      },
+      "final_target": {
+        "generation": 2
+      }
+    },
+    {
+      "sharing": 7,
+      "desired_access": "GENERIC_READ",
+      "subsequent_delete_access_open": {
+        "succeeded": true,
+        "value": null,
+        "elapsed_s": 4.579999949783087e-05
+      },
+      "replace_while_destination_open": {
+        "succeeded": false,
+        "error_type": "PermissionError",
+        "error": "[WinError 5] Access is denied: 'C:\\\\Users\\\\cresp\\\\Documents\\\\Dandelion Engineering\\\\LLMs in Robotics\\\\Long-Horizon Adaptive Robotics Expirement\\\\Batch 01\\\\Release Queue Recovery 001\\\\sharing-diagnostic-001\\\\run-001\\\\sandbox\\\\sharing-7\\\\replacement.json' -> 'C:\\\\Users\\\\cresp\\\\Documents\\\\Dandelion Engineering\\\\LLMs in Robotics\\\\Long-Horizon Adaptive Robotics Expirement\\\\Batch 01\\\\Release Queue Recovery 001\\\\sharing-diagnostic-001\\\\run-001\\\\sandbox\\\\sharing-7\\\\target.json'",
+        "winerror": 5,
+        "elapsed_s": 0.00013650002074427903
+      },
+      "bytes_from_original_handle": "{\r\n  \"generation\": 1\r\n}\r\n",
+      "same_replacement_after_close": {
+        "succeeded": true,
+        "value": null,
+        "elapsed_s": 0.00021359999664127827
+      },
+      "final_target": {
+        "generation": 2
+      }
+    }
+  ],
+  "serialized_case": {
+    "writer_blocked_while_reader_open": true,
+    "before_generation": 1,
+    "after_generation": 2,
+    "events": [
+      {
+        "event": "writer_waiting",
+        "time": 143939.1321442
+      },
+      {
+        "event": "reader_handle_closed",
+        "time": 143939.2356255
+      },
+      {
+        "event": "reader_lock_released",
+        "time": 143939.2362825
+      },
+      {
+        "event": "writer_acquired",
+        "time": 143939.2391004
+      },
+      {
+        "event": "writer_finished",
+        "time": 143939.2447963
+      }
+    ],
+    "passed": true
+  },
+  "completed": true,
+  "sources_after": {
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Batch 01\\Release Queue Recovery 001\\sharing-diagnostic-001\\diagnose_sharing.py": "611027d7133724548aa97970cb0951e2e4e7713e9f9d30af5e53378c25d8b463",
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\compute_queue.py": "31997fc851494df62c2466cf189b5e945a6a933464f5cd43e69b3d877c029829",
+    "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Runtime Recovery 001\\recovery_runner.py": "db0a6b6d3ae8ff59a20ac1def302ef6e2a6bce447a66686754322f157a958a1d"
+  },
+  "sources_unchanged": true
+}

@@ -1,0 +1,145 @@
+--- v2/common.py
++++ v3/common.py
+@@ -11,22 +11,22 @@
+ CAMPAIGN = HERE.parents[1]
+ RCI = CAMPAIGN.parent
+ REPO = RCI.parents[1]
+-RUN = 'RCI001-C02-shutdown-diagnostic-002'
+-REVISION = 'RCI001-C02-dev-062'
++RUN = 'RCI001-C02-shutdown-diagnostic-003'
++REVISION = 'RCI001-C02-dev-091'
+ STAGE = 'campaign002-single-interrupt-diagnostic'
+-PROTOCOL = 'RCI001-Campaign002-single-interrupt-diagnostic-v2'
+-ROOT = CAMPAIGN / 'io-repair/shutdown-diagnostic-002'
++PROTOCOL = 'RCI001-Campaign002-single-interrupt-diagnostic-v3'
++ROOT = CAMPAIGN / 'io-repair/shutdown-diagnostic-003'
+ MANIFEST = ROOT / 'manifest.json'
+ RECORDS = ROOT / 'records'
+ RAW = RCI / 'local-evidence/campaign002/io-repair' / RUN
+ EVIDENCE, HOST = RAW / 'orchestrator', RAW / 'host'
+ WORKSPACE = Path(os.environ['LOCALAPPDATA']) / 'RobotCodex/Campaign002/diagnostic' / RUN
+ SNAPSHOT = RCI.parent / 'Architecture Map/releases' / REVISION / 'snapshot.json'
+-REFERENCE = CAMPAIGN / 'qualification/smoke-019-manifest.json'
+-REFERENCE_SHA256 = '827e96a429b50ede8594cf57ca7d4f6c30542520ea47ad1fc13cbc3bc20f3f7d'
++REFERENCE = CAMPAIGN / 'qualification/smoke-026-manifest.json'
++REFERENCE_SHA256 = '0d6bfb4a1180f53dba8e784cdd4ef68d7d1fedef4ca7d74015b424a66380f142'
+ PHYSICAL = CAMPAIGN / 'harness/physical.py'
+ PHYSICAL_SHA256 = 'e20030568bd5d0905092a1e76f38386e6bd463541b5ff291083867e5ec9da572'
+-METHOD = CAMPAIGN / 'io-repair/RESET_REJECTION_DIAGNOSTIC_V1.md'
++METHOD = CAMPAIGN / 'io-repair/SOCKET_ABORT_NATIVE_DIAGNOSTIC_V1.md'
+ GUARD = RCI / 'campaign-001/admission/storage-guard/storage_guard.py'
+ STORAGE_POLICY = CAMPAIGN / 'admission/storage-policy.json'
+ STORAGE_BASELINE = CAMPAIGN / 'admission/storage-baseline-001.json'
+@@ -99,17 +99,109 @@
+     return module
+ 
+ 
++# Fixed provenance files, never discovered from a mutable run-output tree.
++PROVENANCE_INPUTS = (
++    'SOCKET_ABORT_DIAGNOSTICS_V1.md',
++    'socket-abort-local-close-source-review-001.md',
++    'single-interrupt-diagnostic-v2/run.py',
++    'single-interrupt-diagnostic-v2/launch.py',
++    'smoke026-queue-failure-diagnosis-001/analysis.json',
++    'smoke026-queue-failure-diagnosis-001/analysis.md',
++    'smoke026-queue-failure-diagnosis-001/authentication.json',
++    'smoke026-queue-failure-diagnosis-001/official-status.json',
++    'smoke026-queue-failure-diagnosis-001/official.stdout',
++    'smoke026-queue-failure-diagnosis-001/official.stderr',
++    'smoke026-queue-failure-diagnosis-001/collect.py',
++    'smoke026-queue-failure-diagnosis-001/collect.stdout',
++    'smoke026-queue-failure-diagnosis-001/collect.stderr',
++    'smoke026-queue-failure-diagnosis-001/collect-exit.json',
++    'smoke026-queue-failure-diagnosis-001/execution.json',
++    'socket-abort-instrumentation-development-001/before.json',
++    'socket-abort-instrumentation-development-001/receipt.json',
++    'socket-abort-instrumentation-development-001/final-check-002/receipt.json',
++    'socket-abort-instrumentation-development-001/final-check-002/source-parity.json',
++    'socket-abort-instrumentation-development-001/final-check-002/source.diff',
++    'socket-abort-instrumentation-development-001/final-check-002/execution.json',
++    'socket-abort-instrumentation-development-001/final-check-002/verify_parity.py',
++    'socket-abort-instrumentation-development-001/final-check-002/stdout.txt',
++    'socket-abort-instrumentation-development-001/final-check-002/stderr.txt',
++    'socket-abort-instrumentation-development-001/red-001/receipt.json',
++    'socket-abort-instrumentation-development-001/red-001/stdout.txt',
++    'socket-abort-instrumentation-development-001/red-001/stderr.txt',
++    'socket-abort-instrumentation-development-001/green-001/receipt.json',
++    'socket-abort-instrumentation-development-001/green-001/stdout.txt',
++    'socket-abort-instrumentation-development-001/green-001/stderr.txt',
++    'socket-abort-instrumentation-development-001/green-002/receipt.json',
++    'socket-abort-instrumentation-development-001/green-002/stdout.txt',
++    'socket-abort-instrumentation-development-001/green-002/stderr.txt',
++    'socket-abort-loopback-development-002/CORRECTION.md',
++    'socket-abort-loopback-development-002/fixture.py',
++    'socket-abort-loopback-development-002/launch.py',
++    'socket-abort-loopback-development-002/no_socket_regression.py',
++    'socket-abort-loopback-development-002/verify_correction.py',
++    'socket-abort-loopback-development-002/source.diff',
++    'socket-abort-loopback-development-002/original-001-bindings.json',
++    'socket-abort-loopback-development-002/receipt.json',
++    'socket-abort-loopback-development-002/red-001/receipt.json',
++    'socket-abort-loopback-development-002/red-001/stdout.txt',
++    'socket-abort-loopback-development-002/red-001/stderr.txt',
++    'socket-abort-loopback-development-002/green-001/receipt.json',
++    'socket-abort-loopback-development-002/green-001/stdout.txt',
++    'socket-abort-loopback-development-002/green-001/stderr.txt',
++    'socket-abort-loopback-development-002/execution-001/receipt.json',
++    'socket-abort-loopback-development-002/execution-001/intent.json',
++    'socket-abort-loopback-development-002/execution-001/source-manifest.json',
++    'socket-abort-loopback-development-002/execution-001/process-start.json',
++    'socket-abort-loopback-development-002/execution-001/stdout-summary.json',
++    'socket-abort-loopback-development-002/execution-001/stderr-summary.json',
++    'socket-abort-loopback-development-002/execution-001/child/result.json',
++    'socket-abort-loopback-development-002/execution-001/child/events.jsonl',
++    'socket-abort-assessment-fixture-development-001/DECLARATION.md',
++    'socket-abort-assessment-fixture-development-001/before.json',
++    'socket-abort-assessment-fixture-development-001/receipt.json',
++    'socket-abort-assessment-fixture-development-001/focused.stdout',
++    'socket-abort-assessment-fixture-development-001/focused.stderr',
++    'socket-abort-assessment-fixture-development-001/focused-002/receipt.json',
++    'socket-abort-assessment-fixture-development-001/focused-002/stdout',
++    'socket-abort-assessment-fixture-development-001/focused-002/stderr',
++    'socket-abort-assessment-fixture-development-001/final-receipt.json',
++    'socket-abort-assessment-fixture-development-001/source.diff',
++    'checks-032/test-execution.json',
++    'checks-032/harness.stdout',
++    'checks-032/harness.stderr',
++    'checks-032/assessment.stdout',
++    'checks-032/assessment.stderr',
++    'checks-033/test-execution.json',
++    'checks-033/harness.stdout',
++    'checks-033/harness.stderr',
++    'checks-033/assessment.stdout',
++    'checks-033/assessment.stderr',
++    'checks-033-source-state.json',
++    'checks-033-execution-001/receipt.json',
++    'checks-033-execution-001/intent.json',
++    'checks-033-execution-001/stdout.txt',
++    'checks-033-execution-001/stderr.txt',
++)
++
++
+ def required_inputs():
+-    paths = list(HERE.glob('*.py')) + [REFERENCE, METHOD, PHYSICAL,
+-        HERE.parent / 'prepare_reset_diagnostic.py', HERE.parent / 'control_reset_diagnostic.py',
++    paths = list(HERE.glob('*.py')) + [REFERENCE, METHOD, PHYSICAL,
++        HERE.parent / 'prepare_socket_abort_diagnostic.py',
++        HERE.parent / 'control_socket_abort_diagnostic.py',
++        HERE.parent / 'test_control_socket_abort_diagnostic.py',
+         CAMPAIGN / 'harness/run_host.py', CAMPAIGN / 'harness/runtime.py',
+         CAMPAIGN / 'harness/bootstrap_client_v4.py', CAMPAIGN / 'assessment/assess.py',
++        CAMPAIGN / 'harness/codehost_bridge_v3.py',
++        CAMPAIGN / 'harness/test_codehost_bridge_v3.py',
++        CAMPAIGN / 'assessment/transport_integrity_v3.py',
++        CAMPAIGN / 'assessment/test_transport_integrity_v3.py',
+         GUARD, STORAGE_POLICY, STORAGE_BASELINE]
++    paths += [HERE.parent / name for name in PROVENANCE_INPUTS]
+     return sorted({p.relative_to(REPO).as_posix() for p in paths})
+ 
+ 
+ def validate_manifest(value):
+-    require(sha(REFERENCE) == REFERENCE_SHA256, 'Original Smoke019 policy basis changed')
++    require(sha(REFERENCE) == REFERENCE_SHA256, 'Original Smoke026 policy basis changed')
+     basis = read(REFERENCE)
+     require(isinstance(value, dict) and set(value) == set(basis), 'Diagnostic manifest field inventory differs')
+     expected = dict(basis)

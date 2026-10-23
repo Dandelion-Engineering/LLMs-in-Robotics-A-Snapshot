@@ -1,0 +1,12 @@
+"""Record the verified commissioning pass and separate storage-blocked disposition."""
+from release2 import *
+
+proof=read(ROOT/'blocker001/output/result.json')
+assert proof['passed'] and len(proof['checks'])==5 and all(proof['checks'].values())
+assert proof['disposition']=='blocked_storage_before_official_creation' and not proof['official_prepared']
+assert complete('blocker001','Independent blocker audit passed: fixed 50 GiB gate remains failed, exact failed preparation is immutable, v4 is absent, no official model call/job or active apartment runtime exists, and complete fresh commissioning/preservation remains authenticated. This verifies a storage-blocked not-run disposition; it is not launch or scientific success.')
+append('note',base()|dict(id='APARTMENT-s39-storage-gated-no-launch',target_ids=['APARTMENT-s39-release002','APARTMENT-s39-audit003','APARTMENT-s39-freeze001','APARTMENT-s39-blocker001'],claim_type='observation',supersedes_note_id=None,
+    body='Complete independent release002 commissioning passed all ten groups, including four genuine native sessions and a full unchanged rehash of 75 historical roots (344286 files, 15390037785 bytes). The subsequent once-only pristine-pair preparation failed its fixed 50 GiB capacity gate before creating apartment-v4. Independent Windows readback found 36.896484375 GiB free, a 13.103515625 GiB shortfall. No official pair, model call, viewer or new monitor exists. All prior failures retain their original status; no gate relaxation, evidence deletion, retry, recovery or condition comparison was performed. Close at this verified storage boundary; further work needs sufficient authorized D: capacity and later human direction, followed by fresh source/environment/capacity and unused-pair admission checks.',
+    evidence=[ref('Fresh integrated certificate',ROOT/'audit003/output/certificate.json'),ref('Complete protected-history rehash',ROOT/'audit003/output/preservation-readback.json'),ref('Failed preparation terminal receipt',HERE/'freeze001-terminal.json'),ref('Exact original failure log',ROOT/'blocker001/output/freeze001-original-queue.log'),ref('Independent storage blocker and runtime audit',ROOT/'blocker001/output/result.json'),ref('Git byte roundtrip',HERE/'git-source-roundtrip.json')],
+    details=dict(official_prepared=False,official_launched=False,maps_launched=False,scientific_result='not_run',automatic_retry=False,storage=proof['storage'])))
+build()

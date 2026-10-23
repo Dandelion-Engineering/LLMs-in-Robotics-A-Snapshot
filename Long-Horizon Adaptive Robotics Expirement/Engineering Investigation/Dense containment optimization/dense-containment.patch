@@ -1,0 +1,102 @@
+--- a/Batch 01/Restart Qualification Tools/assess_validation.py
++++ b/Batch 01/Restart Qualification Tools/assess_validation.py
+@@ -16,6 +16,8 @@
+ from pathlib import Path
+ import sys
+ import zipfile
++
++import numpy as np
+ 
+ from bundle_construction import RICH_LANDMARKS, validate_provisional_rule
+ from compatibility import digest, finite
+@@ -83,6 +85,73 @@
+             break
+     return {'state': 'fail' if remaining else 'pass', 'uncovered_piece_count': len(remaining),
+             'first_uncovered_box': remaining[0] if remaining else None, 'added_padding_m': 0.}
++
++
++class PreparedCorridorContainment:
++    def __init__(self, corridors, *, valid_box, require):
++        self._corridors = copy.deepcopy(corridors)
++        self._valid_box = valid_box
++        self._require = require
++        self._ready = False
++        self._low = self._high = None
++
++    @staticmethod
++    def _exact_float_coordinates(box):
++        # No rounding of large JSON integers into Float64 comparison decisions.
++        return all(type(v) is float or (type(v) is int and abs(v) <= 2**53)
++                   for side in ('min', 'max') for v in box[side])
++
++    def __call__(self, box):
++        self._require(self._valid_box(box), 'Invalid measured box/corridor')
++        if not self._ready:
++            self._require(isinstance(self._corridors, list) and self._corridors
++                          and all(self._valid_box(b) for b in self._corridors),
++                          'Invalid measured box/corridor')
++            if all(self._exact_float_coordinates(b) for b in self._corridors):
++                self._low = np.asarray([b['min'] for b in self._corridors], dtype=np.float64)
++                self._high = np.asarray([b['max'] for b in self._corridors], dtype=np.float64)
++                self._low.flags.writeable = self._high.flags.writeable = False
++            self._ready = True
++        covers = self._corridors
++        if self._low is not None and self._exact_float_coordinates(box):
++            low, high = np.asarray(box['min'], dtype=np.float64), np.asarray(box['max'], dtype=np.float64)
++            # Strict positive-volume intersection, identical to the original
++            # max/min test. Every later remaining piece is a subset of this box.
++            indices = np.flatnonzero(np.all((self._low < high) & (low < self._high), axis=1))
++            covers = (self._corridors[int(i)] for i in indices)  # Original order.
++        remaining = [copy.deepcopy(box)]
++        for cover in covers:
++            # Only shortcut at this cover's ORIGINAL position. An upfront search
++            # for any containing cover could hide an earlier resource-cap error.
++            if all(cover['min'][i] <= box['min'][i] and box['max'][i] <= cover['max'][i] for i in range(3)):
++                remaining = []
++                break
++            # Original exact subtraction and original per-cover resource cap.
++            next_pieces = []
++            for piece in remaining:
++                low = [max(piece['min'][i], cover['min'][i]) for i in range(3)]
++                high = [min(piece['max'][i], cover['max'][i]) for i in range(3)]
++                if any(a >= b for a, b in zip(low, high)):
++                    next_pieces.append(piece)
++                    continue
++                core = copy.deepcopy(piece)
++                for axis in range(3):
++                    if core['min'][axis] < low[axis]:
++                        slab = copy.deepcopy(core)
++                        slab['max'][axis] = low[axis]
++                        next_pieces.append(slab)
++                        core['min'][axis] = low[axis]
++                    if core['max'][axis] > high[axis]:
++                        slab = copy.deepcopy(core)
++                        slab['min'][axis] = high[axis]
++                        next_pieces.append(slab)
++                        core['max'][axis] = high[axis]
++            remaining = next_pieces
++            self._require(len(remaining) <= 20000, 'Corridor subtraction resource cap; containment unknown')
++            if not remaining:
++                break
++        return {'state': 'fail' if remaining else 'pass', 'uncovered_piece_count': len(remaining),
++                'first_uncovered_box': remaining[0] if remaining else None, 'added_padding_m': 0.}
+ 
+ 
+ def numeric_functions(source, fixture_source=None):
+@@ -459,6 +528,7 @@
+ 
+ 
+ def dense_assessment(evidence, identity, corridors, states, functions=None, payload_id=None):
++    containment = PreparedCorridorContainment(corridors, valid_box=valid_box, require=require)
+     inventory, inventory_ref = evidence.json(identity + '/geometry-inventory.json')
+     ids = [g['geom_id'] for g in inventory['geoms']]
+     require(ids and len(ids) == len(set(ids)) and {'robot','payload'} <= {g['role'] for g in inventory['geoms']},
+@@ -504,7 +574,7 @@
+             require(len(bounds['min']) == len(bounds['max']) == len(ids), 'Dense box count differs')
+             for i, geom_id in enumerate(ids):
+                 box = {'min':bounds['min'][i], 'max':bounds['max'][i]}
+-                assessment = box_union_contains(box, corridors); stats['box_count'] += 1
++                assessment = containment(box); stats['box_count'] += 1
+                 if assessment['state'] != 'pass':
+                     stats['outside_box_count'] += 1
+                     stats['first_failure'] = stats['first_failure'] or {'line':line,'geom_id':geom_id,'box':box,

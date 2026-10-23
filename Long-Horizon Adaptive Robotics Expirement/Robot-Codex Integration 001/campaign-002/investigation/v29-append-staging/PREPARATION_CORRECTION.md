@@ -1,0 +1,3 @@
+# History preparation correction
+
+The first preparation retained four successful official status gates, then stopped with FileNotFoundError for the incorrectly named NATIVE_PRE_EXIT_DRAIN_V1.md. No plan, candidate, canonical history or export was written. The actual frozen method is io-repair/native-pre-exit-drain-001/DECLARATION.md, as declared in the V29 coordinator. Initial-drafts and prepare_initial.py remain retained. Prepare_initial_v2.py uses a new exclusive initial-drafts-002 directory and this exact path; the unused stager is corrected with its prior bytes retained. Runtime and qualification inputs are unchanged.

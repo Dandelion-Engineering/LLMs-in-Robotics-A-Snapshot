@@ -1,0 +1,136 @@
+--- a/Runtime/candidates.py
++++ b/Runtime/candidates.py
+@@ -309,6 +309,7 @@
+             if not isinstance(answer_id, str) or answer_id in received:
+                 continue
+             received.append(answer_id)
++            self._visibility_answer(answer)
+             self.state["halted"] = False
+             # A newly received public answer starts an assisted attempt round.
+             # Physical failure counts, pending actions and process provenance
+@@ -353,6 +354,7 @@
+         signature = self._action_signature(action)
+         if success:
+             self.state["failure_counts"].pop(signature, None)
++            self.state.pop("visibility_reacquisition", None)
+             self._idle_steps = 0
+             node = pending.get("program_node")
+             program = self.state.get("program")
+@@ -598,7 +600,77 @@
+                 return zone
+         return "quarantine"
+ 
+-    def _baseline_action(self):
++    def _visibility_state(self):
++        return self.state.setdefault("visibility_reacquisition", {
++            "captures": 0, "requested": False, "last_capture": None,
++            "help_request_id": None, "assisted": False, "paused": False,
++        })
++
++    def _visibility_capture(self):
++        packet = self._packet
++        captured = packet.get("capture_sim_time_s")
++        sequence = packet.get("sequence")
++        if (not _finite(captured) or not isinstance(sequence, int) or isinstance(sequence, bool)
++                or not 0 <= packet["sim_time"] - captured <= MAX_AGE_S):
++            return None
++        return [packet["incarnation"], sequence, captured]
++
++    def _visibility_new_capture(self, capture, previous):
++        if capture is None:
++            return False
++        if previous is None or capture[0] != previous[0]:
++            return True
++        return capture[1] > previous[1] and capture[2] > previous[2]
++
++    def _visibility_answer(self, answer):
++        visibility = self.state.get("visibility_reacquisition")
++        if (visibility and visibility["help_request_id"] is not None
++                and answer.get("request_id") == visibility["help_request_id"]
++                and not visibility["assisted"]):
++            visibility.update(captures=0, requested=False, last_capture=None,
++                              assisted=True, paused=False)
++            self._event("visibility_assisted_round", answer_id=answer["answer_id"],
++                        request_id=visibility["help_request_id"])
++
++    def _visibility_action(self):
++        visibility = self._visibility_state()
++        capture = self._visibility_capture()
++        if not visibility["requested"]:
++            visibility.update(requested=True, last_capture=capture)
++            return {"operation": "observe", "reason": "request a fresh capture for visibility reacquisition"}
++        if not self._visibility_new_capture(capture, visibility["last_capture"]):
++            return {"operation": "wait", "reason": "await distinct fresh visibility capture"}
++        visibility["last_capture"] = capture
++        visibility["captures"] = min(4, visibility["captures"] + 1)
++        self._idle_steps = visibility["captures"]
++        if visibility["captures"] < 4:
++            return {"operation": "observe", "reason": "no currently visible eligible stock or unresolved visibility"}
++        if visibility["help_request_id"] is None:
++            return {"operation": "help", "reason": "required progress lacks publicly supported eligible action"}
++        visibility["paused"] = True
++        self.state["halted"] = True
++        self._event("visibility_reacquisition_blocked", captures=visibility["captures"],
++                    help_request_id=visibility["help_request_id"],
++                    assisted_round=visibility["assisted"],
++                    reason="visibility allowance exhausted without supported progress; repeated help suppressed")
++        return {"operation": "wait", "reason": "visibility remains unresolved; assistance request already retained"}
++
++    def _resume_visibility_pause(self):
++        visibility = self.state.get("visibility_reacquisition")
++        if not visibility or not visibility["paused"] or self.kind not in ("baseline", "A3"):
++            return
++        if not self._visibility_new_capture(self._visibility_capture(), visibility["last_capture"]):
++            return
++        # Ask the existing scheduler; do not introduce another action ranking.
++        action = self._baseline_action(visibility_fallback=False)
++        if (action and action["operation"] in ("transport", "setup", "cycle", "inspect", "done")
++                and self._validate(action) is None):
++            visibility["paused"] = False
++            self.state["halted"] = False
++            self._event("visibility_supported_progress_available", action=action,
++                        sequence=self._packet["sequence"], grading_authority=False)
++
++    def _baseline_action(self, *, visibility_fallback=True):
+         """A competent explicit sequencer using only retained/public evidence."""
+         if self._complete():
+             return {"operation": "done"}
+@@ -684,9 +756,7 @@
+                 return {"operation": "transport", "part_id": candidates[0][0], "destination": "fixture"}
+         if not self._packet["order"].get("closed") and all(not r["remaining"] for r in counts):
+             return {"operation": "wait", "reason": "provisional fulfillment; order stream remains open"}
+-        if self._idle_steps < 4:
+-            return {"operation": "observe", "reason": "no currently visible eligible stock or unresolved visibility"}
+-        return {"operation": "help", "reason": "required progress lacks publicly supported eligible action"}
++        return self._visibility_action() if visibility_fallback else None
+ 
+     def _guard(self, guard):
+         predicate = guard["predicate"]
+@@ -980,8 +1050,14 @@
+             self.state["program"]["completed"].append(program_node)
+         if op == "help":
+             self.state["halted"] = True
+-        if op in ("wait", "observe"):
+-            self._idle_steps += 1
++            visibility = self.state.get("visibility_reacquisition")
++            if visibility:
++                own_visibility_help = (self.kind in ("baseline", "A3")
++                    and visibility["captures"] >= 4 and visibility["help_request_id"] is None
++                    and action.get("reason") == "required progress lacks publicly supported eligible action")
++                visibility["paused"] = own_visibility_help
++                if own_visibility_help:
++                    visibility["help_request_id"] = action["request_id"]
+         self._persist()  # This commit completes before the caller can dispatch.
+         return {"type": "action", "action": action}
+ 
+@@ -1025,7 +1101,9 @@
+                 return self._issue({"operation": "help", "reason": "unresolved previous action; further consequential work blocked"})
+             return {"type": "wait"}
+         if self.state["halted"]:
+-            return {"type": "wait"}
++            self._resume_visibility_pause()
++            if self.state["halted"]:
++                return {"type": "wait"}
+         if self._model_context:
+             return {"type": "wait"}
+         if self.state["model_failures"] >= MAX_MODEL_FAILURES:

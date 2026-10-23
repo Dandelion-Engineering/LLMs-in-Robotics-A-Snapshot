@@ -1,0 +1,40 @@
+{
+  "schema_version": "root-managed-queue-admission-decision-3",
+  "recorded_at": "2026-09-24T22:26:16.392450+00:00",
+  "author": "Codex session 4",
+  "installed_queue": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\compute_queue.py",
+    "sha256": "31997fc851494df62c2466cf189b5e945a6a933464f5cd43e69b3d877c029829"
+  },
+  "previous_admission": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\queue-admission-with-manual-worker-002.json",
+    "sha256": "0e72c5cdad023a366c674ebe1c25af3ad27149963ce77da310a991ccb1997d04"
+  },
+  "installation_verification": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-queue-worker-loss-001\\queue-fix-proposal\\installation-001\\verification.json",
+    "sha256": "4f81e7e56b1f3c9f26fbe08f810d9bccbac55bdb4249c93b7738869ddda8ae35"
+  },
+  "serialized_read_decision": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Batch 01\\Release Queue Recovery 001\\serialized-ownership-read-decision.json",
+    "sha256": "ccbb5929947ea6026df796260c432ab0249c5ae3e09dd73257164fd7bbb41620"
+  },
+  "authority": "User clarified that both projects should share compute by ready chunks. This supersedes the temporary requirement for global queue idleness before admission and receipt collection, after the approved liveness repair and locked-reader validation. No shared source edits.",
+  "verified_source_behavior": {
+    "submit_auto_start_false": "Validates argv/cwd; appends under existing state lock; returns locked status without ensure_worker, liveness probe or orphan reconciliation.",
+    "status": "Returns one actual installed job under existing state lock; no save, liveness probe or reconciliation.",
+    "scheduling": "One worker lease; jobs execute to termination; least recently started waiting project next, FIFO within each project.",
+    "worker": "Existing worker continues newly queued chunks. Manual worker is launched only if no live worker exists after admission; a stopping worker may require natural-exit observation then manual startup."
+  },
+  "controls": [
+    "Keep at most one ready next robotics computation queued; dependencies must be verified before submission.",
+    "Use exact installed QueueService.submit(auto_start=False); do not use automatic CLI submit or ensure_worker polling.",
+    "A queued, running or already completed submit response may be valid; never assume queued is the only successful return when a worker is active.",
+    "Official completed-job receipt may be read using installed status API/CLI under its existing lock once that job is terminal and its descendants are gone; other project jobs may remain live.",
+    "Use verified serialized reader for operational snapshots; no ordinary live-state opens.",
+    "Never start a duplicate worker, modify another project job, run heavy local work beside trials or preempt active chunk.",
+    "Retain real terminal receipt and all failures; no policy retry, outcome change or old coordinator restart.",
+    "No doctor/repair/cancel calls as part of routine receipt/admission."
+  ],
+  "source_changed": false,
+  "policy_episode_launched": false
+}

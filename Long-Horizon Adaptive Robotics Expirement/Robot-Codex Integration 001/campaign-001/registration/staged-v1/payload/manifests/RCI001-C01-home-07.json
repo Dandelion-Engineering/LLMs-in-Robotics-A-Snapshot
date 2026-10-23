@@ -1,0 +1,69 @@
+{
+  "schema": "robot-codex-development-manifest-1.0",
+  "stage": "development-only",
+  "run_id": "RCI001-C01-home-07",
+  "family": "blocked-insert-home",
+  "mode": "serve",
+  "seed": 173,
+  "noise_seed": 22014,
+  "sim_cap_s": 900,
+  "wall_cap_s": 1100,
+  "storage_cap_bytes": 536870912,
+  "physics_dt_s": 0.002,
+  "clock_mode": "wall-paced; physics continues independently of agent",
+  "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+  "operator_only_fixture": {
+    "part_count": 2,
+    "placements": [
+      {
+        "part_id": "A1",
+        "zone": "insert_home_A"
+      }
+    ],
+    "order": {
+      "version": 1,
+      "closed": true,
+      "requirements": [
+        {
+          "family": "B",
+          "recipe": "B",
+          "count": 1,
+          "tray": "tray2",
+          "max_rework_cycles": 0
+        }
+      ]
+    },
+    "reference_actions": [
+      {
+        "operation": "transport",
+        "part_id": "A1",
+        "destination": "parking1"
+      },
+      {
+        "operation": "setup",
+        "family": "B"
+      }
+    ],
+    "missing_rule": "Frozen setup returns insert A to its occupied home; baseline has no home-evacuation rule.",
+    "baseline_source": "Runtime 004/candidates.py:673-759; cell.py:342-349,537-550"
+  },
+  "limitations": [
+    "Development fixture; not sampled performance evidence",
+    "No collision safety certificate",
+    "Reference solution is protected operator evidence",
+    "Agent process restart only; supervisor restart is not implemented"
+  ],
+  "model": "gpt-6-astra",
+  "effort": "max",
+  "bootstrap": "Follow the instructions in RobotAgentPrompt.md.",
+  "model_turns_max": 1,
+  "invocation_wall_cap_s": 600,
+  "action_request_budget": 20,
+  "observation_request_budget": 50,
+  "interruption_trigger": null,
+  "prior_attempt": null,
+  "outer_campaign_protocol": "RCI001-Campaign001-plan-v1",
+  "scoring_scope": "Prospective repeated fixed development fixtures; no held-out family or layout claim",
+  "host_stage_label_preserved": true,
+  "runtime_workspace": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Campaign001\\RCI001-C01-home-07"
+}

@@ -1,0 +1,19 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\complete-reader-qualification-001\checks_v2.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\boundary-import-qualification-001\checks.py
+@@ -12,12 +12,12 @@
+ 
+ def main():
+     if len(sys.argv)>1 and sys.argv[1]=='submit':
+-        c.require(not (HERE/'checks-submit-002.json').exists() and not control.CHECKS.exists(),'Existing check footprint')
++        c.require(not (HERE/'checks-submit-001.json').exists() and not control.CHECKS.exists(),'Existing check footprint')
+         command=c.python(Path(__file__).resolve(),'run')
+-        c.save(HERE/'checks-intent-002.json',{'argv':command,'runner':c.identity(__file__),'scope':'No-model full H/A/Q/admission regression tests'})
++        c.save(HERE/'checks-intent-001.json',{'argv':command,'runner':c.identity(__file__),'scope':'No-model full H/A/Q/admission regression tests'})
+         job=json.loads(subprocess.check_output(c.python(c.QUEUE,'submit','--project','LLMs-in-Robotics','--cwd',c.REPO,'--',*command),text=True,encoding='utf-8'))
+-        c.save(HERE/'checks-submit-002.json',job);print(json.dumps({'job_id':job['id'],'state':job['state']}));return
+-    intent=c.read(HERE/'checks-intent-002.json');c.require(intent['runner']==c.identity(__file__),'Runner changed')
++        c.save(HERE/'checks-submit-001.json',job);print(json.dumps({'job_id':job['id'],'state':job['state']}));return
++    intent=c.read(HERE/'checks-intent-001.json');c.require(intent['runner']==c.identity(__file__),'Runner changed')
+     paths={p for folder in ('harness','assessment','qualification','admission') for p in (control.C/folder).glob('*.py')}
+     paths.update(control.C.glob('*.py'))
+     before=[identity(p) for p in sorted(paths)]

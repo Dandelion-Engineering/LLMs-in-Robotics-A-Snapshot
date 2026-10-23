@@ -1,0 +1,21 @@
+# One reset-rejection diagnostic after Smoke019
+
+Declared prospectively on 2026-09-28 before instrumentation or submission. Smoke019/dev061, official job `20260928T210749155181Z-d083eeb7`, failed with integer exit 1 at 21:08:26.022716Z. It remains unassessed with unknown task outcome. Native020 and Boundary021 passed their separate gates; neither pilot nor scoring launched.
+
+The first retained transport error is `HTTP/2 reset on unavailable stream`, before native cleanup and before the planned smoke interruption. The parent witness had three normally closed streams, active IDs 1 and 3, last ID 9, no accepted resets and no retirement phase. Its upload count exceeds forwarded bytes by 13. This does not identify the rejected stream or reset error code. The subsequent native interrupt/unsubscribe handshake and exit succeeded; they do not repair the preceding transport failure.
+
+RFC 9113 sections 5.1 and 6.4 distinguish closed-stream control races from resets on idle streams. That distinction motivates collecting the missing structural facts, not accepting an unidentified reset. Primary source: https://www.rfc-editor.org/rfc/rfc9113.html#section-5.1 and https://www.rfc-editor.org/rfc/rfc9113.html#section-6.4. The existing parser and qualification rules remain unchanged for this diagnostic.
+
+## Instrumentation only
+
+At the existing unavailable-reset rejection, retain the first fixed structural record: direction, type, flags, stream ID, payload length, 32-bit reset code, current active membership, retirement phase and original-frontier membership, monotone last stream ID, and whether this witness previously observed that exact stream close normally or by reset. The four-byte control error code is protocol metadata. Do not retain application headers, data, credentials, capabilities, arbitrary exception text or model reasoning.
+
+Maintain a bounded diagnostic-only set of the last 1,024 normally closed IDs, evicting the oldest ID when full and recording whether eviction occurred. Use the existing bounded reset records to distinguish previously reset IDs. Missing membership is unknown, not proof that a stream was never opened. The new state must never participate in acceptance, forwarding, retirement, EOF or success decisions. Keep the first rejection only; successful witness schema and unrelated failures remain unchanged. Existing post-retirement HEADERS rejection metadata remains byte-compatible.
+
+Retain deterministic tests for normal-close/reset/unknown distinctions, fragmentation, coalescing, first-only bounded payload-free metadata, eviction and unchanged errors, counters and forwarding. Compare the instrumented implementation with the exact dev061 parser for acceptance and non-diagnostic state on fixed positive and negative workloads. No deadline, reset rule, stream rule or other transport gate changes.
+
+## Fixed single invocation
+
+Use fresh `RCI001-C02-shutdown-diagnostic-002`, revision `RCI001-C02-dev-062`, wrapper `single-interrupt-diagnostic-v2/`, stage `campaign002-single-interrupt-diagnostic` and protocol `RCI001-Campaign002-single-interrupt-diagnostic-v2`. Preserve the original wrapper and Diagnostic001. Copy the existing single-invocation runner and guarded launcher, changing only these identities, method/source bindings and the policy basis to Smoke019. The unchanged `physical.run_invocation('interrupt', ...)` runs exactly once with the original smoke trigger, bootstrap, GPT-6 Astra/Max ChatGPT configuration, isolation, resources, canaries, authority retirement, exports and cleanup. There is no fresh-invocation resume, second model invocation or automatic retry.
+
+Keep all Smoke019 policy fields and caps except the explicit one-invocation maximum and diagnostic identity/output paths. Freeze the complete source inventory after meaningful tests. Preserve exact launch intent, source and queue identities, storage monitor admission and the shared compute queue. Authenticate official terminal status before diagnostic output reads. A failed queue remains failed; task outcome stays unknown regardless of diagnostic observations. An inconclusive diagnostic is retained and is not repeated unchanged. Any subsequent material repair needs its own prospective declaration, tests, fresh source identities and the complete qualification sequence before scoring.

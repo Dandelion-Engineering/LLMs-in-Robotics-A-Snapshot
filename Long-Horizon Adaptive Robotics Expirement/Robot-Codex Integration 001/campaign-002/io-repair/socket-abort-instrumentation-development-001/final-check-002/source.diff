@@ -1,0 +1,65 @@
+--- dev090/codehost_bridge_v3.py
++++ instrumented/codehost_bridge_v3.py
+@@ -169,6 +169,7 @@
+         self.finish_frontier = self.seal_frontier = self.upload_drained = None
+         self.upload_task = self.sink_task = None
+         self.upload_read_pending = False
++        self.socket_failure_seen = False
+ 
+ 
+ class Bridge:
+@@ -545,6 +546,31 @@
+                     if not future.done(): future.set_exception(error)
+             raise
+ 
++    def record_socket_failure(self, channel, operation, error):
++        """Bounded first-error metadata; never replace the original socket error."""
++        if channel.socket_failure_seen:
++            return
++        channel.socket_failure_seen = True
++        try:
++            require(operation in ('upload_read', 'download_write') and isinstance(error, OSError),
++                    'invalid_socket_diagnostic_call')
++            classes = (OSError, ConnectionError, ConnectionAbortedError, ConnectionRefusedError,
++                       ConnectionResetError, BrokenPipeError, TimeoutError, BlockingIOError, InterruptedError)
++            name = type(error).__name__ if type(error) in classes else 'OtherOSError'
++            def code(field):
++                value = getattr(error, field, None)
++                return value if type(value) is int and -(2**31) <= value < 2**31 else None
++            self.ledger.emit('socket_failure', diagnostic_schema='campaign002-socket-failure-1',
++                operation=operation, channel_id=channel.id, exception_class=name,
++                errno=code('errno'), winerror=code('winerror'),
++                cleanup_active=self.cleanup_request is not None and not self.cleanup_abandoned.is_set(),
++                client_finishing=self.fixture.client_finishing.is_set(), owner_draining=self.finishing,
++                owner_sealed=self.sealed, byte_counters={key:value.bytes for key,value in channel.meters.items()})
++        except BaseException:
++            # Ledger bounds/failures retain their original abort behavior. The
++            # operation's OSError must still reach the existing fatal handler.
++            pass
++
+     async def upload(self, channel):
+         reserved = 0
+         try:
+@@ -552,6 +578,9 @@
+                 self.budget.reserve(channel.id, mux.MAX_FRAME_BYTES); reserved = mux.MAX_FRAME_BYTES
+                 channel.upload_read_pending = True
+                 try: data = await channel.reader.read(mux.MAX_FRAME_BYTES)
++                except OSError as error:
++                    self.record_socket_failure(channel, 'upload_read', error)
++                    raise
+                 finally: channel.upload_read_pending = False
+                 self.budget.release(channel.id, reserved-len(data)); reserved = len(data)
+                 if not data: break
+@@ -575,7 +604,11 @@
+                 data = await channel.queue.get()
+                 if data is None: break
+                 try:
+-                    channel.writer.write(data); await channel.writer.drain()
++                    try:
++                        channel.writer.write(data); await channel.writer.drain()
++                    except OSError as error:
++                        self.record_socket_failure(channel, 'download_write', error)
++                        raise
+                     channel.meters['client_written'].add(data)
+                 finally:
+                     self.budget.release(channel.id, len(data)); channel.queue.task_done()

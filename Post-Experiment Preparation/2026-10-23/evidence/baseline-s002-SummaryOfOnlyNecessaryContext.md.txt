@@ -1,0 +1,17 @@
+# Continuity after session-002
+
+**Bedroom toy task is incomplete: green and blue are visibly inside the fixed wooden chest; red and yellow remain on the bedroom floor.** Both placed toys had bilateral contact and confirmed actual lifts. Observation 34 at sim 1198.488 showed both inside; `task_success` remained false. Red and yellow were not manipulated. The normal assignment should resume, but read fresh status rather than assuming it.
+
+Battery warning was observed at sim 1219.100. Toy work stopped, the robot returned to the living-room charger, and docking completed at sim 1375.304. Physical control is closed for this invocation. Robot is stationary, docked, with no active action, empty open gripper, arm (.22,0,.70), pitch 0, head pan 0/tilt .65. Approximate odometry (-1.849,-.859), yaw -8.7546 (equivalent to -2.4714 rad). The backstop is ahead. Recharged status after docking is not authority to resume work in this invocation.
+
+For continuation:
+
+- Read [bedroom toy pickup playbook](Playbooks/Learned/BedroomToyPickup.md) and [route map](Maps/bedroom-route.md). The successful green/blue parameters are examples; red/yellow dimensions and closure remain untested.
+- Bedroom is beyond the living-room table/TV along approximate +y. Red is nearer the doorway on the bed side; yellow is farther in beside the bed. Reobserve and obtain fresh grasp points.
+- Chest approach used base near (1.30,5.11), yaw 1.13, releasing over its observed interior at arm (1.00,.10,.78) and (1.00,-.05,.78). Preserve the two deposited toys.
+- Successful travel ran through the clear corridor near x=.50–.55. A return segment near (.769,3.410), heading -1.816, hit the doorway edge and was reported blocked; heading also changed. Backing and recentering recovered it. The map records the exact evidence. Do not replay the obstructed approach.
+- The latest successful living-room charger approach was from (.503,1.003), heading -2.471, through 1.50/1.15/.35 m segments. Reversing this path is a possible departure route only after fresh rear sensing. The bedroom charger was not identified.
+
+Evidence and continuity: [session-002 report](SessionReports/2026-10-10-session-002.md), [placement record](Artifacts/session-002-placements.md), [raw docked status](Artifacts/session-002-final-status.json). The existing [living-room map](Maps/living-room.md) and learned throwing capability remain available but do not describe the active household task. Session-001's bounded throwing practice was already complete.
+
+Remaining required work: acquire and contain red and yellow, verify household task success, and follow the ordinary warning/docking/closeout cycle. No future invocation is assumed guaranteed.

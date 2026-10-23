@@ -1,0 +1,30 @@
+--- dev086/assessment/assess.py
++++ prospective/assessment/assess.py
+@@ -21,7 +21,7 @@
+ REPO = INTEGRATION.parents[1]
+ PRIOR = INTEGRATION / 'readiness-session-10' / 'assessment'
+ sys.path.insert(0, str(PRIOR))
+-from assess_bootstrap import read_json, sha
++from assess_bootstrap import read_json, sha, check_retirement
+ from assess_smoke import inspect_stage as original_inspect_stage, jsonl, continuity_commits
+ from assess_pilot import classify_outcome, public_support, source_integrity
+ from retained_reads import upgrade_stage
+@@ -31,7 +31,17 @@
+ 
+ 
+ def inspect_stage(root, source_zip=None):
+-    return upgrade_stage(root, original_inspect_stage(root), source_zip=source_zip)
++    stage = original_inspect_stage(root)
++    shared_host_retirement = Path(root) / 'codehost-owner-retirement-v3.json'
++    if shared_host_retirement.exists():
++        retirements = stage['retirements']
++        retirements[shared_host_retirement.name] = read_json(shared_host_retirement)
++        stage['checks']['all_namespace_retirements_observed'] = (
++            len(retirements) >= 3
++            and any(name.startswith('executor-') for name in retirements)
++            and any(name.startswith('codehost-') for name in retirements)
++            and all(check_retirement(record) for record in retirements.values()))
++    return upgrade_stage(root, stage, source_zip=source_zip)
+ 
+ CAMPAIGN = HERE.parent
+ LAUNCHER = CAMPAIGN / 'harness/physical.py'

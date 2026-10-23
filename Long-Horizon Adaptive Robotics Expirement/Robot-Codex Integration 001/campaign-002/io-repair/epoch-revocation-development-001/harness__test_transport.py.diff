@@ -1,0 +1,169 @@
+--- baseline/harness/test_transport.py
++++ harness/test_transport.py
+@@ -1,5 +1,6 @@
+ """Deterministic transport lifecycle checks; no model, WSL, or simulation."""
+ import copy
++import hashlib
+ import io
+ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+ import json
+@@ -29,6 +30,8 @@
+         self.value.abort_event = threading.Event()
+         self.value.stop = threading.Event()
+         self.value.workspace = '/not-used'
++        self.value.files = {'live/state.json':json.dumps({'invocation':{
++            'invocation_id':'interrupt-fixture', 'authority_epoch':3, 'state':'active'}})}
+         self.value.broker_calls = []
+         self.payload = {'request_id':'handback-1','authority_epoch':3}
+         self.accepted = {'ok':True,'owner':'conventional','authority_epoch':4,
+@@ -209,5 +212,150 @@
+         self.value._observe_revocation('GET','/status',None,403,{'ok':False,'error':{'code':'unauthorized'}},'public_mirror')
+         self.assertEqual((self.value.evidence/'authority-revocation.json').read_bytes(),receipt)
+ 
++    def test_actual_queued_status_loses_epoch_after_operator_retirement(self):
++        gateway_module = runtime.load('epoch_gateway_test', runtime.HERE / 'run_host.py')
++        from supervisor import Journal, Supervisor
++        from test_supervisor import FakeAdapter, Candidate, packet
++        root = self.value.evidence
++        journal = Journal(root/'protected', root/'host-workspace', 'synthetic-epoch-race')
++        host = Supervisor(FakeAdapter(), Candidate('baseline',root/'baseline',True), journal)
++        host.lifecycle_required = True
++        host.update_observation(packet()); host.activate('Synthetic activation')
++        started = host.lifecycle('start-invocation', {'request_id':'start-fixture',
++            'authority_epoch':host.epoch,'invocation_id':'interrupt-fixture'})
++        self.assertEqual(started['command']['status'],'completed')
++        gateway = gateway_module.HttpGateway(journal.workspace,journal.root)
++        gateway.synchronize(host); gateway.start()
++        self.addCleanup(gateway.close)
++        self.value.endpoint={'url':'http://127.0.0.1:'+str(gateway.server.server_port),
++                             'authority_epoch':host.epoch}
++        self.value.token=gateway.capability; self.value.tokens=[gateway.capability]
++        self.value.files={'live/state.json':json.dumps(host.status())}
++        thread=threading.Thread(target=self.value._mirror_loop,daemon=True)
++        with patch.object(runtime,'linux') as publish:
++            thread.start()
++            mail=gateway.requests.get(timeout=2)
++            self.assertEqual((mail.method,mail.path,mail.authenticated_epoch),('GET','/status',host.epoch))
++            before=self.rows('mirror-requests.jsonl')[0]
++            retired=host.lifecycle('retire-invocation',{'request_id':'retire-fixture',
++                'authority_epoch':host.epoch,'invocation_id':'interrupt-fixture'})
++            self.assertEqual(retired['command']['status'],'completed')
++            gateway.requests.put_nowait(mail);gateway.process(host)
++            thread.join(timeout=3)
++            self.assertFalse(thread.is_alive());publish.assert_not_called()
++        reply=self.rows('mirror-replies.jsonl')[0]
++        self.assertEqual((reply['status'],reply['response']['error']['code']),(409,'stale_authentication'))
++        self.assertEqual(reply['request_id'],before['request_id'])
++        self.assertTrue(self.value.authority_revoked.is_set())
++        self.assertFalse(self.value.abort_event.is_set())
++        receipt=json.loads((root/'authority-revocation.json').read_text())
++        self.assertEqual(receipt['reason'],'host_epoch_denied')
++        self.assertEqual(receipt['mirror_context'],reply)
++        upstream,responses=self.broker([self.frame('GET','/status',token=self.value.token)],[])
++        upstream.assert_not_called();self.assertEqual(responses[0]['status'],403)
++        self.assertEqual(self.rows('broker-events.jsonl')[0]['origin'],'local_revocation_fence')
++        # These are real producer artifacts for independent replay, not mocked proof rows.
++        runtime.write_json(root/'stage-result.json',{'invocation_id':'interrupt-fixture'})
++        runtime.write_json(root/'runtime-input-hashes.json',{'live/state.json':
++            hashlib.sha256(self.value.files['live/state.json'].encode()).hexdigest()})
++        runtime.write_json(root/'paired-history.json',journal.events)
++        runtime.write_json(root/'paired-registry.json',host.commands)
++
++    def test_successful_mirror_bytes_unchanged_and_context_precedes_request(self):
++        value={'ok':True,'activation':{'n':1},'packet':{'text':'unicode café'}}
++        def reply(*args):
++            self.assertEqual(len(self.rows('mirror-requests.jsonl')),1)
++            return 200,value
++        def publish(script,workspace,*,payload,timeout):
++            self.assertEqual(payload,{'live/state.json':json.dumps(value),
++                'live/activation.json':json.dumps(value['activation']),
++                'live/observations/latest.json':json.dumps(value['packet'])})
++            self.assertEqual(timeout,10);self.value.stop.set()
++        with patch.object(runtime,'request',side_effect=reply),patch.object(runtime,'linux',side_effect=publish):
++            self.value._mirror_loop()
++        self.assertFalse(self.value.authority_revoked.is_set());self.assertFalse(self.value.abort_event.is_set())
++        q=self.rows('mirror-replies.jsonl')[0]
++        self.assertEqual(q['response_sha256'],hashlib.sha256(runtime.mirror_bytes(value)).hexdigest())
++
++    def test_exact_409_requires_known_code_typed_status_and_pinned_invocation(self):
++        cases=[(409,{'ok':False,'error':{'code':x}}) for x in
++               ['invalid_action','unsupported_resumption','unauthorized']]
++        cases += [(x,{'ok':False,'error':{'code':'stale_authentication'}})
++                  for x in [400,429,504,409.0,True]]
++        cases += [(409,None),(409,{'ok':True,'error':{'code':'stale_authentication'}}),
++                  (409,{'ok':False,'error':'stale_authentication'})]
++        for status,body in cases:
++            with self.subTest(status=status,body=body):
++                self.value.abort_event.clear()
++                with patch.object(runtime,'request',return_value=(status,body)),patch.object(runtime,'linux') as publish:
++                    self.value._mirror_loop()
++                self.assertFalse(self.value.authority_revoked.is_set());self.assertTrue(self.value.abort_event.is_set())
++                publish.assert_not_called()
++        self.value.files={'live/state.json':'{}'}
++        with patch.object(runtime,'request',return_value=(409,{'ok':False,'error':{'code':'stale_authentication'}})):
++            self.value._mirror_loop()
++        self.assertFalse(self.value.authority_revoked.is_set())
++
++    def test_failure_context_never_borrows_previous_reply_and_is_redacted(self):
++        calls=[(200,{'ok':True,'activation':{},'packet':{}}),urllib.error.URLError('test-token unavailable')]
++        with patch.object(runtime,'request',side_effect=calls),patch.object(runtime,'linux'),\
++             patch.object(self.value.stop,'wait',return_value=False):
++            self.value._mirror_loop()
++        requests=self.rows('mirror-requests.jsonl');replies=self.rows('mirror-replies.jsonl')
++        self.assertEqual(len(requests),2);self.assertEqual(len(replies),1)
++        failure=json.loads((self.value.evidence/'mirror-error.json').read_text())
++        self.assertEqual(failure['mirror_request'],requests[1]);self.assertIsNone(failure['mirror_reply'])
++        self.assertNotEqual(requests[0]['request_id'],requests[1]['request_id'])
++        self.assertNotIn('test-token',(self.value.evidence/'mirror-error.json').read_text())
++
++    def test_large_successful_body_hash_is_complete_but_log_is_bounded(self):
++        value={'ok':True,'activation':{},'packet':{'text':'x'*5000}}
++        with patch.object(runtime,'request',return_value=(200,value)),\
++             patch.object(runtime,'linux',side_effect=lambda *a,**k:self.value.stop.set()):
++            self.value._mirror_loop()
++        reply=self.rows('mirror-replies.jsonl')[0]
++        self.assertFalse(reply['response_retained']);self.assertIsNone(reply['response'])
++        self.assertEqual(reply['response_sha256'],hashlib.sha256(runtime.mirror_bytes(value)).hexdigest())
++        self.assertLess((self.value.evidence/'mirror-replies.jsonl').stat().st_size,2000)
++
++    def test_receipt_caps_fail_closed_before_new_upstream_request(self):
++        with patch.object(runtime,'MIRROR_LOG_LIMIT',1),patch.object(runtime,'request') as upstream:
++            self.value._mirror_loop()
++        upstream.assert_not_called();self.assertTrue(self.value.abort_event.is_set())
++        failure=json.loads((self.value.evidence/'mirror-error.json').read_text())
++        self.assertEqual(failure['phase'],'request_context')
++        self.assertIsNone(failure['mirror_reply'])
++
++    def test_large_or_redacted_denial_does_not_gain_409_authority(self):
++        for message in ['x'*5000,'test-token']:
++            with self.subTest(message_size=len(message)):
++                body={'ok':False,'error':{'code':'stale_authentication','message':message}}
++                with patch.object(runtime,'request',return_value=(409,body)):
++                    self.value._mirror_loop()
++                self.assertFalse(self.value.authority_revoked.is_set())
++                self.assertTrue(self.value.abort_event.is_set())
++
++    def test_wrong_initial_invocation_epoch_or_state_cannot_latch_409(self):
++        for epoch,state in [(4,'active'),(True,'active'),(3,'retired')]:
++            with self.subTest(epoch=epoch,state=state):
++                self.value.files={'live/state.json':json.dumps({'invocation':{
++                    'invocation_id':'interrupt-fixture','authority_epoch':epoch,'state':state}})}
++                with patch.object(runtime,'request',return_value=(409,{
++                        'ok':False,'error':{'code':'stale_authentication'}})):
++                    self.value._mirror_loop()
++                self.assertFalse(self.value.authority_revoked.is_set())
++                self.assertIsNone(self.rows('mirror-requests.jsonl')[-1]['pinned_invocation_id'])
++
++    def test_failed_reply_encoding_retains_current_status_and_no_stale_body(self):
++        with patch.object(runtime,'request',return_value=(409,{'invalid':float('nan')})):
++            self.value._mirror_loop()
++        failure=json.loads((self.value.evidence/'mirror-error.json').read_text())
++        self.assertEqual(failure['phase'],'reply_context')
++        self.assertEqual(failure['mirror_reply']['status'],409)
++        self.assertNotIn('response',failure['mirror_reply'])
++        self.assertTrue(self.value.abort_event.is_set())
++        with self.assertRaisesRegex(RuntimeError,'record limit'):
++            self.value._mirror_receipt('mirror-replies.jsonl',{'data':'x'*runtime.MIRROR_RECORD_LIMIT})
++
+ 
+ if __name__ == '__main__':unittest.main()

@@ -1,0 +1,9 @@
+# Session10 host lifecycle evidence
+
+`result.json` and the adjacent raw unittest logs retain the current source-bound lightweight checks. Run `venv/Scripts/python.exe -X utf8 -B "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/session10-verification/verify.py"` from the repository to reproduce them. This invokes no model, physical Cell, simulation episode or heavy compute.
+
+The new lifecycle tests exercise real HTTP authentication plus a synthetic adapter: operator token separation, no pre-invocation actuation, start/retire and queued-token fencing, fresh-invocation reconciliation after an unknown acknowledgement, stable lifecycle retry, refusal to return a successor token for an old start, and safe retirement after protected handback. They also verify orderly stop, declared serve-only resource caps, atomic continuity replacement failure preserving the old note, retention of committed note hashes, and bounded named camera-file transfer. Existing host and client regressions remain included.
+
+These results establish gateway and authority mechanics, not physical recovery, OS isolation, model behavior, camera interpretation, power-loss durability, full-host recovery, or namespace retirement. Those require the separately retained Session10 launcher and native-run evidence. Cancellation preserves unknown physical effects; a restart does not reset action budgets or convert unknown effects to success. The single-process host remains the authoritative command registry across agent invocations.
+
+`windows-sharing-001/` is the later source-bound verification after smoke001's pre-model Windows atomic-replace failure. Its five added tests include a real Windows read handle without delete sharing, transient and persistent replacement denials, non-Windows/other I/O errors, and pre-replacement fsync failure. The first result above remains preserved. Reproduce a new retained record with `verify.py --record-name NEW_NAME`.

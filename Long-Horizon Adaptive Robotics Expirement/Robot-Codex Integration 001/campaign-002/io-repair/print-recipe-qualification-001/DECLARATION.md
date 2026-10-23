@@ -1,0 +1,5 @@
+# V33 finite initial-read qualification
+
+Prospective repair of the exact two-root plain `find -print` recipe identified by Smoke030 diagnosis. Preserve all stopped earlier lineages, specifically V32: Native031 passed66/66, Boundary032 passed, Smoke030 succeeded/int0 but failed61/62; both Pilot029 unstarted. Zero scored starts/registrations.
+
+Change only finite command recognition and additive source inventories. Keep the byte-origin proof and every model/task/physics/timing/isolation/canary/retirement predicate unchanged. Bind the version2 method, original diagnosis and diagnostic replay. Run full harness, assessment, qualification and admission tests, authenticate official completion and unchanged source identities, then declare previously absent identities: dev111 anchor, dev112 native, dev113 boundary, dev114 smoke/both pilots; Raw023, Transport026, Host033, Native032, Boundary033, Smoke031, PilotStock030, PilotHome030. Every qualification is fresh and unretried. Stop on any failed stage.

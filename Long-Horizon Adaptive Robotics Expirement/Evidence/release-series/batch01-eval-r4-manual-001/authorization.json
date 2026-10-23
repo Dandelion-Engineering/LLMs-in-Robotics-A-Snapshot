@@ -1,0 +1,60 @@
+{
+  "schema_version": "root-managed-frozen-release-continuation-1",
+  "recorded_at_utc": "2026-09-23T22:15:28.399556+00:00",
+  "decision": "Continue original unattempted stored schedule through documented unchanged Runtime004 run/finalize CLI, in root-managed bounded batches. Stop external series001/002 permanently; avoid their immediate non-delete-sharing state polling.",
+  "authorization": "Existing user complete-experiment authorization; root resolves concrete external orchestration failures without modifying shared queue, frozen runtime, readiness, sources, seeds, model, policies or outcomes.",
+  "observed_failure": "Worker created a runner child, then Windows denied atomic state.json replacement while publishing child_pid; worker catch terminates an unexited child and records interrupted. No new release batch, registration or attempt was observed.",
+  "cause_limit": "WinError5 proves denied replacement. The owning handle/process is unknown; non-delete-sharing readers including the frozen coordinator can cause this on Windows, but exact culprit is not established.",
+  "live_observation_method": "Read queue state through .NET FileStream with FileAccess.Read and FileShare.ReadWrite|FileShare.Delete; close handle promptly. Observe OS processes and own logs only. Never queue CLI status/list/submit/doctor while any worker/child/episode is live. Do not poll shared state immediately after submission.",
+  "execution_contract": [
+    "same frozen release and runner",
+    "limit4 in stored order without explicit run IDs",
+    "fresh capacity record before each batch using same planning rate, remaining caps and50GiBreserve",
+    "record submission and all failures",
+    "official succeeded/int0 after natural exit before canonical finalization",
+    "queue original finalize and verify its receipt before next batch",
+    "stop on any unresolved attempt or infrastructure/integrity failure",
+    "zero automatic episode retries",
+    "all264 dispositions before004analysis/UI/closeout"
+  ],
+  "first_stop": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\operator-decisions\\r4-worker-start-incident-001.json",
+    "sha256": "35b4e958e4cd12b51ad1f8b28a8f13944459ca0d6b1b1828a8d23d3ba7026e9c"
+  },
+  "second_stop": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-series-002\\stopped.json",
+    "sha256": "5c3a1f82dff7fa7496ff639ac735699d38e3eda89b5232e1286fa0b3e4ff8687"
+  },
+  "second_failed_receipt": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T221027600746Z-8a4f98f0.json",
+    "sha256": "a098d65f61820d825bb97fa7cb6f4a1e37f1694ec2821bbf1f8376222b4d11ba"
+  },
+  "second_log": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\tools\\compute_queue\\runtime\\logs\\20260923T221027600746Z-8a4f98f0.log",
+    "sha256": "3abed7fb9030f8928eef5fe98877dd9648b37e8fc1b09a33e162ead7813e306e"
+  },
+  "release": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\release.json",
+    "sha256": "ed65f8b33e16daaa081031cfe7ccc7ac65644af3522546aad0d2fa76a1d72fe1"
+  },
+  "runner": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Runtime 004\\release_runner.py",
+    "sha256": "560ee37182d8c7eb03fb7f7a3c5e49fc50741527130dce4bb9d36f1cb5dc8bb5"
+  },
+  "retention": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\derived\\retention-development-r4-001\\summary.json",
+    "sha256": "867a662475a68d630803372e4d80a346431cd8ed9fb82ef9213aa4ec3b81779d"
+  },
+  "retention_receipt": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260923T170009916551Z-3ce0f969.json",
+    "sha256": "45f7d3a652726e586ef4344b91b72fb86c3ed7a29b5685719c3436f76f28723b"
+  },
+  "completed_count": 36,
+  "remaining_count": 228,
+  "new_attempts_from_failed_jobs": 0,
+  "score_or_validity_reclassified": false,
+  "coordinator_sources_edited": false,
+  "shared_queue_edited": false,
+  "new_series_directory": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001",
+  "completion_marker_note": "Historical frozen coordinators use complete.json, not completed.json. Root-managed journal will also use complete.json only after full264verification."
+}

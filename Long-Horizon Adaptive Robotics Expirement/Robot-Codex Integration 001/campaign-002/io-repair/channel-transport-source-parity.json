@@ -1,0 +1,68 @@
+{
+  "schema": "campaign002-channel-source-parity-1",
+  "passed": true,
+  "empirical": false,
+  "baseline_revision": "RCI001-C02-dev-041",
+  "archive": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-041\\code.zip",
+    "sha256": "1b05d7dc1ac46973c64e0a45f34d933a179c99b813a2058eadfd2824f9a99727",
+    "bytes": 1956370
+  },
+  "sources": {
+    "bootstrap_client_v3.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\bootstrap_client_v3.py",
+      "sha256": "a44db8031771c4ff380b52d2abc031a015eb0afcb6e06b13d486272ea3fb0e5d",
+      "bytes": 21489
+    },
+    "bootstrap_client_v4.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\bootstrap_client_v4.py",
+      "sha256": "40a77e1c656c3c7940076790777cfa6900eabe29c27bd12086357ba0ab455c91",
+      "bytes": 22197
+    },
+    "runtime.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\runtime.py",
+      "sha256": "4e521d64b45de426d31cabecf25669e9f50346a6d82b97a2bcd7f53b6f4dd6ad",
+      "bytes": 24609
+    },
+    "test_native_owner_bootstrap.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\test_native_owner_bootstrap.py",
+      "sha256": "fa18130f33995cf50ec5b6fcb384452dd2a4185d72c4afd60c823dd916edb7f9",
+      "bytes": 10337
+    },
+    "literal_read_segments.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\literal_read_segments.py",
+      "sha256": "769a79dcfd42f22ba8466f927df22d1726a71888f784de5dde979fcfc43bfafc",
+      "bytes": 18107
+    },
+    "raw_tool_result_reads.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\assessment\\raw_tool_result_reads.py",
+      "sha256": "b22a2903f38eede3a90a7c87c6065c64cd49b5807be9ba77042ef46972b6249d",
+      "bytes": 20732
+    }
+  },
+  "bootstrap_only_addition": "        if code_mode_host_url:\n            owner_callback = getattr(args, \"native_process_ready\", None)\n            require(callable(owner_callback), \"Authenticated native process owner callback is required\")\n            owner_binding = owner_callback(client.process, LAUNCH.CODEX)\n            require(isinstance(owner_binding, dict), \"Native owner callback did not return a receipt\")\n            owner_path = args.evidence / \"native-owner.json\"\n            LAUNCH.write_json(owner_path, owner_binding)\n            client.log({\"kind\": \"native_process_owner_registered\",\n                        \"receipt_sha256\": LAUNCH.sha256(owner_path),\n                        \"receipt_bytes\": owner_path.stat().st_size})\n",
+  "runtime_only_replacements": [
+    {
+      "before": "bootstrap = load('campaign002_bootstrap_v3', HERE / 'bootstrap_client_v3.py')",
+      "after": "bootstrap = load('campaign002_bootstrap_v4', HERE / 'bootstrap_client_v4.py')"
+    },
+    {
+      "before": "with_codehost = load('campaign002_codehost_bridge_v2', HERE / 'codehost_bridge_v2.py').run",
+      "after": "with_codehost = load('campaign002_codehost_bridge_v3', HERE / 'codehost_bridge_v3.py').run"
+    },
+    {
+      "before": "entry = HERE / 'codehost_entry_v2.py'",
+      "after": "entry = HERE / 'codehost_entry_v3.py'"
+    },
+    {
+      "before": "                args.code_mode_host_url=host_url\n",
+      "after": "                args.code_mode_host_url=host_url\n                args.native_process_ready=self.native_process_ready\n"
+    }
+  ],
+  "all_Client_methods_unchanged": true,
+  "all_Runtime_methods_except_argv_and_model_unchanged": true,
+  "exact_reversal_recovers_archived_runtime": true,
+  "raw_result_semantics": "unchanged; source binding gains v4 owner plumbing copy",
+  "mirror_semantics": "unchanged; exact declared source pin updated",
+  "scope": "Source parity and deterministic tests only, no native/model/transport qualification."
+}

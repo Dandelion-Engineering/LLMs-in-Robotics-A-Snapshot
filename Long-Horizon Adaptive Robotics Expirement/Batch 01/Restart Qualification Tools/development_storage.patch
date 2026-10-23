@@ -1,0 +1,525 @@
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/experiment.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/experiment.py"
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/experiment.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/experiment.py
+@@ -32,6 +32,7 @@
+ 
+ HERE=Path(__file__).resolve().parent
+ EVIDENCE=HERE.parent/'Evidence'/'raw'
++from development_storage import location as development_location
+ EVALUATION_AUTHORIZATION_VERSION='robot-evaluation-authorization-1.0'
+ GIB=1024**3
+ RESOURCE_POLICY={'version':'robot-runtime-resource-policy-003','resource_caps_enforced':False,
+@@ -157,13 +158,13 @@
+             'live_100_hz_policy':False}
+ 
+ 
+-def authorized_evidence_path(stage,context,*,kind,n,cap,condition,scenario,run_id,seeds):
++def authorized_evidence_path(stage,context,*,kind,n,cap,condition,scenario,run_id,seeds,development_raw_root=None):
+     if stage not in ('development','evaluation'):raise ValueError('Unknown experiment stage')
+     if stage!='evaluation':
+         if context is not None:raise ValueError('Evaluation context cannot authorize a development run')
+-        if not isinstance(run_id,str) or run_id in ('','.','..') or Path(run_id).name!=run_id or '/' in run_id or '\\' in run_id:
+-            raise ValueError('Run ID must be a single directory name')
+-        return EVIDENCE/run_id,None
++        assigned=development_location(run_id,development_raw_root,default_root=EVIDENCE,require_fresh=True)
++        return Path(assigned['evidence_dir']),None
++    if development_raw_root is not None:raise ValueError('Development raw root cannot override evaluation authority')
+     from release_runner import VerifiedEvaluationContext
+     if not isinstance(context,VerifiedEvaluationContext):raise ValueError('Evaluation requires a verified release context')
+     path=context.assert_episode(kind=kind,n=n,cap=cap,condition=condition,scenario=scenario,
+@@ -447,13 +448,13 @@
+     return values
+ 
+ 
+-def run_episode(kind='baseline',n=3,seed=None,cap=300.,condition='persistent',scenario='nominal',stage='development',model=None,run_id=None,world_seed=None,policy_noise_seed=0,layout_seed=None,noise_seed=None,policy_seed=None,evaluation_context=None,development_restart_qualification=None):
++def run_episode(kind='baseline',n=3,seed=None,cap=300.,condition='persistent',scenario='nominal',stage='development',model=None,run_id=None,world_seed=None,policy_noise_seed=0,layout_seed=None,noise_seed=None,policy_seed=None,evaluation_context=None,development_restart_qualification=None,development_raw_root=None):
+     from sandbox import CandidateSandbox
+     seeds=resolve_seed_roles(seed,world_seed,policy_noise_seed,layout_seed,noise_seed,policy_seed)
+     world_seed=seeds['world_seed'];layout_seed=seeds['layout_seed'];noise_seed=seeds['noise_seed'];policy_seed=seeds['policy_seed']
+     run_id=run_id or f'dev-{kind}-{datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")}-{uuid.uuid4().hex[:6]}'
+     evidence_path,evaluation_authorization=authorized_evidence_path(stage,evaluation_context,kind=kind,n=n,cap=cap,
+-        condition=condition,scenario=scenario,run_id=run_id,seeds=seeds)
++        condition=condition,scenario=scenario,run_id=run_id,seeds=seeds,development_raw_root=development_raw_root)
+     # Authorization above binds the exact protected run before its public alias is derived.
+     public_episode_id=evaluation_context.public_episode_id if stage=='evaluation' else run_id
+     if stage=='evaluation':
+@@ -463,6 +464,7 @@
+     elif isinstance(development_restart_qualification,VerifiedRestartQualification):
+         restart_qualification=development_restart_qualification.as_dict()
+     else:raise CalibrationInputError('Development qualification must come from the protected loader')
++    development_storage=development_location(run_id,evidence_path.parent) if stage=='development' else None
+     evidence=Evidence(evidence_path,run_id)
+     episode_dir=evidence.path/'candidate_state'
+     condition_persistent=condition=='persistent'
+@@ -614,6 +616,7 @@
+                                 'approved_answer':assistance.ANSWER,'durable_across_restarts':True,'physical_rescue':False}}
+         restart_source_hashes={name:manifest['code_sha256'][name] for name in
+                                ('cell.py','actuation.py','evaluator.py','sensor_worker.py')}
++        if development_storage is not None:manifest['development_storage']=development_storage
+         manifest['evaluation_authorization']=evaluation_authorization
+         manifest['candidate_public_episode_id']=public_episode_id
+         manifest['resource_policy']=RESOURCE_POLICY
+@@ -1035,18 +1038,21 @@
+             'motion_path_m':cell.total_path if cell is not None else None,'contact_peak_N':cell.contact_peak if cell is not None else None,
+             'contact_impulse_Ns':cell.collision_impulse if cell is not None else None,
+             'limits':(['Development only; no scored inference until shared readiness passes'] if not evaluation_authorization else [])+['Timing gates do not determine whether lag was candidate or host/harness induced','One-second timing boundaries interpolate adjacent wall/sim samples; maximum sample gap retained','Contact impulse includes intended contacts; not a collision-only metric','Candidate CPU/IO are observed lower bounds with unmeasured final intervals']}
++    if development_storage is not None:result['development_storage']=development_storage
+     temporary=evidence.path/'result.json.tmp';temporary.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');os.replace(temporary,evidence.path/'result.json')
+     print(json.dumps(result,indent=2),flush=True)
+     return result
+ 
+ def main():
+     parser=argparse.ArgumentParser();parser.add_argument('--kind',choices=['baseline','A1','A2','A3'],default='baseline');parser.add_argument('--parts',type=int,default=3);parser.add_argument('--seed',type=int,default=None,help='Legacy alias of --world-seed');parser.add_argument('--world-seed',type=int,default=None);parser.add_argument('--policy-noise-seed',type=int,default=0);parser.add_argument('--layout-seed',type=int);parser.add_argument('--noise-seed',type=int);parser.add_argument('--policy-seed',type=int);parser.add_argument('--cap',type=float,default=300);parser.add_argument('--scenario',choices=['nominal','order_change','restart','mixed'],default='nominal');parser.add_argument('--condition',choices=['persistent','no-persistence'],default='persistent');parser.add_argument('--run-id')
++    parser.add_argument('--development-raw-root',type=Path,help='Absolute evidence root for development only')
+     parser.add_argument('--development-restart-freeze',type=Path,
+                         help='Prior byte-verified qualification input for development only; never evaluation authority')
+     args=parser.parse_args()
+     try:seeds=resolve_seed_roles(args.seed,args.world_seed,args.policy_noise_seed,args.layout_seed,args.noise_seed,args.policy_seed)
+     except ValueError as exc:parser.error(str(exc))
+     kwargs={'kind':args.kind,'n':args.parts,**seeds,'policy_noise_seed':args.policy_noise_seed,'cap':args.cap,'scenario':args.scenario,'condition':args.condition,'run_id':args.run_id}
++    kwargs['development_raw_root']=args.development_raw_root
+     if args.development_restart_freeze is not None:
+         from restart_calibration_loader import load_restart_qualification
+         qualification=load_restart_qualification(json.loads(args.development_restart_freeze.read_text(encoding='utf-8')),
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/development_batch.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/development_batch.py"
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/development_batch.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/development_batch.py
+@@ -16,6 +16,7 @@
+ from datetime import datetime, timezone
+ 
+ HERE=Path(__file__).resolve().parent
++from development_storage import location as development_location
+ 
+ 
+ def hashes():
+@@ -38,26 +39,30 @@
+     return plan
+ 
+ 
+-def run(plan_path,output,development_restart_freeze=None):
++def run(plan_path,output,development_restart_freeze=None,development_raw_root=None):
+     import record_attempt
+     raw=Path(plan_path).read_bytes();plan=validate(json.loads(raw));output=Path(output).resolve()
++    locations={row['run_id']:development_location(row['run_id'],development_raw_root,require_fresh=True) for row in plan}
+     output.mkdir(parents=True,exist_ok=False)
+     source=hashes();attempts=[];stop=None
+     qualification_path=Path(development_restart_freeze).resolve() if development_restart_freeze is not None else None
+     qualification_hash=hashlib.sha256(qualification_path.read_bytes()).hexdigest() if qualification_path else None
+     header={'scope':'development only; no scored inference','plan_sha256':hashlib.sha256(raw).hexdigest(),
+             'runtime_sha256':source,'started_at':datetime.now(timezone.utc).isoformat(),'plan':plan,
++            'development_storage':locations,
+             'development_restart_freeze':({'path':str(qualification_path),'sha256':qualification_hash} if qualification_path else None)}
+     (output/'plan.json').write_text(json.dumps(header,indent=2)+'\n',encoding='utf-8')
+     for row in plan:
+         if hashes()!=source:raise RuntimeError('Runtime changed during development batch')
+         if qualification_path and hashlib.sha256(qualification_path.read_bytes()).hexdigest()!=qualification_hash:
+             raise RuntimeError('Development qualification freeze changed')
+-        rid=row['run_id'];record_attempt.prepare(SimpleNamespace(**row,development_restart_freeze=qualification_path))
++        rid=row['run_id'];assigned=locations[rid]
++        record_attempt.prepare(SimpleNamespace(**row,development_restart_freeze=qualification_path,development_raw_root=Path(assigned['raw_root'])))
+         argv=[sys.executable,'-X','utf8','-B',str(HERE/'experiment.py')]
+         for key,flag in (('kind','kind'),('parts','parts'),('seed','seed'),('policy_noise_seed','policy-noise-seed'),
+                          ('cap','cap'),('scenario','scenario'),('condition','condition'),('run_id','run-id')):
+             argv.extend(['--'+flag,str(row[key])])
++        argv.extend(['--development-raw-root',assigned['raw_root']])
+         if qualification_path:argv.extend(['--development-restart-freeze',str(qualification_path)])
+         print(json.dumps({'starting':rid,'cap_s':row['cap']}),flush=True)
+         with (output/(rid+'.log')).open('wb') as stream:
+@@ -68,12 +73,15 @@
+         if hashes()!=source:raise RuntimeError('Runtime changed during episode '+rid)
+         if qualification_path and hashlib.sha256(qualification_path.read_bytes()).hexdigest()!=qualification_hash:
+             raise RuntimeError('Development qualification freeze changed during episode '+rid)
+-        path=HERE.parent/'Evidence'/'raw'/rid/'result.json'
++        path=Path(assigned['evidence_dir'])/'result.json'
+         if path.exists():
+             result=json.loads(path.read_text(encoding='utf-8'))
++            if result.get('run_id')!=rid or result.get('stage')!='development' or result.get('development_storage')!=assigned:
++                raise ValueError('Development result differs from the pinned run identity/location')
+             summary={k:result.get(k) for k in ('outcome','validity','failure_class','execution_status','wall_duration_s','maximum_lag_s','model_calls','total_tokens')}
+             summary['accepted_count']=(result.get('independent_outcome') or {}).get('accepted_count')
+             summary['result_sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
++            summary['result_path']=str(path)
+         else:summary={'missing_result':True}
+         record={'run_id':rid,'exit_status':code,**summary};attempts.append(record)
+         with (output/'attempts.jsonl').open('a',encoding='utf-8') as stream:stream.write(json.dumps(record)+'\n')
+@@ -90,4 +98,5 @@
+ if __name__=='__main__':
+     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--plan',required=True,type=Path);p.add_argument('--output',required=True,type=Path)
+     p.add_argument('--development-restart-freeze',type=Path)
+-    args=p.parse_args();run(args.plan,args.output,args.development_restart_freeze)
++    p.add_argument('--development-raw-root',type=Path)
++    args=p.parse_args();run(args.plan,args.output,args.development_restart_freeze,args.development_raw_root)
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/record_attempt.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/record_attempt.py"
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/record_attempt.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/record_attempt.py
+@@ -11,15 +11,18 @@
+ import zipfile
+ 
+ HERE=Path(__file__).resolve().parent
++from development_storage import location as development_location, registered_location, safe_run_id
+ MAP=HERE.parent/'Architecture Map'
+ spec=importlib.util.spec_from_file_location('architecture_map',MAP/'map.py')
+ am=importlib.util.module_from_spec(spec);spec.loader.exec_module(am)
+ 
+ def now():return datetime.now(timezone.utc).isoformat()
+ def ref(label,path,locator=None):
+-    path=Path(path)
++    path=Path(path).resolve()
+     import os
+-    return {'label':label,'uri':Path(os.path.relpath(path,MAP)).as_posix(),'sha256':hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None,'state':'available' if path.exists() else 'missing','access':'operator','locator':locator}
++    try:uri=Path(os.path.relpath(path,MAP)).as_posix()
++    except ValueError:uri=path.as_posix()  # Local absolute path when Windows drives differ.
++    return {'label':label,'uri':uri,'sha256':hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None,'state':'available' if path.exists() else 'missing','access':'operator','locator':locator}
+ def common(rid,tags):return {'schema_version':'architecture-map-1.0','id':rid,'recorded_at':now(),'author':'Codex session 4','tags':tags,'details':{}}
+ def append(kind,record):
+     data,raw,errors=am.read_store(MAP)
+@@ -30,7 +33,8 @@
+ def none(reason):return {'state':'none','refs':[],'reason':reason}
+ 
+ def prepare(args):
+-    run_id=args.run_id;aid='B01-C0' if args.kind=='baseline' else 'B01-'+args.kind
++    run_id=safe_run_id(args.run_id);aid='B01-C0' if args.kind=='baseline' else 'B01-'+args.kind
++    storage=development_location(run_id,getattr(args,'development_raw_root',None),require_fresh=True)
+     qualification_path=getattr(args,'development_restart_freeze',None)
+     qualification_input=None
+     if qualification_path is not None:
+@@ -51,6 +55,7 @@
+         for path in sorted(HERE.glob('*.py')):archive.write(path,path.name)
+     project=HERE.parents[1]
+     manifest={'scope':'immutable implemented development snapshot; not scored-ready','run_id':run_id,'kind':args.kind,'runtime_files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(HERE.glob('*.py'))},'python':platform.python_version(),'platform':platform.platform(),'dependencies':{name:importlib.metadata.version(name) for name in ('mujoco','numpy')},'requirements':(project/'requirements.txt').read_text(),'panda':json.loads((HERE/'vendor/panda/manifest.json').read_text()),'model':None if args.kind=='baseline' else json.loads((HERE/'vendor/model/asset_manifest.json').read_text()),'condition':args.condition,'scenario':args.scenario,'part_count':args.parts,'world_seed':args.seed,'policy_noise_seed':args.policy_noise_seed,'cap_s':args.cap,'timing_track':'actual_host','readiness':'development only; calibration incomplete'}
++    manifest['development_storage']=storage
+     manifest['development_restart_qualification']=qualification_input
+     manifest_path=snapshot/'manifest.json';manifest_path.write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+     prior=[r for r in data['revision'] if r['architecture_id']==aid]
+@@ -58,23 +63,61 @@
+     mechanism+= {'baseline':'A fixed durable sequencer selects eligible tending operations.','A1':'An actual local LLM selects each next typed task.','A2':'An actual local LLM generates a finite guarded procedure interpreted between calls.','A3':'A durable conventional scheduler selects operations and an actual local LLM supplies transport clearance, speed and avoidance objectives.'}[args.kind]
+     mechanism+=' Shared IK, quintic joint trajectories and contact-based Panda grasping execute motions. Candidate code runs inside WSL bubblewrap through JSON IPC. World/evaluator and local model gateway remain outside. Every consequential action is durably recorded and current observations reconcile outcomes. These implementations are under calibration; sensor/trajectory/isolation unit checks do not establish full readiness or comparative benefit.'
+     append('revision',{**common(rid,['batch-01','development','implemented','continuity']),'architecture_id':aid,'parent_revision_id':prior[-1]['id'] if prior else None,'status':'implemented','title':args.kind+' development snapshot '+run_id,'summary':'Exact source and resource snapshot registered before this development attempt.','mechanism':mechanism,'attachments':[ref('Executable source snapshot',bundle),ref('Exact environment and attempt configuration',manifest_path)],'details':{'batch_id':'B01','role':'comparator' if args.kind=='baseline' else 'main_candidate','implementation_status':'Implemented development candidate; physical workcell readiness incomplete','limitations':['Not frozen evaluation','No full physical task completion claimed before attempt','Current source bundle is authoritative over intended proposed-design features']}})
+-    append('run',{**common(run_id,['batch-01','development',args.kind]),'revision_id':rid,'stage':'development','condition_id':args.condition,'protocol_id':'B01-development-physical-v1','scenario_id':f'dev-{args.scenario}-n{args.parts}-s{args.seed}','paired_block_id':f'dev-{args.scenario}-n{args.parts}-s{args.seed}','replicate':1,'started_at':None,'rerun_of_run_id':None,'condition_details':{'kind':args.kind,'part_count':args.parts,'cap_s':args.cap,'timing_track':'actual_host','controls':'development attempt; no scored comparison','planned_command':['experiment.py','--kind',args.kind,'--parts',str(args.parts),'--seed',str(args.seed),'--policy-noise-seed',str(args.policy_noise_seed),'--cap',str(args.cap),'--scenario',args.scenario,'--condition',args.condition,'--run-id',run_id]+(['--development-restart-freeze',str(qualification_path)] if qualification_path else [])},'seeds':state(ref('Development world seed',manifest_path,'world_seed')),'frozen_refs':{'code':state(ref('Executable snapshot',bundle)),'environment':state(ref('Dependency and Panda asset identity',manifest_path)),'models':none('Conventional baseline has no model') if args.kind=='baseline' else state(ref('Model and inference artifact identity',manifest_path,'model')),'protocol':state(ref('Development configuration and limits',manifest_path)),'scenario':state(ref('Development scenario',manifest_path))},'evidence':[ref('Pre-run snapshot',manifest_path)]})
++    append('run',{**common(run_id,['batch-01','development',args.kind]),'revision_id':rid,'stage':'development','condition_id':args.condition,'protocol_id':'B01-development-physical-v1','scenario_id':f'dev-{args.scenario}-n{args.parts}-s{args.seed}','paired_block_id':f'dev-{args.scenario}-n{args.parts}-s{args.seed}','replicate':1,'started_at':None,'rerun_of_run_id':None,'condition_details':{'kind':args.kind,'part_count':args.parts,'cap_s':args.cap,'timing_track':'actual_host','controls':'development attempt; no scored comparison','planned_command':['experiment.py','--kind',args.kind,'--parts',str(args.parts),'--seed',str(args.seed),'--policy-noise-seed',str(args.policy_noise_seed),'--cap',str(args.cap),'--scenario',args.scenario,'--condition',args.condition,'--run-id',run_id,'--development-raw-root',storage['raw_root']]+(['--development-restart-freeze',str(qualification_path)] if qualification_path else [])},'seeds':state(ref('Development world seed',manifest_path,'world_seed')),'frozen_refs':{'code':state(ref('Executable snapshot',bundle)),'environment':state(ref('Dependency and Panda asset identity',manifest_path)),'models':none('Conventional baseline has no model') if args.kind=='baseline' else state(ref('Model and inference artifact identity',manifest_path,'model')),'protocol':state(ref('Development configuration and limits',manifest_path)),'scenario':state(ref('Development scenario',manifest_path))},'evidence':[ref('Pre-run snapshot',manifest_path)]})
+     am.main(['build']);am.main(['validate','--output','validation.json'])
+     print('Registered before execution:',run_id)
+ 
++def registered_storage(run_id):
++    """Resolve the location only through the immutable registered development manifest."""
++    safe_run_id(run_id)
++    data,_,errors=am.read_store(MAP)
++    if errors:raise ValueError(errors)
++    runs=[row for row in data['run'] if row['id']==run_id]
++    if len(runs)!=1 or runs[0].get('stage')!='development':
++        raise ValueError('Finish requires one registered development run')
++    source=(MAP/'releases'/run_id/'manifest.json').resolve()
++    if not source.is_relative_to(MAP.resolve()):raise ValueError('Registration manifest escaped map')
++    payload=source.read_bytes();digest=hashlib.sha256(payload).hexdigest()
++    references=runs[0].get('frozen_refs',{}).get('protocol',{}).get('refs',[])
++    matching=[item for item in references if isinstance(item.get('uri'),str)
++              and (MAP/item['uri']).resolve()==source and item.get('sha256')==digest
++              and item.get('state')=='available']
++    if len(matching)!=1:raise ValueError('Registration manifest lacks an exact immutable map binding')
++    manifest=json.loads(payload)
++    if manifest.get('run_id')!=run_id:raise ValueError('Registration manifest run identity mismatch')
++    legacy='development_storage' not in manifest
++    if not legacy and manifest['development_storage'] is None:
++        raise ValueError('Registered development location cannot be null')
++    storage=registered_location(run_id,manifest.get('development_storage'))
++    return storage,legacy,{'path':str(source),'sha256':digest,'bytes':len(payload)}
++
++
++def verify_raw_identity(value,run_id,storage,legacy):
++    if not isinstance(value,dict) or value.get('run_id')!=run_id:
++        raise ValueError('Raw development run identity mismatch')
++    if value.get('stage')!='development' and not (legacy and value.get('stage') is None):
++        raise ValueError('Raw evidence does not identify the registered development stage')
++    if not legacy and value.get('development_storage')!=storage:
++        raise ValueError('Raw development evidence location differs from registration')
++
++
+ def finish(args):
+-    raw=HERE.parent/'Evidence'/'raw'/args.run_id
+-    source=raw/'result.json';d=json.loads(source.read_text())
++    storage,legacy,registration=registered_storage(args.run_id)
++    raw=Path(storage['evidence_dir'])
++    source=raw/'result.json';d=json.loads(source.read_text(encoding='utf-8'))
++    verify_raw_identity(d,args.run_id,storage,legacy)
++    if (raw/'manifest.json').is_file():
++        verify_raw_identity(json.loads((raw/'manifest.json').read_text(encoding='utf-8')),args.run_id,storage,legacy)
+     evidence_ref=ref('Actual protected development result',source)
+     metrics=[]
+     for name,key,unit in [('accepted_parts','accepted_count','count'),('completion_time','completion_time_s','s'),('duration','wall_duration_s','s'),('model_calls','model_calls','count'),('false_completion_claims','false_done_assertions','count'),('end_effector_path','motion_path_m','m')]:
+         value=(d.get('independent_outcome') or {}).get(key) if key=='accepted_count' else d.get(key)
+         metrics.append({'name':name,'value':value,'unit':unit,'denominator':None,'denominator_description':'Single development attempt; not a population estimate','missing_reason':'Not measured or task did not complete; inspect terminal result' if value is None else None,'evidence':[evidence_ref] if value is not None else []})
+-    append('result',{**common(args.run_id+'-result',['batch-01','development']),'run_id':args.run_id,'supersedes_result_id':None,'execution_status':d['execution_status'],'validity':d.get('validity','unknown'),'validity_reason':d.get('validity_reason','Development readiness incomplete'),'outcome':d['outcome'],'ended_at':d['ended_at'],'termination_reason':d['termination_reason'],'metrics':metrics,'evidence':[evidence_ref,ref('Actual event stream',raw/'events.jsonl'),ref('Actual motion samples',raw/'motion.jsonl')],'details':{'scope':'Development only; no comparative inference','queue_job_id':args.queue_job_id,'limitations':d.get('limits',[]),'timing':{k:v for k,v in d.items() if 'lag' in k or 'timing' in k},'failed_attempt_retained':d['outcome']!='success'}})
++    append('result',{**common(args.run_id+'-result',['batch-01','development']),'run_id':args.run_id,'supersedes_result_id':None,'execution_status':d['execution_status'],'validity':d.get('validity','unknown'),'validity_reason':d.get('validity_reason','Development readiness incomplete'),'outcome':d['outcome'],'ended_at':d['ended_at'],'termination_reason':d['termination_reason'],'metrics':metrics,'evidence':[evidence_ref,ref('Actual event stream',raw/'events.jsonl'),ref('Actual motion samples',raw/'motion.jsonl')],'details':{'scope':'Development only; no comparative inference','queue_job_id':args.queue_job_id,'development_storage':storage,'registration_manifest':registration,'legacy_missing_raw_stage':legacy and d.get('stage') is None,'limitations':d.get('limits',[]),'timing':{k:v for k,v in d.items() if 'lag' in k or 'timing' in k},'failed_attempt_retained':d['outcome']!='success'}})
+     am.main(['build']);am.main(['validate','--output','validation.json'])
+ 
+ if __name__=='__main__':
+     p=argparse.ArgumentParser();s=p.add_subparsers(dest='command',required=True)
+-    prep=s.add_parser('prepare');prep.add_argument('--kind',choices=['baseline','A1','A2','A3'],required=True);prep.add_argument('--run-id',required=True);prep.add_argument('--parts',type=int,default=3);prep.add_argument('--seed',type=int,default=0);prep.add_argument('--policy-noise-seed',type=int,default=0);prep.add_argument('--cap',type=float,default=300);prep.add_argument('--scenario',default='nominal');prep.add_argument('--condition',default='persistent');prep.add_argument('--development-restart-freeze',type=Path)
++    prep=s.add_parser('prepare');prep.add_argument('--kind',choices=['baseline','A1','A2','A3'],required=True);prep.add_argument('--run-id',required=True);prep.add_argument('--parts',type=int,default=3);prep.add_argument('--seed',type=int,default=0);prep.add_argument('--policy-noise-seed',type=int,default=0);prep.add_argument('--cap',type=float,default=300);prep.add_argument('--scenario',default='nominal');prep.add_argument('--condition',default='persistent');prep.add_argument('--development-restart-freeze',type=Path);prep.add_argument('--development-raw-root',type=Path)
+     fin=s.add_parser('finish');fin.add_argument('--run-id',required=True);fin.add_argument('--queue-job-id',required=True)
+     a=p.parse_args();prepare(a) if a.command=='prepare' else finish(a)
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/development_storage.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/development_storage.py"
+new file mode 100644
+--- /dev/null
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/development_storage.py
+@@ -0,0 +1,50 @@
++"""Development-only evidence locations; no file creation or evaluation authority."""
++import os
++from pathlib import Path
++import re
++
++HERE = Path(__file__).resolve().parent
++DEFAULT_RAW_ROOT = HERE.parent / 'Evidence' / 'raw'
++SCHEMA = 'development-evidence-location-1'
++
++
++def safe_run_id(run_id):
++    if (not isinstance(run_id, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*', run_id)
++            or run_id.endswith('.') or Path(run_id).name != run_id
++            or run_id.split('.')[0].upper() in {'CON', 'PRN', 'AUX', 'NUL',
++                                               *('COM' + str(i) for i in range(1, 10)),
++                                               *('LPT' + str(i) for i in range(1, 10))}):
++        raise ValueError('Development run ID must be one safe directory name')
++    return run_id
++
++
++def location(run_id, raw_root=None, *, default_root=None, require_fresh=False):
++    safe_run_id(run_id)
++    supplied = Path(raw_root if raw_root is not None else (default_root or DEFAULT_RAW_ROOT))
++    if not supplied.is_absolute():
++        raise ValueError('Development raw root must be an absolute local path')
++    if os.name == 'nt' and (len(supplied.drive) != 2 or supplied.drive[1] != ':'):
++        raise ValueError('Development raw root must use a local Windows drive')
++    root = supplied.resolve()
++    if root.exists() and not root.is_dir():
++        raise ValueError('Development raw root must be a directory')
++    if (any(part.casefold() == 'candidate_state' for part in root.parts)
++            or any(root.is_relative_to(path.resolve()) for path in (HERE, HERE.parent / 'Architecture Map'))):
++        raise ValueError('Development evidence cannot be inside source, map or candidate state')
++    path = root / run_id
++    if path.resolve() != path or path.resolve().parent != root:
++        raise ValueError('Development run directory escaped its exact assigned root')
++    if require_fresh and path.exists():
++        raise ValueError('Development run evidence directory must be fresh')
++    return {'schema_version': SCHEMA, 'raw_root': str(root), 'evidence_dir': str(path)}
++
++
++def registered_location(run_id, value):
++    if value is None:
++        return location(run_id)
++    if not isinstance(value, dict) or set(value) != {'schema_version', 'raw_root', 'evidence_dir'}:
++        raise ValueError('Malformed registered development evidence location')
++    expected = location(run_id, value['raw_root'])
++    if value != expected:
++        raise ValueError('Registered development evidence location does not match the exact run directory')
++    return expected
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/test_development_storage.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/test_development_storage.py"
+new file mode 100644
+--- /dev/null
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/test_development_storage.py
+@@ -0,0 +1,205 @@
++"""Synthetic storage/authority checks; no physics, queue, WSL or real map writes."""
++import contextlib
++import hashlib
++import io
++import json
++import os
++from pathlib import Path
++import tempfile
++from types import SimpleNamespace
++import unittest
++from unittest.mock import patch
++
++import development_storage as storage
++import development_batch as batch
++import experiment
++import record_attempt as recorder
++import release_runner
++
++
++class StorageFixture(unittest.TestCase):
++    def setUp(self):
++        self.temp=tempfile.TemporaryDirectory()
++        self.base=Path(self.temp.name).resolve()
++        self.raw=self.base/'alternate-raw'
++        self.rid='B01-dev-storage-fixture'
++
++    def tearDown(self):self.temp.cleanup()
++
++
++class DevelopmentStorageTests(StorageFixture):
++    def test_exact_fresh_path_and_unsafe_names(self):
++        assigned=storage.location(self.rid,self.raw,require_fresh=True)
++        self.assertEqual(Path(assigned['evidence_dir']),self.raw/self.rid)
++        self.assertFalse(self.raw.exists())
++        for invalid in ('../escape','a/b','a\\b','D:escape','.', '..', 'CON', 'trailing.'):
++            with self.subTest(invalid=invalid),self.assertRaises(ValueError):
++                storage.location(invalid,self.raw)
++        with self.assertRaises(ValueError):storage.location(self.rid,Path('relative-root'))
++        file_root=self.base/'not-a-directory';file_root.write_text('synthetic',encoding='utf-8')
++        with self.assertRaisesRegex(ValueError,'directory'):storage.location(self.rid,file_root)
++        (self.raw/self.rid).mkdir(parents=True)
++        with self.assertRaisesRegex(ValueError,'fresh'):storage.location(self.rid,self.raw,require_fresh=True)
++
++    def test_registered_directory_cannot_be_retargeted(self):
++        assigned=storage.location(self.rid,self.raw)
++        self.assertEqual(storage.registered_location(self.rid,assigned),assigned)
++        for field,value in (('evidence_dir',str(self.raw/'another-run')),('schema_version','unknown')):
++            with self.subTest(field=field),self.assertRaises(ValueError):
++                storage.registered_location(self.rid,{**assigned,field:value})
++
++    def test_evaluation_keeps_exact_authority_and_refuses_development_override(self):
++        seeds={'world_seed':2**40,'layout_seed':2**41,'noise_seed':2**42,'policy_seed':17}
++        manifest={'run_id':'eval-synthetic','architecture':'A1','parts':3,'cap_s':12.,
++                  'condition':'persistent','scenario':'nominal','seeds':seeds}
++        context=release_runner.VerifiedEvaluationContext(self.base/'evaluation',json.dumps(manifest),'r'*64,'m'*64,
++            'synthetic-queue','synthetic-time','{}',release_runner._AUTHORITY)
++        kwargs=dict(kind='A1',n=3,cap=12.,condition='persistent',scenario='nominal',run_id='eval-synthetic',seeds=seeds)
++        actual,authority=experiment.authorized_evidence_path('evaluation',context,**kwargs)
++        self.assertEqual(actual,context.evidence_dir)
++        self.assertEqual(authority['queue_job_id'],'synthetic-queue')
++        with self.assertRaises(ValueError):experiment.authorized_evidence_path('evaluation',None,**kwargs)
++        with self.assertRaises(release_runner.ReleaseError):
++            experiment.authorized_evidence_path('evaluation',context,**{**kwargs,'cap':13.})
++        with self.assertRaisesRegex(ValueError,'cannot override evaluation'):
++            experiment.authorized_evidence_path('evaluation',context,development_raw_root=self.raw,**kwargs)
++        self.assertFalse(self.raw.exists())
++
++    def test_setup_failure_is_retained_at_assigned_root_with_identity(self):
++        with patch.object(experiment,'ResourceSampler',side_effect=RuntimeError('synthetic startup failure')):
++            with patch.object(experiment,'Cell',side_effect=AssertionError('No physics')):
++                with contextlib.redirect_stdout(io.StringIO()):
++                    result=experiment.run_episode(run_id=self.rid,development_raw_root=self.raw,cap=.01)
++        assigned=storage.location(self.rid,self.raw)
++        self.assertEqual(result['development_storage'],assigned)
++        self.assertEqual(result['stage'],'development')
++        self.assertEqual(result['execution_status'],'failed')
++        self.assertTrue((self.raw/self.rid/'result.json').is_file())
++        self.assertFalse((self.raw/self.rid/'manifest.json').exists())
++
++    def test_cross_drive_reference_falls_back_to_absolute_local_path(self):
++        source=self.base/'fixture.json';source.write_text('{}',encoding='utf-8')
++        with patch('os.path.relpath',side_effect=ValueError('path is on another drive')):
++            actual=recorder.ref('fixture',source)
++        self.assertEqual(actual['uri'],source.as_posix())
++        self.assertEqual(actual['sha256'],hashlib.sha256(source.read_bytes()).hexdigest())
++
++    @unittest.skipUnless(os.name=='nt','Windows drive syntax')
++    def test_d_drive_location_requires_no_directory_creation(self):
++        assigned=storage.location(self.rid,Path('D:/CodexEvidence/synthetic-do-not-create'))
++        self.assertEqual(Path(assigned['evidence_dir']).drive,'D:')
++
++
++class RegistrationTests(StorageFixture):
++    def setUp(self):
++        super().setUp()
++        self.project=self.base/'project';self.runtime=self.project/'experiment'/'Runtime'
++        self.map=self.runtime.parent/'Architecture Map'
++        (self.runtime/'vendor'/'panda').mkdir(parents=True)
++        self.map.mkdir()
++        (self.project/'requirements.txt').write_text('synthetic only\n',encoding='utf-8')
++        (self.runtime/'vendor'/'panda'/'manifest.json').write_text('{}',encoding='utf-8')
++        (self.runtime/'synthetic.py').write_text('# synthetic only\n',encoding='utf-8')
++        self.data={'architecture':[{'id':'B01-C0'}],'revision':[],'run':[],'result':[]}
++        self.patches=[patch.object(recorder,'HERE',self.runtime),patch.object(recorder,'MAP',self.map),
++                      patch.object(recorder.am,'read_store',side_effect=lambda _: (self.data,{},[])),
++                      patch.object(recorder.am,'main'),patch.object(recorder,'append',side_effect=self.append),
++                      patch.object(storage,'DEFAULT_RAW_ROOT',self.base/'legacy-raw')]
++        for item in self.patches:item.start()
++        self.args=SimpleNamespace(run_id=self.rid,kind='baseline',parts=3,seed=0,policy_noise_seed=0,
++                                  cap=1.,scenario='nominal',condition='persistent',development_raw_root=self.raw)
++
++    def tearDown(self):
++        for item in reversed(self.patches):item.stop()
++        super().tearDown()
++
++    def append(self,kind,record):self.data[kind].append(record)
++
++    def prepare(self):
++        with contextlib.redirect_stdout(io.StringIO()):recorder.prepare(self.args)
++        return self.map/'releases'/self.rid/'manifest.json'
++
++    def result(self,assigned,**changes):
++        raw=Path(assigned['evidence_dir']);raw.mkdir(parents=True,exist_ok=True)
++        value={'run_id':self.rid,'stage':'development','development_storage':assigned,'execution_status':'failed',
++               'outcome':'failure','ended_at':'2000-01-01T00:00:00+00:00','termination_reason':'synthetic startup failure'}
++        value.update(changes)
++        (raw/'result.json').write_text(json.dumps(value),encoding='utf-8')
++        return raw,value
++
++    def test_registration_pins_location_and_command_before_raw_creation(self):
++        path=self.prepare();manifest=json.loads(path.read_text(encoding='utf-8'))
++        assigned=storage.location(self.rid,self.raw)
++        self.assertEqual(manifest['development_storage'],assigned)
++        self.assertFalse(Path(assigned['evidence_dir']).exists())
++        command=self.data['run'][0]['condition_details']['planned_command']
++        self.assertEqual(command[command.index('--development-raw-root')+1],str(self.raw))
++        verified,legacy,reference=recorder.registered_storage(self.rid)
++        self.assertEqual(verified,assigned);self.assertFalse(legacy)
++        self.assertEqual(reference['sha256'],hashlib.sha256(path.read_bytes()).hexdigest())
++
++    def test_registration_cannot_be_changed_before_finish(self):
++        path=self.prepare();path.write_text(path.read_text(encoding='utf-8')+' ',encoding='utf-8')
++        with self.assertRaisesRegex(ValueError,'immutable map binding'):recorder.registered_storage(self.rid)
++
++    def test_finish_uses_registered_location_and_retains_early_failure(self):
++        self.prepare();assigned=storage.location(self.rid,self.raw)
++        self.result(assigned)
++        with contextlib.redirect_stdout(io.StringIO()):
++            recorder.finish(SimpleNamespace(run_id=self.rid,queue_job_id='synthetic-queue'))
++        record=self.data['result'][0]
++        self.assertEqual(record['details']['development_storage'],assigned)
++        self.assertTrue(record['details']['failed_attempt_retained'])
++        self.assertFalse(record['details']['legacy_missing_raw_stage'])
++        self.assertEqual((self.map/record['evidence'][0]['uri']).resolve(),self.raw/self.rid/'result.json')
++
++    def test_finish_refuses_wrong_run_stage_and_storage(self):
++        self.prepare();assigned=storage.location(self.rid,self.raw)
++        for changes in ({'run_id':'other-run'},{'stage':'evaluation'},{'stage':None},{'development_storage':None}):
++            self.result(assigned,**changes)
++            with self.subTest(changes=changes),self.assertRaises(ValueError):
++                recorder.finish(SimpleNamespace(run_id=self.rid,queue_job_id='synthetic-queue'))
++        self.assertEqual(self.data['result'],[])
++
++    def test_legacy_manifest_uses_default_root_and_explicit_missing_stage_note(self):
++        path=self.prepare();manifest=json.loads(path.read_text(encoding='utf-8'));manifest.pop('development_storage')
++        path.write_text(json.dumps(manifest),encoding='utf-8')
++        # Build a distinct synthetic legacy registration, not an actual correction.
++        self.data['run'][0]['frozen_refs']['protocol']['refs'][0]['sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
++        assigned=storage.location(self.rid)
++        raw,value=self.result(assigned)
++        value.pop('development_storage');value.pop('stage')
++        (raw/'result.json').write_text(json.dumps(value),encoding='utf-8')
++        with contextlib.redirect_stdout(io.StringIO()):
++            recorder.finish(SimpleNamespace(run_id=self.rid,queue_job_id='synthetic-queue'))
++        self.assertEqual(self.data['result'][0]['details']['development_storage'],assigned)
++        self.assertTrue(self.data['result'][0]['details']['legacy_missing_raw_stage'])
++        with self.assertRaises(ValueError):
++            recorder.verify_raw_identity({**value,'stage':'evaluation'},self.rid,assigned,True)
++
++
++class BatchStorageTests(StorageFixture):
++    def test_batch_passes_and_reads_its_pinned_alternate_root(self):
++        row={'run_id':self.rid,'kind':'baseline','parts':3,'seed':0,'policy_noise_seed':0,
++             'cap':1.,'scenario':'nominal','condition':'persistent'}
++        plan=self.base/'plan.json';plan.write_text(json.dumps([row]),encoding='utf-8')
++        output=self.base/'batch-output';assigned=storage.location(self.rid,self.raw)
++        commands=[]
++        def process(argv,**kwargs):
++            commands.append(argv)
++            root=Path(assigned['evidence_dir']);root.mkdir(parents=True)
++            result={'run_id':self.rid,'stage':'development','development_storage':assigned,
++                    'execution_status':'completed','outcome':'partial','failure_class':None}
++            (root/'result.json').write_text(json.dumps(result),encoding='utf-8')
++            return SimpleNamespace(pid=123,wait=lambda:0)
++        with patch.object(recorder,'prepare') as prepare,patch.object(batch,'hashes',return_value={'synthetic.py':'a'*64}):
++            with patch.object(batch.subprocess,'Popen',side_effect=process),contextlib.redirect_stdout(io.StringIO()):
++                report=batch.run(plan,output,development_raw_root=self.raw)
++        self.assertEqual(report['development_storage'],{self.rid:assigned})
++        self.assertEqual(prepare.call_args.args[0].development_raw_root,self.raw)
++        argv=commands[0];self.assertEqual(argv[argv.index('--development-raw-root')+1],str(self.raw))
++        self.assertEqual(report['attempts'][0]['result_path'],str(self.raw/self.rid/'result.json'))
++        self.assertEqual(report['not_started'],[])
++
++
++if __name__=='__main__':unittest.main()

@@ -1,0 +1,153 @@
+{
+  "schema": "campaign002-raw-tool-result-review-1",
+  "created_utc": "2026-09-28T06:51:15.475360+00:00",
+  "scope": "Completed read-only source and installed-schema review; this record only retains that review.",
+  "production_source_edits_by_reviewer": false,
+  "empirical_actions": 0,
+  "model_calls": 0,
+  "queue_launches": 0,
+  "installed_binary_build_attestation": false,
+  "empirical_qualification": false,
+  "historical_verdicts_changed": false,
+  "reviewed_helper_identity": {
+    "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/raw_tool_result_reads.py",
+    "sha256": "e97c9a7b9c081a80cb742125e32b60ebff651499bf92b4591be3611a3c2a574e",
+    "identity_basis": "Pre-fix hash supplied by implementing agent qualification_map after this reviewer read the pre-fix source. Original bytes were not separately archived by this reviewer.",
+    "current_file_differs": true
+  },
+  "current_helper_binding_scope": "Hash-only observation during record retention after the implementing agent began the narrow fix; no review or validation of that revised helper is claimed.",
+  "findings": [
+    {
+      "id": "unrelated_output_poisoning",
+      "classification": "concrete_pre_fix_false_rejection",
+      "location": "raw_result_proof: initial global raw-item validation, before candidate interval selection",
+      "finding": "The reviewed helper checked BAD markers and envelope fields for every raw tool item before selecting the intended interval. A completed, nonoverlapping earlier or later result containing Warning: truncated output therefore rejected an otherwise valid complete read proof.",
+      "resolution_scope": "Reported to root and qualification_map. Root authorized candidate-local formatter/content checks while retaining fail-closed missing/duplicate identities, closure and overlap checks. Implementer reported a correction in progress; this review does not certify that correction or its tests."
+    },
+    {
+      "id": "global_identity_policy",
+      "classification": "intentional_conservative_scope",
+      "evidence": [
+        "installed_raw_schema: FunctionCallOutputResponseItem.call_id permits null"
+      ],
+      "finding": "Installed schema permits function_call_output without a nonempty call ID. Global identity validation rejects such an item, including outside the chosen interval. Root retained fail-closed missing/ambiguous identity and unresolved/overlap behavior for this bounded method; the review does not propose relaxing those gates."
+    },
+    {
+      "id": "direct_output_format",
+      "classification": "source_and_schema_agreement",
+      "evidence": [
+        "exec_context:413-421",
+        "exec_context:524-574",
+        "exec_context:578-601",
+        "installed_raw_schema: FunctionCallOutputBody"
+      ],
+      "finding": "Direct exec completed output is formatted text: optional Chunk ID line, Wall time: decimal seconds, Process exited with code 0, optional Original token count line, then Output: and a newline followed by payload. EXEC_HEADER agrees with this format. Direct raw output is not the nested code-mode result JSON object."
+    },
+    {
+      "id": "code_mode_output_format",
+      "classification": "source_and_schema_agreement",
+      "evidence": [
+        "exec_context:448-477",
+        "exec_context:578-601",
+        "code_mode_output:28-33",
+        "code_mode_output:62-65",
+        "code_mode_handler:278-291",
+        "installed_raw_schema: FunctionCallOutputBody and FunctionCallOutputContentItem"
+      ],
+      "finding": "Code-mode prepared output has Script completed, Wall time decimal seconds with optional code-mode/overhead timing, then Output and newline. Text content is a string or ordered input_text items. Whole-object exec printing uses chunk_id, wall_time_seconds, exit_code, session_id, original_token_count and output; optional absent fields are omitted. The reader consumes the complete supported body, rejects unfinished sessions and nontext/unknown envelopes, and requires exact executor-stdout equality."
+    },
+    {
+      "id": "chronology_source",
+      "classification": "source_supported_order_not_binary_attestation",
+      "evidence": [
+        "raw_call_dispatch:308-344",
+        "raw_item_recording:3612-3615",
+        "raw_item_recording:3665-3666",
+        "raw_item_recording:4163-4170"
+      ],
+      "finding": "Retained native source records the raw call before scheduling its tool future and emits prepared response items from the recording path. This supports call-before-command-before-output interval reasoning. The source tag and installed version label do not attest the exact installed executable build."
+    },
+    {
+      "id": "millisecond_precision",
+      "classification": "inherited_conservative_limitation_unchanged",
+      "evidence": [
+        "notification_protocol:2044-2058",
+        "installed_notification_schema:8620-8623",
+        "literal_integration:191-193",
+        "raw_helper_current: raw_result_proof timestamp checks; current binding is post-review only"
+      ],
+      "finding": "emittedAtMs is an integer Unix-millisecond timestamp. Reviewed helper requires strict raw-call time before command completion and bounds submillisecond executor request time by raw event times. Existing literal execution_proof similarly requires capture-close delivery no later than the app completion timestamp divided by 1000. Same-millisecond fast operations may be rejected conservatively even when event order is correct. No empirical occurrence or false-positive admission is claimed; the existing behavior remains unchanged in the narrow unrelated-output fix."
+    },
+    {
+      "id": "integration_scope",
+      "classification": "source_review",
+      "evidence": [
+        "literal_integration:263-282"
+      ],
+      "finding": "Raw proof is attempted for startup paths when app_projection_equals_executor is false. On successful separate raw proof, the integration preserves that false provenance and records complete_prepared_tool_result_literal_segments. It does not rewrite the displayed projection or promote old assessments."
+    }
+  ],
+  "limitations": [
+    "No installed app-server launch or native output fixture was run for this review.",
+    "No exact next-request serialization, model attention, or authoritative code-mode parent-ID relationship is claimed.",
+    "No new empirical result or historical qualification verdict is produced.",
+    "No post-fix implementation review or new test result is claimed by this artifact."
+  ],
+  "inputs": {
+    "raw_helper_current": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/raw_tool_result_reads.py",
+      "sha256": "c171511276a9cf6a9671e8d681d8e95a52535bbb6dc76924ce8632b37c6d8505",
+      "bytes": 20538
+    },
+    "literal_integration": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/literal_read_segments.py",
+      "sha256": "167bc9ecf9a627a183b32f7ed7ffba4d6d822228a40b3dbee46f53c12076e51a",
+      "bytes": 18107
+    },
+    "exec_context": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__context.rs",
+      "sha256": "9a9acc6daab2112bd9ca1a07a1e1f2105b20a7f565878157c726ee0d7a3e00cc",
+      "bytes": 20351
+    },
+    "code_mode_output": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__output.rs",
+      "sha256": "071a30e1811bb43939e59f910c180b5377e9aa2f99f5e2bc658032bf1d319c77",
+      "bytes": 2600
+    },
+    "code_mode_handler": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__tools__code_mode__mod.rs",
+      "sha256": "13b5bda6e93a65fe999a3f07b3c5ee4a05850bfca57e4090876d70b310d8ba9e",
+      "bytes": 19667
+    },
+    "raw_call_dispatch": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__stream_events_utils.rs",
+      "sha256": "10c955dd6103faddf4c14e00e5e19e848bf24a765a4c18fa32dce580f7050fce",
+      "bytes": 20476
+    },
+    "raw_item_recording": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__core__src__session__mod.rs",
+      "sha256": "52f7d89d8ec2861850b17c4c21fdde295bdf35473efe11821af86432b61e651b",
+      "bytes": 205816
+    },
+    "notification_protocol": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/codex-rs__app-server-protocol__src__protocol__common.rs",
+      "sha256": "27fe9ee0a155ee1e5f59860869277fd7179f22e151a38326738396b60d97ebea",
+      "bytes": 173236
+    },
+    "retained_source_analysis": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-002/raw-tool-result-analysis.json",
+      "sha256": "733ba20482266a00e0e4e06666b88d4d44eb90dc65b81909d891027d9a2582c6",
+      "bytes": 16828
+    },
+    "installed_raw_schema": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/isolation-session-9/native/app-server-schema/v2/RawResponseItemCompletedNotification.json",
+      "sha256": "e41475a93885572579b0963718e46783b07f9ddb9e61f0669dac09da4d59185e",
+      "bytes": 33606
+    },
+    "installed_notification_schema": {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/isolation-session-9/native/app-server-schema/ServerNotification.json",
+      "sha256": "871046f308da617d6cbfb372ff0260a778d8b959ae7eca8757a2edcb4c5f3900",
+      "bytes": 208173
+    }
+  }
+}

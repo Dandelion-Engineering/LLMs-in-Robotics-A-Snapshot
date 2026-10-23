@@ -1,0 +1,98 @@
+--- a/Long-Horizon Adaptive Robotics Expirement/Batch 01/Calibration Tools/physical_calibration.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Batch 01/Calibration Tools/physical_calibration.py
+@@ -286,10 +286,34 @@
+             'not_tested':['candidate restart/memory recovery','process eligibility','inspection','complete task success']}
+ 
+ 
++def native_servo_displacement(initial_joint,initial_native_target,final_joint,final_native_target):
++    """Measured local response; do not assume a gravity-free position servo.
++
++    The reference uses ONLY the measured pre-command offset, never the final
++    error. Absolute native-target error remains separately reported.
++    """
++    rows=[list(row) for row in (initial_joint,initial_native_target,final_joint,final_native_target)]
++    if any(len(row)!=7 or any(not math.isfinite(float(v)) for v in row) for row in rows):
++        raise ValueError('finite seven-joint calibration vectors required')
++    initial,old_target,final,target=rows
++    offset=[q-u for q,u in zip(initial,old_target)]
++    expected=[u+d for u,d in zip(target,offset)]
++    local_error=max(abs(q-r) for q,r in zip(final,expected))
++    absolute_error=max(abs(q-u) for q,u in zip(final,target))
++    return {'basis':'local displacement from prior measured servo offset; not absolute position accuracy',
++            'initial_native_target_rad':old_target,'final_native_target_rad':target,
++            'measured_initial_servo_offset_rad':offset,'expected_physical_joint_rad':expected,
++            'expected_displacement_rad':[u-v for u,v in zip(target,old_target)],
++            'observed_displacement_rad':[q-p for q,p in zip(final,initial)],
++            'maximum_local_displacement_error_rad':local_error,
++            'maximum_absolute_native_target_error_rad':absolute_error}
++
++
+ def adapters(loop):
+     cell=loop.cells[0];np=loop.np;loop.until(loop.public_ready,8.);checks=[]
+-    def execute(name,action,expected_joint=None,expected_tcp=None):
++    def execute(name,action,expected_joint=None,expected_tcp=None,expected_native_joint=None):
+         initial_q=cell.data.qpos[:7].copy();initial_tcp=cell.data.site_xpos[cell.tcp].copy()
++        initial_native_target=cell.data.ctrl[:7].copy()
+         maxima={'joint0_positive_rad':0.,'tcp_z_positive_m':0.}
+         def measure(index,current,elapsed):
+             maxima['joint0_positive_rad']=max(maxima['joint0_positive_rad'],float(current.data.qpos[0]-initial_q[0]))
+@@ -301,29 +325,43 @@
+         final_q=cell.data.qpos[:7].copy();final_tcp=cell.data.site_xpos[cell.tcp].copy()
+         safe=bool(np.all(np.isfinite(final_q)) and cell.arm_adapter.workspace_contains(final_tcp)
+                   and cell.active_request is None and float(sum(cell.data.qpos[7:9]))>=.065)
+-        qerr=float(np.max(np.abs(final_q-expected_joint))) if expected_joint is not None else None
++        tracking=(native_servo_displacement(initial_q,initial_native_target,final_q,expected_native_joint)
++                  if expected_native_joint is not None else None)
++        qerr=(tracking['maximum_local_displacement_error_rad'] if tracking is not None else
++              (float(np.max(np.abs(final_q-expected_joint))) if expected_joint is not None else None))
++        endpoint_preserved=(bool(np.allclose(cell.data.ctrl[:7],expected_native_joint,rtol=0,atol=1e-10))
++                            if expected_native_joint is not None else None)
+         tcp_error=float(np.linalg.norm(final_tcp-expected_tcp)) if expected_tcp is not None else None
+         motion_min={'joint_position':.005,'joint_velocity':.001,'timestamped_trajectory':.002,'cartesian_target':.0005}
+         observed=maxima['tcp_z_positive_m'] if name=='cartesian_target' else maxima['joint0_positive_rad']
+         response_seen=(observed>=motion_min[name]) if name in motion_min else any(
+             e.get('type')=='direct_control_limits' and e.get('request_id')==rid and e.get('mode')=='effort' for e in cell.events)
+         joint_tolerance=.025 if name=='bounded_effort' else .005
+-        passed=safe and response_seen and (qerr is None or qerr<=joint_tolerance) and (tcp_error is None or tcp_error<=.012)
++        passed=(safe and response_seen and endpoint_preserved is not False
++                and (qerr is None or qerr<=joint_tolerance) and (tcp_error is None or tcp_error<=.012))
+         result={'interface':name,'request_id':rid,'terminal_receipt':receipt,'passed':passed,
+                 'initial_joint':initial_q.tolist(),'final_joint':final_q.tolist(),'initial_tcp':initial_tcp.tolist(),
+                 'final_tcp':final_tcp.tolist(),'maximum_joint_error_rad':qerr,'tcp_error_m':tcp_error,
++                'measurement_revision':'native-servo-local-displacement-1',
++                'joint_error_basis':tracking['basis'] if tracking else 'physical measured-pose hold',
++                'native_servo_tracking':tracking,'native_endpoint_preserved':endpoint_preserved,
++                'absolute_native_target_within_005rad':(tracking['maximum_absolute_native_target_error_rad']<=.005
++                                                       if tracking else None),
+                 'joint_tolerance_rad':joint_tolerance,'tcp_tolerance_m':.012,'safe_terminal_checks':safe,
+                 'physical_response_or_effort_adapter_report_seen':response_seen,'measured_peak_motion':maxima,
+                 'minimum_commanded_axis_motion':motion_min.get(name)}
+         checks.append(result);loop.records.event('adapter_probe_check',result,float(cell.data.time))
+         if not passed:raise CalibrationFailure(name+' physical tracking/terminal check failed')
+-    q=cell.data.qpos[:7].copy();q[0]+=.015
+-    execute('joint_position',{'operation':'joint_command','mode':'position','values':q.tolist(),'duration_s':1.},expected_joint=q)
++    # Native servo targets differ from physical joints under gravity. Change
++    # the stable target on axis0; compare measured displacement at the same
++    # .005rad tolerance and retain absolute setpoint error separately.
++    q=cell.data.ctrl[:7].copy();q[0]+=.015
++    execute('joint_position',{'operation':'joint_command','mode':'position','values':q.tolist(),'duration_s':1.},expected_native_joint=q)
+     q=cell.data.qpos[:7].copy();target=q.copy();target[0]+=.005
+-    execute('joint_velocity',{'operation':'joint_command','mode':'velocity','values':[.01,0,0,0,0,0,0],'duration_s':.5},expected_joint=target)
+-    now=float(cell.data.time);q=cell.data.qpos[:7].copy();middle=q.copy();middle[0]+=.01
++    execute('joint_velocity',{'operation':'joint_command','mode':'velocity','values':[.01,0,0,0,0,0,0],'duration_s':.5},expected_native_joint=target)
++    now=float(cell.data.time);q=cell.data.ctrl[:7].copy();middle=q.copy();middle[0]+=.01
+     execute('timestamped_trajectory',{'operation':'trajectory','waypoints':[{'time_s':now+.5,'positions':middle.tolist()},
+-            {'time_s':now+1.,'positions':q.tolist()}],'deadline_s':now+1.},expected_joint=q)
++            {'time_s':now+1.,'positions':q.tolist()}],'deadline_s':now+1.},expected_native_joint=q)
+     tcp=cell.data.site_xpos[cell.tcp].copy();tcp[2]+=.003
+     execute('cartesian_target',{'operation':'cartesian_target','position':tcp.tolist(),'duration_s':1.5},expected_tcp=tcp)
+     # A short measured-effort hold exercises the PUBLIC effort request path;
+@@ -331,7 +369,7 @@
+     q=cell.data.qpos[:7].copy();effort=cell.data.actuator_force[:7].copy()
+     execute('bounded_effort',{'operation':'joint_command','mode':'effort','values':effort.tolist(),'duration_s':.05},expected_joint=q)
+     return {'physical_predicates_passed':all(c['passed'] for c in checks),'checks':checks,
+-            'limits':'small unloaded motions only; no payload/full-workspace/controller-robustness claim'}
++            'limits':'small unloaded native-servo response; local displacement is not absolute joint accuracy; no payload/full-workspace/controller-robustness claim'}
+ 
+ 
+ def effort_equivalence(loop):

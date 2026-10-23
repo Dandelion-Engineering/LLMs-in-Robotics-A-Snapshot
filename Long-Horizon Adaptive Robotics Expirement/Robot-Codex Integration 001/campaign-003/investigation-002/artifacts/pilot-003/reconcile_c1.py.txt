@@ -1,0 +1,62 @@
+"""Query one existing request, acquire evidence, and report public status.
+
+No physical commands or command retries are issued by this helper.
+"""
+import json
+import sys
+import time
+sys.path.insert(0, "/workspace")
+from robot import Client, ClientError
+
+client = Client()
+
+
+def call(*args):
+    try:
+        if args[0] == "query":
+            reply = client.query(args[1])
+        elif args[0] == "observe":
+            reply = client.observe(args[2])
+        else:
+            reply = client.status()
+    except ClientError as exc:
+        print(json.dumps(exc.document()))
+        raise SystemExit(4 if exc.unknown else 3)
+    return reply
+
+
+def terminal(request_id):
+    deadline = time.monotonic() + 8
+    while True:
+        reply = call("query", request_id)
+        if reply.get("command", {}).get("phase") == "terminal":
+            print(json.dumps(reply))
+            return reply
+        if time.monotonic() >= deadline:
+            print(json.dumps(reply))
+            raise SystemExit(4)
+        time.sleep(0.25)
+
+
+terminal(sys.argv[1])
+capture_id = sys.argv[2]
+print(json.dumps(call("observe", "--request-id", capture_id)))
+terminal(capture_id)
+s = call("status")
+p = s.get("packet", {})
+result = {k: s.get(k) for k in (
+    "ok", "owner", "authority_epoch", "order_version",
+    "observation_sequence", "observation_age_s", "active_command",
+    "unresolved_commands", "robot_action_budget", "history_high_water",
+)}
+result["packet"] = {k: p.get(k) for k in (
+    "capture_sim_time_s", "sim_time", "tcp_position_m", "joints",
+    "joint_velocities", "gripper", "detections", "station", "order",
+    "last_feedback",
+)}
+result["arm_resource"] = p.get("arm", {}).get("resource")
+result["unresolved_commands"] = [
+    {k: command.get(k) for k in ("request_id", "phase", "status", "verification")}
+    for command in s.get("unresolved_commands", [])
+]
+print(json.dumps(result))

@@ -1,0 +1,109 @@
+{
+  "schema_version": "resource-sampler-recurrence-pattern-summary-1",
+  "captured_at_utc": "2026-09-24T19:36:14.274912+00:00",
+  "source_diagnostic": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-resource-sampler-incident-002\\diagnostic.json",
+    "sha256": "e3cd5692f5825bb6b8e263c87d3e36337220f47b7dcddfa29664e959870409b3",
+    "bytes": 1115866
+  },
+  "official_diagnostic_receipt": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T193238088098Z-a07f4fa9.json",
+    "sha256": "c77ff76d8bc56a39603c394f38adc7da3a62e4190c6113aa1dd461d0806d375e",
+    "bytes": 1077
+  },
+  "observed_attempt_count": 132,
+  "observed_resource_sample_count": 12257,
+  "resource_watchdog_stop_attempt_count": 2,
+  "attempts_with_slow_or_delayed_capture_or_missing_gpu": [
+    {
+      "run_id": "batch01-eval-r4-C24-rep2-A3-no-persistence",
+      "queue_job_id": "20260924T172624113609Z-88f8fc4d",
+      "resource_ref": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C24-rep2-A3-no-persistence\\evidence\\resources.jsonl",
+        "sha256": "61984e3ae63938ebf87465360cda6f8a2a0c939c113f84193afbd773ac60650b",
+        "bytes": 50689
+      },
+      "sample_count": 21,
+      "maximum_capture_duration_s": 7.712918300007004,
+      "maximum_start_interval_s": 5.015789400000358,
+      "slow_or_delayed_capture_envelopes": [
+        {
+          "captured_at": "2026-09-24T17:28:44.433205+00:00",
+          "capture_monotonic_s": 128372.5027402,
+          "capture_duration_s": 7.712918300007004,
+          "index": 20,
+          "capture_start_interval_s": 4.997837799994159,
+          "gpu_missing_reason": "TimeoutExpired: Command '['C:\\\\Windows\\\\system32\\\\nvidia-smi.EXE', '--query-gpu=index,name,memory.total,memory.used,utilization.gpu,temperature.gpu', '--format=csv,noheader,nounits']' timed out after 2.0 seconds",
+          "harness_missing_reason": null,
+          "model_missing_reason": null
+        }
+      ]
+    },
+    {
+      "run_id": "batch01-eval-r4-C24-rep2-A3-persistent",
+      "queue_job_id": "20260924T185747396672Z-3cd1855f",
+      "resource_ref": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C24-rep2-A3-persistent\\evidence\\resources.jsonl",
+        "sha256": "dff5d3ce2e486471434236441f07674d8f16d77d2c84a816fff4478d55cc704b",
+        "bytes": 280728
+      },
+      "sample_count": 116,
+      "maximum_capture_duration_s": 7.6020114999846555,
+      "maximum_start_interval_s": 5.0166977000189945,
+      "slow_or_delayed_capture_envelopes": [
+        {
+          "captured_at": "2026-09-24T19:08:02.557274+00:00",
+          "capture_monotonic_s": 134330.6269082,
+          "capture_duration_s": 7.6020114999846555,
+          "index": 115,
+          "capture_start_interval_s": 4.999782200000482,
+          "gpu_missing_reason": "TimeoutExpired: Command '['C:\\\\Windows\\\\system32\\\\nvidia-smi.EXE', '--query-gpu=index,name,memory.total,memory.used,utilization.gpu,temperature.gpu', '--format=csv,noheader,nounits']' timed out after 2.0 seconds",
+          "harness_missing_reason": null,
+          "model_missing_reason": null
+        }
+      ]
+    }
+  ],
+  "other_attempts": 130,
+  "other_attempts_maximum_capture_duration_s": 0.3155715999964741,
+  "other_attempts_maximum_capture_start_interval_s": 5.016401600005338,
+  "new_capture_pending_at_watchdog_s": 2.0988683000032324,
+  "new_capture_completion_lower_bound_after_watchdog_s": 5.503143199981423,
+  "physics_timing": {
+    "actual_host_timing_pass": true,
+    "maximum_lag_s": 0.018635200005611807,
+    "maximum_timing_sample_gap_s": 0.02197530001285486,
+    "outside_rtf_tolerance_fraction": 0.0
+  },
+  "maximum_event_envelope_gap_during_episode": {
+    "gap_s": 0.198281599994516,
+    "before": {
+      "event_id": 2823,
+      "event_type": "observation",
+      "source": "sensor_gateway",
+      "wall_elapsed_s": 192.50258900001063,
+      "sim_time_s": 193.00200000019345
+    },
+    "after": {
+      "event_id": 2824,
+      "event_type": "observation",
+      "source": "sensor_gateway",
+      "wall_elapsed_s": 192.70087060000515,
+      "sim_time_s": 193.2000000001944
+    }
+  },
+  "os_events": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-resource-sampler-incident-002\\os-events.json",
+    "sha256": "0494058bb1d4706a080a98ee7e09357b047df21fb695ef0e4c4c30fa7867a52b",
+    "bytes": 2713
+  },
+  "interpretation": "Same GPU TimeoutExpired symptom and multi-second resource collection delay recurred. This is an unresolved common infrastructure responsiveness pattern; it is not evidence of a persistence effect or a proven architecture cause. No new continuation review authorized by this summary.",
+  "limitations": [
+    "Baseline model observation absence is expected when no model exists; not counted as GPU observation failure.",
+    "Display cutoffs of capture>=1second or start interval>=6seconds are diagnostic summaries, not changed policy gates.",
+    "12257 repeated samples are not independent experimental units and no failure probability or confidence estimate is asserted.",
+    "Allocation of delay among PID lookup, process reads, GPU process creation/wait/termination and scheduling remains unmeasured.",
+    "No task-performance outcomes used; terminal validity only locates the infrastructure failure.",
+    "A successful current probe would not by itself establish recurrence resolution."
+  ]
+}

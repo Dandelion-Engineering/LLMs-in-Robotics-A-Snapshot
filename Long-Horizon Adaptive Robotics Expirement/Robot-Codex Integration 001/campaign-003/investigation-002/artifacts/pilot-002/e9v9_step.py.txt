@@ -1,0 +1,91 @@
+"""Session 3 only: execute once, query receipt, acquire, and check public state."""
+import json
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+EXPECTED = (9, 9)
+
+def cli(args):
+    result = subprocess.run(['python3', '-B', 'robot.py'] + args,
+                            capture_output=True, text=True)
+    try:
+        reply = json.loads(result.stdout)
+    except Exception:
+        print(json.dumps({'unresolved_response': True, 'returncode': result.returncode,
+                          'stdout': result.stdout, 'stderr': result.stderr}), flush=True)
+        raise SystemExit(4)
+    return result.returncode, reply
+
+def terminal(rid, reply):
+    deadline = time.monotonic() + 20
+    while reply.get('command', {}).get('phase') != 'terminal':
+        if time.monotonic() >= deadline:
+            print(json.dumps({'unresolved_request': rid, 'last_reply': reply}), flush=True)
+            raise SystemExit(4)
+        time.sleep(.15)
+        code, reply = cli(['query', rid])
+        if code or not reply.get('ok'):
+            print(json.dumps({'query_failed': rid, 'reply': reply}), flush=True)
+            raise SystemExit(code or 4)
+    return reply
+
+def brief(state):
+    packet = state.get('packet', {})
+    return {**{k: state.get(k) for k in ('ok', 'owner', 'authority_epoch', 'order_version',
+             'observation_sequence', 'observation_age_s', 'active_command', 'robot_action_budget')},
+            'packet': {k: packet.get(k) for k in ('capture_sim_time_s', 'tcp_position_m',
+                       'gripper', 'detections', 'station', 'joint_velocities')}}
+
+def guard(state):
+    p = state.get('packet', {})
+    if (not state.get('ok') or state.get('owner') != 'robot'
+        or (state.get('authority_epoch'), state.get('order_version')) != EXPECTED
+        or state.get('active_command') or p.get('station', {}).get('busy')
+        or p.get('station', {}).get('fault')
+        or p.get('arm', {}).get('resource', {}).get('active_request_id')
+        or any(c.get('phase') != 'terminal' for c in state.get('unresolved_commands', []))
+        or p.get('order') != {'destination': 'C_pad', 'kind': 'C-placement',
+                             'part_id': 'C1', 'requirements': [], 'version': 9}):
+        print(json.dumps({'precondition_failed': brief(state)}), flush=True)
+        raise SystemExit(3)
+
+def run_step(rid, args):
+    code, before = cli(['status'])
+    if code:
+        print(json.dumps(before), flush=True)
+        raise SystemExit(code)
+    guard(before)
+    code, reply = cli(args + ['--request-id', rid])
+    Path('notes/' + rid + '-admission.json').write_text(json.dumps(reply))
+    if code or not reply.get('ok'):
+        print(json.dumps(reply), flush=True)
+        raise SystemExit(code or 3)
+    reply = terminal(rid, reply)
+    print(json.dumps({'request_id': rid, 'receipt': reply}), flush=True)
+    if reply['command']['status'] != 'completed':
+        raise SystemExit(3)
+    capture_id = rid + '-obs'
+    code, capture = cli(['observe', '--request-id', capture_id])
+    if code or not capture.get('ok'):
+        print(json.dumps(capture), flush=True)
+        raise SystemExit(code or 3)
+    capture = terminal(capture_id, capture)
+    if capture['command']['status'] != 'completed':
+        print(json.dumps(capture), flush=True)
+        raise SystemExit(3)
+    code, state = cli(['status'])
+    Path('notes/' + rid + '-result.json').write_text(json.dumps(
+        {'receipt': reply, 'capture': capture, 'status': state}))
+    print(json.dumps({'capture_sequence': capture['command'].get('observation_sequence'),
+                      'state': brief(state)}), flush=True)
+    if code:
+        raise SystemExit(code)
+    guard(state)
+    if state['observation_sequence'] < capture['command']['observation_sequence']:
+        raise SystemExit('Stopped: status predates requested acquisition')
+    return state
+
+if __name__ == '__main__':
+    run_step(sys.argv[1], sys.argv[2:])

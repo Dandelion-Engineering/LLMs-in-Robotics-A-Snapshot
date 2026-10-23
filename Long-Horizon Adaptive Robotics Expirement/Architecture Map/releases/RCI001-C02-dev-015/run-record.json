@@ -1,0 +1,223 @@
+{
+  "schema_version": "architecture-map-1.0",
+  "id": "RCI001-C02-host-probe-005",
+  "recorded_at": "2026-09-28T01:42:02.876502+00:00",
+  "author": "Codex session 14",
+  "tags": [
+    "robot-codex-integration-001",
+    "campaign-002"
+  ],
+  "details": {},
+  "revision_id": "RCI001-C02-dev-015",
+  "stage": "development",
+  "condition_id": "campaign002-host-probe-qualification",
+  "protocol_id": "RCI001-readiness-session10-v1",
+  "scenario_id": "blocked-insert-home",
+  "paired_block_id": "unpaired-RCI001-C02-host-probe-005",
+  "replicate": 1,
+  "started_at": null,
+  "rerun_of_run_id": null,
+  "condition_details": {
+    "manifest": {
+      "schema": "robot-codex-development-manifest-1.0",
+      "stage": "development-only",
+      "run_id": "RCI001-C02-host-probe-005",
+      "family": "blocked-insert-home",
+      "mode": "serve",
+      "seed": 173,
+      "noise_seed": 24201,
+      "sim_cap_s": 240,
+      "wall_cap_s": 300,
+      "storage_cap_bytes": 536870912,
+      "physics_dt_s": 0.002,
+      "clock_mode": "wall-paced; physics continues independently of agent",
+      "activation_policy": "frozen controller help request or explicit public station-fault waiting; no hidden trigger",
+      "operator_only_fixture": {
+        "part_count": 2,
+        "placements": [
+          {
+            "part_id": "A1",
+            "zone": "insert_home_A"
+          }
+        ],
+        "order": {
+          "version": 1,
+          "closed": true,
+          "requirements": [
+            {
+              "family": "B",
+              "recipe": "B",
+              "count": 1,
+              "tray": "tray2",
+              "max_rework_cycles": 0
+            }
+          ]
+        },
+        "reference_actions": [
+          {
+            "operation": "transport",
+            "part_id": "A1",
+            "destination": "parking1"
+          },
+          {
+            "operation": "setup",
+            "family": "B"
+          }
+        ],
+        "missing_rule": "Frozen setup returns insert A to its occupied home; baseline has no home-evacuation rule.",
+        "baseline_source": "Runtime 004/candidates.py:673-759; cell.py:342-349,537-550"
+      },
+      "limitations": [
+        "Development fixture; not sampled performance evidence",
+        "No collision safety certificate",
+        "Reference solution is protected operator evidence",
+        "Agent process restart only; supervisor restart is not implemented"
+      ],
+      "framework_revision": "RCI001-C02-dev-015",
+      "model_turns_max": 0,
+      "qualification_stage": "campaign002-host-probe-qualification",
+      "diagnostic_purpose": "continuous-physics-during-durable-io",
+      "runtime_workspace": "C:\\Users\\cresp\\AppData\\Local\\RobotCodex\\Campaign002\\qualification\\RCI001-C02-host-probe-005",
+      "infrastructure_revision": "single-owner-continuous-physics-with-synchronous-supervisory-durability-1",
+      "runtime_input_files": [
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess_smoke_v2.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/continuous_integrity.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/resource_integrity.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/retained_reads.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_assess.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_continuous_integrity.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_resource_integrity.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_retained_reads.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/test_smoke_v2.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/continuous_adapter.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/executor_capture.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/gc_diagnostics.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/instrumented_journal.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/instrumented_recorder.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/memory_guard.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physics_worker.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_continuous_adapter.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_gc_diagnostics.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_instrumented_journal.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_instrumented_recorder.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_memory_guard.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_physics_worker.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_timing.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/test_transport.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/timing.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/DESIGN.md",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/qualification/assess_host_probe.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/qualification/host_probe.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_bootstrap.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_pilot.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/assess_smoke.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/supplement_pilot.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_assessment.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_pilot_assessment.py",
+        "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/readiness-session-10/assessment/test_smoke_assessment.py"
+      ],
+      "scope": "Fixed 240 simulation-second idle serve-mode diagnostic: continuous-physics-during-durable-io. No model, operator recovery, task score or substitution for final qualification."
+    },
+    "scope": "One predeclared readiness attempt; no comparative performance inference"
+  },
+  "seeds": {
+    "state": "recorded",
+    "refs": [
+      {
+        "label": "Protected immutable development attempt manifest",
+        "uri": "releases/RCI001-C02-dev-015/manifest.json",
+        "sha256": "6ea1c76759d2e63f17159dfc13de4b31feeea7d9e1a4dc24286b48b7386d5106",
+        "state": "available",
+        "access": "evaluator_only",
+        "locator": null
+      }
+    ],
+    "reason": null
+  },
+  "frozen_refs": {
+    "code": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Exact implementation and runtime templates",
+          "uri": "releases/RCI001-C02-dev-015/code.zip",
+          "sha256": "77d76d855b331521517c8bc703756c5d193d01513bb272820953652fa8504321",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "environment": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Source hashes and requested environment",
+          "uri": "releases/RCI001-C02-dev-015/snapshot.json",
+          "sha256": "bc92878c02af0be84f2b5f60d542dfa00b36a4995c21bde86ee32270c7f53c2e",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "models": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Source hashes and requested environment",
+          "uri": "releases/RCI001-C02-dev-015/snapshot.json",
+          "sha256": "bc92878c02af0be84f2b5f60d542dfa00b36a4995c21bde86ee32270c7f53c2e",
+          "state": "available",
+          "access": "operator",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "protocol": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Protected immutable development attempt manifest",
+          "uri": "releases/RCI001-C02-dev-015/manifest.json",
+          "sha256": "6ea1c76759d2e63f17159dfc13de4b31feeea7d9e1a4dc24286b48b7386d5106",
+          "state": "available",
+          "access": "evaluator_only",
+          "locator": null
+        }
+      ],
+      "reason": null
+    },
+    "scenario": {
+      "state": "recorded",
+      "refs": [
+        {
+          "label": "Protected immutable development attempt manifest",
+          "uri": "releases/RCI001-C02-dev-015/manifest.json",
+          "sha256": "6ea1c76759d2e63f17159dfc13de4b31feeea7d9e1a4dc24286b48b7386d5106",
+          "state": "available",
+          "access": "evaluator_only",
+          "locator": null
+        }
+      ],
+      "reason": null
+    }
+  },
+  "evidence": [
+    {
+      "label": "Protected immutable development attempt manifest",
+      "uri": "releases/RCI001-C02-dev-015/manifest.json",
+      "sha256": "6ea1c76759d2e63f17159dfc13de4b31feeea7d9e1a4dc24286b48b7386d5106",
+      "state": "available",
+      "access": "evaluator_only",
+      "locator": null
+    }
+  ]
+}

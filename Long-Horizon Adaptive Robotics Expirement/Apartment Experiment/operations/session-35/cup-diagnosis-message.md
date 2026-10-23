@@ -1,0 +1,7 @@
+Randy asked in the current Codex conversation for a read-only investigation of the cup rolling between the same two spots, explicitly directing no fixes and continued 30-minute monitoring.
+
+The original simulation recordings confirm the motion; the viewer agrees with them. Over three simulated minutes the cup repeatedly traveled about 1.97 m, reversed about every 50 seconds and reached 8.8 cm/s without recorded robot commands. Full recorded-sample contact reconstruction found floor contact throughout and one brief cabinet-side contact, with no robot contact. A later 51-second reversal-to-reversal interval had only floor contact yet regained about 0.585 mJ of kinetic energy from near rest, far exceeding its 0.00373 mJ gravitational-potential variation.
+
+This points to an unphysical cylinder/floor contact-dynamics artifact. The cup also has no enabled rolling resistance; that explains persistent rolling but not the repeated reacceleration. Exact solver causation is not proven, and this diagnosis does not determine whether Robot Codex can grasp a moving object. The evidence and limitations are in `operations/session-35/CUP_DIAGNOSIS.md`, with authenticated original-state evidence under `operator/maps-session35-001/cup-diagnosis-001`.
+
+No fix, reset, retry, task skip, coaching or live-state change was made. The physics anomaly remains open; Session 35 and the existing 30-minute monitoring continue while Randy decides. Next scheduled observation is around 13:54 PDT. No scientific Baseline-versus-Maps comparison was performed.

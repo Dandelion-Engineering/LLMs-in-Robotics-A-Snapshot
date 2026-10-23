@@ -1,0 +1,345 @@
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/cell.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/cell.py"
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/cell.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/cell.py
+@@ -25,6 +25,9 @@
+ PART_HALF = np.array([.021,.021,.018])
+ HOME = np.array([0,-.5,0,-2.2,0,1.7,.7854])
+ DT = .002
++INSERT_TCP_OFFSET_M = .004  # Common unverified contact calibration; applies at grasp and release.
++FIXTURE_JAW_SLOT_HALF_M = .020  # Public 40 mm access slots in the jaw-direction walls.
++SETUP_RETURN_WAIT_S = 2.0
+ RECOVERY_DESTINATIONS = ('parking1','parking2','inspection','quarantine')
+ 
+ def zone_half(name): return np.array([.092,.065]) if name.startswith('tray') else np.array([.053,.053])
+@@ -60,7 +63,14 @@
+         half=zone_half(name)
+         _sub(world,'geom',name='zone_'+name,type='box',pos=f'{x} {y} -.001',size=f'{half[0]} {half[1]} .001',rgba='.36 .39 .41 1',contype='0',conaffinity='0')
+         if name == 'fixture':
+-            for dx,dy,sx,sy in ((.049,0,.004,.053),(-.049,0,.004,.053),(0,.049,.053,.004),(0,-.049,.053,.004)):
++            # Retain the 12 mm containment walls, with jaw access at x in (-.020,.020).
++            # Finger collision half-width <=10.502 mm plus 4 mm sensor uncertainty
++            # leaves >=5.498 mm lateral allowance inside each 20 mm half-slot.
++            edge_half=(.053-FIXTURE_JAW_SLOT_HALF_M)/2
++            edge_center=(.053+FIXTURE_JAW_SLOT_HALF_M)/2
++            walls=[(.049,0,.004,.053),(-.049,0,.004,.053)]
++            walls.extend((dx,dy,edge_half,.004) for dx in (-edge_center,edge_center) for dy in (-.049,.049))
++            for dx,dy,sx,sy in walls:
+                 _sub(world,'geom',name=f'fixture_wall_{dx}_{dy}',type='box',pos=f'{x+dx} {y+dy} .006',size=f'{sx} {sy} .006',rgba='.5 .5 .5 1')
+     asset = root.find('asset')
+     rng = np.random.default_rng(seed)
+@@ -164,6 +174,20 @@
+         xy=np.array(ZONES[zone])
+         return bool(np.all(np.abs(pos[:2]-xy)+bounds[:2]<zone_half(zone)) and pos[2]<.07 and np.linalg.norm(self.data.cvel[body,3:])<.05)
+ 
++    def _insert_overlaps_fixture(self,name):
++        # Protected PLC occupancy interlock only. This Boolean is not a planner input.
++        pos=self.actual_pos(name)
++        body=mujoco.mj_name2id(self.model,mujoco.mjtObj.mjOBJ_BODY,name)
++        bounds=np.abs(self.data.xmat[body].reshape(3,3))@np.asarray(self.registry[name]['half'])
++        return bool(np.all(np.abs(pos[:2]-ZONES['fixture'])<=zone_half('fixture')+bounds[:2])
++                    and pos[2]+bounds[2]>=0. and pos[2]-bounds[2]<=.08)
++
++    def _physical_insert_interlock(self,family):
++        required='insert_'+family
++        occupied=[name for name,tag in self.registry.items()
++                  if tag['kind']=='insert' and self._insert_overlaps_fixture(name)]
++        return occupied==[required] and self._physical_zone(required,'fixture')
++
+     def truth_snapshot(self):
+         return {'sim_time':float(self.data.time),'objects':{n:{'pos':self.actual_pos(n).tolist(),**self.truth.get(n,{})} for n in self.registry},'station':dict(self.station),'qpos':self.data.qpos.tolist(),'qvel':self.data.qvel.tolist(),'ctrl':self.data.ctrl.tolist()}
+ 
+@@ -221,21 +245,43 @@
+         return result
+ 
+     def resume_setup_if_fresh(self):
+-        """Continue setup only from a capture taken after first transport ended."""
++        """Require a fresh public return-home witness before inserting the replacement."""
+         waiting=getattr(self,'_setup_wait',None)
+         if not waiting or not self.active_request:return False
+         if self.active_request.get('request_id')!=waiting['request_id']:return False
+         pending=self.active_request.get('setup_pending')
+-        if not pending or self.detection_time<waiting['capture_after_sim_s']:return False
+-        if self.data.time-self.detection_time>.35:return False
++        returning=self.active_request.get('setup_returning')
++        if not pending or not returning:
++            self.finish('failed','setup lacks its old-insert return record');return False
++        if self.data.time>=waiting['deadline_sim_s']:
++            self.finish('failed','old insert return not established before observation deadline');return False
++        age=self.data.time-self.detection_time
++        if self.detection_time<waiting['capture_after_sim_s'] or not 0<=age<=.35:return False
++        matches=[d for d in self.last_detections if d['id']==returning['id']]
++        if not matches:return False  # Unseen is unknown; wait only to the fixed deadline.
++        old=matches[0];home=returning['home'];pos=np.asarray(old.get('pos',[]),dtype=float)
++        half=np.asarray(self.registry[returning['id']]['half']);uncertainty=old.get('uncertainty_m',.004)
++        supported=(len(matches)==1 and old.get('kind')=='insert' and old.get('zone')==home
++                   and pos.shape==(3,) and np.all(np.isfinite(pos))
++                   and isinstance(uncertainty,(int,float)) and np.isfinite(uncertainty) and 0<=uncertainty<=.01)
++        supported=(supported and np.all(np.abs(pos[:2]-ZONES[home])+half[:2]+uncertainty<=zone_half(home))
++                   and abs(pos[2]-half[2])<=uncertainty+.003)
++        if not supported:
++            self.finish('failed','old insert is not freshly observed returned within its home bounds');return False
++        if any(d['zone']=='fixture' and d['kind'] in ('part','insert') for d in self.last_detections):
++            self.finish('failed','fixture is not observably empty after old-insert return');return False
++        if float(sum(self.data.qpos[7:9]))<.065:return False
+         self._setup_wait=None
+         try:
+             self.plan_transport(pending,'fixture')
+-            self.active_request.pop('setup_pending')
++            self.events.append({'type':'setup_return_observed','request_id':self.active_request['request_id'],
++                                'old_insert_id':returning['id'],'home':home,'capture_sim_time_s':self.detection_time,
++                                'sim_time':float(self.data.time),'basis':'fresh public image-derived position and measured open jaws',
++                                'independent_physical_success':False})
++            self.active_request.pop('setup_pending');self.active_request.pop('setup_returning')
+             return True
+         except ValueError as error:
+-            self.finish('failed',str(error))
+-            return False
++            self.finish('failed',str(error));return False
+ 
+     def public_packet(self,order,run_id,incarnation,sequence):
+         detections=[{**d,'age_s':float(self.data.time)-self.detection_time} for d in self.last_detections]
+@@ -286,7 +332,8 @@
+         if observed is None or self.data.time-self.detection_time>.35: raise ValueError('fresh visible part required')
+         if destination not in ZONES: raise ValueError('unknown destination')
+         if self.station['busy'] and (observed['zone']=='fixture' or destination=='fixture'):raise ValueError('machine guard interlock is closed')
+-        occupied=[d for d in self.last_detections if d['id']!=part_id and d['zone']==destination and d['kind']=='part']
++        occupied=[d for d in self.last_detections if d['id']!=part_id and d['zone']==destination
++                  and (d['kind']=='part' or (self.registry[part_id]['kind']=='insert' and d['kind']=='insert'))]
+         if occupied and not destination.startswith('tray'): raise ValueError('destination occupied')
+         obj=objective or {}
+         clearance=float(obj.get('clearance',.16)); speed=float(obj.get('speed_scale',.8))
+@@ -318,6 +365,10 @@
+             if not free: raise ValueError('delivery tray full')
+             dest[:2]=free[0]
+         if destination=='fixture' and snapshot['kind']=='part': dest[2]+=.017
++        if snapshot['kind']=='insert':
++            # Same public grasp offset at both endpoints preserves the intended
++            # body release height. Do not modify object state or infer a grasp.
++            source[2]+=INSERT_TCP_OFFSET_M;dest[2]+=INSERT_TCP_OFFSET_M
+         above=max(source[2],dest[2])+clearance
+         tcp=snapshot['tcp']
+         points=[(np.r_[tcp[:2],max(tcp[2],above)],255),
+@@ -466,18 +517,21 @@
+                 if self.station['busy']:raise ValueError('machine guard interlock is closed')
+                 family=action['family']; insert='insert_'+family
+                 if any(d['kind']=='part' and d['zone']=='fixture' for d in self.last_detections): raise ValueError('fixture occupied')
+-                current=next((d for d in self.last_detections if d['kind']=='insert' and d['zone']=='fixture'),None)
++                observed_inserts=[d for d in self.last_detections if d['kind']=='insert' and d['zone']=='fixture']
++                if len(observed_inserts)>1:raise ValueError('multiple inserts visibly occupy fixture')
++                current=observed_inserts[0] if observed_inserts else None
+                 if current and current['id']==insert: self.finish('completed','requested insert already visibly seated')
+                 elif current:
+                     self.plan_transport(current['id'],'insert_home_'+current['family'])
+-                    self.active_request={**action,'setup_pending':insert}
++                    self.active_request={**action,'setup_pending':insert,
++                                         'setup_returning':{'id':current['id'],'home':'insert_home_'+current['family']}}
+                 else:
+                     self.plan_transport(insert,'fixture')
+             elif op=='cycle':
+                 if self.station['busy'] or self.station['fault']: raise ValueError('machine unavailable')
+                 if part not in self.truth or not self._physical_zone(part,'fixture'): raise ValueError('seating interlock not satisfied')
+                 family=self.registry[part]['family']
+-                if not self._physical_zone('insert_'+family,'fixture'): raise ValueError('insert interlock not satisfied')
++                if not self._physical_insert_interlock(family): raise ValueError('unique seated insert interlock not satisfied')
+                 if action['recipe']!=family: raise ValueError('recipe incompatible')
+                 prior=self.truth[part];rework_authorization=None
+                 if prior['cycles']:
+@@ -512,6 +566,7 @@
+     def finish(self,status,reason,**extra):
+         if self.active_request is None: return
+         self._record_feedback(self.active_request['request_id'],status,reason,**extra)
++        self._setup_wait=None
+         self.active_request=None
+         self.lease_deadline=None
+ 
+@@ -588,6 +643,10 @@
+                     direct['last_report_s']=float(self.data.time)
+         if self.active_request and self.lease_deadline is not None and self.data.time>=self.lease_deadline:
+             self.cancel('bounded command authority expired')
++        waiting=getattr(self,'_setup_wait',None)
++        if (waiting and self.active_request and self.active_request['request_id']==waiting['request_id']
++                and self.data.time>=waiting['deadline_sim_s']):
++            self.finish('failed','old insert return not established before observation deadline')
+         if self.motion or self.segment:
+             if self.segment is None:
+                 self.segment=self.motion.pop(0)
+@@ -603,16 +662,17 @@
+                     pending=self.active_request.get('setup_pending') if self.active_request else None
+                     if pending:
+                         self._setup_wait={'request_id':self.active_request['request_id'],
+-                                          'capture_after_sim_s':float(self.data.time)}
++                                          'capture_after_sim_s':float(self.data.time),
++                                          'deadline_sim_s':float(self.data.time)+SETUP_RETURN_WAIT_S}
+                         self.events.append({'type':'setup_waiting_for_fresh_capture',
+                                             'request_id':self.active_request['request_id'],
+                                             'sim_time':float(self.data.time)})
+                     else:self.finish('completed','trajectory ended; physical outcome requires observation')
+         mujoco.mj_step(self.model,self.data)
+-        if self.cycle and (not self._physical_zone(self.cycle['part_id'],'fixture') or not self._physical_zone('insert_'+self.cycle['recipe'],'fixture')):
++        if self.cycle and (not self._physical_zone(self.cycle['part_id'],'fixture') or not self._physical_insert_interlock(self.cycle['recipe'])):
+             self.station.update(busy=False,ready=False,fault=True,guard_closed=False,clamped=False)
+             self.truth[self.cycle['part_id']]['cycle_history'][-1].update(status='failed',failed_at=float(self.data.time))
+-            self.events.append({'type':'cycle_fault','cycle_id':self.cycle['cycle_id'],'reason':'seating lost during accepted process','sim_time':float(self.data.time)})
++            self.events.append({'type':'cycle_fault','cycle_id':self.cycle['cycle_id'],'reason':'seating or unique-insert interlock lost during accepted process','sim_time':float(self.data.time)})
+             self.cycle=None
+         position=self.data.site_xpos[self.tcp].copy()
+         self.total_path+=float(np.linalg.norm(position-self.last_tcp));self.last_tcp=position
+@@ -622,10 +682,10 @@
+             self.collision_impulse+=float(np.linalg.norm(force[:3]))*DT
+         if self.cycle and self.data.time>=self.cycle['due']:
+             c=self.cycle; record=self.truth[c['part_id']]
+-            if not self._physical_zone(c['part_id'],'fixture') or not self._physical_zone('insert_'+c['recipe'],'fixture'):
++            if not self._physical_zone(c['part_id'],'fixture') or not self._physical_insert_interlock(c['recipe']):
+                 self.station.update(busy=False,ready=False,fault=True,guard_closed=False,clamped=False)
+                 record['cycle_history'][-1].update(status='failed',failed_at=float(self.data.time))
+-                self.events.append({'type':'cycle_fault','cycle_id':c['cycle_id'],'reason':'seating lost during accepted process','sim_time':float(self.data.time)})
++                self.events.append({'type':'cycle_fault','cycle_id':c['cycle_id'],'reason':'seating or unique-insert interlock lost during accepted process','sim_time':float(self.data.time)})
+                 self.cycle=None
+                 return
+             record['recipe']=c['recipe'];record['cycles']+=1
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/test_cell.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/test_cell.py"
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/test_cell.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/test_cell.py
+@@ -225,6 +225,9 @@
+ class ProcessTests(unittest.TestCase):
+     def accepted_cycle(self):
+         value = fake_cell()
++        value.registry.update({name:{'kind':'insert','family':name[-1],'half':[.025,.025,.008]}
++                               for name in ('insert_A','insert_B')})
++        value._insert_overlaps_fixture=Mock(side_effect=lambda name:name=='insert_A')
+         value._physical_zone = Mock(return_value=True)
+         response = value.submit({'operation': 'cycle', 'part_id': 'A1',
+                                  'recipe': 'A', 'request_id': 'synthetic-cycle'})
+diff --git "a/Long-Horizon Adaptive Robotics Expirement/Runtime/test_insert_exchange.py" "b/Long-Horizon Adaptive Robotics Expirement/Runtime/test_insert_exchange.py"
+new file mode 100644
+--- /dev/null
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/test_insert_exchange.py
+@@ -0,0 +1,128 @@
++"""Proposed insert-exchange regressions: synthetic clocks/state, no physics/rendering."""
++from pathlib import Path
++from types import SimpleNamespace
++import unittest
++from unittest.mock import Mock,patch
++import xml.etree.ElementTree as ET
++import numpy as np
++import cell
++from test_cell import fake_cell,fake_step
++import test_cell
++
++
++class InsertExchangeTests(unittest.TestCase):
++    def waiting(self):
++        c=fake_cell()
++        c.registry.update({name:{'kind':'insert','family':name[-1],'half':[.025,.025,.008]}
++                           for name in ('insert_A','insert_B')})
++        c.active_request={'request_id':'exchange','operation':'setup','family':'B','setup_pending':'insert_B',
++                          'setup_returning':{'id':'insert_A','home':'insert_home_A'}}
++        c._setup_wait={'request_id':'exchange','capture_after_sim_s':1.,'deadline_sim_s':3.}
++        c.data.time=1.2;c.detection_time=1.1;c.data.qpos[7:9]=.04;c.lease_deadline=10.
++        c.last_detections=[{'id':name,'kind':'insert','family':name[-1],'zone':'insert_home_'+name[-1],
++                            'pos':[*cell.ZONES['insert_home_'+name[-1]],.008],'uncertainty_m':.004}
++                           for name in ('insert_A','insert_B')]
++        c.plan_transport=Mock()
++        c.actual_pos=Mock(side_effect=AssertionError('Planner/service must not consult object truth'))
++        return c
++
++    def test_new_capture_of_old_insert_still_in_fixture_cannot_start_replacement(self):
++        c=self.waiting();c.last_detections[0].update(zone='fixture',pos=[*cell.ZONES['fixture'],.008])
++        self.assertFalse(c.resume_setup_if_fresh());c.plan_transport.assert_not_called()
++        self.assertEqual(c.feedback[-1]['status'],'failed');c.actual_pos.assert_not_called()
++
++    def test_capture_before_return_end_or_stale_capture_is_not_a_witness(self):
++        for captured in (.9, .8, 1.3):
++            c=self.waiting();c.detection_time=captured
++            self.assertFalse(c.resume_setup_if_fresh());c.plan_transport.assert_not_called()
++            self.assertIsNotNone(c.active_request)
++
++    def test_home_witness_requires_containment_uncertainty_and_open_jaws(self):
++        for mode in ('outside','high','closed','duplicate','fixture_occupied'):
++            with self.subTest(mode=mode):
++                c=self.waiting()
++                if mode=='outside':c.last_detections[0]['pos'][0]+=.04
++                if mode=='high':c.last_detections[0]['pos'][2]=.12
++                if mode=='closed':c.data.qpos[7:9]=.02
++                if mode=='duplicate':c.last_detections.append(dict(c.last_detections[0]))
++                if mode=='fixture_occupied':c.last_detections.append({'id':'A1','kind':'part','zone':'fixture'})
++                self.assertFalse(c.resume_setup_if_fresh());c.plan_transport.assert_not_called();c.actual_pos.assert_not_called()
++
++    def test_verified_public_home_witness_dispatches_replacement_once(self):
++        c=self.waiting();self.assertTrue(c.resume_setup_if_fresh())
++        c.plan_transport.assert_called_once_with('insert_B','fixture')
++        self.assertFalse(c.resume_setup_if_fresh());self.assertNotIn('setup_pending',c.active_request)
++        self.assertEqual(c.events[-1]['type'],'setup_return_observed')
++        self.assertFalse(c.events[-1]['independent_physical_success']);c.actual_pos.assert_not_called()
++
++    def test_unseen_old_insert_waits_but_fixed_deadline_fails_even_with_renewed_lease(self):
++        c=self.waiting();c.last_detections=c.last_detections[1:]
++        self.assertFalse(c.resume_setup_if_fresh());self.assertEqual(c.feedback,[])
++        c.data.time=3.01
++        with patch.object(cell.mujoco,'mj_step',side_effect=fake_step):c.tick()
++        self.assertIsNone(c.active_request);self.assertIsNone(c._setup_wait)
++        self.assertEqual(c.feedback[-1]['status'],'failed');c.plan_transport.assert_not_called()
++
++    def test_old_return_record_cannot_authorize_a_new_request(self):
++        c=self.waiting();c.active_request['request_id']='new'
++        self.assertFalse(c.resume_setup_if_fresh());c.plan_transport.assert_not_called()
++        c.data.time=3.1
++        with patch.object(cell.mujoco,'mj_step',side_effect=fake_step):c.tick()
++        self.assertEqual(c.active_request['request_id'],'new');self.assertEqual(c.feedback,[])
++
++    def test_public_planner_rejects_insert_placement_onto_another_visible_insert(self):
++        c=self.waiting();c.plan_transport=cell.Cell.plan_transport.__get__(c)
++        c.last_detections[0].update(zone='fixture',pos=[*cell.ZONES['fixture'],.008])
++        with self.assertRaisesRegex(ValueError,'destination occupied'):c.plan_transport('insert_B','fixture')
++        c.actual_pos.assert_not_called()
++
++    def test_cycle_rejects_a_second_overlapping_insert_even_if_not_seated(self):
++        c=self.waiting();c.active_request=None;c._setup_wait=None;c._physical_zone=Mock(return_value=True)
++        c._insert_overlaps_fixture=Mock(return_value=True)
++        reply=c.submit({'operation':'cycle','part_id':'A1','recipe':'A','request_id':'cycle'})
++        self.assertEqual(reply['status'],'rejected');self.assertIn('unique seated insert',reply['reason'])
++        self.assertFalse(c.station['busy']);self.assertEqual(c.truth['A1']['cycle_history'],[])
++
++    def test_second_insert_appearing_during_cycle_faults_without_process_credit(self):
++        c=test_cell.ProcessTests().accepted_cycle();c._insert_overlaps_fixture.return_value=True;c._insert_overlaps_fixture.side_effect=None
++        with patch.object(cell.mujoco,'mj_step',side_effect=fake_step):c.tick()
++        self.assertIsNone(c.cycle);self.assertTrue(c.station['fault'])
++        self.assertEqual(c.truth['A1']['cycles'],0);self.assertFalse(c.truth['A1']['cycle_history'][0]['completed'])
++
++    def test_physical_overlap_catches_boundary_overlap_independent_of_seating(self):
++        c=self.waiting();c.data.xmat=np.array([np.eye(3).ravel()])
++        c.actual_pos=Mock(return_value=np.array([cell.ZONES['fixture'][0]+.06,0.,.008]))
++        with patch.object(cell.mujoco,'mj_name2id',return_value=0):self.assertTrue(c._insert_overlaps_fixture('insert_B'))
++        c.actual_pos.return_value[2]=.2
++        with patch.object(cell.mujoco,'mj_name2id',return_value=0):self.assertFalse(c._insert_overlaps_fixture('insert_B'))
++
++    def test_offset_is_applied_at_both_insert_endpoints_without_hidden_pose(self):
++        c=fake_cell();points=[]
++        c.ik=lambda point,q,configuration:(points.append(np.array(point).copy()) or np.zeros(7))
++        c.actual_pos=Mock(side_effect=AssertionError('hidden pose'))
++        snapshot={'observed':{'pos':[.57,0.,.008]},'occupied':[],'destination':'insert_home_A',
++                  'clearance':.16,'speed':.8,'avoid':[],'configuration':np.zeros(9),'tcp':np.array([.4,0.,.3]),
++                  'half':[.025,.025,.008],'kind':'insert'}
++        _,segments=c._plan_snapshot(snapshot,0)
++        self.assertAlmostEqual(points[2][2],.012);self.assertAlmostEqual(points[6][2],.015)
++        self.assertEqual(segments[3]['grip'],0);self.assertEqual(segments[7]['grip'],255)
++        c.actual_pos.assert_not_called()
++        self.assertGreaterEqual(.021-cell.INSERT_TCP_OFFSET_M-.008,0.)  # Unknown-payload recovery release remains above table.
++
++    def test_public_slots_keep_insert_and_wall_height_with_uncertainty_allowance(self):
++        # XML construction only. No model compilation, physics or renderer.
++        minimal=ET.ElementTree(ET.fromstring('<mujoco><compiler/><option/><default/><asset/><worldbody><body name="hand"/></worldbody></mujoco>'))
++        with patch.object(cell.ET,'parse',return_value=minimal):xml,registry=cell.build_scene(3,0)
++        model=ET.fromstring(xml);walls=[g for g in model.findall('.//geom') if g.get('name','').startswith('fixture_wall_')]
++        self.assertEqual(len(walls),6)
++        jaw_walls=[g for g in walls if abs(float(g.get('pos').split()[1]))>.04]
++        self.assertEqual(len(jaw_walls),4)
++        for wall in jaw_walls:
++            pos=list(map(float,wall.get('pos').split()));half=list(map(float,wall.get('size').split()))
++            self.assertAlmostEqual(abs(pos[0]-cell.ZONES['fixture'][0])-half[0],.020)
++            self.assertAlmostEqual(pos[2]+half[2],.012)
++        self.assertGreater(cell.FIXTURE_JAW_SLOT_HALF_M,.010502+.004)
++        self.assertEqual(registry['insert_A']['half'],[.025,.025,.008])
++
++
++if __name__=='__main__':unittest.main()

@@ -1,0 +1,113 @@
+--- C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\complete-reader-qualification-001\control.py
++++ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Robot-Codex Integration 001\campaign-002\io-repair\boundary-import-qualification-001\control.py
+@@ -1,4 +1,4 @@
+-"""One-shot operator actions for the declared V31 prerequisite lineage.
++"""One-shot operator actions for the declared V32 prerequisite lineage.
+ 
+ This is outside the runtime source inventory. It does not poll or retry jobs,
+ change gates, or launch the final coordinator or any scored attempt.
+@@ -11,18 +11,18 @@
+ IO = Path(__file__).resolve().parent.parent
+ C = IO.parent
+ Q = C / 'qualification'
+-spec = importlib.util.spec_from_file_location('native_cleanup_coordinator', Q / 'run_final_qualification_v31.py')
++spec = importlib.util.spec_from_file_location('native_cleanup_coordinator', Q / 'run_final_qualification_v32.py')
+ c = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(c)
+-REV = 'RCI001-C02-dev-103'
++REV = 'RCI001-C02-dev-107'
+ SNAP = c.MAP / 'releases' / REV / 'snapshot.json'
+-HOST = 'RCI001-C02-host-probe-031'
+-HOST_MANIFEST = Q / 'host-probe-031-manifest.json'
++HOST = 'RCI001-C02-host-probe-032'
++HOST_MANIFEST = Q / 'host-probe-032-manifest.json'
+ HOST_RECORDS = Q / HOST
+-CHECKS = IO / 'complete-reader-qualification-001/full-checks-002'
+-DECLARATION = IO / 'complete-reader-qualification-001/qualification-declaration.json'
+-LINEAGE_CHECKS = IO / 'complete-reader-qualification-001/lineage-checks-002/receipt.json'
+-SOURCE_STATE = IO / 'complete-reader-qualification-001/production-state-002.json'
++CHECKS = IO / 'boundary-import-qualification-001/full-checks-001'
++DECLARATION = IO / 'boundary-import-qualification-001/qualification-declaration.json'
++LINEAGE_CHECKS = IO / 'boundary-import-qualification-001/lineage-checks-001/receipt.json'
++SOURCE_STATE = IO / 'boundary-import-qualification-001/production-state-001.json'
+ 
+ 
+ def development_gate(value):
+@@ -75,7 +75,7 @@
+     value = c.read(DECLARATION)
+     c.require(value['anchor_revision'] == REV and value['repair_checks'] == CHECKS.name,
+               'Prospective identities changed')
+-    c.require(value['coordinator'] == c.identity(Q / 'run_final_qualification_v31.py'),
++    c.require(value['coordinator'] == c.identity(Q / 'run_final_qualification_v32.py'),
+               'Declared coordinator changed')
+     for name in ('transport_correction_method', 'prior_failed_diagnostic',
+                  'unchanged_scheduling_method', 'unchanged_quiescence_method', 'unchanged_normal_closed_method',
+@@ -133,7 +133,7 @@
+ 
+ 
+ def probe_paths(kind):
+-    name = {'raw': 'raw-preflight-021', 'transport': 'transport-probe-024'}[kind]
++    name = {'raw': 'raw-preflight-022', 'transport': 'transport-probe-025'}[kind]
+     root = IO / name
+     script = C / 'harness' / {'raw': 'raw_event_preflight_v2.py', 'transport': 'codehost_transport_probe_v3.py'}[kind]
+     return name, root, script
+@@ -143,8 +143,8 @@
+     submission_gate()
+     name, root, script = probe_paths(kind)
+     if kind == 'transport':
+-        c.verify_raw_preflight(c.read(IO / 'raw-preflight-021/records/verified-readiness-entry.json'), SNAP)
+-    old_name = {'raw': 'raw-preflight-020', 'transport': 'transport-probe-023'}[kind]
++        c.verify_raw_preflight(c.read(IO / 'raw-preflight-022/records/verified-readiness-entry.json'), SNAP)
++    old_name = {'raw': 'raw-preflight-021', 'transport': 'transport-probe-024'}[kind]
+     manifest = c.read(IO / old_name / 'manifest.json')
+     manifest.update(run_id='RCI001-C02-' + name, framework_revision=REV, source_snapshot=c.identity(SNAP))
+     manifest['scope'] = ('Fresh no-model prerequisite for the prospective complete-process/read lineage with unchanged graceful drainage. '
+@@ -183,7 +183,7 @@
+ 
+ def launch_host():
+     submission_gate()
+-    raw = IO / 'raw-preflight-021/records/verified-readiness-entry.json'
++    raw = IO / 'raw-preflight-022/records/verified-readiness-entry.json'
+     c.verify_raw_preflight(c.read(raw), SNAP)
+     manifest = c.read(HOST_MANIFEST)
+     submit(HOST_RECORDS, c.python(Q / 'host_probe.py', 'run', '--manifest', HOST_MANIFEST,
+@@ -194,10 +194,10 @@
+ def settle_host():
+     submitted = c.read(HOST_RECORDS / 'queue-submit.json')
+     c.admission.base.queue_gate(c.official(submitted['id']), submitted['id'])
+-    c.command_once(HOST_RECORDS, 'settle', c.python(IO / 'complete-reader-qualification-001/settle_host.py',
+-        '--number', '031', '--revision', REV),
++    c.command_once(HOST_RECORDS, 'settle', c.python(IO / 'boundary-import-qualification-001/settle_host.py',
++        '--number', '032', '--revision', REV),
+         inputs=[HOST_MANIFEST, SNAP, HOST_RECORDS / 'queue-submit.json'],
+-        outputs=[Q / 'host-probe-031-assessment.json', HOST_RECORDS / 'official-status.json'])
++        outputs=[Q / 'host-probe-032-assessment.json', HOST_RECORDS / 'official-status.json'])
+ 
+ 
+ def readiness():
+@@ -208,19 +208,19 @@
+         'source_snapshot': c.identity(SNAP),
+         'diagnostic': {'run_id': HOST, 'job_id': submitted['id'],
+             'manifest': c.identity(HOST_MANIFEST), 'queue': c.identity(HOST_RECORDS / 'official-status.json'),
+-            'assessment': c.identity(Q / 'host-probe-031-assessment.json'),
++            'assessment': c.identity(Q / 'host-probe-032-assessment.json'),
+             'assessor': c.identity(Q / 'assess_host_probe.py'), 'evidence': str(c.RAW / HOST)},
+         'repair_test_receipt': c.identity(CHECKS / 'repair-test-receipt.json'),
+-        'raw_event_preflight': c.read(IO / 'raw-preflight-021/records/verified-readiness-entry.json'),
+-        'transport_diagnostic': c.read(IO / 'transport-probe-024/records/verified-readiness-entry.json'),
++        'raw_event_preflight': c.read(IO / 'raw-preflight-022/records/verified-readiness-entry.json'),
++        'transport_diagnostic': c.read(IO / 'transport-probe-025/records/verified-readiness-entry.json'),
+         'stages': declaration['stages']}
+-    target = Q / 'final-qualification-031-readiness.json'
++    target = Q / 'final-qualification-032-readiness.json'
+     c.save(target, value)
+     _, core = c.preflight(target, c.sha(target))
+-    receipt = {'readiness': c.identity(target), 'coordinator': c.identity(Q / 'run_final_qualification_v31.py'),
++    receipt = {'readiness': c.identity(target), 'coordinator': c.identity(Q / 'run_final_qualification_v32.py'),
+         'passed': True, 'core_sources': len(core),
+         'scope': 'Fresh official success, independent prerequisite replay, test binding and source admission; no final qualifier launched by this check.'}
+-    c.save(IO / 'complete-reader-qualification-001/readiness-preflight-001.json', receipt)
++    c.save(IO / 'boundary-import-qualification-001/readiness-preflight-001.json', receipt)
+     print(json.dumps(receipt))
+ 
+ 

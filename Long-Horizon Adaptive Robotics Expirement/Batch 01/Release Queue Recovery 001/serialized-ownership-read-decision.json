@@ -1,0 +1,27 @@
+{
+  "schema_version": "root-serialized-ownership-read-decision-1",
+  "recorded_at": "2026-09-24T21:49:16.398063+00:00",
+  "author": "Codex session 4",
+  "diagnostic": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Batch 01\\Release Queue Recovery 001\\sharing-diagnostic-001\\run-001\\diagnostic.json",
+    "sha256": "0e81283def1e1cb1941a5c68ccd267504f7a770ca0fc60820dcfd68e99fc4356"
+  },
+  "official_receipt": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T214804182035Z-b787792c.json",
+    "sha256": "a1ed19cc043be772fffe9dc7645a49f9bb02333e4d4feb6ad1479817ed02d879"
+  },
+  "failure": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Batch 01\\Release Queue Recovery 001\\validation-001\\failure.json",
+    "sha256": "48debaa4cc7a56d1db77e896d54fb387210236677ff5821fca9a79301c22245c"
+  },
+  "decision": "Use the already installed hash-pinned ExclusiveFileLock for production state.lock around each new recovery ownership snapshot; close share7 handle before lock release, parse/validate/CIM/sleep outside lock. Do not call QueueService/status/save/reconcile or alter shared queue code.",
+  "observations": "Native share3 and share7 both denied os.replace while target handle open, both succeeded after close. Share7 allowed a separate DELETE-access handle, confirming distinct sharing and rename behaviors. Serialized temporary writer waited until handle close and lock release, then committed generation2.",
+  "source_audit": "All installed queue state mutation call sites use QueueStore.locked_state(save=True); worker child waiting occurs outside that lock.",
+  "scope": "Versioned administrative reader only; no physical/policy changes, new manifests, episode retries, shared queue edit or changes to another project. Existing user full-workflow continuation authorizes this necessary supported-API integration.",
+  "limitations": [
+    "Does not establish a repair for other noncooperating readers/writers",
+    "No guarantee against antivirus or unrelated Windows file locks",
+    "No GPU-sampler repair or historical causal proof"
+  ],
+  "annex_adopted": false
+}

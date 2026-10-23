@@ -1,0 +1,38 @@
+--- before/test_build.py
++++ after/test_build.py
+@@ -168,6 +168,35 @@
+             value['attempts'][0]['status']=replacement;self.save(index,value)
+             with self.assertRaisesRegex(ValueError,'must remain failed'):
+                 report.qualification_history(index,self.output)
++
++    def test_completed_diagnostic_stays_unassessed_and_never_reads_its_outputs(self):
++        artifact=self.root/'diagnostic.json';artifact.write_text('not JSON; never consume')
++        item={'run_id':'diagnostic','status':'completed','validity':'unknown','task_outcome':'unknown',
++            'scorable':False,'assessment_state':'not_assessed',
++            'queue_completion_contract':{'schema':'campaign002-completed-unassessed-interrupt-queue-1'},
++            'artifacts':[{'path':str(artifact)}]}
++        index=self.root/'qualification.json'
++        def save():self.save(index,{'schema':'campaign002-qualification-history-1','attempts':[item]})
++        save();result=report.qualification_history(index,self.output)
++        self.assertEqual(result['attempts'][0]['assessment_state'],'not_assessed')
++        self.assertEqual(result['attempts'][0]['task_outcome'],'unknown')
++        self.assertEqual([x['path'] for x in report.READS],[str(index)])
++        for key,value in [('scorable',True),('validity','valid'),('task_outcome','success'),
++                          ('assessment_state','assessed'),('queue_completion_contract',{})]:
++            previous=item[key];item[key]=value;save()
++            with self.assertRaisesRegex(ValueError,'must remain explicitly unassessed'):
++                report.qualification_history(index,self.output)
++            item[key]=previous
++
++    def test_explicit_companion_is_bound_without_overwriting_the_legacy_report(self):
++        index=self.root/'qualification.json'
++        self.save(index,{'schema':'campaign002-qualification-history-1','attempts':[]})
++        companion=self.root/'current report.html';companion.write_bytes(b'<html>current snapshot</html>')
++        result=report.qualification_history(index,self.output,companion)
++        self.assertEqual(result['companion_href'],'../current%20report.html')
++        self.assertEqual(report.READS[-1]['sha256'],report.digest(companion.read_bytes()))
++        with self.assertRaises(FileNotFoundError):
++            report.qualification_history(index,self.output,self.root/'absent.html')
+ 
+     def test_phase_diagnostics_require_assessment_hash_and_keep_capture_projection_separate(self):
+         receipt=self.receipt('succeeded',0)

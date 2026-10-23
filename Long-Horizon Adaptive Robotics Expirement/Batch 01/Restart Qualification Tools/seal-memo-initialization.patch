@@ -1,0 +1,13 @@
+--- a/Long-Horizon Adaptive Robotics Expirement/Runtime/restart_physical_class.py
++++ b/Long-Horizon Adaptive Robotics Expirement/Runtime/restart_physical_class.py
+@@ -414,6 +414,10 @@
+               'part_count': scene['part_count'], 'objects': object_rows,
+               'compilation_attestation': 'source-bound direct MjModel.from_xml_string construction'}
+     result['seal_sha256'] = digest(result)
++    # Build the exact-byte memo at compilation, before the physics clock.
++    # Every later capture still reads and compares the complete live model.
++    if _model_surface_sha(model, result) != result['compiled_surface_sha256']:
++        raise UnsupportedEvidence('compiled model changed during seal initialization')
+     return result
+ 
+ 

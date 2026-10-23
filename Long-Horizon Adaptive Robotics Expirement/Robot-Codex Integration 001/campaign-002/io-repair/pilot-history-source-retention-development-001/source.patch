@@ -1,0 +1,93 @@
+--- before/qualification_report.py
++++ qualification_report.py
+@@ -11,10 +11,12 @@
+ import ast
+ from datetime import datetime, timezone
+ import hashlib
++import io
+ import json
+-from pathlib import Path
++from pathlib import Path, PurePosixPath
+ import os
+ import re
++import zipfile
+ from urllib.parse import quote
+ 
+ HERE = Path(__file__).resolve().parent
+@@ -495,6 +497,46 @@
+             'Original per-operation latency is descriptive; no model, recovery score, timing qualification, production adoption or device-cause claim.'}
+ 
+ 
++def archived_pilot_assessor(member, snapshot, snapshot_item, assessor_item, archive_raw):
++    """Join a retained copy to one exact authenticated source member; never execute it."""
++    expected_member = (CAMPAIGN / 'assessment/assess.py').relative_to(REPO).as_posix()
++    if (not isinstance(member, str) or member != expected_member or '\\' in member
++            or ':' in member or PurePosixPath(member).is_absolute()
++            or any(part in ('', '.', '..') for part in member.split('/'))):
++        raise ValueError('Pilot archived source member must name the exact campaign assessor')
++    def unique(pairs):
++        value = {}
++        for key, item in pairs:
++            if key in value:
++                raise ValueError('Duplicate pilot archived source member snapshot key')
++            value[key] = item
++        return value
++    strict_snapshot = json.loads(bound(snapshot_item, 'pilot archived source member snapshot', parse=False),
++                                 object_pairs_hook=unique)
++    source = strict_snapshot.get('sources', {}).get(member)
++    if (strict_snapshot != snapshot or not isinstance(source, dict) or set(source) != {'sha256', 'bytes'}
++            or type(source.get('bytes')) is not int or not 0 < source['bytes'] <= MAX_BYTES
++            or source['sha256'] != assessor_item['sha256']
++            or type(assessor_item.get('bytes')) is not int or source['bytes'] != assessor_item['bytes']):
++        raise ValueError('Pilot archived source member identity or byte count differs')
++    try:
++        with zipfile.ZipFile(io.BytesIO(archive_raw)) as archive:
++            entries = archive.infolist()
++            names = [item.filename for item in entries]
++            if len(names) != len(set(names)) or len(names) != len({name.casefold() for name in names}):
++                raise ValueError('Duplicate pilot archived source member')
++            matches = [item for item in entries if item.filename == member]
++            if len(matches) != 1 or matches[0].is_dir() or matches[0].file_size != source['bytes']:
++                raise ValueError('Pilot archived source member missing or wrong length')
++            with archive.open(matches[0]) as stream:
++                raw = stream.read(source['bytes'] + 1)
++    except zipfile.BadZipFile as error:
++        raise ValueError('Pilot archived source member archive is malformed') from error
++    if (len(raw) != source['bytes'] or sha(raw) != source['sha256']
++            or raw != bound(assessor_item, 'exact retained archived pilot assessor bytes', parse=False)):
++        raise ValueError('Pilot archived source member differs from retained copy')
++
++
+ def pilot_detail(assessment, row, documents, job, official):
+     """Display a retained coordinator admission decision, not a new qualification."""
+     if assessment.get('schema') != 'robot-codex-campaign-assessment-2':
+@@ -548,15 +590,19 @@
+             or manifest.get('run_id') != row['run_id'] or manifest.get('framework_revision') != row['revision']
+             or snapshot.get('revision') != row['revision'] or assessment.get('queue_job_id') != job['id']):
+         raise ValueError('Pilot original assessor, queue or frozen input binding differs')
++    archived = 'base_assessor_source_member' in contract
+     source_matches = [v for name, v in snapshot.get('sources', {}).items()
+                       if (REPO / name).resolve() == Path(assessor_item['path']).resolve()]
+-    if (len(source_matches) != 1 or source_matches[0].get('sha256') != assessor_item['sha256']
++    if ((not archived and (len(source_matches) != 1 or source_matches[0].get('sha256') != assessor_item['sha256']))
+             or Path(assessor_item['path']).name != 'assess.py' or Path(verifier_item['path']).name != 'admission.py'):
+         raise ValueError('Pilot base assessor must be the exact frozen source')
+     archive = Path(selected['snapshot']['path']).with_name('code.zip')
+     archive_hash = bindings.get('framework_archive_sha256')
+     require_hash(archive_hash)
+-    consume(archive, 'pilot assessment-bound frozen archive; hash verification only', archive_hash, parse=False)
++    archive_raw = consume(archive, 'pilot assessment-bound frozen archive; hash verification only', archive_hash, parse=False)
++    if archived:
++        archived_pilot_assessor(contract['base_assessor_source_member'], snapshot, selected['snapshot'],
++                                assessor_item, archive_raw)
+     # Read declared check names without executing the indexed admission code.
+     tree = ast.parse(bound(verifier_item, 'original pilot admission check contract', parse=False).decode('utf-8-sig'))
+     required = None
+@@ -593,6 +639,7 @@
+         'assessed_task_outcome':assessment.get('task_outcome'), 'family':family,
+         'required_admission_checks':sorted(required), 'original_admission_error':disposition.get('error'),
+         'archive_path':str(archive), 'archive_sha256':archive_hash,
++        **({'base_assessor_source_member':contract['base_assessor_source_member']} if archived else {}),
+         'scope':'Original one-invocation pilot apparatus admission. A valid task failure can pass this contract; '
+             'task outcome is shown separately. No qualification flag is invented and no scored campaign result or admission certificate is inferred.'}
+ 

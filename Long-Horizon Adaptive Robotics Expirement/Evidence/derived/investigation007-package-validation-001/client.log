@@ -1,0 +1,30 @@
+C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Engineering Investigation 007\test_client.js:25
+test('array/object fragments reconstruct small data losslessly without prototype mutation',async()=>{const a=valueArtifact(['a',[['v',1],['v',2]]]),b=valueArtifact(['a',[['v',3]]]);const root=valueArtifact(['o',[[['v','__proto__'],['v','ordinary evidence']],[['v','items'],['A',[['r',a.ref],['r',b.ref]]]]]);const {reader}=fixtureReader(store(root,a,b));const result=await api.materialize(await reader.value(root.ref),reader);assert.equal(Object.getPrototypeOf(result),null);assert.equal(result.__proto__,'ordinary evidence');assert.deepEqual(result.items,[1,2,3]);});
+                                                                                                                                                                                                                                                                                                                  ^
+
+SyntaxError: Unexpected token ')'
+    at wrapSafe (node:internal/modules/cjs/loader:1804:18)
+    at Module._compile (node:internal/modules/cjs/loader:1846:20)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.19.0
+✖ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Engineering Investigation 007\test_client.js (43.6087ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.6617
+
+✖ failing tests:
+
+test at Long-Horizon Adaptive Robotics Expirement\Engineering Investigation 007\test_client.js:1:1
+✖ C:\Users\cresp\Documents\Dandelion Engineering\LLMs in Robotics\Long-Horizon Adaptive Robotics Expirement\Engineering Investigation 007\test_client.js (43.6087ms)
+  'test failed'

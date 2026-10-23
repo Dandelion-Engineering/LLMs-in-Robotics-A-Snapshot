@@ -1,0 +1,57 @@
+{
+  "schema_version": "root-isolated-timing-review-decision-1",
+  "recorded_at_utc": "2026-09-24T12:24:03.335069+00:00",
+  "reviewer": "Codex session 4 root",
+  "decision": "Continue only original unattempted r4 manifests after immutable runner review succeeds",
+  "classification": "isolated_host_timing",
+  "rationale": "One of 102 canonical original attempts is timing-invalid, with 101 valid and all recorded post-run integrity checks passing. The invalid episode completed normally with no recorded execution, cleanup, resource-watchdog, source/readiness/evaluator/oracle breach; its fixed timing gate failed (maximum lag 0.502071900018862 s; 6 of 300 windows outside RTF bounds). Six bad windows form three lag/rebound pairs. This is an operational isolated_host_timing classification for the single observed invalid episode, not causal attribution to the host, proof of one stall, or proof that future timing failures cannot recur. Underlying cause remains unassigned. The existing protocol permits resuming untouched original manifests after explicit review; all results remain immutable, the whole C02-rep2 paired block is excluded from primary inference, and no episode is retried. Sources, qualification, readiness, thresholds, budgets, policies, model and schedule remain unchanged. The next runner must freshly verify all frozen identities before admission to an episode.",
+  "diagnostic": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\diagnostics\\r4-host-timing-incident-001\\diagnostic.json",
+    "sha256": "4dc299fe817f5d36bd6e915596dca604cf0b94998ce7a2f1310b5431aa14593b"
+  },
+  "diagnostic_official_receipt": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\queue-receipts\\20260924T122105931052Z-4fbdc97a.json",
+    "sha256": "ad87d5d42126d5c701c23324ba1931a0f56ab03a3185c7dddcb2310dc23ddd7a"
+  },
+  "batch_completion": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\release-series\\batch01-eval-r4-manual-001\\batch-026-complete.json",
+    "sha256": "336e8dfa0cca809898de9dc77fa6c51fa686a5098ca8fc76a1cb275918501977"
+  },
+  "terminal": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Evidence\\releases\\batch01-eval-r4\\attempts\\batch01-eval-r4-C02-rep2-A2-persistent\\terminal.json",
+    "sha256": "a2e965e26634d805ccc4e9df533ef7dac47bf3f0b5f5ce1b7bf1d56bf86713f8"
+  },
+  "observed_counts": {
+    "canonical": 102,
+    "valid": 101,
+    "invalid": 1,
+    "original_remaining": 162
+  },
+  "excluded_paired_block_ids": [
+    "batch01-eval-r4-C02-rep2"
+  ],
+  "underlying_cause": "unassigned",
+  "causal_limits": [
+    "Approximately five-second samples cannot resolve subsecond scheduling or disk stalls.",
+    "GPU samples describe the entire device and cannot attribute activity to a process.",
+    "No retrospective all-process CPU, disk, or thermal-throttling trace was recorded.",
+    "Does not identify timing cause or exclude unlogged stalls; informational events and other channels not checked.",
+    "Event-envelope adjacency is temporal correlation; it does not identify a blocking call. No broad hardware or timing reliability claim follows."
+  ],
+  "timing_evidence": {
+    "maximum_lag_s": 0.502071900018862,
+    "maximum_timing_sample_gap_s": 0.5050152000039816,
+    "outside_rtf_tolerance_fraction": 0.02,
+    "outside_rtf_tolerance_windows": 6,
+    "complete_wall_windows": 300,
+    "trailing_partial_window_s": 0.0004292000085115433,
+    "timing_boundary_method": "linear interpolation of adjacent fresh wall/sim samples",
+    "wall_duration_s": 300.0004292000085
+  },
+  "root_reviewed": true,
+  "no_source_or_scored_outcome_changes": true,
+  "no_policy_tuning": true,
+  "automatic_retries": 0,
+  "future_incidents": "Any future invalidity must stop for its own evidence review; this decision covers only this exact terminal and cannot waive integrity failures.",
+  "allowed_next_selection": "All original unattempted manifests in stored schedule, without explicit run IDs, including unlaunched members of the excluded block as descriptive evidence."
+}

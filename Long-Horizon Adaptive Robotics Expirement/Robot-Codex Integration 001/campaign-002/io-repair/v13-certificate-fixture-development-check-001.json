@@ -1,0 +1,169 @@
+{
+  "schema": "campaign002-development-test-receipt-1",
+  "recorded_utc": "2026-09-28T15:51:07.448107+00:00",
+  "scope": "Development fixture correction only. No queue job, model, simulation, qualification assessment or empirical outcome. Prior test failure was not rerun to construct this receipt.",
+  "evidence_source": "Observed functions.exec/exec_command tool outputs retained in this task conversation; no standalone complete test-output file was written at the time.",
+  "model_calls": 0,
+  "physical_simulation": false,
+  "qualification_claim": false,
+  "failed_check": {
+    "command_argv_as_issued": [
+      ".\\venv\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/admission",
+      "-p",
+      "test_prepare_admission.py",
+      "-q"
+    ],
+    "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics",
+    "exit_code": 1,
+    "tests_run": 38,
+    "reported_duration_s": 3.746,
+    "reported_failure_count": 5,
+    "failures": [
+      {
+        "test": "FinalLineageTests.test_pilot_order_cannot_be_changed_even_in_both_records",
+        "expected_pattern": "stage path differs: pilot-stock-009",
+        "observed_exception": "ValueError: Completed qualification stage path differs: pilot-stock-010/manifest"
+      },
+      {
+        "test": "FinalLineageTests.test_substituted_stage_path_cannot_be_laundered_through_both_records",
+        "subtest": {
+          "key": "manifest"
+        },
+        "expected_pattern": "stage path differs: native-011/manifest",
+        "observed_exception": "ValueError: Completed qualification stage path differs: native-012/manifest"
+      },
+      {
+        "test": "FinalLineageTests.test_substituted_stage_path_cannot_be_laundered_through_both_records",
+        "subtest": {
+          "key": "snapshot"
+        },
+        "expected_pattern": "stage path differs: native-011/snapshot",
+        "observed_exception": "ValueError: Completed qualification stage path differs: native-012/manifest"
+      },
+      {
+        "test": "FinalLineageTests.test_substituted_stage_path_cannot_be_laundered_through_both_records",
+        "subtest": {
+          "key": "queue"
+        },
+        "expected_pattern": "stage path differs: native-011/queue",
+        "observed_exception": "ValueError: Completed qualification stage path differs: native-012/manifest"
+      },
+      {
+        "test": "FinalLineageTests.test_substituted_stage_path_cannot_be_laundered_through_both_records",
+        "subtest": {
+          "key": "assessment"
+        },
+        "expected_pattern": "stage path differs: native-011/assessment",
+        "observed_exception": "ValueError: Completed qualification stage path differs: native-012/manifest"
+      }
+    ],
+    "reported_summary": "Ran 38 tests in 3.746s\n\nFAILED (failures=5)",
+    "test_source_sha256_at_failed_run": null,
+    "test_source_identity_status": "Unavailable: not captured before correcting the two stale expectation strings. Not reconstructed.",
+    "started_at": null,
+    "ended_at": null,
+    "timestamps_status": "Exact invocation timestamps unavailable in retained tool output.",
+    "complete_output_file": null,
+    "complete_output_sha256": null,
+    "unchanged_implementation": {
+      "qualification/run_final_qualification_v13.py": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\run_final_qualification_v13.py",
+        "sha256": "8ca58dc63d1f2af52c7b0eeaf009cd9ea7444c5e407bc1e5fff8f08f8b01e460",
+        "bytes": 33504
+      },
+      "admission/prepare_certificate.py": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\admission\\prepare_certificate.py",
+        "sha256": "2e6cf861f871fc02c4bc75a4968eb252aa64459af33f85cdef18e2a0bf178f43",
+        "bytes": 16181
+      }
+    },
+    "source_identity_scope": "Implementation files were unchanged between the failed and passing checks; the recorded hashes were first measured after the correction and freshly verified for this receipt."
+  },
+  "correction": {
+    "files": [
+      "admission/test_prepare_admission.py"
+    ],
+    "changes": [
+      {
+        "before": "stage path differs: pilot-stock-009",
+        "after": "stage path differs: pilot-stock-010"
+      },
+      {
+        "before": "stage path differs: native-011/",
+        "after": "stage path differs: native-012/"
+      }
+    ],
+    "interpretation": "Two tests retained old expected stage IDs. The implementation correctly rejected the substituted current-stage paths. The first failed subtest skipped its fixture restoration, so the remaining three subcases still observed the substituted manifest. No production acceptance logic changed for this correction."
+  },
+  "passing_check": {
+    "command_argv_as_issued": [
+      ".\\venv\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/admission",
+      "-p",
+      "test_prepare_admission.py",
+      "-q"
+    ],
+    "cwd": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics",
+    "exit_code": 0,
+    "tests_run": 38,
+    "reported_duration_s": 3.64,
+    "reported_summary": "Ran 38 tests in 3.640s\n\nOK",
+    "test_source": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\admission\\test_prepare_admission.py",
+      "sha256": "54688b8a0a9350aa59c09592e60c1deeaccf01179eaed80a9d78180f69e14bd6",
+      "bytes": 36190
+    }
+  },
+  "settled_source_bindings": {
+    "qualification/run_final_qualification_v13.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\run_final_qualification_v13.py",
+      "sha256": "8ca58dc63d1f2af52c7b0eeaf009cd9ea7444c5e407bc1e5fff8f08f8b01e460",
+      "bytes": 33504
+    },
+    "qualification/test_run_final_qualification_v13.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\test_run_final_qualification_v13.py",
+      "sha256": "012565cacbec27d4a4502106182f4e7ca8e588296e2b860e3043e8b221be6cb6",
+      "bytes": 31638
+    },
+    "qualification/prepare_model_v7.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\prepare_model_v7.py",
+      "sha256": "c0394ce4bee9817ae88e59d34559ed6d633e4fc9b746942f5ac086db9358e054",
+      "bytes": 5061
+    },
+    "qualification/test_prepare_model_v7.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\test_prepare_model_v7.py",
+      "sha256": "a10be365c36b9457107372ceefb472cbecb0808013ca1db6a6d2ca41abc38203",
+      "bytes": 10189
+    },
+    "admission/prepare_certificate.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\admission\\prepare_certificate.py",
+      "sha256": "2e6cf861f871fc02c4bc75a4968eb252aa64459af33f85cdef18e2a0bf178f43",
+      "bytes": 16181
+    },
+    "admission/test_prepare_admission.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\admission\\test_prepare_admission.py",
+      "sha256": "54688b8a0a9350aa59c09592e60c1deeaccf01179eaed80a9d78180f69e14bd6",
+      "bytes": 36190
+    }
+  },
+  "limitations": [
+    "This receipt records actual tool observations after the fact, not an original timestamped test execution receipt.",
+    "The pre-correction test bytes and complete output hash are unavailable; no identity or output hash was inferred.",
+    "Passing development tests do not establish diagnostic or empirical qualification."
+  ]
+}

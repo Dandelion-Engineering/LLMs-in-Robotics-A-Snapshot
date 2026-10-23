@@ -1,0 +1,4 @@
+from attempts import *
+assert not complete('preservation001','The initial inventory harness used a nonexistent combined Session 38 inventory filename after hashing the protected roots. This is a harness bookkeeping failure; the raw inventory is retained. The corrected new attempt reads the two actual immutable per-pair inventories.'), 'Unexpected first-attempt pass; inspect before continuing'
+register('preservation002','validate_preservation.py','Independently authenticate the complete fresh full-byte inventory retained by preservation001: exact source/failed-queue provenance, live file sets and sizes, and correct Session 38 historical per-pair hash inventories. The first bookkeeping failure stays failed; final commissioning rehashes every protected byte.',prior='APARTMENT-s39-preservation001')
+build()

@@ -1,0 +1,1247 @@
+{
+  "schema": "campaign002-native-admission-race-analysis-1",
+  "created_at": "2026-09-28T05:28:50.100368+00:00",
+  "run_id": "RCI001-C02-native-008",
+  "framework_revision": "RCI001-C02-dev-033",
+  "queue_job_id": "20260928T050615339435Z-e73b2225",
+  "official_queue": {
+    "authenticated_at": "2026-09-28T05:28:50.100368+00:00",
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-008-queue.json",
+    "sha256": "3c26d226c3be3b9a883d9b34d9e096817307fa24266a5f6b3221f1fec6704fdf",
+    "bytes": 1539,
+    "state": "succeeded",
+    "exit_status": 0,
+    "started_at": "2026-09-28T05:06:15.577237Z",
+    "ended_at": "2026-09-28T05:16:42.460046Z"
+  },
+  "original_result": {
+    "qualification_passed": false,
+    "admission_passed": false,
+    "admission_error": "Native qualification assessment failed",
+    "reference_cases": 6,
+    "reference_cases_passed": 5,
+    "checks_passed": 65,
+    "checks_total": 66,
+    "failed_checks": [
+      {
+        "run_id": "RCI001-C02-native-008-home-1",
+        "check": "independent_success"
+      }
+    ],
+    "cases": [
+      {
+        "run_id": "RCI001-C02-native-008-stock-1",
+        "family": "misplaced-stock",
+        "passed": true,
+        "failed_checks": [],
+        "terminal": "task_success",
+        "maximum_lag_s": 0.0025782999738801493,
+        "maximum_timing_sample_gap_s": 0.0036441999836824834,
+        "outside_rtf_tolerance_windows": 0,
+        "complete_wall_windows": 59,
+        "resource_integrity_pass": true
+      },
+      {
+        "run_id": "RCI001-C02-native-008-home-1",
+        "family": "blocked-insert-home",
+        "passed": false,
+        "failed_checks": [
+          "independent_success"
+        ],
+        "terminal": "simulation_time_cap",
+        "maximum_lag_s": 0.0028813999633143794,
+        "maximum_timing_sample_gap_s": 0.003930999955628067,
+        "outside_rtf_tolerance_windows": 0,
+        "complete_wall_windows": 240,
+        "resource_integrity_pass": true
+      },
+      {
+        "run_id": "RCI001-C02-native-008-stock-2",
+        "family": "misplaced-stock",
+        "passed": true,
+        "failed_checks": [],
+        "terminal": "task_success",
+        "maximum_lag_s": 0.002743499977938768,
+        "maximum_timing_sample_gap_s": 0.0037152000004425645,
+        "outside_rtf_tolerance_windows": 0,
+        "complete_wall_windows": 59,
+        "resource_integrity_pass": true
+      },
+      {
+        "run_id": "RCI001-C02-native-008-home-2",
+        "family": "blocked-insert-home",
+        "passed": true,
+        "failed_checks": [],
+        "terminal": "task_success",
+        "maximum_lag_s": 0.0025663999701350804,
+        "maximum_timing_sample_gap_s": 0.003710600023623556,
+        "outside_rtf_tolerance_windows": 0,
+        "complete_wall_windows": 99,
+        "resource_integrity_pass": true
+      },
+      {
+        "run_id": "RCI001-C02-native-008-stock-3",
+        "family": "misplaced-stock",
+        "passed": true,
+        "failed_checks": [],
+        "terminal": "task_success",
+        "maximum_lag_s": 0.0025521000182706643,
+        "maximum_timing_sample_gap_s": 0.0038257999694906175,
+        "outside_rtf_tolerance_windows": 0,
+        "complete_wall_windows": 59,
+        "resource_integrity_pass": true
+      },
+      {
+        "run_id": "RCI001-C02-native-008-home-3",
+        "family": "blocked-insert-home",
+        "passed": true,
+        "failed_checks": [],
+        "terminal": "task_success",
+        "maximum_lag_s": 0.0027148000022165775,
+        "maximum_timing_sample_gap_s": 0.004044400004204363,
+        "outside_rtf_tolerance_windows": 0,
+        "complete_wall_windows": 99,
+        "resource_integrity_pass": true
+      }
+    ],
+    "model_calls": 0,
+    "scorable": false,
+    "task_outcome": "unknown"
+  },
+  "diagnosis": {
+    "classification": "actual apparatus admission and feedback integration failure; original evaluator and failed qualification remain authoritative",
+    "observed_sequence": "The conventional controller resolved the visible effect of a prior transport and issued inspect. The supervisor rejected inspect because its previous command was still outstanding; six simulated milliseconds later it consumed the prior terminal feedback. The rejection was retained in the registry but not delivered to the conventional controller, which remained pending and later requested help.",
+    "source_supported_mechanism": "ContinuousAdapter.busy reads the newer owner snapshot, whereas the supervisor active_command is cleared only when terminal feedback is drained and processed. The original conventional_step gates on adapter.busy but not active_command. Its command method rejects outstanding work before native submission; its exception/failed path persists rejection without baseline.accept_feedback. The host loop can reach this decision after a finite drain batch while the independently ticking owner has advanced.",
+    "inference_limit": "The event order, distinct native/journal times and source gates support this scheduling race. The retained journal does not record the exact thread interleaving or drain-batch membership. No claim identifies OS scheduling, fsync, device latency or noise as the unique cause.",
+    "feedback_identity": "When the prior transport terminal arrives, Candidate.accept_feedback only updates the pending record for a matching request ID. The pending request has become inspect; the earlier transport receipt cannot fill its missing rejection.",
+    "physics_timing": "All six owner timing and resource checks passed. This was a command-admission correctness failure, not an observed strict timing failure."
+  },
+  "failed_case": {
+    "run_id": "RCI001-C02-native-008-home-1",
+    "episode_id": "episode-bebdfa4bc18b4095",
+    "prior_transport_request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+    "rejected_inspection_request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d",
+    "matched_fixture": {
+      "mode": "reference",
+      "seed": 173,
+      "noise_seed": 24002,
+      "sim_cap_s": 240,
+      "wall_cap_s": 420
+    },
+    "timeline": [
+      {
+        "event_id": 560,
+        "type": "control_owner_changed",
+        "sim_time_s": 54.40800000002053,
+        "wall_unix_s": 1790572090.6907492,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 560,
+        "payload": {
+          "reason": "Observed recovery actions complete",
+          "request_id": "reference-handback",
+          "supported_next_action": {
+            "destination": "fixture",
+            "operation": "transport",
+            "part_id": "B2"
+          }
+        }
+      },
+      {
+        "event_id": 786,
+        "type": "command_requested",
+        "sim_time_s": 75.97800000000433,
+        "wall_unix_s": 1790572112.2618036,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 786,
+        "payload": {
+          "actor": "conventional",
+          "envelope": {
+            "action": {
+              "destination": "inspection",
+              "operation": "transport",
+              "part_id": "B2"
+            },
+            "authority_epoch": 3,
+            "observation_sequence": 743,
+            "order_version": 1,
+            "request_id": "825118e0-9924-4118-a05a-0eef94e83828"
+          },
+          "fingerprint": "a47db699f5ec17c3b3103f107b587440e137dd5edbdf76033eece4741d5db72d",
+          "kind": "command",
+          "phase": "requested",
+          "request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+          "requested_sim_time_s": 75.97800000000433,
+          "status": "pending",
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 790,
+        "type": "native_trajectory_dispatched",
+        "sim_time_s": 76.05000000000416,
+        "wall_unix_s": 1790572112.3324592,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 790,
+        "payload": {
+          "request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+          "sim_time": 76.04600000000417,
+          "type": "trajectory_dispatched"
+        }
+      },
+      {
+        "event_id": 897,
+        "type": "observation",
+        "sim_time_s": 86.93799999997879,
+        "wall_unix_s": 1790572123.2235613,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 897,
+        "observation": {
+          "sequence": 851,
+          "sim_time": 86.91999999997883,
+          "capture_sim_time_s": 86.88199999997892,
+          "incarnation": 3,
+          "gripper": {
+            "holding_visible_id": null,
+            "width": 0.08000077026792762
+          },
+          "B2_detection": {
+            "age_s": 0.03799999999991144,
+            "family": "B",
+            "id": "B2",
+            "kind": "part",
+            "pixels": 144,
+            "pos": [
+              0.3444950747057712,
+              0.19801140594452987,
+              0.018370274353027346
+            ],
+            "uncertainty_m": 0.004,
+            "visible_mark": "processed",
+            "zone": "inspection"
+          }
+        }
+      },
+      {
+        "event_id": 898,
+        "type": "command_requested",
+        "sim_time_s": 86.95399999997875,
+        "wall_unix_s": 1790572123.238069,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 898,
+        "payload": {
+          "actor": "conventional",
+          "envelope": {
+            "action": {
+              "operation": "inspect",
+              "part_id": "B2"
+            },
+            "authority_epoch": 3,
+            "observation_sequence": 851,
+            "order_version": 1,
+            "request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d"
+          },
+          "fingerprint": "da1fba1e197a165679d5bd123bb6640e23a97c947f87043fc8a4d239b3497ffb",
+          "kind": "command",
+          "phase": "requested",
+          "request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d",
+          "requested_sim_time_s": 86.95399999997875,
+          "status": "pending",
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 899,
+        "type": "command_rejected",
+        "sim_time_s": 86.95799999997874,
+        "wall_unix_s": 1790572123.2410686,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 899,
+        "payload": {
+          "actor": "conventional",
+          "envelope": {
+            "action": {
+              "operation": "inspect",
+              "part_id": "B2"
+            },
+            "authority_epoch": 3,
+            "observation_sequence": 851,
+            "order_version": 1,
+            "request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d"
+          },
+          "error": {
+            "code": "resource_busy",
+            "message": "Another command is outstanding"
+          },
+          "fingerprint": "da1fba1e197a165679d5bd123bb6640e23a97c947f87043fc8a4d239b3497ffb",
+          "kind": "command",
+          "phase": "terminal",
+          "request_event_id": 898,
+          "request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d",
+          "requested_sim_time_s": 86.95399999997875,
+          "status": "rejected",
+          "terminal_sim_time_s": 86.95799999997874,
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 900,
+        "type": "command_terminal",
+        "sim_time_s": 86.96399999997872,
+        "wall_unix_s": 1790572123.2475753,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 900,
+        "payload": {
+          "feedback": {
+            "reason": "trajectory ended; physical outcome requires observation",
+            "request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+            "sim_time": 86.9319999999788,
+            "status": "completed"
+          },
+          "request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 901,
+        "type": "observation",
+        "sim_time_s": 87.04199999997854,
+        "wall_unix_s": 1790572123.324405,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 901,
+        "observation": {
+          "sequence": 852,
+          "sim_time": 87.02199999997859,
+          "capture_sim_time_s": 86.98399999997868,
+          "incarnation": 3,
+          "gripper": {
+            "holding_visible_id": null,
+            "width": 0.07999990469284023
+          },
+          "B2_detection": {
+            "age_s": 0.03799999999991144,
+            "family": "B",
+            "id": "B2",
+            "kind": "part",
+            "pixels": 144,
+            "pos": [
+              0.3445119155286882,
+              0.19797240614409042,
+              0.01860916976928711
+            ],
+            "uncertainty_m": 0.004,
+            "visible_mark": "unknown",
+            "zone": "inspection"
+          }
+        }
+      },
+      {
+        "event_id": 902,
+        "type": "public_effect_verification",
+        "sim_time_s": 87.04399999997854,
+        "wall_unix_s": 1790572123.3284113,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 902,
+        "payload": {
+          "capture_sim_time_s": 86.98399999997868,
+          "observation_sequence": 852,
+          "request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+          "scope": "Observed effect only; independent evaluator result remains separate",
+          "state": "public_observation_support"
+        }
+      },
+      {
+        "event_id": 1345,
+        "type": "conventional_assistance_requested",
+        "sim_time_s": 132.0899999999026,
+        "wall_unix_s": 1790572168.372625,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 1345,
+        "payload": {
+          "action": {
+            "evidence": {
+              "last_error": "outcome unresolved after action deadline; do not replay",
+              "observation_sequence": 1294,
+              "order_version": 1,
+              "pending_outcome_unknown": true,
+              "pending_request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d"
+            },
+            "operation": "help",
+            "reason": "unresolved previous action; further consequential work blocked",
+            "requested_information_or_action": "Advise on safe reconciliation using current public observations and order; preserve unknown action outcomes"
+          },
+          "request_id": "807bbc97-f406-4e20-8b68-d0953ee2e102"
+        }
+      },
+      {
+        "event_id": 1346,
+        "type": "control_owner_changed",
+        "sim_time_s": 132.0899999999026,
+        "wall_unix_s": 1790572168.3746257,
+        "authority_epoch": 4,
+        "owner": "robot",
+        "line": 1346,
+        "payload": {
+          "activation_id": "activation-001",
+          "authority_epoch": 4,
+          "cause": "unknown",
+          "order_version": 1,
+          "reason": "unresolved previous action; further consequential work blocked",
+          "sim_time_s": 132.0899999999026,
+          "source": "public conventional feedback",
+          "trigger_event_id": null
+        }
+      },
+      {
+        "event_id": 2436,
+        "type": "episode_stopped",
+        "sim_time_s": 241.00000000042263,
+        "wall_unix_s": 1790572277.3674047,
+        "authority_epoch": 4,
+        "owner": "robot",
+        "line": 2436,
+        "payload": {
+          "reason": "simulation_time_cap"
+        }
+      }
+    ],
+    "candidate_transport_resolution": {
+      "action": {
+        "destination": "inspection",
+        "incarnation": 3,
+        "observation_sequence": 743,
+        "operation": "transport",
+        "order_version": 1,
+        "part_id": "B2"
+      },
+      "candidate_resolved": true,
+      "grading_authority": false,
+      "public_feedback": {
+        "request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+        "status": "accepted"
+      },
+      "reason": "fresh visible destination, measured open gripper and no visible holding of that part",
+      "request_id": "825118e0-9924-4118-a05a-0eef94e83828",
+      "resolution_incarnation": 3,
+      "resolution_sequence": 851,
+      "resolution_sim_time": 86.91999999997883,
+      "scope": "candidate resolution from public evidence; not independent task success"
+    },
+    "inspection_registry_record": {
+      "actor": "conventional",
+      "envelope": {
+        "action": {
+          "operation": "inspect",
+          "part_id": "B2"
+        },
+        "authority_epoch": 3,
+        "observation_sequence": 851,
+        "order_version": 1,
+        "request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d"
+      },
+      "error": {
+        "code": "resource_busy",
+        "message": "Another command is outstanding"
+      },
+      "fingerprint": "da1fba1e197a165679d5bd123bb6640e23a97c947f87043fc8a4d239b3497ffb",
+      "kind": "command",
+      "phase": "terminal",
+      "request_event_id": 898,
+      "request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d",
+      "requested_sim_time_s": 86.95399999997875,
+      "status": "rejected",
+      "terminal_sim_time_s": 86.95799999997874,
+      "verification": {
+        "reason": "No post-action evidence yet",
+        "state": "unknown"
+      }
+    },
+    "final_pending": {
+      "action": {
+        "incarnation": 3,
+        "observation_sequence": 851,
+        "operation": "inspect",
+        "order_version": 1,
+        "part_id": "B2",
+        "request_id": "270cac0d-4f3c-4ff2-bfd1-6a3323da3a7d"
+      },
+      "before_cycle_id": 1,
+      "before_inspection_id": null,
+      "feedback": null,
+      "issued_sequence": 851,
+      "issued_time": 86.91999999997883,
+      "program_id": null,
+      "program_node": null,
+      "unresolved_timeout": true
+    },
+    "final_halted": true,
+    "final_last_error": "outcome unresolved after action deadline; do not replay",
+    "final_independent_outcome": {
+      "success": false,
+      "accepted_count": 0,
+      "first_success": null,
+      "partial": {
+        "accepted_count": 0,
+        "extra_delivery_ids": [],
+        "processed_uninspected_ids": [
+          "B2"
+        ],
+        "quarantined_ids": [],
+        "rework_required_ids": [],
+        "unmet_quantities": [
+          {
+            "accepted_settled": 0,
+            "family": "B",
+            "recipe": "B",
+            "required": 1,
+            "requirement_id": "R1",
+            "tray": "tray2",
+            "unmet": 1
+          }
+        ]
+      },
+      "reasons": [
+        "quantity_or_qualification_mismatch: current requirement lacks enough distinct physically qualified parts: R1"
+      ]
+    },
+    "time_scopes": "Journal sim_time_s is supervisor processing time; feedback.sim_time is native completion time; observation capture_sim_time_s is sensor capture time; packet sim_time is public packet time. They are kept separate."
+  },
+  "comparator": {
+    "run_id": "RCI001-C02-native-007",
+    "framework_revision": "RCI001-C02-dev-029",
+    "queue_job_id": "20260928T042546825249Z-ade91f92",
+    "official_queue": {
+      "authenticated_at": "2026-09-28T05:28:50.100368+00:00",
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-007-queue.json",
+      "sha256": "3e10c29f6fc71ca50bcf0c373ae3c297d14d07b43c65ff08eea2b47232d5018a",
+      "bytes": 1539,
+      "state": "succeeded",
+      "exit_status": 0
+    },
+    "home1_run_id": "RCI001-C02-native-007-home-1",
+    "matched_fixture": {
+      "mode": "reference",
+      "seed": 173,
+      "noise_seed": 24002,
+      "sim_cap_s": 240,
+      "wall_cap_s": 420
+    },
+    "timeline": [
+      {
+        "event_id": 789,
+        "type": "command_requested",
+        "sim_time_s": 76.30600000000356,
+        "wall_unix_s": 1790569684.057374,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 789,
+        "payload": {
+          "actor": "conventional",
+          "envelope": {
+            "action": {
+              "destination": "inspection",
+              "operation": "transport",
+              "part_id": "B2"
+            },
+            "authority_epoch": 3,
+            "observation_sequence": 746,
+            "order_version": 1,
+            "request_id": "152e6285-629e-43cf-9028-30e18dea9054"
+          },
+          "fingerprint": "4054005b7ab7eff13c5a620a0c878e89521a7cc440c8e7d29dddc05541400d3a",
+          "kind": "command",
+          "phase": "requested",
+          "request_id": "152e6285-629e-43cf-9028-30e18dea9054",
+          "requested_sim_time_s": 76.30600000000356,
+          "status": "pending",
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 791,
+        "type": "command_admission",
+        "sim_time_s": 76.31800000000354,
+        "wall_unix_s": 1790569684.0713723,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 791,
+        "payload": {
+          "feedback": {
+            "continuous_dispatch": {
+              "capture_sim_time_s": 76.17200000000388,
+              "dispatch_sim_time_s": 76.31800000000354,
+              "durable_intent_before_rpc": true,
+              "epoch": 3,
+              "fence_passed": true,
+              "fingerprint": "4054005b7ab7eff13c5a620a0c878e89521a7cc440c8e7d29dddc05541400d3a",
+              "observation_sequence": 746,
+              "order_version": 1,
+              "rejection_reasons": [],
+              "request_id": "152e6285-629e-43cf-9028-30e18dea9054"
+            },
+            "request_id": "152e6285-629e-43cf-9028-30e18dea9054",
+            "status": "accepted"
+          },
+          "request_id": "152e6285-629e-43cf-9028-30e18dea9054"
+        }
+      },
+      {
+        "event_id": 901,
+        "type": "command_terminal",
+        "sim_time_s": 87.25599999997804,
+        "wall_unix_s": 1790569695.0080016,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 901,
+        "payload": {
+          "feedback": {
+            "reason": "trajectory ended; physical outcome requires observation",
+            "request_id": "152e6285-629e-43cf-9028-30e18dea9054",
+            "sim_time": 87.24199999997808,
+            "status": "completed"
+          },
+          "request_id": "152e6285-629e-43cf-9028-30e18dea9054",
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 902,
+        "type": "observation",
+        "sim_time_s": 87.34799999997783,
+        "wall_unix_s": 1790569695.1000087,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 902,
+        "observation": {
+          "sequence": 855,
+          "sim_time": 87.32799999997788,
+          "capture_sim_time_s": 87.28999999997797,
+          "incarnation": 3,
+          "gripper": {
+            "holding_visible_id": null,
+            "width": 0.0799999511364949
+          },
+          "B2_detection": {
+            "age_s": 0.03799999999991144,
+            "family": "B",
+            "id": "B2",
+            "kind": "part",
+            "pixels": 156,
+            "pos": [
+              0.34558695909720416,
+              0.1980892693185609,
+              0.01789331798553467
+            ],
+            "uncertainty_m": 0.004,
+            "visible_mark": "processed",
+            "zone": "inspection"
+          }
+        }
+      },
+      {
+        "event_id": 904,
+        "type": "command_requested",
+        "sim_time_s": 87.36799999997778,
+        "wall_unix_s": 1790569695.119933,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 904,
+        "payload": {
+          "actor": "conventional",
+          "envelope": {
+            "action": {
+              "operation": "inspect",
+              "part_id": "B2"
+            },
+            "authority_epoch": 3,
+            "observation_sequence": 855,
+            "order_version": 1,
+            "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4"
+          },
+          "fingerprint": "5bcbc2931d571b687ec9791b0e3d36fab622acc4d2bd27dc658a2b5ca72d91c7",
+          "kind": "command",
+          "phase": "requested",
+          "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+          "requested_sim_time_s": 87.36799999997778,
+          "status": "pending",
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 906,
+        "type": "command_admission",
+        "sim_time_s": 87.37599999997776,
+        "wall_unix_s": 1790569695.1289327,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 906,
+        "payload": {
+          "feedback": {
+            "continuous_dispatch": {
+              "capture_sim_time_s": 87.28999999997797,
+              "dispatch_sim_time_s": 87.37599999997776,
+              "durable_intent_before_rpc": true,
+              "epoch": 3,
+              "fence_passed": true,
+              "fingerprint": "5bcbc2931d571b687ec9791b0e3d36fab622acc4d2bd27dc658a2b5ca72d91c7",
+              "observation_sequence": 855,
+              "order_version": 1,
+              "rejection_reasons": [],
+              "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4"
+            },
+            "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+            "status": "accepted"
+          },
+          "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4"
+        }
+      },
+      {
+        "event_id": 927,
+        "type": "command_terminal",
+        "sim_time_s": 89.40399999997304,
+        "wall_unix_s": 1790569697.1547778,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 927,
+        "payload": {
+          "feedback": {
+            "inspection": {
+              "inspection_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+              "part_id": "B2",
+              "status": "pass"
+            },
+            "reason": "inspection returned",
+            "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+            "sim_time": 89.3779999999731,
+            "status": "completed"
+          },
+          "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+          "verification": {
+            "reason": "No post-action evidence yet",
+            "state": "unknown"
+          }
+        }
+      },
+      {
+        "event_id": 1064,
+        "type": "episode_stopped",
+        "sim_time_s": 101.36799999994516,
+        "wall_unix_s": 1790569709.1784017,
+        "authority_epoch": 3,
+        "owner": "conventional",
+        "line": 1064,
+        "payload": {
+          "reason": "task_success"
+        }
+      }
+    ],
+    "candidate_transport_resolution": {
+      "action": {
+        "destination": "inspection",
+        "incarnation": 3,
+        "observation_sequence": 746,
+        "operation": "transport",
+        "order_version": 1,
+        "part_id": "B2"
+      },
+      "candidate_resolved": true,
+      "grading_authority": false,
+      "public_feedback": {
+        "reason": "trajectory ended; physical outcome requires observation",
+        "request_id": "152e6285-629e-43cf-9028-30e18dea9054",
+        "sim_time": 87.24199999997808,
+        "status": "completed"
+      },
+      "reason": "fresh visible destination, measured open gripper and no visible holding of that part",
+      "request_id": "152e6285-629e-43cf-9028-30e18dea9054",
+      "resolution_incarnation": 3,
+      "resolution_sequence": 855,
+      "resolution_sim_time": 87.32799999997788,
+      "scope": "candidate resolution from public evidence; not independent task success"
+    },
+    "inspection_request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+    "inspection_registry_record": {
+      "actor": "conventional",
+      "admission": {
+        "continuous_dispatch": {
+          "capture_sim_time_s": 87.28999999997797,
+          "dispatch_sim_time_s": 87.37599999997776,
+          "durable_intent_before_rpc": true,
+          "epoch": 3,
+          "fence_passed": true,
+          "fingerprint": "5bcbc2931d571b687ec9791b0e3d36fab622acc4d2bd27dc658a2b5ca72d91c7",
+          "observation_sequence": 855,
+          "order_version": 1,
+          "rejection_reasons": [],
+          "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4"
+        },
+        "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+        "status": "accepted"
+      },
+      "dispatched_sim_time_s": 87.37199999997777,
+      "envelope": {
+        "action": {
+          "operation": "inspect",
+          "part_id": "B2"
+        },
+        "authority_epoch": 3,
+        "observation_sequence": 855,
+        "order_version": 1,
+        "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4"
+      },
+      "feedback": {
+        "inspection": {
+          "inspection_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+          "part_id": "B2",
+          "status": "pass"
+        },
+        "reason": "inspection returned",
+        "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+        "sim_time": 89.3779999999731,
+        "status": "completed"
+      },
+      "fingerprint": "5bcbc2931d571b687ec9791b0e3d36fab622acc4d2bd27dc658a2b5ca72d91c7",
+      "kind": "command",
+      "native_action": {
+        "incarnation": 3,
+        "operation": "inspect",
+        "order_version": 1,
+        "part_id": "B2",
+        "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4"
+      },
+      "phase": "terminal",
+      "request_event_id": 904,
+      "request_id": "7b579d84-1a93-4dd1-956c-31dd2fdfa1b4",
+      "requested_sim_time_s": 87.36799999997778,
+      "status": "completed",
+      "terminal_sim_time_s": 89.40399999997304,
+      "verification": {
+        "capture_sim_time_s": 89.43199999997297,
+        "observation_sequence": 876,
+        "scope": "Observed effect only; independent evaluator result remains separate",
+        "state": "public_observation_support"
+      }
+    },
+    "terminal": "task_success",
+    "independent_success": true,
+    "scope": "Same seed, noise seed, caps and byte-identical listed apparatus/controller/evaluator sources. This retained comparison illustrates the different receipt/decision order; it is not a controlled causal rerun or replacement qualification."
+  },
+  "prospective_repair": {
+    "method": "CONVENTIONAL_ADMISSION_ORDER_V1.md",
+    "status": "Prospectively declared by coordinator; this analysis makes no implementation or qualification claim.",
+    "bounded_change": "Defer Campaign002 conventional decisions while supervisor.active_command is nonempty; keep draining original terminal feedback and preserve all existing busy, owner, observation age and cadence gates. Physics continues.",
+    "unchanged": "Original supervisor, controller, evaluator, physical actions, model instructions, deadlines and thresholds; no feedback synthesis or rejected-command replay.",
+    "adoption": "Require deterministic ordering tests, new source freeze, fresh host/transport diagnostics and the complete five-stage qualification before campaign admission."
+  },
+  "limits": [
+    "No model ran in either native suite. Reference outcomes are apparatus controls, not scored recovery evidence.",
+    "No old artifact, source archive, registry, assessment or verdict was changed or rerun.",
+    "The five other native008 reference successes and all timing passes do not qualify the failed suite.",
+    "The v9 coordinator stopped at native008; later boundary, smoke and pilots were not launched.",
+    "Diagnosis is retained evidence interpretation, not retroactive repair or a new empirical success."
+  ],
+  "source_bindings": {
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/supervisor.py": {
+      "identical_between_archives": true,
+      "archives": {
+        "RCI001-C02-dev-033": {
+          "archive_input": "native008_archive",
+          "snapshot_input": "native008_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/supervisor.py",
+          "sha256": "404828636f43475dfcba38ef58db87737a218e1fd49e7204d5d637611c0fa958",
+          "bytes": 39167
+        },
+        "RCI001-C02-dev-029": {
+          "archive_input": "native007_archive",
+          "snapshot_input": "native007_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/host/supervisor.py",
+          "sha256": "404828636f43475dfcba38ef58db87737a218e1fd49e7204d5d637611c0fa958",
+          "bytes": 39167
+        }
+      },
+      "line_evidence": [
+        {
+          "first_line": 249,
+          "last_line": 254,
+          "excerpt_sha256": "83e59df86432378f2192e56a3cb31ed577d3ccd89153178d9f761281f92d429e"
+        },
+        {
+          "first_line": 310,
+          "last_line": 334,
+          "excerpt_sha256": "2719a76ee45caf730f5d63a658dedc7294a7286f2f0b970c22f2bcd76e4e9d64"
+        },
+        {
+          "first_line": 336,
+          "last_line": 351,
+          "excerpt_sha256": "7f494c9c8ad9739e6f5a58c9f60d985d38f325ba7581a8ed9ac0537efb1b6d86"
+        },
+        {
+          "first_line": 406,
+          "last_line": 411,
+          "excerpt_sha256": "6f90016199ea9dec84be355dec73fb5040e6d26aca7aa55bfe6c0fac8985612f"
+        }
+      ]
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/continuous_adapter.py": {
+      "identical_between_archives": true,
+      "archives": {
+        "RCI001-C02-dev-033": {
+          "archive_input": "native008_archive",
+          "snapshot_input": "native008_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/continuous_adapter.py",
+          "sha256": "ea2f77559cbe83d67c3b5651f673a5a5d8f8125b8aa6bab71912ba0d4d0d7fa5",
+          "bytes": 15276
+        },
+        "RCI001-C02-dev-029": {
+          "archive_input": "native007_archive",
+          "snapshot_input": "native007_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/continuous_adapter.py",
+          "sha256": "ea2f77559cbe83d67c3b5651f673a5a5d8f8125b8aa6bab71912ba0d4d0d7fa5",
+          "bytes": 15276
+        }
+      },
+      "line_evidence": [
+        {
+          "first_line": 72,
+          "last_line": 80,
+          "excerpt_sha256": "db9e7e7a7cc99412c8069553076594193da0b23f21c8405f02be8d2d749f668e"
+        },
+        {
+          "first_line": 145,
+          "last_line": 167,
+          "excerpt_sha256": "a60e4d2a9b5b1682495693b43e023c661900aa2486b94e589e1d4e3c50b1cdf8"
+        },
+        {
+          "first_line": 231,
+          "last_line": 232,
+          "excerpt_sha256": "632543fe7de929142bb0e89b542236d101bdc4e0b6c806e0a46fed82bbfaaa45"
+        },
+        {
+          "first_line": 268,
+          "last_line": 310,
+          "excerpt_sha256": "f3daf8ad3c7cdc3a55caa621efb7d0f84417a2626c3f5358276a2f2ae1336a11"
+        }
+      ]
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physics_worker.py": {
+      "identical_between_archives": true,
+      "archives": {
+        "RCI001-C02-dev-033": {
+          "archive_input": "native008_archive",
+          "snapshot_input": "native008_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physics_worker.py",
+          "sha256": "957e0d9205633d982898b6a4459408cf79aab137dd49477e9e1aca4c8fccc5dc",
+          "bytes": 15964
+        },
+        "RCI001-C02-dev-029": {
+          "archive_input": "native007_archive",
+          "snapshot_input": "native007_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physics_worker.py",
+          "sha256": "957e0d9205633d982898b6a4459408cf79aab137dd49477e9e1aca4c8fccc5dc",
+          "bytes": 15964
+        }
+      },
+      "line_evidence": [
+        {
+          "first_line": 151,
+          "last_line": 164,
+          "excerpt_sha256": "8fb62a5852918e54c7133194018febd3c2727c6d7806b10a4f53fa01bd93ce0d"
+        }
+      ]
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py": {
+      "identical_between_archives": true,
+      "archives": {
+        "RCI001-C02-dev-033": {
+          "archive_input": "native008_archive",
+          "snapshot_input": "native008_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py",
+          "sha256": "bddc44d0f7d9e0f726705c329830501a660ee977a35156d41ca18a0ad0472637",
+          "bytes": 34427
+        },
+        "RCI001-C02-dev-029": {
+          "archive_input": "native007_archive",
+          "snapshot_input": "native007_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/run_host.py",
+          "sha256": "bddc44d0f7d9e0f726705c329830501a660ee977a35156d41ca18a0ad0472637",
+          "bytes": 34427
+        }
+      },
+      "line_evidence": [
+        {
+          "first_line": 426,
+          "last_line": 438,
+          "excerpt_sha256": "afdf2f8b32f84090b6293c68d6e531a1f3a0d4223700c91d395f3fbababa7c63"
+        }
+      ]
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py": {
+      "identical_between_archives": true,
+      "archives": {
+        "RCI001-C02-dev-033": {
+          "archive_input": "native008_archive",
+          "snapshot_input": "native008_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "sha256": "4ba2aa0980ca36ae2748fc06c44b5fe5208f3fbf2666c650a54874e45874f8bc",
+          "bytes": 71531
+        },
+        "RCI001-C02-dev-029": {
+          "archive_input": "native007_archive",
+          "snapshot_input": "native007_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "sha256": "4ba2aa0980ca36ae2748fc06c44b5fe5208f3fbf2666c650a54874e45874f8bc",
+          "bytes": 71531
+        }
+      },
+      "line_evidence": [
+        {
+          "first_line": 369,
+          "last_line": 380,
+          "excerpt_sha256": "26195879debe76a51fdbdf4d29df7ac71b3dbdce8e10b27aaad5117cacb2531d"
+        },
+        {
+          "first_line": 429,
+          "last_line": 434,
+          "excerpt_sha256": "71424750184b4e99ea2c41f5df27861f9d2b260bf37e3ed891d1edef0d1a87ea"
+        },
+        {
+          "first_line": 442,
+          "last_line": 461,
+          "excerpt_sha256": "f2752d3c0997b886257631b255e9c3e8b10fe222084b45130593b0a46019226c"
+        },
+        {
+          "first_line": 1037,
+          "last_line": 1048,
+          "excerpt_sha256": "67dacad6bcf151afbcb83f31d9ebe30136a378e8a3326e38e984fc55f7e27db2"
+        },
+        {
+          "first_line": 1098,
+          "last_line": 1102,
+          "excerpt_sha256": "d9524c499682a5b39d0c2b5b85c4268946cff2f45f4d39ff06ad045f9be568c6"
+        }
+      ]
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py": {
+      "identical_between_archives": true,
+      "archives": {
+        "RCI001-C02-dev-033": {
+          "archive_input": "native008_archive",
+          "snapshot_input": "native008_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+          "sha256": "533931aafb6f669e13cb04c16fd5eb6d98524976acec165468c8eb111af5d078",
+          "bytes": 53935
+        },
+        "RCI001-C02-dev-029": {
+          "archive_input": "native007_archive",
+          "snapshot_input": "native007_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+          "sha256": "533931aafb6f669e13cb04c16fd5eb6d98524976acec165468c8eb111af5d078",
+          "bytes": 53935
+        }
+      },
+      "line_evidence": []
+    },
+    "Long-Horizon Adaptive Robotics Expirement/Runtime 004/evaluator.py": {
+      "identical_between_archives": true,
+      "archives": {
+        "RCI001-C02-dev-033": {
+          "archive_input": "native008_archive",
+          "snapshot_input": "native008_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/evaluator.py",
+          "sha256": "9def52c38a88021195d79d9b527c08b9b7a1db2b38990b2287d697f20f63eb3a",
+          "bytes": 31499
+        },
+        "RCI001-C02-dev-029": {
+          "archive_input": "native007_archive",
+          "snapshot_input": "native007_snapshot",
+          "entry": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/evaluator.py",
+          "sha256": "9def52c38a88021195d79d9b527c08b9b7a1db2b38990b2287d697f20f63eb3a",
+          "bytes": 31499
+        }
+      },
+      "line_evidence": []
+    }
+  },
+  "input_bindings": {
+    "native008_queue": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-008-queue.json",
+      "sha256": "3c26d226c3be3b9a883d9b34d9e096817307fa24266a5f6b3221f1fec6704fdf",
+      "bytes": 1539
+    },
+    "native008_assessment": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-008-assessment.json",
+      "sha256": "731228bb2683e3da1dd2b85c7117eb9f16da967aa41261cfd438fbe478abc0f7",
+      "bytes": 296911
+    },
+    "native008_suite_result": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\suite-result.json",
+      "sha256": "2d24f8445cae0076fddee83b9198abf9298e16e5d197364455bfc2c43d99a18e",
+      "bytes": 39909
+    },
+    "native008_suite_manifest": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-008-manifest.json",
+      "sha256": "b38121fd43062e0e13582c75ef46e95967502cb827f20f9d6b74cf25673ec745",
+      "bytes": 20481
+    },
+    "native008_home1_manifest": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\RCI001-C02-native-008-home-1\\host\\manifest.json",
+      "sha256": "6a2500fbc18406f642e6b60372ad7529c4574e860be8fa92a8f168e638b2d7d3",
+      "bytes": 1306
+    },
+    "native008_home1_result": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\RCI001-C02-native-008-home-1\\host\\result.json",
+      "sha256": "919545453b539199a74747889e555ecdc923b1ba6ee92d92ad2e76cb65ac34e4",
+      "bytes": 6227
+    },
+    "native008_public_history": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\RCI001-C02-native-008-home-1\\host\\public-history.jsonl",
+      "sha256": "567ba6112857894331e1a6e6831284fc183b8b9bda005f5c6342b2af5718c6a6",
+      "bytes": 9519997
+    },
+    "native008_registry": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\RCI001-C02-native-008-home-1\\host\\command-registry.json",
+      "sha256": "d23c65c11fa1f97ddc3e934368c324de35e102a0e08d6df96920d3070a8af211",
+      "bytes": 12689
+    },
+    "native008_candidate_state": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\RCI001-C02-native-008-home-1\\host\\baseline-workspace\\candidate-state.json",
+      "sha256": "c10a5b8de89a764348deb3d1cd57ffbfb834197667c046e816e470104102d133",
+      "bytes": 5474
+    },
+    "native008_owner_timing": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\RCI001-C02-native-008-home-1\\host\\timing-v2.json",
+      "sha256": "d6933d0e70d472888b6dd2713b05c9eab31a0637fecfeeab481eddbe1b1a3720",
+      "bytes": 68549
+    },
+    "native008_supervisory_timing": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-008\\RCI001-C02-native-008-home-1\\host\\supervisory-diagnostics\\timing-v2.json",
+      "sha256": "14a541c5efb162f2c88805bf2c49d212c7d99ea628b6d138ac8d4ce4aff1acb2",
+      "bytes": 130025
+    },
+    "native008_snapshot": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-033\\snapshot.json",
+      "sha256": "fc8ce86dba68e565a284aa7be511e8f8d126ae510f8ac995716a5c6e9a0897f9",
+      "bytes": 171482
+    },
+    "native008_archive": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-033\\code.zip",
+      "sha256": "735ad047eb53324b411ca4ebb15a7aef437c16047ee21a71c4d01e572129fee5",
+      "bytes": 1641107
+    },
+    "native008_admission_disposition": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\final-qualification-009\\native-008\\disposition.json",
+      "sha256": "4d20ed81977cf6ab8a82f07daec7b9b4ef8df9319de7836a58534edc96deec5f",
+      "bytes": 2298
+    },
+    "native008_registered_result": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-033\\result-RCI001-C02-native-008\\result-record.json",
+      "sha256": "0fe52159dc403df5d7eb03d0e31762d7c4af190db6446d29c76cbcb56d1e523b",
+      "bytes": 321504
+    },
+    "native007_queue": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-007-queue.json",
+      "sha256": "3e10c29f6fc71ca50bcf0c373ae3c297d14d07b43c65ff08eea2b47232d5018a",
+      "bytes": 1539
+    },
+    "native007_assessment": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-007-assessment.json",
+      "sha256": "19ea6b05b59b1e5e6e6b32f50b79137a4aabfb9ba85736861c0eb64a3cb1a205",
+      "bytes": 256808
+    },
+    "native007_suite_result": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\suite-result.json",
+      "sha256": "96c7d94f539f22970c247f134fd742040ea6351f9c739c9b33a74eea2d68aa78",
+      "bytes": 40104
+    },
+    "native007_suite_manifest": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\native-007-manifest.json",
+      "sha256": "f537d4458e69377abe23220d8bab0ce92894727a08aa09fb8bd9ef7305cc0a31",
+      "bytes": 20481
+    },
+    "native007_home1_manifest": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\RCI001-C02-native-007-home-1\\host\\manifest.json",
+      "sha256": "2452771bd0e08b2a4b74772b7f708dfc3846c72a359cbd21bb37c049a135baa9",
+      "bytes": 1306
+    },
+    "native007_home1_result": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\RCI001-C02-native-007-home-1\\host\\result.json",
+      "sha256": "bdc560bcb213466f91b8bf3313ff851bc77a5c7aacfb05e42a8e024b17fcc753",
+      "bytes": 6317
+    },
+    "native007_public_history": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\RCI001-C02-native-007-home-1\\host\\public-history.jsonl",
+      "sha256": "093e25bddcdf12674b3e6a99f6c05e40d5588e8cdf4b195a96b2e37eadabcf9f",
+      "bytes": 3957039
+    },
+    "native007_registry": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\RCI001-C02-native-007-home-1\\host\\command-registry.json",
+      "sha256": "45bf7b93122298fb27197a7d946b41667d3e97d6825072a1b04bfa9f0b631301",
+      "bytes": 19269
+    },
+    "native007_candidate_state": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\RCI001-C02-native-007-home-1\\host\\baseline-workspace\\candidate-state.json",
+      "sha256": "c2ff56688fe3e19cd255b9478155eb2e8987ecad19a7cbaccc25c98ae22afddb",
+      "bytes": 6663
+    },
+    "native007_owner_timing": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\RCI001-C02-native-007-home-1\\host\\timing-v2.json",
+      "sha256": "aeaa3da737084c0d4ddbfe17ea952682687cdb9ce85e069eb3d1d2c9cc3e76f0",
+      "bytes": 34980
+    },
+    "native007_supervisory_timing": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-native-007\\RCI001-C02-native-007-home-1\\host\\supervisory-diagnostics\\timing-v2.json",
+      "sha256": "21783c593f6e506f616cbc4d2db10fffd0a88fef98b787622b91586a1e33dedc",
+      "bytes": 94314
+    },
+    "native007_snapshot": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-029\\snapshot.json",
+      "sha256": "d6c4f62ddb521dca1e7fbb14da11ef37d899a85c9fc5da5e86322c62b33c46b2",
+      "bytes": 171482
+    },
+    "native007_archive": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-029\\code.zip",
+      "sha256": "6875e13e98c77c824e1fe8f263ccd06d5990013bb9b50e92ac61edf99d860cf6",
+      "bytes": 1639223
+    },
+    "native007_admission_disposition": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\final-qualification-008\\native-007\\disposition.json",
+      "sha256": "1775711faa7eb31f514145929cfa5f01f6287f8f47b40ce81d3b9116be98ee61",
+      "bytes": 2261
+    },
+    "native007_registered_result": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-029\\result-RCI001-C02-native-007\\result-record.json",
+      "sha256": "f20d6bd4ae4460103c56dc9f1e167de78dd210dc99ee8cbcba4c3f563c48a190",
+      "bytes": 278061
+    }
+  }
+}

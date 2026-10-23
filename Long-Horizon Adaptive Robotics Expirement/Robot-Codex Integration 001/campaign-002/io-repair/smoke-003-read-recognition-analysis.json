@@ -1,0 +1,380 @@
+{
+  "schema": "rci-c02-smoke-read-recognition-analysis-1",
+  "run_id": "RCI001-C02-smoke-003",
+  "framework_revision": "RCI001-C02-dev-019",
+  "queue_job_id": "20260928T021054538130Z-614f1f50",
+  "created_at": "2026-09-28T02:38:49.022224+00:00",
+  "scope": "Read-only retained-evidence diagnosis and isolated reproduction of frozen grammar limits. Original assessments and admission outcomes are unchanged. No model, physics, whole-assessment rerun or retrospective qualification.",
+  "original_verdict": {
+    "smoke_passed": false,
+    "admission_passed": false,
+    "validity": "invalid",
+    "task_outcome": "unknown",
+    "scorable": false,
+    "passed_checks": 59,
+    "total_checks": 61,
+    "failed_checks": [
+      "both_models_read_fixed_startup_and_initial_continuity_bytes",
+      "resume:all_45_model_canaries_saved"
+    ],
+    "timing": {
+      "maximum_lag_s": 0.00414129929055207,
+      "maximum_timing_sample_gap_s": 0.00448629999300465,
+      "outside_rtf_tolerance_windows": 0,
+      "complete_wall_windows": 726
+    },
+    "assessment": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-003-assessment.json",
+      "sha256": "06d95ee8e3f370dd9b80ea2c83719c28c2263905546cc167394836dcbbf975ef",
+      "bytes": 278135
+    },
+    "admission_disposition": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\final-qualification-005\\smoke-003\\disposition.json",
+      "sha256": "05ad80e09418244a08ad289c0ed09fd712309e5494d043f4e0fd9dcd5098330b",
+      "bytes": 2256
+    }
+  },
+  "findings": {
+    "interrupt_compound_cat": {
+      "script": "cat /workspace/Continuity.md && ls -la /workspace/notes /workspace/programs /workspace/live",
+      "phase": "interrupt",
+      "tool_call_id": "exec-c70f9ee5-229d-4847-9a8f-bc62d244a65d",
+      "process_id": "48594",
+      "request_id": 73,
+      "request_file_line": 74,
+      "request_capture_line": 263,
+      "start_ack_capture_line": 276,
+      "app_completed_line": 119,
+      "app_completed_wall_unix_s": 1790561490.911,
+      "capture_process_lines": [
+        288,
+        290,
+        292
+      ],
+      "delivered_capture_lines": [
+        289,
+        291,
+        293
+      ],
+      "trusted_stdout_bytes": 896,
+      "trusted_stdout_sha256": "fd12953808b25b2111c03f462ee62b765f92ab1df3d357c24f41950df6a7a816",
+      "trusted_stderr_bytes": 0,
+      "app_projection_bytes": 896,
+      "app_projection_sha256": "fd12953808b25b2111c03f462ee62b765f92ab1df3d357c24f41950df6a7a816",
+      "app_projection_equals_trusted_stdout": true,
+      "exit_code": 0,
+      "complete_process_sequence_and_capture_chain_verified": true,
+      "script_sha256": "11bc6ffd9c5fc4f01f340010d353e630dda27c164abef39c3316ec421552ff53",
+      "frozen_exact_cat_paths": [],
+      "frozen_empty_read_fallback_matches": [],
+      "interpretation": "A successful literal cat preceded a directory listing. The combined 896-byte stream is not an empty-file digest. Initial empty revision plus absence of protected commits is chronology only: the backing file is model-writable, so those facts alone cannot prove bytes read by this cat."
+    },
+    "interrupt_literal_python_read": {
+      "literal_expression": "print('Continuity contents:', repr(Path('Continuity.md').read_text()))",
+      "source_script_line": 14,
+      "trusted_stdout_line": 42,
+      "trusted_stdout_excerpt": "Continuity contents: ''",
+      "phase": "interrupt",
+      "tool_call_id": "exec-5d839001-7e2c-4e81-bdd2-ccab1236ed72",
+      "process_id": "41807",
+      "request_id": 83,
+      "request_file_line": 84,
+      "request_capture_line": 363,
+      "start_ack_capture_line": 364,
+      "app_completed_line": 181,
+      "app_completed_wall_unix_s": 1790561532.086,
+      "capture_process_lines": [
+        366,
+        368,
+        370,
+        372,
+        374,
+        376
+      ],
+      "delivered_capture_lines": [
+        367,
+        369,
+        371,
+        373,
+        375,
+        377
+      ],
+      "trusted_stdout_bytes": 19648,
+      "trusted_stdout_sha256": "c4dce29bc49425162ffa0ba103ee39dac64550032a77ec6415664c3de2ba470d",
+      "trusted_stderr_bytes": 0,
+      "app_projection_bytes": 19648,
+      "app_projection_sha256": "c4dce29bc49425162ffa0ba103ee39dac64550032a77ec6415664c3de2ba470d",
+      "app_projection_equals_trusted_stdout": true,
+      "exit_code": 0,
+      "complete_process_sequence_and_capture_chain_verified": true,
+      "script_sha256": "1102928a5bdd2ac120c9fb8e32de6b9f2273004a08c85a8ab91a3d1b940d0d44",
+      "interpretation": "The retained successful command literally calls Path(Continuity.md).read_text() and prints its repr. Trusted complete output and retained app projection agree on the empty representation. This is stronger direct zero-content evidence at this later read, not proof that the earlier compound cat saw immutable bytes."
+    },
+    "continuity_chronology": {
+      "first_protected_commit_file_line": 2410,
+      "first_protected_commit_event_id": 2410,
+      "first_protected_commit_wall_unix_s": 1790561696.0606253,
+      "previous_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "first_protected_commit_sha256": "323aab3b9f2ee2995ed9b21a12f21ce9b6211741d9808750a8f92c28a5047e9d",
+      "first_successful_broker_ack_file_line": 13,
+      "first_successful_broker_ack_wall_unix_s": 1790561696.0633953,
+      "broker_trace_id": "771c02a1eb0d47fd8a09924817430c19",
+      "timestamp_distinction": "1790561696.0606253 is the protected event; 1790561696.0633953 is its later successful broker response. Both reads precede both timestamps.",
+      "direct_local_mutation_excluded": false
+    },
+    "resume_saved_canary": {
+      "script": "python3 /canary.py > notes/resume-boundary-observation.json 2> notes/resume-boundary-stderr.txt\ncanary_status=$?\ncat notes/resume-boundary-observation.json\nexit \"$canary_status\"",
+      "phase": "resume",
+      "tool_call_id": "exec-6285da93-0634-4da8-8cfa-df3e63bec517",
+      "process_id": "56673",
+      "request_id": 109,
+      "request_file_line": 110,
+      "request_capture_line": 567,
+      "start_ack_capture_line": 568,
+      "app_completed_line": 327,
+      "app_completed_wall_unix_s": 1790561860.461,
+      "capture_process_lines": [
+        570,
+        572,
+        574
+      ],
+      "delivered_capture_lines": [
+        571,
+        573,
+        575
+      ],
+      "trusted_stdout_bytes": 2150,
+      "trusted_stdout_sha256": "f2c168e3f944d954085f606e52cce5a6d3bca588da503a3df749410dc0428f07",
+      "trusted_stderr_bytes": 0,
+      "app_projection_bytes": 2150,
+      "app_projection_sha256": "f2c168e3f944d954085f606e52cce5a6d3bca588da503a3df749410dc0428f07",
+      "app_projection_equals_trusted_stdout": true,
+      "exit_code": 0,
+      "complete_process_sequence_and_capture_chain_verified": true,
+      "script_sha256": "b0ed2119be43a28a03732482224b0723a9c85b874de0c5f142b4218414cb8c6e",
+      "retained_notes": {
+        "notes/resume-boundary-observation.json": {
+          "sha256": "f2c168e3f944d954085f606e52cce5a6d3bca588da503a3df749410dc0428f07",
+          "bytes": 2150,
+          "json_pointer": "/files/notes~1resume-boundary-observation.json",
+          "snapshots": [
+            "runtime-before-close.json",
+            "runtime-after-close.json"
+          ]
+        },
+        "notes/resume-boundary-stderr.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "json_pointer": "/files/notes~1resume-boundary-stderr.txt",
+          "snapshots": [
+            "runtime-before-close.json",
+            "runtime-after-close.json"
+          ]
+        }
+      },
+      "canary_check_count": 45,
+      "canary_checks_all_true": true,
+      "canary_key_set_equals_initial": true,
+      "saved_note_equals_full_trusted_stdout_bytes": true,
+      "saved_note_equals_full_trusted_stdout_json": true,
+      "stderr_note_empty": true,
+      "canonical_json_sha256": "b37cc7a31b5c5e1a32ea1584bc86c8f0fd12d6b821609deef8071475880de135",
+      "frozen_canary_matches": [],
+      "interpretation": "Trusted dispatch executes protected /canary.py, preserves its exit status, then cats the saved note. Exact complete output, exit0, matching retained JSON bytes and an empty stderr note corroborate the 45 checks. A model-authored all-true note by itself is not accepted evidence."
+    }
+  },
+  "frozen_method_limits": {
+    "methods": {
+      "retained_reads": {
+        "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/retained_reads.py",
+        "sha256": "986725593582d67a1f1fcff7d4121ce0e288a46aa272f6d0da22c5fbc5d0f704",
+        "bytes": 13042,
+        "functions": {
+          "sha": {
+            "first_line": 16,
+            "last_line": 17
+          },
+          "canonical": {
+            "first_line": 20,
+            "last_line": 21
+          },
+          "script": {
+            "first_line": 24,
+            "last_line": 31
+          },
+          "exact_cat_paths": {
+            "first_line": 34,
+            "last_line": 43
+          },
+          "canary_matches": {
+            "first_line": 179,
+            "last_line": 222
+          }
+        }
+      },
+      "smoke": {
+        "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/assessment/assess_smoke_v2.py",
+        "sha256": "08e0ae42380c370796d4bb70b3ea88fd1117d6030c0ebf2e54c9ba8d845cdf52",
+        "bytes": 35196,
+        "functions": {
+          "command_scripts": {
+            "first_line": 24,
+            "last_line": 35
+          },
+          "simple_cat_paths": {
+            "first_line": 38,
+            "last_line": 48
+          },
+          "empty_continuity_read_evidence": {
+            "first_line": 69,
+            "last_line": 85
+          }
+        }
+      },
+      "runtime": {
+        "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+        "sha256": "3aac168bc3aec1a63168b73eada2d9031d8f91c5b626896e8233ed33aafefec1",
+        "bytes": 24426,
+        "writable_continuity_instruction_line": 371
+      }
+    },
+    "empty_continuity": "The standalone-cat normalizer rejects shell operators and only restores a missing app item when authenticated stdout is empty. The smoke fallback additionally requires a successful zero-byte wc record. The compound listing and literal Python repr form are not recognized by these frozen rules.",
+    "canary": "The frozen recognizer accepts direct one-line /canary.py or a specific two-line stdout-redirect then cat form. The four-line stdout+stderr redirection/status-preservation script fails its len(lines)==2 and suffix-shape gates before the complete JSON checks."
+  },
+  "prospective_work": {
+    "status": "bounded recognizer corrections under development",
+    "new_source_anchor_required": true,
+    "fresh_qualifier_sequence_required": [
+      "native",
+      "boundary",
+      "actual-model interruption/resume smoke",
+      "misplaced-stock pilot",
+      "blocked-insert-home pilot"
+    ],
+    "instructions_changed": false,
+    "policy_changed": false,
+    "criteria_changed": false,
+    "timing_thresholds_changed": false,
+    "historical_result_reclassified": false,
+    "scope": "No historical pass or future qualification is inferred. Revised recognizers require bounded positive and adversarial tests, a new source anchor and all five fresh qualifiers."
+  },
+  "limitations": [
+    "A websocket send completion is not an app acknowledgment or evidence of model attention. The retained app aggregate is compared separately.",
+    "The mutable continuity backing prevents initial hashes and missing protected commits from establishing immutable local bytes.",
+    "This diagnosis does not prove a corrected reader, frozen release, scientific admission or campaign result."
+  ],
+  "provenance": {
+    "official_queue_receipt": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-003-queue.json",
+      "sha256": "27eb390315f3c0216bf2b9aef29ae8830fffdc8e1c509a0c691ec1ede452badd",
+      "bytes": 1940
+    },
+    "bindings": [
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-003-queue.json",
+        "sha256": "27eb390315f3c0216bf2b9aef29ae8830fffdc8e1c509a0c691ec1ede452badd",
+        "bytes": 1940,
+        "role": "official queue before output access"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-003-assessment.json",
+        "sha256": "06d95ee8e3f370dd9b80ea2c83719c28c2263905546cc167394836dcbbf975ef",
+        "bytes": 278135,
+        "role": "immutable original failed smoke assessment"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\final-qualification-005\\smoke-003\\disposition.json",
+        "sha256": "05ad80e09418244a08ad289c0ed09fd712309e5494d043f4e0fd9dcd5098330b",
+        "bytes": 2256,
+        "role": "original failed admission disposition"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-019\\snapshot.json",
+        "sha256": "510f614fbf10c8a94e67ffa453081e920934c475441eb422f7663efac3997524",
+        "bytes": 167904,
+        "role": "original dev019 source snapshot"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-019\\code.zip",
+        "sha256": "5497d040c78d6bb24f7e074c197dfab2cb2ca8f72ad825455e71974a79ac8b6f",
+        "bytes": 1579518,
+        "role": "original frozen methods archive"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\interrupt\\client\\events.jsonl",
+        "sha256": "e8ae22258b7d4d9449912292e7112309b590a5a720538395fa302041ef071644",
+        "bytes": 345151,
+        "role": "interrupt original app events"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\interrupt\\executor-2-capture.jsonl",
+        "sha256": "1e7c1a2843795c551d4397e37444c21755d8fa324902519ded5aa115abb34176",
+        "bytes": 556659,
+        "role": "interrupt trusted executor capture"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\interrupt\\executor-2-requests.jsonl",
+        "sha256": "457a06aab70fc52f84037e793085e896aef075d686cac47e85b4024e7592730c",
+        "bytes": 51071,
+        "role": "interrupt executor request identities"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\resume\\client\\events.jsonl",
+        "sha256": "a4116caa2e3d409f0759f66456e513eed5987f054a6c41158c86d385c7d2a99f",
+        "bytes": 807925,
+        "role": "resume original app events"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\resume\\executor-2-capture.jsonl",
+        "sha256": "8fee320652e8577a79cd48082734867c14c3dfd976d58072a8b168523aeac98c",
+        "bytes": 990163,
+        "role": "resume trusted executor capture"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\resume\\executor-2-requests.jsonl",
+        "sha256": "7c9ed95a92738df366e9bc5ad078f61bd9eaa734f639e4d3f04be0d48461d758",
+        "bytes": 95807,
+        "role": "resume executor request identities"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\host\\public-history.jsonl",
+        "sha256": "60287dc5dcc65d50e25ced4ca78d26351ed934394e5a1c9b76df8a9c395a7507",
+        "bytes": 27133310,
+        "role": "protected continuity chronology"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\interrupt\\broker-events.jsonl",
+        "sha256": "9fd4be9d672924c751402e572153eee4257e71a2988d04281db290792c0cdd30",
+        "bytes": 229167,
+        "role": "protected continuity response chronology"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\host\\continuity-history\\e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.md",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "role": "retained empty protected continuity revision"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\resume\\runtime-before-close.json",
+        "sha256": "dd6de29a0e2b6c13b46b4412574e269df747575082e5bbb955942cd5d1eac5f4",
+        "bytes": 996100,
+        "role": "retained resume workspace snapshot runtime-before-close.json"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\resume\\runtime-after-close.json",
+        "sha256": "dd6de29a0e2b6c13b46b4412574e269df747575082e5bbb955942cd5d1eac5f4",
+        "bytes": 996100,
+        "role": "retained resume workspace snapshot runtime-after-close.json"
+      },
+      {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-003\\orchestrator\\resume\\canary-stdout.json",
+        "sha256": "b55f76c3127a19761d2dc7995031568805ef8ce9c27438b04f5e17e52b76ea0b",
+        "bytes": 2151,
+        "role": "original resumed invocation canary key set"
+      }
+    ],
+    "raw_trace_content_copied": false,
+    "base64_content_copied": false,
+    "original_inputs_modified": false
+  }
+}

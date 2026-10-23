@@ -1,0 +1,1278 @@
+{
+  "schema": "campaign002-smoke-queue-failure-diagnosis-1",
+  "run_id": "RCI001-C02-smoke-026",
+  "queue_job_id": "20260929T050327589414Z-e2cffb4f",
+  "scope": "Failed-job infrastructure diagnosis only. No empirical qualification or task assessment, replay, retry or promotion.",
+  "task_outcome": "unknown",
+  "qualification_assessed": false,
+  "official_authentication": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\smoke026-queue-failure-diagnosis-001\\authentication.json",
+    "bytes": 900,
+    "sha256": "463c848d72a355648f793bfedc0af69d51785cbb1bd1d75559ec948107885af2"
+  },
+  "official_status": {
+    "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\smoke026-queue-failure-diagnosis-001\\official-status.json",
+    "bytes": 1937,
+    "sha256": "0da4b15117356be97fb1d048de93e5464539cc499e0ea7c8ede644816f8e62f5"
+  },
+  "official_state": "failed",
+  "official_exit_status": 1,
+  "official_started_at": "2026-09-29T05:03:27.865260Z",
+  "official_ended_at": "2026-09-29T05:07:22.997390Z",
+  "client_completion": {
+    "model_started": true,
+    "success": false,
+    "error": "Qualified execution transport failed; stopping invocation",
+    "source": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\client\\result.json",
+      "bytes": 12764,
+      "sha256": "ddf1b49dcc806950a3f45d860da81c2c0d96eff4a60ddd77143929ec31307771"
+    },
+    "classification": "One observed model-start lower-bound item from failed-job diagnostic metadata; not an assessable task result or billed generation count."
+  },
+  "orchestrator": {
+    "completed": false,
+    "error": "Interruption stage failed its gate; restart not attempted",
+    "host_exit_code": 0,
+    "stage_count": 1,
+    "resume_directory_exists": false,
+    "injected_interruption": true,
+    "command_at_interruption_request_id": "smoke-open-001",
+    "retired_invocation": "retired",
+    "retired_epoch": 4,
+    "old_token_denied_after_retirement": true,
+    "watchdog_errors": [],
+    "cleanup_clean": true,
+    "durable_retention_verified": true,
+    "all_namespaces_retired_field_present": false,
+    "stage_error": "Codehost v3 failed: channel_ConnectionAbortedError; drain_invalid; channel_sink_ValueError; channel_ValueError; namespace_finished_unqualified; namespace_wrapper_nonzero; namespace_receipt_ValueError"
+  },
+  "first_failure": {
+    "kind": "failure",
+    "monotonic_s": 515920.5,
+    "previous_sha256": "67494eae81166dde9653eeb0b28bcc50051c9263631711803e2272e14e11f4f4",
+    "reason": "channel_ConnectionAbortedError",
+    "record_sha256": "b0cfe9936773f43e9fcfb04f7011681dbd5c69ab1f108e81a2675b3adbb3493a",
+    "schema": "campaign002-codehost-transport-3",
+    "sequence": 174,
+    "wall_unix_s": 1790658441.0409749
+  },
+  "cause_interpretation": {
+    "observed": "The first retained transport failure is channel_ConnectionAbortedError. Channel 1 has no genuine client EOF or upload-drained receipt; both H2 summaries have no error/rejection and no active streams.",
+    "source_inference": "The failure prefix and absent earlier sink/frame failures, together with missing channel-1 EOF and successful channel-2 EOF, locate the probable exception to channel-1 upload SocketReader.read -> loop.sock_recv. No stack trace, channel identifier or numeric OS code accompanies the first failure record, so this is source/state inference rather than a direct exception-site receipt.",
+    "downstream": "finish_owner awaits the failed upload task and retains drain_invalid. Emergency FINISH then reaches Linux without channel-1 HALF_CLOSE; the first applicable source guard rejects Owner finish before genuine upload EOF. Namespace error and wrapper exit1 remain honest failed terminal cleanup.",
+    "not_supported": "No evidence establishes benign graceful EOF, numeric WSA error, TCP RST cause, native pooled-channel drop cause, or absence of unobserved bytes. No H2 parser rejection was observed."
+  },
+  "clock_boundary": {
+    "client_marker_line": 421,
+    "client_marker": {
+      "kind": "client_finishing_before_close",
+      "schema": "campaign002-client-finishing-1",
+      "wall_unix_s": 1790658441.0409749,
+      "monotonic_s": 515920.5
+    },
+    "first_failure_equals_marker_wall_and_monotonic": true,
+    "interpretation": "Exact same Windows timestamps do not establish strict cross-file ordering. Thread-closed and handshake-complete were recorded earlier; stdin-closed/native-exit later. Namespace clock is not subtracted from Windows clock."
+  },
+  "native_quiescence": {
+    "qualified": true,
+    "handshake_qualified": true,
+    "forced_job_close": false,
+    "native_exit_code": 0,
+    "start_monotonic_s": 515920.437,
+    "graceful_deadline_monotonic_s": 515925.437,
+    "hard_deadline_monotonic_s": 515930.437,
+    "completed_monotonic_s": 515920.515,
+    "failures": []
+  },
+  "transport": {
+    "qualified": false,
+    "failures": [
+      "channel_ConnectionAbortedError",
+      "drain_invalid",
+      "channel_sink_ValueError",
+      "channel_ValueError",
+      "namespace_finished_unqualified",
+      "namespace_wrapper_nonzero",
+      "namespace_receipt_ValueError"
+    ],
+    "exit_code": 1,
+    "attempts": 2,
+    "accepted": 2,
+    "denied": 0,
+    "drain": {
+      "start_monotonic_s": 515920.5,
+      "deadline_monotonic_s": 515945.5,
+      "bound_s": 25,
+      "seal_qualified": false,
+      "seal_error_code": "drain_invalid",
+      "completed_monotonic_s": 515920.593
+    },
+    "queued_bytes_at_close": 0,
+    "queue_with_headroom_maximum_bytes": 803528,
+    "namespace_terminal": {
+      "qualified": false,
+      "reason": "error",
+      "error_type": "ValueError",
+      "drain_error_code": "owner_drain_unqualified",
+      "drain_qualified": false,
+      "owner_drain_received": true,
+      "owner_drain_acknowledged": true,
+      "owner_finish_received": false,
+      "stdin_eof": false,
+      "channel_count": 2,
+      "channels_closed": 2,
+      "child_exit_code": -15,
+      "terminate_sent": true,
+      "kill_sent": false,
+      "queue_bytes_at_close": 0
+    },
+    "channels": [
+      {
+        "channel_id": 1,
+        "meters": {
+          "client_read": {
+            "bytes": 229450,
+            "sha256": "67c5a7c5ffe1f702549d127ebde4b7be9537ca3fe9d35cec3a1cc3e8195e8ed3"
+          },
+          "upload": {
+            "bytes": 229450,
+            "sha256": "67c5a7c5ffe1f702549d127ebde4b7be9537ca3fe9d35cec3a1cc3e8195e8ed3"
+          },
+          "download": {
+            "bytes": 166743,
+            "sha256": "62e67ada41f1df7450f0e143bd8995fa44ee1bcafdfea403bc13f9e69bd0a3ea"
+          },
+          "client_written": {
+            "bytes": 166743,
+            "sha256": "62e67ada41f1df7450f0e143bd8995fa44ee1bcafdfea403bc13f9e69bd0a3ea"
+          }
+        },
+        "namespace_upload": {
+          "bytes": 229450,
+          "sha256": "67c5a7c5ffe1f702549d127ebde4b7be9537ca3fe9d35cec3a1cc3e8195e8ed3"
+        },
+        "namespace_download": {
+          "bytes": 166743,
+          "sha256": "62e67ada41f1df7450f0e143bd8995fa44ee1bcafdfea403bc13f9e69bd0a3ea"
+        },
+        "all_observed_meter_identities_match": true,
+        "parent_eof_sequence": null,
+        "upload_drained_sequence": null,
+        "namespace_upload_eof": false,
+        "namespace_upload_drained": false,
+        "namespace_download_eof": false,
+        "namespace_qualified": false,
+        "h2": {
+          "error": null,
+          "first_rejection": null,
+          "active_stream_ids": [],
+          "open_streams": 0,
+          "closed_streams": 34,
+          "reset_streams": 0,
+          "frames_complete": true,
+          "headers_complete": true,
+          "upload_complete": true,
+          "frames": {
+            "upload": 109,
+            "download": 153
+          },
+          "bytes": {
+            "upload": 229450,
+            "download": 166743
+          },
+          "goaway": {
+            "upload": null,
+            "download": null
+          },
+          "reset_records": [],
+          "terminal_control_records": [
+            {
+              "direction": "upload",
+              "stream_id": 1,
+              "error_code": 8,
+              "frame": 109,
+              "end_byte": 229450,
+              "normal_close": {
+                "opened_upload": {
+                  "frame": 3,
+                  "end_byte": 157
+                },
+                "upload_closed": {
+                  "frame": 5,
+                  "end_byte": 180
+                },
+                "download_closed": {
+                  "frame": 153,
+                  "end_byte": 166743
+                }
+              },
+              "opposite_observed_frames": 153
+            }
+          ],
+          "cleanup_cancel_records": [
+            {
+              "cancel": {
+                "direction": "upload",
+                "end_byte": 229450,
+                "error_code": 8,
+                "flags": 0,
+                "frame": 109,
+                "payload_length": 4,
+                "sha256": "37bd147116f9abe27a146547447636d7ff26ad518978c37cb60f598ca7584e1e",
+                "start_byte": 229437,
+                "type": 3
+              },
+              "local": {
+                "classification": "normal_closed",
+                "eligibility": "proved_normal_close",
+                "opposite_observed": {
+                  "frames": 153,
+                  "partial_frame": false,
+                  "pending_headers_stream": null,
+                  "wire_bytes": 166743
+                },
+                "phase_frontier": {
+                  "download_frames": 149,
+                  "download_wire_bytes": 166609,
+                  "last_stream_id": 67,
+                  "upload_frames": 108,
+                  "upload_wire_bytes": 229437
+                },
+                "reset_record_index": null,
+                "terminal_control_index": 0
+              },
+              "phase_nonce": "2cc9fc860faa4b50af313569f6891d77",
+              "schema": "campaign002-h2-cleanup-cancel-1",
+              "stream_id": 1,
+              "opened_upload": {
+                "frame": 3,
+                "end_byte": 157,
+                "start_byte": 70
+              },
+              "opening_headers_complete": {
+                "frame": 3,
+                "end_byte": 157
+              },
+              "upload_end_stream": {
+                "frame": 5,
+                "end_byte": 180
+              },
+              "upload_headers_complete": {
+                "frame": 5,
+                "end_byte": 180
+              },
+              "download_end_stream": {
+                "frame": 153,
+                "end_byte": 166743
+              },
+              "download_headers_complete": {
+                "frame": 153,
+                "end_byte": 166743
+              },
+              "wire": {
+                "upload": {
+                  "frames": 4,
+                  "bytes": 123,
+                  "sha256": "26e4a7eaa418dab0fc7103811d04a77e18b39091f64c669deac45ce8ca700778"
+                },
+                "download": {
+                  "frames": 18,
+                  "bytes": 996,
+                  "sha256": "db9172f1079b0a89c05d190cfa180d06eb9254837c97145a460fc8e66fb3615d"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "channel_id": 2,
+        "meters": {
+          "client_read": {
+            "bytes": 32471,
+            "sha256": "cb496ffb4e38a361b74065aa16f787f7c4c4a085926b7d0c098040dcc5047f9c"
+          },
+          "upload": {
+            "bytes": 32471,
+            "sha256": "cb496ffb4e38a361b74065aa16f787f7c4c4a085926b7d0c098040dcc5047f9c"
+          },
+          "download": {
+            "bytes": 1303,
+            "sha256": "e602318275a663c94c88ed64353921d2fe6ba5ec63f3f50f6084628c38f7b332"
+          },
+          "client_written": {
+            "bytes": 1303,
+            "sha256": "e602318275a663c94c88ed64353921d2fe6ba5ec63f3f50f6084628c38f7b332"
+          }
+        },
+        "namespace_upload": {
+          "bytes": 32471,
+          "sha256": "cb496ffb4e38a361b74065aa16f787f7c4c4a085926b7d0c098040dcc5047f9c"
+        },
+        "namespace_download": {
+          "bytes": 1303,
+          "sha256": "e602318275a663c94c88ed64353921d2fe6ba5ec63f3f50f6084628c38f7b332"
+        },
+        "all_observed_meter_identities_match": true,
+        "parent_eof_sequence": 180,
+        "upload_drained_sequence": 182,
+        "namespace_upload_eof": true,
+        "namespace_upload_drained": true,
+        "namespace_download_eof": true,
+        "namespace_qualified": false,
+        "h2": {
+          "error": null,
+          "first_rejection": null,
+          "active_stream_ids": [],
+          "open_streams": 0,
+          "closed_streams": 6,
+          "reset_streams": 1,
+          "frames_complete": true,
+          "headers_complete": true,
+          "upload_complete": true,
+          "frames": {
+            "upload": 27,
+            "download": 26
+          },
+          "bytes": {
+            "upload": 32471,
+            "download": 1303
+          },
+          "goaway": {
+            "upload": 0,
+            "download": 13
+          },
+          "reset_records": [
+            {
+              "direction": "upload",
+              "stream_id": 9,
+              "error_code": 8
+            }
+          ],
+          "terminal_control_records": [],
+          "cleanup_cancel_records": [
+            {
+              "cancel": {
+                "direction": "upload",
+                "end_byte": 32232,
+                "error_code": 8,
+                "flags": 0,
+                "frame": 20,
+                "payload_length": 4,
+                "sha256": "2ec4e67e81c5ca41b98e9474482009acbf0962094b8da87a6a83fc23db9ac4c4",
+                "start_byte": 32219,
+                "type": 3
+              },
+              "local": {
+                "classification": "active",
+                "eligibility": "frontier_active",
+                "opposite_observed": {
+                  "frames": 19,
+                  "partial_frame": false,
+                  "pending_headers_stream": null,
+                  "wire_bytes": 1155
+                },
+                "phase_frontier": {
+                  "download_frames": 19,
+                  "download_wire_bytes": 1155,
+                  "last_stream_id": 9,
+                  "upload_frames": 19,
+                  "upload_wire_bytes": 32219
+                },
+                "reset_record_index": 0,
+                "terminal_control_index": null
+              },
+              "phase_nonce": "2cc9fc860faa4b50af313569f6891d77",
+              "schema": "campaign002-h2-cleanup-cancel-1",
+              "stream_id": 9,
+              "opened_upload": {
+                "frame": 17,
+                "end_byte": 25171,
+                "start_byte": 25125
+              },
+              "opening_headers_complete": {
+                "frame": 17,
+                "end_byte": 25171
+              },
+              "upload_end_stream": {
+                "frame": 19,
+                "end_byte": 32219
+              },
+              "upload_headers_complete": {
+                "frame": 19,
+                "end_byte": 32219
+              },
+              "download_end_stream": null,
+              "download_headers_complete": null,
+              "wire": {
+                "upload": {
+                  "frames": 4,
+                  "bytes": 7107,
+                  "sha256": "2b15b9e6d95a09f7ca8a01b6695db2f56b1d58a804442d3826141fa14cbb0040"
+                },
+                "download": {
+                  "frames": 2,
+                  "bytes": 93,
+                  "sha256": "490aa0665f1347789473605c3e78dcc804b57520c1249a9394354dbffc8fcea1"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "ledger_hash_chain_checked_rows": 203,
+    "meter_scope": "Identities cover observed returned bytes only; socket abort can leave unobserved data, so equality is not genuine EOF proof."
+  },
+  "retirements": [
+    {
+      "binding": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\executor-1-retirement.json",
+        "bytes": 2652,
+        "sha256": "3248f99db8d15274ce50ccd4fb50a981b32586c5b336d7d28e81fd25792add5c"
+      },
+      "qualified": true,
+      "windows_exit_code": 0,
+      "last": {
+        "retired": true,
+        "namespace_evidence_available": true,
+        "namespace_ids": [
+          4026532234
+        ],
+        "namespace_members": [],
+        "outer_same_process": false
+      }
+    },
+    {
+      "binding": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\executor-2-retirement.json",
+        "bytes": 2653,
+        "sha256": "e8330842eb347519e853c30cb1f415a33e57b7f7ae99b6fbe7dac0ab3e7badb5"
+      },
+      "qualified": true,
+      "windows_exit_code": 0,
+      "last": {
+        "retired": true,
+        "namespace_evidence_available": true,
+        "namespace_ids": [
+          4026532306
+        ],
+        "namespace_members": [],
+        "outer_same_process": false
+      }
+    },
+    {
+      "binding": {
+        "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\codehost-owner-retirement-v3.json",
+        "bytes": 2689,
+        "sha256": "bf176b02d18e0cca0548ea4ac7dd7c76f509b865068727d7325530ccdca2ceff"
+      },
+      "qualified": true,
+      "windows_exit_code": 1,
+      "last": {
+        "retired": true,
+        "namespace_evidence_available": true,
+        "namespace_ids": [
+          4026532234
+        ],
+        "namespace_members": [],
+        "outer_same_process": false
+      }
+    }
+  ],
+  "cleanup_scope": "All three retained namespace retirements report empty members/retired/qualified. This is scoped historical evidence, not a present global OS process census; transport qualification remains false.",
+  "client_lifecycle_timeline": [
+    {
+      "line": 410,
+      "kind": "native_quiescence",
+      "sequence": 1,
+      "phase": "start",
+      "wall_unix_s": 1790658440.985765,
+      "monotonic_s": 515920.437
+    },
+    {
+      "line": 411,
+      "kind": "native_quiescence",
+      "sequence": 2,
+      "phase": "request",
+      "wall_unix_s": 1790658440.985765,
+      "monotonic_s": 515920.437,
+      "method": "turn/interrupt",
+      "request_id": 12
+    },
+    {
+      "line": 412,
+      "kind": "native_quiescence",
+      "sequence": 3,
+      "phase": "cleanup_barrier_complete",
+      "wall_unix_s": 1790658440.9922853,
+      "monotonic_s": 515920.453
+    },
+    {
+      "line": 413,
+      "kind": "native_quiescence",
+      "sequence": 4,
+      "phase": "request_sent",
+      "wall_unix_s": 1790658440.9932897,
+      "monotonic_s": 515920.453,
+      "method": "turn/interrupt",
+      "request_id": 12
+    },
+    {
+      "line": 414,
+      "kind": "native_quiescence",
+      "sequence": 5,
+      "phase": "response",
+      "wall_unix_s": 1790658440.9942904,
+      "monotonic_s": 515920.453,
+      "method": "turn/interrupt",
+      "request_id": 12,
+      "status": "empty"
+    },
+    {
+      "line": 415,
+      "kind": "native_quiescence",
+      "sequence": 6,
+      "phase": "turn_terminal",
+      "wall_unix_s": 1790658440.9947953,
+      "monotonic_s": 515920.453,
+      "status": "interrupted"
+    },
+    {
+      "line": 416,
+      "kind": "native_quiescence",
+      "sequence": 7,
+      "phase": "request",
+      "wall_unix_s": 1790658440.9957998,
+      "monotonic_s": 515920.453,
+      "method": "thread/unsubscribe",
+      "request_id": 13
+    },
+    {
+      "line": 417,
+      "kind": "native_quiescence",
+      "sequence": 8,
+      "phase": "request_sent",
+      "wall_unix_s": 1790658440.9973042,
+      "monotonic_s": 515920.453,
+      "method": "thread/unsubscribe",
+      "request_id": 13
+    },
+    {
+      "line": 418,
+      "kind": "native_quiescence",
+      "sequence": 9,
+      "phase": "response",
+      "wall_unix_s": 1790658440.9973042,
+      "monotonic_s": 515920.453,
+      "method": "thread/unsubscribe",
+      "request_id": 13,
+      "status": "unsubscribed"
+    },
+    {
+      "line": 419,
+      "kind": "native_quiescence",
+      "sequence": 10,
+      "phase": "thread_closed",
+      "wall_unix_s": 1790658441.0384662,
+      "monotonic_s": 515920.5
+    },
+    {
+      "line": 420,
+      "kind": "native_quiescence",
+      "sequence": 11,
+      "phase": "handshake_complete",
+      "wall_unix_s": 1790658441.0402706,
+      "monotonic_s": 515920.5,
+      "qualified": true
+    },
+    {
+      "line": 421,
+      "kind": "client_finishing_before_close",
+      "wall_unix_s": 1790658441.0409749,
+      "monotonic_s": 515920.5
+    },
+    {
+      "line": 422,
+      "kind": "native_quiescence",
+      "sequence": 12,
+      "phase": "finishing",
+      "wall_unix_s": 1790658441.0424805,
+      "monotonic_s": 515920.5
+    },
+    {
+      "line": 423,
+      "kind": "native_quiescence",
+      "sequence": 13,
+      "phase": "stdin_closed",
+      "wall_unix_s": 1790658441.0424805,
+      "monotonic_s": 515920.5
+    },
+    {
+      "line": 424,
+      "kind": "native_quiescence",
+      "sequence": 14,
+      "phase": "native_exit",
+      "wall_unix_s": 1790658441.061998,
+      "monotonic_s": 515920.515,
+      "exit_code": 0,
+      "observed_monotonic_s": 515920.515
+    },
+    {
+      "line": 425,
+      "kind": "native_quiescence",
+      "sequence": 15,
+      "phase": "completed",
+      "wall_unix_s": 1790658441.0630007,
+      "monotonic_s": 515920.515,
+      "qualified": true
+    }
+  ],
+  "transport_timeline": [
+    {
+      "sequence": 160,
+      "kind": "native_cleanup_begin",
+      "wall_unix_s": 1790658440.9882739,
+      "monotonic_s": 515920.437,
+      "record_sha256": "6e8eef59fe68f0edcc5951cdd216d3fe8b0355ffb0e8c11051b6dc60834c9883"
+    },
+    {
+      "sequence": 161,
+      "kind": "frame",
+      "wall_unix_s": 1790658440.9882739,
+      "monotonic_s": 515920.437,
+      "channel_id": 0,
+      "direction": "outgoing",
+      "frame_type": 12,
+      "payload_bytes": 926,
+      "payload_sha256": "fb0c98334468825e7e65d8122df59cd5aa27d5d84d29ca859d670c8bfc3715de",
+      "record_sha256": "ab456ef71c59437158f81d37e39b42e81f649d66407c65714c753b9470c6b2b5"
+    },
+    {
+      "sequence": 162,
+      "kind": "frame",
+      "wall_unix_s": 1790658440.9897766,
+      "monotonic_s": 515920.453,
+      "channel_id": 0,
+      "direction": "incoming",
+      "frame_type": 13,
+      "payload_bytes": 2176,
+      "payload_sha256": "c67706904998d032f32d289317dda9140ea792dbd1e05b2acd990367d62b4c18",
+      "record_sha256": "4b6ce471f5393c70e4ffe7aff932c8af39df88fdca279a502055f60d8d313711"
+    },
+    {
+      "sequence": 163,
+      "kind": "native_cleanup_ack",
+      "wall_unix_s": 1790658440.9907804,
+      "monotonic_s": 515920.453,
+      "record_sha256": "4a7df4a1e0b9fd3dc882c1f73b0e571f9afdbe5ae12d96d20d227dd32310051c"
+    },
+    {
+      "sequence": 164,
+      "kind": "frame",
+      "wall_unix_s": 1790658440.9932897,
+      "monotonic_s": 515920.453,
+      "channel_id": 2,
+      "direction": "outgoing",
+      "frame_type": 3,
+      "payload_bytes": 13,
+      "payload_sha256": "2ec4e67e81c5ca41b98e9474482009acbf0962094b8da87a6a83fc23db9ac4c4",
+      "record_sha256": "785cff60e6bac17472d75f05a56a9c83964f59dd61a6b0ab3fea123d99c72f2b"
+    },
+    {
+      "sequence": 165,
+      "kind": "frame",
+      "wall_unix_s": 1790658440.9947953,
+      "monotonic_s": 515920.453,
+      "channel_id": 2,
+      "direction": "outgoing",
+      "frame_type": 3,
+      "payload_bytes": 112,
+      "payload_sha256": "addad3908348782e7901e433a184777af6da077efe6b53e2dd6d78f13e85e1b0",
+      "record_sha256": "53af3b8a989533fcc9770f31940c06df76c9c838fccd2e5f2bf7a41a62d5448e"
+    },
+    {
+      "sequence": 166,
+      "kind": "frame",
+      "wall_unix_s": 1790658440.9957998,
+      "monotonic_s": 515920.453,
+      "channel_id": 1,
+      "direction": "incoming",
+      "frame_type": 3,
+      "payload_bytes": 54,
+      "payload_sha256": "5b569fdbc15faddf6a2dabcbb1168a024a3ea5a75faabe85cdc6798b7bd5d629",
+      "record_sha256": "bbc637bb16c75f3e4dc1c68db7f307d92c1c9d49d5752e896e594e3d031f445a"
+    },
+    {
+      "sequence": 167,
+      "kind": "frame",
+      "wall_unix_s": 1790658440.9973042,
+      "monotonic_s": 515920.453,
+      "channel_id": 1,
+      "direction": "incoming",
+      "frame_type": 3,
+      "payload_bytes": 60,
+      "payload_sha256": "b453349bd42f6d141fe804d7ff08de09bc3c326ab31a1a4bc777818307fa1f62",
+      "record_sha256": "aa8c0481cb7f898de3a7d6b62460ea09dc84c753f0b935db296c206bfe838700"
+    },
+    {
+      "sequence": 168,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.000818,
+      "monotonic_s": 515920.453,
+      "channel_id": 2,
+      "direction": "outgoing",
+      "frame_type": 3,
+      "payload_bytes": 49,
+      "payload_sha256": "3ba2fed66ccc25d95b502398d2b66f0f3c3bea9c691943016f7ee7d41fe349c1",
+      "record_sha256": "29ef97b5e1d2e4b377bded77e8e2dc5d095b8c8cec002ffc3b018be1f5dbb766"
+    },
+    {
+      "sequence": 169,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.000818,
+      "monotonic_s": 515920.453,
+      "channel_id": 2,
+      "direction": "outgoing",
+      "frame_type": 3,
+      "payload_bytes": 61,
+      "payload_sha256": "b6a234a2c7e184f5300983ff7cc427167f491cdbef9f089f5c8e68425d190491",
+      "record_sha256": "0d4fabeaa49cf88ecf461d28ae92d026f98a85e944836765e6feb4b49b641918"
+    },
+    {
+      "sequence": 170,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.0359576,
+      "monotonic_s": 515920.5,
+      "channel_id": 2,
+      "direction": "incoming",
+      "frame_type": 3,
+      "payload_bytes": 95,
+      "payload_sha256": "e519ae7a443b23add8e5140840841c5b22228396e6e423f06165cabfee94b7ee",
+      "record_sha256": "e2c23427d704124bd0469687edbef4051ad71cbe191e0ab28eb666ae83d3f62f"
+    },
+    {
+      "sequence": 171,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.037462,
+      "monotonic_s": 515920.5,
+      "channel_id": 2,
+      "direction": "incoming",
+      "frame_type": 3,
+      "payload_bytes": 36,
+      "payload_sha256": "e9303490375794cb4f51e0b9c3411ab4c440b850d60c411c021048ced60b5ad7",
+      "record_sha256": "3c296efe56eb386e70e696f405650b13f1f63ce30345a98f71962ef930336a5d"
+    },
+    {
+      "sequence": 172,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.0384662,
+      "monotonic_s": 515920.5,
+      "channel_id": 1,
+      "direction": "incoming",
+      "frame_type": 3,
+      "payload_bytes": 20,
+      "payload_sha256": "cfd1ed244d13a42a93525782b71fbffb8b2dcd75200f4fff9ba1ad5ef0cf3060",
+      "record_sha256": "8e4e05ee24d165b83e8b99fe1c40c71fad82f8a02453797b51eb6d8ef4fda65a"
+    },
+    {
+      "sequence": 173,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.0399704,
+      "monotonic_s": 515920.5,
+      "channel_id": 1,
+      "direction": "outgoing",
+      "frame_type": 3,
+      "payload_bytes": 13,
+      "payload_sha256": "37bd147116f9abe27a146547447636d7ff26ad518978c37cb60f598ca7584e1e",
+      "record_sha256": "67494eae81166dde9653eeb0b28bcc50051c9263631711803e2272e14e11f4f4"
+    },
+    {
+      "sequence": 174,
+      "kind": "failure",
+      "wall_unix_s": 1790658441.0409749,
+      "monotonic_s": 515920.5,
+      "reason": "channel_ConnectionAbortedError",
+      "record_sha256": "b0cfe9936773f43e9fcfb04f7011681dbd5c69ab1f108e81a2675b3adbb3493a"
+    },
+    {
+      "sequence": 175,
+      "kind": "channel_finish_frontier",
+      "wall_unix_s": 1790658441.0529976,
+      "monotonic_s": 515920.515,
+      "channel_id": 1,
+      "record_sha256": "b848edfe4a8496b6880a2712c27014d88b3bddbeee7752ee229e9680c49cc686"
+    },
+    {
+      "sequence": 176,
+      "kind": "channel_finish_frontier",
+      "wall_unix_s": 1790658441.0539992,
+      "monotonic_s": 515920.515,
+      "channel_id": 2,
+      "record_sha256": "e9f119db4657bcdf7b8bd04d14e7795a71ea7cdaf9cefdc6a0397e5342c56f3b"
+    },
+    {
+      "sequence": 177,
+      "kind": "owner_drain_begin",
+      "wall_unix_s": 1790658441.0549998,
+      "monotonic_s": 515920.515,
+      "record_sha256": "4effe23446ba056edb882182e10219ca992018b65eb2d8707a947077d3ad0cee"
+    },
+    {
+      "sequence": 178,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.0559983,
+      "monotonic_s": 515920.515,
+      "channel_id": 0,
+      "direction": "outgoing",
+      "frame_type": 10,
+      "payload_bytes": 0,
+      "payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_sha256": "08fc1b5de2ddc1a19787d82bd0b140a3aeb9b0e24116afc466643cc158c9d35d"
+    },
+    {
+      "sequence": 179,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.0569985,
+      "monotonic_s": 515920.515,
+      "channel_id": 2,
+      "direction": "outgoing",
+      "frame_type": 3,
+      "payload_bytes": 17,
+      "payload_sha256": "57704c1e774aa7a5d0cef2b8add417e403944119c48c8acccedf7cb1b7502226",
+      "record_sha256": "570e8f4f3e7121ce6787d575c3dd49c203c7cdf493159e50e8caf0ef538de4b7"
+    },
+    {
+      "sequence": 180,
+      "kind": "client_eof",
+      "wall_unix_s": 1790658441.057999,
+      "monotonic_s": 515920.515,
+      "channel_id": 2,
+      "record_sha256": "137eec45f188aa960bca853df587d686c1168d75f3571cafc9a1d0bf53b46e2d"
+    },
+    {
+      "sequence": 181,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.057999,
+      "monotonic_s": 515920.515,
+      "channel_id": 2,
+      "direction": "outgoing",
+      "frame_type": 4,
+      "payload_bytes": 0,
+      "payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_sha256": "f73af3046bf7355402ec182912ae74058e6847773e74d22b371c4ae5dfc423a3"
+    },
+    {
+      "sequence": 182,
+      "kind": "upload_drained",
+      "wall_unix_s": 1790658441.058998,
+      "monotonic_s": 515920.515,
+      "channel_id": 2,
+      "record_sha256": "2355a03b7e234238645d48db4ca5e0c421510fd540945d01faa1f37937e543fe"
+    },
+    {
+      "sequence": 183,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.060998,
+      "monotonic_s": 515920.515,
+      "channel_id": 0,
+      "direction": "incoming",
+      "frame_type": 11,
+      "payload_bytes": 0,
+      "payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_sha256": "d6415ccf0463b5229adc69cd37d7dbc24511f55ab0530acab4bf7246745c809f"
+    },
+    {
+      "sequence": 184,
+      "kind": "owner_drain_ack",
+      "wall_unix_s": 1790658441.061998,
+      "monotonic_s": 515920.515,
+      "record_sha256": "d4412c5e55d2f3c1206bd23f1cad4ec8bd8e26f1c8c6d4e3f954c1b6c17de5f4"
+    },
+    {
+      "sequence": 185,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.0630007,
+      "monotonic_s": 515920.515,
+      "channel_id": 2,
+      "direction": "incoming",
+      "frame_type": 3,
+      "payload_bytes": 17,
+      "payload_sha256": "2242d515744af678f30325f2395eaee18596ced70201a5827aa90f010594359d",
+      "record_sha256": "626a9ff8063a8084d2c1a888bd6504df6d9a494b81baff9214c58f0c09b42554"
+    },
+    {
+      "sequence": 186,
+      "kind": "failure",
+      "wall_unix_s": 1790658441.0649986,
+      "monotonic_s": 515920.515,
+      "reason": "drain_invalid",
+      "record_sha256": "5d8a3b49128b91d8b8a9cbd2b87dc66c3f05b105a1c77024e1ae8f95672285e2"
+    },
+    {
+      "sequence": 187,
+      "kind": "channel_seal_frontier",
+      "wall_unix_s": 1790658441.0659986,
+      "monotonic_s": 515920.515,
+      "channel_id": 1,
+      "record_sha256": "a5fdda1726ccae1286af7230c9af73dc38b5820507da66fca88c6cbb49aebdca"
+    },
+    {
+      "sequence": 188,
+      "kind": "channel_seal_frontier",
+      "wall_unix_s": 1790658441.0669992,
+      "monotonic_s": 515920.531,
+      "channel_id": 2,
+      "record_sha256": "c4dd6518272811424ed5b31180dda336c492e1ee54a7f1c637269c02bb9e329a"
+    },
+    {
+      "sequence": 189,
+      "kind": "owner_finishing",
+      "wall_unix_s": 1790658441.0679986,
+      "monotonic_s": 515920.531,
+      "seal_qualified": false,
+      "seal_error_code": "drain_invalid",
+      "record_sha256": "a11bad5dfc61e6d669edf493c2cd37088686a73c9448f88b439450a8a765ac97"
+    },
+    {
+      "sequence": 190,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.074977,
+      "monotonic_s": 515920.531,
+      "channel_id": 0,
+      "direction": "outgoing",
+      "frame_type": 7,
+      "payload_bytes": 0,
+      "payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_sha256": "1b15af6f99822697c2faf2e8a891dc158ec1a3c2aa1719bb31c5312d58ae6bda"
+    },
+    {
+      "sequence": 191,
+      "kind": "owner_input_closed",
+      "wall_unix_s": 1790658441.076001,
+      "monotonic_s": 515920.531,
+      "after_finish_drain": true,
+      "record_sha256": "a0c2eafe6afa039a115995c7b4586a70c083374bd31bdd22b0dc7d5703c96858"
+    },
+    {
+      "sequence": 192,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.077506,
+      "monotonic_s": 515920.531,
+      "channel_id": 2,
+      "direction": "incoming",
+      "frame_type": 5,
+      "payload_bytes": 8250,
+      "payload_sha256": "69c570f8a824981adf3563d7d26cfb98041881f202584f6aca8e1d7c84aa67d5",
+      "record_sha256": "1e389ed9bf282ee9a5e6f6181ae609eb46a830751c5592aaa7bd4066d5ae0fee"
+    },
+    {
+      "sequence": 193,
+      "kind": "failure",
+      "wall_unix_s": 1790658441.0785127,
+      "monotonic_s": 515920.531,
+      "reason": "channel_sink_ValueError",
+      "record_sha256": "69eed2a03d2d106b371795e3623a12910fa098f11d9fffd99bc8f6a35bb4d2e1"
+    },
+    {
+      "sequence": 194,
+      "kind": "frame",
+      "wall_unix_s": 1790658441.0800161,
+      "monotonic_s": 515920.531,
+      "channel_id": 1,
+      "direction": "incoming",
+      "frame_type": 5,
+      "payload_bytes": 4945,
+      "payload_sha256": "dd62eec2d4d95a89a4a0bd05352bbc3bb47926ad4bd5f5fef4d477686068b869",
+      "record_sha256": "92f7eb7782b43be2f3d10760378d70456e7534e7fd908706dbe1a0d4bf2fdc9a"
+    },
+    {
+      "sequence": 195,
+      "kind": "failure",
+      "wall_unix_s": 1790658441.0800161,
+      "monotonic_s": 515920.531,
+      "reason": "channel_ValueError",
+      "record_sha256": "1fef9657f36fe03813aab5d325bd02a19fe414500f01adc02c16228e42a8ac85"
+    },
+    {
+      "sequence": 196,
+      "kind": "failure",
+      "wall_unix_s": 1790658441.085035,
+      "monotonic_s": 515920.546,
+      "reason": "namespace_finished_unqualified",
+      "record_sha256": "bee9031b651473d454bb5359ff6ad2bb5484471b28561e35e61e0c6d520a05b1"
+    },
+    {
+      "sequence": 197,
+      "kind": "namespace_finished",
+      "wall_unix_s": 1790658441.0860417,
+      "monotonic_s": 515920.546,
+      "payload_bytes": 1723,
+      "payload_sha256": "4a0c9852ba3b8ece9899bbc457ddc7b58628a74ceffb21ad3381b9d78ff6f593",
+      "record_sha256": "c250be131e3ec1e7a3eeff18b3671ba56be376a447d34935cd2d92debee8dffb"
+    },
+    {
+      "sequence": 198,
+      "kind": "namespace_output_closed",
+      "wall_unix_s": 1790658441.1425183,
+      "monotonic_s": 515920.593,
+      "after_finished": true,
+      "record_sha256": "57e40cc96dd36349c0aa1000c61b38251a04d0a3ede74eaf4cac2d23001369d3"
+    },
+    {
+      "sequence": 199,
+      "kind": "owner_drain_completed",
+      "wall_unix_s": 1790658441.1437013,
+      "monotonic_s": 515920.593,
+      "seal_qualified": false,
+      "seal_error_code": "drain_invalid",
+      "record_sha256": "f1b647d7e962294f50937242de1a13467f7fae67eccc8f13eab1ed1dac017820"
+    },
+    {
+      "sequence": 200,
+      "kind": "retirement_started",
+      "wall_unix_s": 1790658441.1447067,
+      "monotonic_s": 515920.593,
+      "record_sha256": "b3b628c0df6c389505ed4c041a06394f9a263fa2d919d2ebafa00937342ead07"
+    },
+    {
+      "sequence": 201,
+      "kind": "failure",
+      "wall_unix_s": 1790658441.4067357,
+      "monotonic_s": 515920.859,
+      "reason": "namespace_wrapper_nonzero",
+      "record_sha256": "4b61a21fa0ff057a8b8d4b4477890882efbc5288e53a52951a71ce422d7c4880"
+    },
+    {
+      "sequence": 202,
+      "kind": "failure",
+      "wall_unix_s": 1790658441.4092429,
+      "monotonic_s": 515920.859,
+      "reason": "namespace_receipt_ValueError",
+      "record_sha256": "d48b4566340ee728b13dcb4e05d1d1816676315edbca2f6aa7fdc6d98e194845"
+    },
+    {
+      "sequence": 203,
+      "kind": "closed",
+      "wall_unix_s": 1790658441.4157643,
+      "monotonic_s": 515920.875,
+      "record_sha256": "0af4d320ae96375c33ba292e972fe3ff1ed02fe40e8f70aa8d30fad3261e29e5"
+    }
+  ],
+  "source_bindings": {
+    "harness/codehost_bridge_v3.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\codehost_bridge_v3.py",
+      "bytes": 54241,
+      "sha256": "332bca286235715c241b36996a7c35c38f4bb966152395a32976eeebd1244263",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_bridge_v3.py",
+      "current_equals_frozen": true
+    },
+    "harness/codehost_inside_v3.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\codehost_inside_v3.py",
+      "bytes": 34005,
+      "sha256": "9032e9317bf9eb5eb878213dd3c902de93c46f4d67e965fc000a023bb328ffed",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_inside_v3.py",
+      "current_equals_frozen": true
+    },
+    "harness/codehost_mux_protocol.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\codehost_mux_protocol.py",
+      "bytes": 33052,
+      "sha256": "6d07ce6bfd8394534104fb163be2974bdc40a60fae117e079594a1cc33887df6",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_mux_protocol.py",
+      "current_equals_frozen": true
+    },
+    "harness/native_quiescence.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\native_quiescence.py",
+      "bytes": 18764,
+      "sha256": "d51e7ead1c6a3101cc0233e142d1669927f7de26aca2c2f572ec17dbc6d7fd00",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/native_quiescence.py",
+      "current_equals_frozen": true
+    },
+    "harness/bootstrap_client_v4.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\bootstrap_client_v4.py",
+      "bytes": 23326,
+      "sha256": "a08f0b820c5ce30c0a68bc8ea7fc19102b29834a6b9b0dd447157568060706ad",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v4.py",
+      "current_equals_frozen": true
+    },
+    "harness/transport_stderr.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\transport_stderr.py",
+      "bytes": 2204,
+      "sha256": "29920d4d46d147dbb9726b691dc729ce95de573e6e3e1e12065d04611efcb29f",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/transport_stderr.py",
+      "current_equals_frozen": true
+    },
+    "harness/physical.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\physical.py",
+      "bytes": 11167,
+      "sha256": "e20030568bd5d0905092a1e76f38386e6bd463541b5ff291083867e5ec9da572",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+      "current_equals_frozen": true
+    },
+    "harness/runtime.py": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\harness\\runtime.py",
+      "bytes": 28853,
+      "sha256": "80b393d8f539e91bb7c202478372aa212274cc3773307efbc5e5fe3faf378bd5",
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+      "current_equals_frozen": true
+    }
+  },
+  "retained_primary_sources": {
+    "codehost-channel-source-001/codex-rs__code-mode__src__grpc_session__mod.rs": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\codehost-channel-source-001\\codex-rs__code-mode__src__grpc_session__mod.rs",
+      "bytes": 12284,
+      "sha256": "28aa4d341828b886b24756008f2039e029511922213763555ed0b993fcc965d6"
+    },
+    "native-shutdown-source-001/codex-rs__core__src__session__handlers.rs": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-shutdown-source-001\\codex-rs__core__src__session__handlers.rs",
+      "bytes": 24394,
+      "sha256": "bad0cef6441ccd2505400d5bd4b1c93285202c5aa4ca64c3e2a996c2a64e5bf3"
+    },
+    "native-output-source-002/codex-rs__app-server__src__request_processors__thread_lifecycle.rs": {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\io-repair\\native-output-source-002\\codex-rs__app-server__src__request_processors__thread_lifecycle.rs",
+      "bytes": 34305,
+      "sha256": "204a9b470a4ee86fbc7cdbc6737291a8dea678c562220153df4ccd57f4545ea4"
+    }
+  },
+  "source_lines": {
+    "harness/codehost_bridge_v3.py": [
+      "35-37 socket read",
+      "412-438 failed task/drain/seal",
+      "548-570 EOF only after empty read",
+      "633-659 exception typing and cancellation",
+      "774-829 retirement and terminal checks"
+    ],
+    "harness/codehost_inside_v3.py": [
+      "418-424 FINISH requires genuine EOF and upload drained"
+    ],
+    "harness/physical.py": [
+      "55-74 planned abort and conditional all_namespaces_retired",
+      "75-101 cleanup retained"
+    ],
+    "harness/native_quiescence.py": [
+      "260-302 handshake, marker, stdin closure and native exit"
+    ],
+    "codehost-channel-source-001/codex-rs__code-mode__src__grpc_session__mod.rs": [
+      "305-348 CloseSession, close_state, stream_tasks.wait"
+    ],
+    "native-shutdown-source-001/codex-rs__core__src__session__handlers.rs": [
+      "304-305 code-mode shutdown error logged"
+    ],
+    "native-output-source-002/codex-rs__app-server__src__request_processors__thread_lifecycle.rs": [
+      "408-456 thread shutdown then thread/closed"
+    ]
+  },
+  "prospective_options": [
+    "First add bounded secret-safe socket operation metadata (channel, read/write site, exception class and genuine integer errno/winerror where present, event/phase/owner identity and H2/meter snapshot). Preserve the same exception and rejection; never store dynamic exception payloads or fabricate EOF.",
+    "Use a separately declared bounded no-model local bridge lifecycle reproducer to distinguish orderly SHUT_WR plus drain from abortive close and Windows scheduling. Such a synthetic reproducer tests the transport boundary, not the installed native teardown cause; no probe was launched here.",
+    "A native graceful-channel shutdown correction would require a supported, source-verified mechanism and real EOF proof. The bounded retained source only proves CloseSession/stream-task joining and thread unload notifications, not a public socket FIN hook or installed-binary equivalence. Moving the marker, extra sleep, interpreting abort as EOF, or unchanged full requalification is unsupported."
+  ],
+  "input_bindings": [
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\sequence-result.json",
+      "bytes": 19581,
+      "sha256": "e343431219c058bce9e7103dae4176a35ebf9ef680e0fd42fb4d002fe623fb90"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\stage-result.json",
+      "bytes": 17566,
+      "sha256": "a18bc1732f403359609e040da6a42ee9bcea66b68f5d0006d7ca7f83e957ba3d"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\client\\result.json",
+      "bytes": 12764,
+      "sha256": "ddf1b49dcc806950a3f45d860da81c2c0d96eff4a60ddd77143929ec31307771"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\client\\native-quiescence.json",
+      "bytes": 10837,
+      "sha256": "01602ecaaf8c52995bfd767ce335e9666d05e0729482300f574e5b0b8c9ac6e6"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\client\\events.jsonl",
+      "bytes": 630501,
+      "sha256": "80473cb4adf0c4af874af458d1f111cc3958d82d2e8fa0da9c84d66b7fc6fe5e"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\client\\launch.json",
+      "bytes": 3365,
+      "sha256": "61bd4b49c2e6e32e78855a6bbd871b361d6f1ea702ed785739927570dab9a229"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\codehost-owner-bridge-v3.json",
+      "bytes": 183493,
+      "sha256": "097e01f8e35fd3f1df27c8affabfac28e4966e0ccf34ba314f31ca0c8dcd11ce"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\codehost-transport-v3.jsonl",
+      "bytes": 111449,
+      "sha256": "4dd956617795ebc16842e15632aed8eaafc02ec1f29a856d3f532ec7e8df2069"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\codehost-owner-stderr-v3.txt",
+      "bytes": 82774,
+      "sha256": "367df466652b41983db8391a1f125019e66862a8a5f2fc38788f9907631ef626"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\codehost-native-owner-v3.json",
+      "bytes": 732,
+      "sha256": "ae0c5a22e4021925606091a916a895648433097a75307bb47269bbb7586b5d5f"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\cleanup.json",
+      "bytes": 40,
+      "sha256": "cdd05fb59455c976ade07316279fb7f15473db8b4ab22f541320b97ae10847de"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\authority-revocation.json",
+      "bytes": 382,
+      "sha256": "f2f08745e5e25f53ea07e3a3bbe2aaaf0c1fa9c850fa23ada1abe06a40c4aff9"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\runtime-before-close.json",
+      "bytes": 307583,
+      "sha256": "9f70bddfe62528cf8cd6126fa3471e79e39578c038c14eea4af43ed7f4a13247"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\runtime-after-close.json",
+      "bytes": 307583,
+      "sha256": "9f70bddfe62528cf8cd6126fa3471e79e39578c038c14eea4af43ed7f4a13247"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-026-manifest.json",
+      "bytes": 50416,
+      "sha256": "0d6bfb4a1180f53dba8e784cdd4ef68d7d1fedef4ca7d74015b424a66380f142"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-090\\snapshot.json",
+      "bytes": 241398,
+      "sha256": "a72d7068856370b531a0b5e704ca6e8bf1f8091d5798a5c08fbd0f8c0cd476b9"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-090\\code.zip",
+      "bytes": 3602413,
+      "sha256": "291dc16d67f8bba521110503e927b598f4c1439759f21b9018d97c510fa26ecb"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\executor-1-retirement.json",
+      "bytes": 2652,
+      "sha256": "3248f99db8d15274ce50ccd4fb50a981b32586c5b336d7d28e81fd25792add5c"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\executor-2-retirement.json",
+      "bytes": 2653,
+      "sha256": "e8330842eb347519e853c30cb1f415a33e57b7f7ae99b6fbe7dac0ab3e7badb5"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-026\\orchestrator\\interrupt\\codehost-owner-retirement-v3.json",
+      "bytes": 2689,
+      "sha256": "bf176b02d18e0cca0548ea4ac7dd7c76f509b865068727d7325530ccdca2ceff"
+    }
+  ],
+  "preservation": {
+    "original_input_files_unchanged": true,
+    "frozen_source_files_unchanged": true,
+    "no_assessor_or_test_or_native_or_model_or_queue_launch": true
+  }
+}

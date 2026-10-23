@@ -1,0 +1,880 @@
+{
+  "version": "task-architecture-explorer-1.0",
+  "scope": "Source-bound explanation of the Batch 01 r4 implementation. Original r1 design attachments are proposals. These descriptions establish executable mechanism, not performance or isolated LLM benefit.",
+  "source_verification": {
+    "date": "2026-09-26",
+    "release": "batch01-eval-r4",
+    "bundle": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/releases/batch01-eval-r4/code-bundle.zip",
+    "method": "Read-only byte comparison of the six listed Runtime 004 modules with entries inside the frozen r4 ZIP; every comparison matched.",
+    "matching_files": [
+      "candidates.py",
+      "experiment.py",
+      "cell.py",
+      "sandbox.py",
+      "candidate_worker.py",
+      "actuation.py"
+    ],
+    "canonical_revisions": [
+      "batch01-eval-r4-baseline-frozen",
+      "batch01-eval-r4-A1-frozen",
+      "batch01-eval-r4-A2-frozen",
+      "batch01-eval-r4-A3-frozen"
+    ],
+    "administration": "Later r4-admin-001 revisions preserve the original physical/policy/model configuration and add separately adopted execution administration. They do not add new architecture mechanisms."
+  },
+  "shared": {
+    "model": {
+      "name": "Qwen3-14B Q4_K_M",
+      "runtime": "Local llama.cpp b9000; thinking disabled; temperature 0; one outstanding request per candidate",
+      "context_tokens": 16384,
+      "max_output_tokens": 1024,
+      "request_timeout_seconds": 30,
+      "overflow": "Reject before generation; no silent truncation or automatic summarization",
+      "placement": "A local gateway outside the isolated candidate process runs the model. Sensing and execution workers are conventional infrastructure, not additional LLM agents.",
+      "source": "revisions-r4"
+    },
+    "input": {
+      "candidate_packet": "Current versioned order, image-derived tagged-object detections with ages, public station state, inspection response, gripper state, joint telemetry, bounded command feedback and public process contract.",
+      "llm_context": "Two-message request: fixed system instructions plus JSON containing current order, fresh visible detections, station/gripper state, fixture belief, public process contract, auxiliary detections, retained part records, computed progress, errors/failure counts, up to eight recent resolutions and public human answers. A1/A2 also receive an unranked admissible-action menu; A3 receives its scheduled transport.",
+      "distinction": "The policy process can receive joint telemetry and inspection responses, but _context does not copy every packet field into the model prompt. Inspection evidence is represented through retained part records. Raw camera images are not fed to this text model.",
+      "permissions": "No hidden poses, evaluator truth, protected seeds, future disturbances, operator map, repository history or previous evaluation results are candidate memory.",
+      "source_ids": [
+        "public-packet",
+        "context"
+      ]
+    },
+    "control_loop": {
+      "steps": [
+        "Receive public packet",
+        "Ingest observed evidence and reconcile pending action",
+        "Checkpoint candidate state",
+        "Choose or interpret a task decision",
+        "Validate against current public conditions and order",
+        "Checkpoint action intent before dispatch",
+        "Gateway admission and bounded shared execution",
+        "Fresh feedback/observation and candidate reconciliation"
+      ],
+      "physics": "MuJoCo advances at a 0.002 s simulation step. The workcell and machine timers keep advancing during inference, geometry planning and candidate restart.",
+      "decision_timing": "Approximately 10 Hz decision opportunities, delayed while a model request or a macro action is active. There is no model invocation per servo tick.",
+      "motion": "Transport uses a fixed Cartesian waypoint sequence: lift/approach, descend, close jaws, lift, transit, lower, release, retreat and return to the clear-view posture. IK produces joint targets; smooth quintic interpolation drives the shared actuator controls. Object movement follows contact dynamics.",
+      "completion": "A trajectory ending is command status. The candidate requires public evidence to resolve placement/process/inspection. The separate protected evaluator determines physical success and final task completion.",
+      "source_ids": [
+        "step",
+        "intent",
+        "reconcile",
+        "planner",
+        "servo",
+        "supervisor"
+      ],
+      "dispatch_branches": "Motion operations use shared planners and actuators; cycle and inspect use public device services. Ordinary observe/wait return status, clear-view observe invokes arm retreat, help uses the public assistance service, and done triggers a protected completion check."
+    },
+    "operations": [
+      "transport",
+      "recover_held",
+      "setup",
+      "cycle",
+      "inspect",
+      "observe",
+      "wait",
+      "done",
+      "help"
+    ],
+    "operation_meaning": "Transport moves a visible part; cycle processes an already loaded eligible part; inspect measures a part already on the inspection pad; setup physically exchanges the fixture insert. Movement does not perform processing or inspection implicitly.",
+    "filesystem": {
+      "title": "One shared checkpoint mechanism; different decision logic",
+      "paths": [
+        {
+          "path": "/code/candidates.py",
+          "visibility": "candidate",
+          "actor": "Host copies frozen policy code; sandbox mounts /code read-only",
+          "purpose": "All four policies use the same Candidate implementation, selected by kind"
+        },
+        {
+          "path": "/work/candidate-state.json",
+          "visibility": "candidate",
+          "actor": "Candidate Python runtime reads at construction and writes on state changes",
+          "purpose": "Checksummed state envelope; this is the actual private continuity file"
+        },
+        {
+          "path": "/work/.candidate-state-<uuid>.tmp",
+          "visibility": "candidate",
+          "actor": "Candidate Python runtime creates exclusively, writes, flushes and fsyncs; os.replace installs candidate-state.json",
+          "purpose": "Atomic file replacement; no parent-directory fsync or transaction spanning disk and actuation is assumed"
+        },
+        {
+          "path": "<episode evidence directory>/candidate_state/",
+          "visibility": "host mapping into candidate",
+          "actor": "Experiment supervisor chooses path; persistent sandbox binds it as /work",
+          "purpose": "Private checkpoint survives a runtime restart in the persistent condition"
+        },
+        {
+          "path": "<host temp>/robot-candidate-<generated>/ephemeral-episode/",
+          "visibility": "host mapping into candidate",
+          "actor": "No-persistence sandbox creates fresh work directory and binds it as /work",
+          "purpose": "Private state exists during the current incarnation but is not reloaded by the next worker"
+        },
+        {
+          "path": "<episode evidence directory>/",
+          "visibility": "protected host only, except the specific private /work bind",
+          "actor": "Supervisor/evaluator records events, model input/output, context read/write copies, motion and camera artifacts",
+          "purpose": "Evidence for operators; never replayed as replacement candidate memory"
+        },
+        {
+          "path": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/",
+          "visibility": "operator only",
+          "actor": "Project tooling and humans",
+          "purpose": "Architecture/run/result provenance; never mounted inside a scored candidate"
+        }
+      ],
+      "read_write_flow": [
+        "Worker constructs Candidate(kind, Path('/work'), persistent). Candidate loads candidate-state.json if present and validates checksum, version and kind.",
+        "Each public packet updates Python state; reconciliation distinguishes intent, feedback and fresh observed outcome.",
+        "The runtime serializes a changed state to a temporary file, flushes/fsyncs it, atomically replaces candidate-state.json and emits a context_write evidence event.",
+        "Before a model request, host policy code assembles selected state fields into JSON. The model receives that JSON; it has no file-read, file-write, shell or general tool loop.",
+        "Model JSON is parsed and validated by policy code. A1/A3 queue a proposal in process memory; A2 commits its program into checkpoint state.",
+        "Before action dispatch, the runtime checkpoints the intent and pending action. Feedback plus fresh public observations later update the checkpoint.",
+        "Restart creates a new worker and incarnation. Persistent /work reloads the checkpoint. No-persistence /work is newly created; the supervisor also resets its assigned candidate_state directory. Current public order/device observations remain available."
+      ],
+      "state_contents": [
+        "order and public episode ID",
+        "retained per-part family, last-seen, cycle, inspection and eligibility evidence",
+        "pending action with request/incarnation IDs and feedback",
+        "fixture belief",
+        "errors and bounded failure counters",
+        "up to eight recent resolutions",
+        "recovery and visibility-reacquisition state",
+        "A2 program and completed-node list"
+      ],
+      "not_implemented": [
+        "Candidate-readable append-only event-journal replay",
+        "Semantic retrieval or a reusable procedure library",
+        "LLM-controlled filesystem tools",
+        "Online model-weight training",
+        "An atomic commit spanning file state and physical actuation"
+      ],
+      "source_ids": [
+        "checkpoint",
+        "context",
+        "intent",
+        "sandbox",
+        "worker",
+        "restart",
+        "work-mapping",
+        "episode-path"
+      ]
+    },
+    "design_vs_actual": [
+      {
+        "proposed": "Official Qwen3-4B target in r1 documents",
+        "actual": "Frozen r4 uses official Qwen3-14B Q4_K_M with thinking disabled"
+      },
+      {
+        "proposed": "Architecture-specific journals, projections, objective/procedure stores and retrieval",
+        "actual": "All candidates use the same candidate-state.json checkpoint and explicit prompt assembly"
+      },
+      {
+        "proposed": "Broad perception and decision narratives",
+        "actual": "Image-derived colored-tag RGB/depth adapter and public device I/O supply structured text; no VLM sees raw frames"
+      },
+      {
+        "proposed": "Potential overlap of a next model decision and an active macro motion",
+        "actual": "Current supervisor waits for macro-action availability and no outstanding model request before dispatching the next policy step; physics itself remains live"
+      }
+    ],
+    "limitations": [
+      "This is a simplified simulated Panda workcell, with colored tags and fixed services; it is not real-robot or unrestricted visual manipulation evidence.",
+      "A full-system comparison changes where the LLM acts and how often it is called. It does not isolate language reasoning from scheduling, prompts or runtime behavior.",
+      "Source inspection demonstrates what code does. Performance, recovery qualification and causal persistence benefit require the corresponding valid run evidence.",
+      "Recorded context bytes, bytes supplied to a gateway, successful model ingestion and meaningful model use are different claims.",
+      "No-persistence removes private history at runtime restart, not every decision; it is not a policy with no within-incarnation memory."
+    ],
+    "sources": [
+      {
+        "id": "revisions-r4",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Architecture Map/revisions.jsonl",
+        "line": 43,
+        "end_line": 50,
+        "supports": "Frozen r4 identities and model settings; later administrative revisions preserve policy/physical/model configuration"
+      },
+      {
+        "id": "checkpoint",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+        "line": 106,
+        "end_line": 170,
+        "supports": "Checkpoint path, load validation, state defaults and fsync/atomic replace"
+      },
+      {
+        "id": "context",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+        "line": 815,
+        "end_line": 919,
+        "supports": "Actual model context, operation instructions and per-candidate schema"
+      },
+      {
+        "id": "intent",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+        "line": 1013,
+        "end_line": 1062,
+        "supports": "Request metadata, pending action, intent and checkpoint before dispatch"
+      },
+      {
+        "id": "step",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+        "line": 1064,
+        "end_line": 1144,
+        "supports": "Common deterministic recovery, pending-action wait, proposal revalidation and policy selection"
+      },
+      {
+        "id": "reconcile",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+        "line": 369,
+        "end_line": 440,
+        "supports": "Fresh observed placement, correlated cycle, inspection and unresolved outcomes"
+      },
+      {
+        "id": "public-packet",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+        "line": 298,
+        "end_line": 307,
+        "supports": "Public observation fields and bounded 60-second feedback"
+      },
+      {
+        "id": "planner",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+        "line": 342,
+        "end_line": 427,
+        "supports": "Waypoint/IK transport, default and A3 parameters, TCP-only zone checks"
+      },
+      {
+        "id": "servo",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+        "line": 685,
+        "end_line": 705,
+        "supports": "Quintic joint interpolation, gripper controls, trajectory status and physics step"
+      },
+      {
+        "id": "supervisor",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/experiment.py",
+        "line": 895,
+        "end_line": 972,
+        "supports": "Model gateway, physical dispatch, feedback and policy decision opportunities"
+      },
+      {
+        "id": "sandbox",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/sandbox.py",
+        "line": 151,
+        "end_line": 159,
+        "supports": "Read-only /code, writable /work and process/network isolation"
+      },
+      {
+        "id": "work-mapping",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/sandbox.py",
+        "line": 228,
+        "end_line": 242,
+        "supports": "Persistent versus ephemeral host directory mapping"
+      },
+      {
+        "id": "worker",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidate_worker.py",
+        "line": 176,
+        "end_line": 194,
+        "supports": "Candidate construction with /work and typed JSON IPC"
+      },
+      {
+        "id": "restart",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/experiment.py",
+        "line": 452,
+        "end_line": 469,
+        "supports": "Runtime restart with live physics and private-state reset condition"
+      },
+      {
+        "id": "episode-path",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/experiment.py",
+        "line": 511,
+        "end_line": 513,
+        "supports": "Assigned episode candidate_state path"
+      },
+      {
+        "id": "dispatch",
+        "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+        "line": 510,
+        "end_line": 598,
+        "supports": "Macro motion, setup, cycle, inspect, administrative operation dispatch and two-second local authority renewal"
+      }
+    ]
+  },
+  "architectures": [
+    {
+      "id": "baseline",
+      "map_id": "B01-C0",
+      "name": "Durable Conventional Sequencer",
+      "role": "Conventional comparator",
+      "mechanism": "Explicit public-evidence rules select every job operation; the common planner and actuator stack carry it out. No LLM is called.",
+      "llm_input": "None",
+      "llm_output": "None",
+      "decision": "Repair amended tray placements, inspect or route staged parts, finish/unload fixture work, then select matching raw stock; wait or request help when public evidence does not support progress.",
+      "robot_stack": {
+        "nodes": [
+          {
+            "id": "observe",
+            "label": "Order + public sensing",
+            "kind": "host",
+            "detail": "Rendered RGB/depth tag adapter, machine I/O and robot telemetry"
+          },
+          {
+            "id": "state",
+            "label": "Reconcile retained state",
+            "kind": "host",
+            "detail": "Read checkpoint and current public evidence; pending outcomes remain explicit"
+          },
+          {
+            "id": "scheduler",
+            "label": "Fixed task sequencer",
+            "kind": "host",
+            "detail": "Rule-based operation and recovery selection"
+          },
+          {
+            "id": "admission",
+            "label": "Validate + save intent",
+            "kind": "host",
+            "detail": "Current order/preconditions; checkpoint before dispatch"
+          },
+          {
+            "id": "planner",
+            "label": "Shared waypoint planner + IK",
+            "kind": "control",
+            "detail": "Default transport clearance 0.16 m and speed scale 0.8"
+          },
+          {
+            "id": "control",
+            "label": "Joint control + gripper",
+            "kind": "control",
+            "detail": "Bounded execution, smooth joint interpolation and interlocks"
+          },
+          {
+            "id": "services",
+            "label": "Public device / status services",
+            "kind": "host",
+            "detail": "Cycle, inspect, observe/wait, assistance and completion-check requests; physical movement is a separate branch"
+          },
+          {
+            "id": "world",
+            "label": "Panda + MuJoCo workcell",
+            "kind": "control",
+            "detail": "Contact dynamics and machine timers; fresh evidence closes the loop"
+          }
+        ],
+        "edges": [
+          {
+            "from": "observe",
+            "to": "state"
+          },
+          {
+            "from": "state",
+            "to": "scheduler"
+          },
+          {
+            "from": "scheduler",
+            "to": "admission"
+          },
+          {
+            "from": "admission",
+            "to": "planner",
+            "label": "motion branch"
+          },
+          {
+            "from": "planner",
+            "to": "control"
+          },
+          {
+            "from": "control",
+            "to": "world"
+          },
+          {
+            "from": "world",
+            "to": "observe",
+            "label": "feedback"
+          },
+          {
+            "from": "admission",
+            "to": "services",
+            "label": "device / status branch"
+          },
+          {
+            "from": "services",
+            "to": "observe",
+            "label": "public feedback"
+          }
+        ]
+      },
+      "filesystem": {
+        "mechanism": "Shared checkpoint",
+        "path": "/work/candidate-state.json",
+        "reader": "Candidate Python runtime",
+        "writer": "Candidate Python runtime",
+        "model_access": "No model",
+        "extra_state": "Conventional sequencer uses common retained evidence and pending-action fields",
+        "conditions": "The registered conventional comparator keeps durable memory enabled"
+      },
+      "design_difference": "The traditional reference shown here is this implemented comparator, not a claim that all robotics stacks use the same rules or motion library.",
+      "limitations": [
+        "Fixed rules and calibrated macro motions bound the available behavior",
+        "Durable state remains fallible and must be reconciled with current observations"
+      ],
+      "sources": [
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 673,
+          "end_line": 759
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 1136,
+          "end_line": 1144
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+          "line": 350,
+          "end_line": 355
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "map_id": "B01-A1",
+      "name": "Durable Task Dispatcher",
+      "role": "LLM at the task-selection boundary",
+      "mechanism": "For normal task decisions, the LLM chooses one typed action from the shared unranked menu of currently admissible public actions.",
+      "llm_input": "Common JSON context plus currently_admissible_actions. The menu contains legal alternatives and multiple stock IDs; it does not expose the conventional scheduler's preferred next step.",
+      "llm_output": "One JSON action object. It is parsed, queued, checked against the current order and public preconditions, checkpointed and dispatched.",
+      "robot_stack": {
+        "nodes": [
+          {
+            "id": "observe",
+            "label": "Order + public sensing",
+            "kind": "host",
+            "detail": "Same adapter and public devices as the comparator"
+          },
+          {
+            "id": "state",
+            "label": "Reconcile + admissible menu",
+            "kind": "host",
+            "detail": "Retained evidence and current feasibility; no ranked next-action answer"
+          },
+          {
+            "id": "llm",
+            "label": "LLM: choose one task",
+            "kind": "llm",
+            "detail": "Select a single typed action"
+          },
+          {
+            "id": "admission",
+            "label": "Revalidate + save intent",
+            "kind": "host",
+            "detail": "Reject stale order or unsupported action; checkpoint before dispatch"
+          },
+          {
+            "id": "planner",
+            "label": "Shared waypoint planner + IK",
+            "kind": "control",
+            "detail": "The LLM does not emit trajectories or torques"
+          },
+          {
+            "id": "control",
+            "label": "Joint control + gripper",
+            "kind": "control",
+            "detail": "Same bounded actuator execution and interlocks"
+          },
+          {
+            "id": "services",
+            "label": "Public device / status services",
+            "kind": "host",
+            "detail": "Cycle, inspect, observe/wait, assistance and completion-check requests; physical movement is a separate branch"
+          },
+          {
+            "id": "world",
+            "label": "Panda + MuJoCo workcell",
+            "kind": "control",
+            "detail": "Contact dynamics and live machine time"
+          }
+        ],
+        "edges": [
+          {
+            "from": "observe",
+            "to": "state"
+          },
+          {
+            "from": "state",
+            "to": "llm"
+          },
+          {
+            "from": "llm",
+            "to": "admission"
+          },
+          {
+            "from": "state",
+            "to": "admission",
+            "label": "common recovery/observe/help bypass"
+          },
+          {
+            "from": "admission",
+            "to": "planner",
+            "label": "motion branch"
+          },
+          {
+            "from": "planner",
+            "to": "control"
+          },
+          {
+            "from": "control",
+            "to": "world"
+          },
+          {
+            "from": "world",
+            "to": "observe",
+            "label": "feedback"
+          },
+          {
+            "from": "admission",
+            "to": "services",
+            "label": "device / status branch"
+          },
+          {
+            "from": "services",
+            "to": "observe",
+            "label": "public feedback"
+          }
+        ]
+      },
+      "filesystem": {
+        "mechanism": "Shared checkpoint",
+        "path": "/work/candidate-state.json",
+        "reader": "Candidate Python runtime",
+        "writer": "Candidate Python runtime",
+        "model_access": "Receives selected JSON fields; no direct filesystem access",
+        "extra_state": "Retained evidence, pending actions, errors and recent resolutions; a just-returned A1 proposal is transient until admitted intent is checkpointed",
+        "conditions": "Persistent reloads /work; no-persistence starts a fresh /work on restart"
+      },
+      "design_difference": "The r1 journal/projection/procedure-notes design is not the implemented storage mechanism. The current LLM is not the author of every issued action: shared restart recovery, observation and bounded-failure help can bypass it.",
+      "limitations": [
+        "Task-ordering quality remains dependent on model choices among legal but sometimes unproductive alternatives",
+        "Shared deterministic recovery means full-system behavior cannot all be credited to the LLM"
+      ],
+      "sources": [
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 866,
+          "end_line": 885
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 964,
+          "end_line": 970
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 1064,
+          "end_line": 1128
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "map_id": "B01-A2",
+      "name": "Guarded Procedure Composer",
+      "role": "LLM authors a short guarded action list",
+      "mechanism": "The LLM emits 1–8 action nodes with up to five guards each. On a decision, a deterministic interpreter scans incomplete nodes in order and executes the first whose guards are true and whose action is currently eligible.",
+      "llm_input": "Common JSON context plus the public admissible-action menu and allowed guard/action schema.",
+      "llm_output": "A steps array of guards and actions. The runtime validates it and checkpoints a program ID, order version, steps, completed-node list and source context sequence.",
+      "robot_stack": {
+        "nodes": [
+          {
+            "id": "observe",
+            "label": "Order + public sensing",
+            "kind": "host",
+            "detail": "Same public input permissions"
+          },
+          {
+            "id": "state",
+            "label": "Reconcile retained state",
+            "kind": "host",
+            "detail": "Common evidence plus persisted program progress"
+          },
+          {
+            "id": "llm",
+            "label": "LLM: compose guarded steps",
+            "kind": "llm",
+            "detail": "1–8 nodes; bounded generation or regeneration"
+          },
+          {
+            "id": "interpreter",
+            "label": "First-eligible interpreter",
+            "kind": "host",
+            "detail": "Scan incomplete nodes; test guards against current public state"
+          },
+          {
+            "id": "admission",
+            "label": "Validate + save intent",
+            "kind": "host",
+            "detail": "Common eligibility and action checkpoint"
+          },
+          {
+            "id": "planner",
+            "label": "Shared planner + control",
+            "kind": "control",
+            "detail": "Waypoint IK, joint interpolation, gripper and interlocks"
+          },
+          {
+            "id": "services",
+            "label": "Public device / status services",
+            "kind": "host",
+            "detail": "Cycle, inspect, observe/wait, assistance and completion-check requests; physical movement is a separate branch"
+          },
+          {
+            "id": "world",
+            "label": "Panda + MuJoCo workcell",
+            "kind": "control",
+            "detail": "Observed outcomes update program progress"
+          }
+        ],
+        "edges": [
+          {
+            "from": "observe",
+            "to": "state"
+          },
+          {
+            "from": "state",
+            "to": "llm",
+            "label": "no usable program"
+          },
+          {
+            "from": "llm",
+            "to": "interpreter"
+          },
+          {
+            "from": "state",
+            "to": "interpreter",
+            "label": "existing checkpointed program"
+          },
+          {
+            "from": "interpreter",
+            "to": "admission"
+          },
+          {
+            "from": "state",
+            "to": "admission",
+            "label": "common recovery/observe/help"
+          },
+          {
+            "from": "admission",
+            "to": "planner",
+            "label": "motion branch"
+          },
+          {
+            "from": "planner",
+            "to": "world"
+          },
+          {
+            "from": "world",
+            "to": "observe",
+            "label": "feedback"
+          },
+          {
+            "from": "admission",
+            "to": "services",
+            "label": "device / status branch"
+          },
+          {
+            "from": "services",
+            "to": "observe",
+            "label": "public feedback"
+          }
+        ]
+      },
+      "filesystem": {
+        "mechanism": "Shared checkpoint plus program fields",
+        "path": "/work/candidate-state.json",
+        "reader": "Candidate runtime and deterministic interpreter",
+        "writer": "Candidate runtime after model validation and step outcome reconciliation",
+        "model_access": "Selected state fields in JSON; no file tools or procedure search",
+        "extra_state": "program.id, order_version, steps, completed, context_sequence",
+        "conditions": "Persistent restart reloads the program; no-persistence loses it with private /work"
+      },
+      "design_difference": "Current nodes are a finite action list, not the proposed general reactive language. There are no variables, loops, imports, distinct branch/retry/record node types or reusable procedure library.",
+      "limitations": [
+        "Completed nodes do not repeat",
+        "Two unsuccessful guard scans issue observe actions; a third unsuccessful scan suspends the program and requests bounded regeneration",
+        "Order changes invalidate the program",
+        "Misplaced guards can prevent the action that would establish their own prerequisite"
+      ],
+      "sources": [
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 785,
+          "end_line": 813
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 886,
+          "end_line": 904
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 971,
+          "end_line": 987
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 257,
+          "end_line": 262
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "map_id": "B01-A3",
+      "name": "Grounded Objective Composer",
+      "role": "LLM chooses bounded transport parameters",
+      "mechanism": "The conventional sequencer selects every job operation. For a selected transport, the LLM supplies clearance, speed scale, vertical approach and named avoidance zones. Other operations proceed without an A3 model call.",
+      "llm_input": "Common JSON context plus the conventional scheduler's scheduled_action.",
+      "llm_output": "clearance 0.08–0.25 m, speed_scale 0.3–1.0, approach='vertical', avoid_zones. Source and destination zones cannot be forbidden.",
+      "robot_stack": {
+        "nodes": [
+          {
+            "id": "observe",
+            "label": "Order + public sensing",
+            "kind": "host",
+            "detail": "Same public input permissions"
+          },
+          {
+            "id": "scheduler",
+            "label": "Reconcile + fixed sequencer",
+            "kind": "host",
+            "detail": "Conventional rules choose the job operation"
+          },
+          {
+            "id": "llm",
+            "label": "LLM: transport parameters",
+            "kind": "llm",
+            "detail": "Clearance, speed and named avoidance zones; vertical approach fixed"
+          },
+          {
+            "id": "admission",
+            "label": "Validate + save intent",
+            "kind": "host",
+            "detail": "Check numeric bounds, zones, order and current eligibility"
+          },
+          {
+            "id": "planner",
+            "label": "Waypoint planner + IK",
+            "kind": "control",
+            "detail": "Uses parameters in a fixed motion template; sampled TCP zone checks"
+          },
+          {
+            "id": "control",
+            "label": "Joint control + gripper",
+            "kind": "control",
+            "detail": "Same actuator execution and interlocks"
+          },
+          {
+            "id": "services",
+            "label": "Public device / status services",
+            "kind": "host",
+            "detail": "Cycle, inspect, observe/wait, assistance and completion-check requests; physical movement is a separate branch"
+          },
+          {
+            "id": "world",
+            "label": "Panda + MuJoCo workcell",
+            "kind": "control",
+            "detail": "Contact dynamics and live machine time"
+          }
+        ],
+        "edges": [
+          {
+            "from": "observe",
+            "to": "scheduler"
+          },
+          {
+            "from": "scheduler",
+            "to": "llm",
+            "label": "transport only"
+          },
+          {
+            "from": "llm",
+            "to": "admission"
+          },
+          {
+            "from": "scheduler",
+            "to": "admission",
+            "label": "other operations + common recovery"
+          },
+          {
+            "from": "admission",
+            "to": "planner",
+            "label": "motion branch"
+          },
+          {
+            "from": "planner",
+            "to": "control"
+          },
+          {
+            "from": "control",
+            "to": "world"
+          },
+          {
+            "from": "world",
+            "to": "observe",
+            "label": "feedback"
+          },
+          {
+            "from": "admission",
+            "to": "services",
+            "label": "device / status branch"
+          },
+          {
+            "from": "services",
+            "to": "observe",
+            "label": "public feedback"
+          }
+        ]
+      },
+      "filesystem": {
+        "mechanism": "Shared checkpoint",
+        "path": "/work/candidate-state.json",
+        "reader": "Candidate Python runtime and conventional sequencer",
+        "writer": "Candidate Python runtime",
+        "model_access": "Selected JSON context; no direct file access",
+        "extra_state": "The pending admitted transport includes its chosen objective; a returned objective before admission is transient process state",
+        "conditions": "Persistent reloads /work; no-persistence starts a fresh /work on restart"
+      },
+      "design_difference": "Despite the inherited architecture name, this implementation does not repeatedly optimize a language-defined cost against new observations. It uses a fixed Cartesian waypoint/IK transport template, with bounded model-selected parameters.",
+      "limitations": [
+        "Named-zone checks sample TCP xy positions at 21 points per joint segment, including the return leg; they do not certify whole-arm or payload clearance",
+        "The model cannot change stock order, task order, torques or the exact trajectory",
+        "A rejected avoidance constraint does not trigger a general obstacle-routing optimizer"
+      ],
+      "sources": [
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 906,
+          "end_line": 912
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 988,
+          "end_line": 1003
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/candidates.py",
+          "line": 1136,
+          "end_line": 1144
+        },
+        {
+          "file": "Long-Horizon Adaptive Robotics Expirement/Runtime 004/cell.py",
+          "line": 368,
+          "end_line": 427
+        }
+      ]
+    }
+  ]
+}

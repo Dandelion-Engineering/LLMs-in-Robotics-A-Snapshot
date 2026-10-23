@@ -1,0 +1,9 @@
+# Planned continuation of shared calibration
+
+These two bounded plans are development work, not held-out evaluation. They are declared while development batch 001 is still running and must not launch until the shared insert exchange and prerequisite probes are assessed. This file does not assert that the proposed changes work or that these runs have started.
+
+[Plan 002](development-plan-002.json) repeats a common three-part nominal pilot for all four entrants, tests the conventional controller at six and ten parts, and exercises two conventional restart boundaries. [Plan 003](development-plan-003.json) covers the other two conventional boundaries plus matched persistent/no-persistence pilots for A1 at six parts with mixed disturbances, A2 at ten parts with mixed disturbances, and A3 at three parts with a held-transfer restart. These are functional development controls, not effect estimates or substitutes for the 264-run release.
+
+The declared development seeds map to cuts as follows: 0 selects the first transport after release; 2 selects the first closed-grip transfer; 3 selects the second transport after acceptance; 6 selects the second transport before outcome. Actual phase, fallback, physical admissibility and recovery remain measured separately. Each run retains the ordinary horizon cap and policy/noise seed 11. Every actual launch requires its own immutable pre-run snapshot; execution/infrastructure failures stop the batch, and ordinary physical failures remain recorded. Runtime stays unchanged within each submitted batch.
+
+Source changes justified by these outcomes must be recorded before a subsequent plan or release. No held-out seed generation, candidate selection from scored outcomes, retry authorization or readiness declaration occurs here. The equal initial opportunity ceilings still apply; these plans do not extend them.

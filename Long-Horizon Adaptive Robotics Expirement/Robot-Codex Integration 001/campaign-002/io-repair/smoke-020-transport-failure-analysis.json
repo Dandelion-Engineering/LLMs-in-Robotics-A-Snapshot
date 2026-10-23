@@ -1,0 +1,1142 @@
+{
+  "schema": "campaign002-smoke020-transport-diagnosis-1",
+  "run_id": "RCI001-C02-smoke-020",
+  "queue_job_id": "20260928T221108244078Z-655651d6",
+  "framework_revision": "RCI001-C02-dev-066",
+  "created_utc": "2026-09-28T22:20:38.246265+00:00",
+  "scope": "Failed-queue infrastructure diagnostics only; no task/timing assessment, historical reinterpretation, source edit, launch, retry or settlement.",
+  "official_authentication": {
+    "fresh_status_before_output_reads": true,
+    "command": "project Python -X utf8 -B ../tools/compute_queue/compute_queue.py status 20260928T221108244078Z-655651d6",
+    "state": "failed",
+    "exit_status": 1,
+    "exit_status_type": "integer",
+    "started_at": "2026-09-28T22:11:08.501882Z",
+    "ended_at": "2026-09-28T22:15:53.893415Z"
+  },
+  "disposition": {
+    "phase": "interrupt",
+    "assessed": false,
+    "task_outcome": "unknown",
+    "model_started": true,
+    "injected_interruption": true,
+    "accepted_interruption_request_id": "smoke-open-001",
+    "interruption_request_status": "accepted",
+    "old_token_denied": true,
+    "resume_attempted": false,
+    "stage_success": false,
+    "cleanup_clean": true,
+    "durable_retention_verified": true,
+    "stage_error": "Codehost v3 failed: channel_ValueError; retirement_frontier_invalid; frame_read_ValueError; drain_invalid; owner_drain_ValueError; namespace_wrapper_nonzero; namespace_receipt_ValueError",
+    "sequence_error": "Interruption stage failed its gate; restart not attempted",
+    "host_exit_code": 0,
+    "client_error": "Qualified execution transport failed; stopping invocation"
+  },
+  "earliest_transport_failure": {
+    "sequence": 201,
+    "wall_unix_s": 1790633751.7716858,
+    "monotonic_s": 491231.234,
+    "retained_reason": "channel_ValueError",
+    "source_inferred_guard": "reset_before_owner_finish",
+    "guard_text_is_not_retained_exception_message": true,
+    "channel_id": 2,
+    "active_cancel": {
+      "direction": "upload",
+      "stream_id": 15,
+      "error_code": 8
+    },
+    "proof": "Parent original frontier sequence204 has error=null, reset_records containing active CANCEL15, retiring=false, last17/active17. feed_h2 rejects any accepted active reset while finish_frontier is None. Namespace original frontier still has active15/last15/no resets.",
+    "read_bytes_not_forwarded": 60,
+    "first_rejection_metadata_present": false,
+    "raw_rejected_read_and_exact_hash_retained": false
+  },
+  "causal_interpretation": [
+    "The intended watcher retired authority after accepted smoke-open-001 and set the shared abort_event. The client receive error uses that same event for intentional interruption and transport abort; its wording alone does not establish a pre-cleanup transport failure.",
+    "Cleanup starts1790633751.769682; turn/interrupt request is sent.770691; earliest channel failure is.7716858. Finishing marker follows.780684. Equal/coarse monotonic timestamps are not alone a strict ordering proof.",
+    "On channel2 the source parsed an active CANCEL15 and opened upload stream17 before forwarding the whole read. Namespace retained last15/active15 and exactly60 fewer upload bytes. Stream17/RPC content, exact read segmentation and why native opened it are not identified.",
+    "Later incoming10-byte DATA payload at ledger215, SHA26c15ec938b7a6018c80a25ae1094b5a57f3f59f363b5e27fdd2034cddab9c3e, triggers headers-on-unavailable-stream at216. The specific header stream/flags are unretained; do not treat this later parser error as the initiating cause.",
+    "Channel1 retained two normal-closed terminal controls on IDs5/29 with matching proof at both endpoints and exact upload/download meters. Its active CANCEL3/1 arrived after the original retirement frontier. This does not qualify the failed overall lifecycle."
+  ],
+  "channels": [
+    {
+      "channel_id": 1,
+      "meters": {
+        "client_read": {
+          "bytes": 273993,
+          "sha256": "62945565a13fa5760fddc96b800aa1150614248778a1e5fddafa87287d63d3a8"
+        },
+        "upload": {
+          "bytes": 273993,
+          "sha256": "62945565a13fa5760fddc96b800aa1150614248778a1e5fddafa87287d63d3a8"
+        },
+        "download": {
+          "bytes": 215147,
+          "sha256": "4bb9403667a77caa1b11187e247663d97bc0787f276a2c5daa189403d80e6e63"
+        },
+        "client_written": {
+          "bytes": 215147,
+          "sha256": "4bb9403667a77caa1b11187e247663d97bc0787f276a2c5daa189403d80e6e63"
+        }
+      },
+      "parent_original_frontier": {
+        "active_stream_ids": [
+          1,
+          3
+        ],
+        "bytes": {
+          "download": 215147,
+          "upload": 273950
+        },
+        "closed_streams": 37,
+        "error": null,
+        "frame_complete": {
+          "download": true,
+          "upload": true
+        },
+        "frames": {
+          "download": 173,
+          "upload": 127
+        },
+        "frames_complete": true,
+        "goaway": {
+          "download": null,
+          "upload": null
+        },
+        "header_complete": {
+          "download": true,
+          "upload": true
+        },
+        "headers_complete": true,
+        "last_stream_id": 77,
+        "max_streams": 1024,
+        "open_streams": 2,
+        "preface_complete": true,
+        "reset_records": [],
+        "reset_streams": 0,
+        "retiring": false,
+        "schema": "campaign002-passive-h2-3",
+        "settings_by_direction": {
+          "download": true,
+          "upload": true
+        },
+        "settings_complete": true,
+        "terminal_control_records": [
+          {
+            "direction": "upload",
+            "end_byte": 8079,
+            "error_code": 8,
+            "frame": 19,
+            "normal_close": {
+              "download_closed": {
+                "end_byte": 1191,
+                "frame": 19
+              },
+              "opened_upload": {
+                "end_byte": 351,
+                "frame": 10
+              },
+              "upload_closed": {
+                "end_byte": 7489,
+                "frame": 12
+              }
+            },
+            "opposite_observed_frames": 19,
+            "stream_id": 5
+          },
+          {
+            "direction": "upload",
+            "end_byte": 82038,
+            "error_code": 8,
+            "frame": 59,
+            "normal_close": {
+              "download_closed": {
+                "end_byte": 48409,
+                "frame": 72
+              },
+              "opened_upload": {
+                "end_byte": 60365,
+                "frame": 47
+              },
+              "upload_closed": {
+                "end_byte": 67692,
+                "frame": 49
+              }
+            },
+            "opposite_observed_frames": 72,
+            "stream_id": 29
+          }
+        ],
+        "upload_complete": true
+      },
+      "namespace_original_frontier": {
+        "active_stream_ids": [
+          1,
+          3
+        ],
+        "bytes": {
+          "download": 215147,
+          "upload": 273950
+        },
+        "closed_streams": 37,
+        "error": null,
+        "frame_complete": {
+          "download": true,
+          "upload": true
+        },
+        "frames": {
+          "download": 173,
+          "upload": 127
+        },
+        "frames_complete": true,
+        "goaway": {
+          "download": null,
+          "upload": null
+        },
+        "header_complete": {
+          "download": true,
+          "upload": true
+        },
+        "headers_complete": true,
+        "last_stream_id": 77,
+        "max_streams": 1024,
+        "open_streams": 2,
+        "preface_complete": true,
+        "reset_records": [],
+        "reset_streams": 0,
+        "retiring": false,
+        "schema": "campaign002-passive-h2-3",
+        "settings_by_direction": {
+          "download": true,
+          "upload": true
+        },
+        "settings_complete": true,
+        "terminal_control_records": [
+          {
+            "direction": "upload",
+            "end_byte": 8079,
+            "error_code": 8,
+            "frame": 19,
+            "normal_close": {
+              "download_closed": {
+                "end_byte": 1191,
+                "frame": 19
+              },
+              "opened_upload": {
+                "end_byte": 351,
+                "frame": 10
+              },
+              "upload_closed": {
+                "end_byte": 7489,
+                "frame": 12
+              }
+            },
+            "opposite_observed_frames": 19,
+            "stream_id": 5
+          },
+          {
+            "direction": "upload",
+            "end_byte": 82038,
+            "error_code": 8,
+            "frame": 59,
+            "normal_close": {
+              "download_closed": {
+                "end_byte": 48409,
+                "frame": 72
+              },
+              "opened_upload": {
+                "end_byte": 60365,
+                "frame": 47
+              },
+              "upload_closed": {
+                "end_byte": 67692,
+                "frame": 49
+              }
+            },
+            "opposite_observed_frames": 72,
+            "stream_id": 29
+          }
+        ],
+        "upload_complete": true
+      },
+      "final_parent_h2": {
+        "schema": "campaign002-passive-h2-3",
+        "error": null,
+        "preface_complete": true,
+        "settings_complete": true,
+        "frames_complete": true,
+        "headers_complete": true,
+        "frame_complete": {
+          "upload": true,
+          "download": true
+        },
+        "header_complete": {
+          "upload": true,
+          "download": true
+        },
+        "settings_by_direction": {
+          "upload": true,
+          "download": true
+        },
+        "upload_complete": true,
+        "open_streams": 0,
+        "closed_streams": 37,
+        "active_stream_ids": [],
+        "last_stream_id": 77,
+        "retiring": true,
+        "reset_streams": 2,
+        "goaway": {
+          "upload": 0,
+          "download": null
+        },
+        "reset_records": [
+          {
+            "direction": "upload",
+            "stream_id": 3,
+            "error_code": 8
+          },
+          {
+            "direction": "upload",
+            "stream_id": 1,
+            "error_code": 8
+          }
+        ],
+        "terminal_control_records": [
+          {
+            "direction": "upload",
+            "stream_id": 5,
+            "error_code": 8,
+            "frame": 19,
+            "end_byte": 8079,
+            "normal_close": {
+              "opened_upload": {
+                "frame": 10,
+                "end_byte": 351
+              },
+              "upload_closed": {
+                "frame": 12,
+                "end_byte": 7489
+              },
+              "download_closed": {
+                "frame": 19,
+                "end_byte": 1191
+              }
+            },
+            "opposite_observed_frames": 19
+          },
+          {
+            "direction": "upload",
+            "stream_id": 29,
+            "error_code": 8,
+            "frame": 59,
+            "end_byte": 82038,
+            "normal_close": {
+              "opened_upload": {
+                "frame": 47,
+                "end_byte": 60365
+              },
+              "upload_closed": {
+                "frame": 49,
+                "end_byte": 67692
+              },
+              "download_closed": {
+                "frame": 72,
+                "end_byte": 48409
+              }
+            },
+            "opposite_observed_frames": 72
+          }
+        ],
+        "frames": {
+          "upload": 130,
+          "download": 173
+        },
+        "bytes": {
+          "upload": 273993,
+          "download": 215147
+        },
+        "max_streams": 1024
+      },
+      "namespace_final_h2": {
+        "active_stream_ids": [],
+        "bytes": {
+          "download": 215147,
+          "upload": 273993
+        },
+        "closed_streams": 37,
+        "error": null,
+        "frame_complete": {
+          "download": true,
+          "upload": true
+        },
+        "frames": {
+          "download": 173,
+          "upload": 130
+        },
+        "frames_complete": true,
+        "goaway": {
+          "download": null,
+          "upload": 0
+        },
+        "header_complete": {
+          "download": true,
+          "upload": true
+        },
+        "headers_complete": true,
+        "last_stream_id": 77,
+        "max_streams": 1024,
+        "open_streams": 0,
+        "preface_complete": true,
+        "reset_records": [
+          {
+            "direction": "upload",
+            "error_code": 8,
+            "stream_id": 3
+          },
+          {
+            "direction": "upload",
+            "error_code": 8,
+            "stream_id": 1
+          }
+        ],
+        "reset_streams": 2,
+        "retiring": true,
+        "schema": "campaign002-passive-h2-3",
+        "settings_by_direction": {
+          "download": true,
+          "upload": true
+        },
+        "settings_complete": true,
+        "terminal_control_records": [
+          {
+            "direction": "upload",
+            "end_byte": 8079,
+            "error_code": 8,
+            "frame": 19,
+            "normal_close": {
+              "download_closed": {
+                "end_byte": 1191,
+                "frame": 19
+              },
+              "opened_upload": {
+                "end_byte": 351,
+                "frame": 10
+              },
+              "upload_closed": {
+                "end_byte": 7489,
+                "frame": 12
+              }
+            },
+            "opposite_observed_frames": 19,
+            "stream_id": 5
+          },
+          {
+            "direction": "upload",
+            "end_byte": 82038,
+            "error_code": 8,
+            "frame": 59,
+            "normal_close": {
+              "download_closed": {
+                "end_byte": 48409,
+                "frame": 72
+              },
+              "opened_upload": {
+                "end_byte": 60365,
+                "frame": 47
+              },
+              "upload_closed": {
+                "end_byte": 67692,
+                "frame": 49
+              }
+            },
+            "opposite_observed_frames": 72,
+            "stream_id": 29
+          }
+        ],
+        "upload_complete": true
+      },
+      "unforwarded_upload_bytes": 0,
+      "unwritten_download_bytes": 0,
+      "parent_received_closed": false,
+      "namespace_closed_qualified": false
+    },
+    {
+      "channel_id": 2,
+      "meters": {
+        "client_read": {
+          "bytes": 36851,
+          "sha256": "72b68e008b3610d8a568c3c6690224df39267bd9f66681dfc8d77d6a816d3d53"
+        },
+        "upload": {
+          "bytes": 36791,
+          "sha256": "428d8b4b97ec95ac42f82b4d58a8989822cc795ce2964d34b5fdb2e27945671b"
+        },
+        "download": {
+          "bytes": 1756,
+          "sha256": "a328f63fff4d8ba5ecc6b16c28215a4c956972842cdd13cb331aad2e3d7ec9b6"
+        },
+        "client_written": {
+          "bytes": 1746,
+          "sha256": "6d9cc007abae66632f0d9a3ba6b8edb8c2c0ff991ff3f2dd73fa89218fc4d6b7"
+        }
+      },
+      "parent_original_frontier": {
+        "active_stream_ids": [
+          17
+        ],
+        "bytes": {
+          "download": 1746,
+          "upload": 36851
+        },
+        "closed_streams": 7,
+        "error": null,
+        "frame_complete": {
+          "download": true,
+          "upload": true
+        },
+        "frames": {
+          "download": 28,
+          "upload": 30
+        },
+        "frames_complete": true,
+        "goaway": {
+          "download": null,
+          "upload": null
+        },
+        "header_complete": {
+          "download": true,
+          "upload": true
+        },
+        "headers_complete": true,
+        "last_stream_id": 17,
+        "max_streams": 1024,
+        "open_streams": 1,
+        "preface_complete": true,
+        "reset_records": [
+          {
+            "direction": "upload",
+            "error_code": 8,
+            "stream_id": 15
+          }
+        ],
+        "reset_streams": 1,
+        "retiring": false,
+        "schema": "campaign002-passive-h2-3",
+        "settings_by_direction": {
+          "download": true,
+          "upload": true
+        },
+        "settings_complete": true,
+        "terminal_control_records": [],
+        "upload_complete": true
+      },
+      "namespace_original_frontier": {
+        "active_stream_ids": [
+          15
+        ],
+        "bytes": {
+          "download": 1746,
+          "upload": 36791
+        },
+        "closed_streams": 7,
+        "error": null,
+        "frame_complete": {
+          "download": true,
+          "upload": true
+        },
+        "frames": {
+          "download": 28,
+          "upload": 28
+        },
+        "frames_complete": true,
+        "goaway": {
+          "download": null,
+          "upload": null
+        },
+        "header_complete": {
+          "download": true,
+          "upload": true
+        },
+        "headers_complete": true,
+        "last_stream_id": 15,
+        "max_streams": 1024,
+        "open_streams": 1,
+        "preface_complete": true,
+        "reset_records": [],
+        "reset_streams": 0,
+        "retiring": false,
+        "schema": "campaign002-passive-h2-3",
+        "settings_by_direction": {
+          "download": true,
+          "upload": true
+        },
+        "settings_complete": true,
+        "terminal_control_records": [],
+        "upload_complete": true
+      },
+      "final_parent_h2": {
+        "schema": "campaign002-passive-h2-3",
+        "error": "HTTP/2 headers on unavailable stream",
+        "preface_complete": true,
+        "settings_complete": true,
+        "frames_complete": false,
+        "headers_complete": true,
+        "frame_complete": {
+          "upload": true,
+          "download": false
+        },
+        "header_complete": {
+          "upload": true,
+          "download": true
+        },
+        "settings_by_direction": {
+          "upload": true,
+          "download": true
+        },
+        "upload_complete": false,
+        "open_streams": 1,
+        "closed_streams": 7,
+        "active_stream_ids": [
+          17
+        ],
+        "last_stream_id": 17,
+        "retiring": false,
+        "reset_streams": 1,
+        "goaway": {
+          "upload": null,
+          "download": null
+        },
+        "reset_records": [
+          {
+            "direction": "upload",
+            "stream_id": 15,
+            "error_code": 8
+          }
+        ],
+        "terminal_control_records": [],
+        "frames": {
+          "upload": 30,
+          "download": 28
+        },
+        "bytes": {
+          "upload": 36851,
+          "download": 1756
+        },
+        "max_streams": 1024
+      },
+      "namespace_final_h2": {
+        "active_stream_ids": [],
+        "bytes": {
+          "download": 1756,
+          "upload": 36791
+        },
+        "closed_streams": 8,
+        "error": null,
+        "frame_complete": {
+          "download": true,
+          "upload": true
+        },
+        "frames": {
+          "download": 29,
+          "upload": 28
+        },
+        "frames_complete": true,
+        "goaway": {
+          "download": null,
+          "upload": null
+        },
+        "header_complete": {
+          "download": true,
+          "upload": true
+        },
+        "headers_complete": true,
+        "last_stream_id": 15,
+        "max_streams": 1024,
+        "open_streams": 0,
+        "preface_complete": true,
+        "reset_records": [],
+        "reset_streams": 0,
+        "retiring": true,
+        "schema": "campaign002-passive-h2-3",
+        "settings_by_direction": {
+          "download": true,
+          "upload": true
+        },
+        "settings_complete": true,
+        "terminal_control_records": [],
+        "upload_complete": true
+      },
+      "unforwarded_upload_bytes": 60,
+      "unwritten_download_bytes": 10,
+      "parent_received_closed": false,
+      "namespace_closed_qualified": false
+    }
+  ],
+  "native_cleanup": {
+    "qualified": true,
+    "handshake_qualified": true,
+    "forced_job_close": false,
+    "native_exit_code": 0,
+    "start_monotonic_s": 491231.218,
+    "native_exit_monotonic_s": 491231.25,
+    "completed_monotonic_s": 491231.25,
+    "failures": []
+  },
+  "retirement": {
+    "parent_bridge_qualified": false,
+    "wrapper_exit_code": 1,
+    "attempts": 3,
+    "accepted": 2,
+    "denied": 1,
+    "denied_reason": "admission_after_abort",
+    "drain": {
+      "start_monotonic_s": 491231.234,
+      "deadline_monotonic_s": 491256.234,
+      "bound_s": 25,
+      "seal_qualified": false,
+      "seal_error_code": "drain_invalid",
+      "completed_monotonic_s": null
+    },
+    "parent_received_finished": false,
+    "namespace_final": {
+      "qualified": false,
+      "error_type": "ValueError",
+      "owner_finish_received": false,
+      "stdin_eof": false,
+      "drain_qualified": false,
+      "channels_closed": 2,
+      "channel_count": 2,
+      "child_exit_code": -15,
+      "diagnostic_streams_complete": true
+    },
+    "protected_retirement_qualified": true
+  },
+  "timeline": [
+    {
+      "source": "parent ledger",
+      "line": 201,
+      "sequence": 201,
+      "kind": "failure",
+      "reason": "channel_ValueError",
+      "wall_unix_s": 1790633751.7716858,
+      "monotonic_s": 491231.234
+    },
+    {
+      "source": "parent ledger",
+      "line": 202,
+      "sequence": 202,
+      "kind": "channel_denied",
+      "reason": "admission_after_abort",
+      "channel_id": 3,
+      "wall_unix_s": 1790633751.7771714,
+      "monotonic_s": 491231.234
+    },
+    {
+      "source": "parent ledger",
+      "line": 203,
+      "sequence": 203,
+      "kind": "channel_finish_frontier",
+      "channel_id": 1,
+      "wall_unix_s": 1790633751.7972429,
+      "monotonic_s": 491231.25,
+      "client_finishing": true
+    },
+    {
+      "source": "parent ledger",
+      "line": 204,
+      "sequence": 204,
+      "kind": "channel_finish_frontier",
+      "channel_id": 2,
+      "wall_unix_s": 1790633751.798248,
+      "monotonic_s": 491231.25,
+      "client_finishing": true
+    },
+    {
+      "source": "parent ledger",
+      "line": 205,
+      "sequence": 205,
+      "kind": "failure",
+      "reason": "retirement_frontier_invalid",
+      "wall_unix_s": 1790633751.7997527,
+      "monotonic_s": 491231.25
+    },
+    {
+      "source": "parent ledger",
+      "line": 206,
+      "sequence": 206,
+      "kind": "owner_drain_begin",
+      "wall_unix_s": 1790633751.8007581,
+      "monotonic_s": 491231.25
+    },
+    {
+      "source": "parent ledger",
+      "line": 210,
+      "sequence": 210,
+      "kind": "client_eof",
+      "channel_id": 1,
+      "wall_unix_s": 1790633751.8052683,
+      "monotonic_s": 491231.265,
+      "client_finishing": true
+    },
+    {
+      "source": "parent ledger",
+      "line": 212,
+      "sequence": 212,
+      "kind": "upload_drained",
+      "channel_id": 1,
+      "wall_unix_s": 1790633751.8072665,
+      "monotonic_s": 491231.265
+    },
+    {
+      "source": "parent ledger",
+      "line": 214,
+      "sequence": 214,
+      "kind": "owner_drain_ack",
+      "wall_unix_s": 1790633751.809267,
+      "monotonic_s": 491231.265
+    },
+    {
+      "source": "parent ledger",
+      "line": 216,
+      "sequence": 216,
+      "kind": "failure",
+      "reason": "frame_read_ValueError",
+      "wall_unix_s": 1790633751.8107693,
+      "monotonic_s": 491231.265
+    },
+    {
+      "source": "parent ledger",
+      "line": 217,
+      "sequence": 217,
+      "kind": "failure",
+      "reason": "drain_invalid",
+      "wall_unix_s": 1790633751.8117738,
+      "monotonic_s": 491231.265
+    },
+    {
+      "source": "parent ledger",
+      "line": 220,
+      "sequence": 220,
+      "kind": "owner_finishing",
+      "wall_unix_s": 1790633751.8142822,
+      "monotonic_s": 491231.265,
+      "client_finishing": true
+    },
+    {
+      "source": "parent ledger",
+      "line": 222,
+      "sequence": 222,
+      "kind": "owner_input_closed",
+      "wall_unix_s": 1790633751.8157866,
+      "monotonic_s": 491231.265
+    },
+    {
+      "source": "parent ledger",
+      "line": 223,
+      "sequence": 223,
+      "kind": "failure",
+      "reason": "owner_drain_ValueError",
+      "wall_unix_s": 1790633751.8308399,
+      "monotonic_s": 491231.281
+    },
+    {
+      "source": "parent ledger",
+      "line": 224,
+      "sequence": 224,
+      "kind": "retirement_started",
+      "wall_unix_s": 1790633751.8328445,
+      "monotonic_s": 491231.296
+    },
+    {
+      "source": "parent ledger",
+      "line": 225,
+      "sequence": 225,
+      "kind": "failure",
+      "reason": "namespace_wrapper_nonzero",
+      "wall_unix_s": 1790633752.2935915,
+      "monotonic_s": 491231.75
+    },
+    {
+      "source": "parent ledger",
+      "line": 226,
+      "sequence": 226,
+      "kind": "failure",
+      "reason": "namespace_receipt_ValueError",
+      "wall_unix_s": 1790633752.2945948,
+      "monotonic_s": 491231.75
+    },
+    {
+      "source": "parent ledger",
+      "line": 227,
+      "sequence": 227,
+      "kind": "closed",
+      "wall_unix_s": 1790633752.3011105,
+      "monotonic_s": 491231.765,
+      "qualified": false
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 407,
+      "sequence": 1,
+      "kind": "native_quiescence",
+      "phase": "start",
+      "wall_unix_s": 1790633751.769682,
+      "monotonic_s": 491231.218
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 408,
+      "sequence": 2,
+      "kind": "native_quiescence",
+      "phase": "request",
+      "wall_unix_s": 1790633751.770289,
+      "monotonic_s": 491231.234,
+      "method": "turn/interrupt"
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 409,
+      "sequence": 3,
+      "kind": "native_quiescence",
+      "phase": "request_sent",
+      "wall_unix_s": 1790633751.770691,
+      "monotonic_s": 491231.234,
+      "method": "turn/interrupt"
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 410,
+      "sequence": 4,
+      "kind": "native_quiescence",
+      "phase": "response",
+      "wall_unix_s": 1790633751.7716858,
+      "monotonic_s": 491231.234,
+      "method": "turn/interrupt"
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 411,
+      "sequence": 5,
+      "kind": "native_quiescence",
+      "phase": "turn_terminal",
+      "wall_unix_s": 1790633751.7726877,
+      "monotonic_s": 491231.234
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 412,
+      "sequence": 6,
+      "kind": "native_quiescence",
+      "phase": "request",
+      "wall_unix_s": 1790633751.7726877,
+      "monotonic_s": 491231.234,
+      "method": "thread/unsubscribe"
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 413,
+      "sequence": 7,
+      "kind": "native_quiescence",
+      "phase": "request_sent",
+      "wall_unix_s": 1790633751.7739248,
+      "monotonic_s": 491231.234,
+      "method": "thread/unsubscribe"
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 414,
+      "sequence": 8,
+      "kind": "native_quiescence",
+      "phase": "response",
+      "wall_unix_s": 1790633751.7749248,
+      "monotonic_s": 491231.234,
+      "method": "thread/unsubscribe"
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 416,
+      "sequence": 9,
+      "kind": "native_quiescence",
+      "phase": "thread_closed",
+      "wall_unix_s": 1790633751.7796805,
+      "monotonic_s": 491231.234
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 417,
+      "sequence": 10,
+      "kind": "native_quiescence",
+      "phase": "handshake_complete",
+      "wall_unix_s": 1790633751.780684,
+      "monotonic_s": 491231.234,
+      "qualified": true
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 418,
+      "kind": "client_finishing_before_close",
+      "wall_unix_s": 1790633751.780684,
+      "monotonic_s": 491231.234
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 419,
+      "sequence": 11,
+      "kind": "native_quiescence",
+      "phase": "finishing",
+      "wall_unix_s": 1790633751.7821872,
+      "monotonic_s": 491231.234
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 420,
+      "sequence": 12,
+      "kind": "native_quiescence",
+      "phase": "stdin_closed",
+      "wall_unix_s": 1790633751.7831924,
+      "monotonic_s": 491231.234
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 421,
+      "sequence": 13,
+      "kind": "native_quiescence",
+      "phase": "native_exit",
+      "wall_unix_s": 1790633751.798248,
+      "monotonic_s": 491231.25,
+      "exit_code": 0
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 422,
+      "sequence": 14,
+      "kind": "native_quiescence",
+      "phase": "completed",
+      "wall_unix_s": 1790633751.798248,
+      "monotonic_s": 491231.25,
+      "qualified": true
+    },
+    {
+      "source": "client/events.jsonl",
+      "line": 423,
+      "kind": "client_shutdown",
+      "exit_code": 0
+    }
+  ],
+  "limits": [
+    "No application/RPC identity, payload or model reasoning is inferred or retained.",
+    "No new active-reset allowance, counter suppression, new-stream permission or deadline change is justified by this artifact.",
+    "Namespace and Windows clock origins are not compared.",
+    "Prior Smoke019 and Diagnostic002 remain unchanged and distinct."
+  ],
+  "input_bindings": [
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\smoke-020-manifest.json",
+      "bytes": 35925,
+      "sha256": "e3408d6fbde775c22e3566237f0e1171d22f38a4ddd00897222d484685e1b6d8"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\campaign-002\\qualification\\RCI001-C02-smoke-020\\queue-submit.json",
+      "bytes": 1916,
+      "sha256": "9510f03d1aaeb7be8a1824876da1cc48c346077c15eb76389f04836376395cf0"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-066\\snapshot.json",
+      "bytes": 215704,
+      "sha256": "6243217ab6c5d98f05cc90518b8c53d4339e55e72fa7d97ae5dba863ed929f1e"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Architecture Map\\releases\\RCI001-C02-dev-066\\code.zip",
+      "bytes": 3258095,
+      "sha256": "a593f6e0176078f71ebd539247808a88f920eb997da7797466bbb1d23aa4e8ae"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\sequence-result.json",
+      "bytes": 15037,
+      "sha256": "0a42558e1e11ef1efb7c8acc41bfbc4b9bed07cc29de4786bcc9f147afffc713"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\stage-result.json",
+      "bytes": 13326,
+      "sha256": "106c1ca906ec2042228ba489447a9908e989f7c3c892ee3e2b6e6dbdb04b5f59"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\codehost-owner-bridge-v3.json",
+      "bytes": 130793,
+      "sha256": "32e40f49c620b826e9740539d2ecc879595d46868e07ab097d84668fb8778643"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\codehost-transport-v3.jsonl",
+      "bytes": 110768,
+      "sha256": "b9b01c1f263cc93c10a94c8b196b824ad4c55bb8113f64719c0e300ae85fd80c"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\codehost-owner-stderr-v3.txt",
+      "bytes": 79448,
+      "sha256": "dea59ec5143171c368200bba45dc1e8eb0d088de932db627ee1bc0b941b2efa6"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\codehost-owner-retirement-v3.json",
+      "bytes": 2956,
+      "sha256": "1de9db52f17a20ff8b4e5f3cfd3dc67fd0b15edf87d67e76d8eaf3367ca5957c"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\client\\result.json",
+      "bytes": 8693,
+      "sha256": "2a022846074538a8dee95c5a5854eabaa5623e0b85a4a8dcb24a6f62a87677b0"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\client\\events.jsonl",
+      "bytes": 772858,
+      "sha256": "9507e213e9ac0265a48d52363f020eb7d1fb0a0907332c060559c1db36361359"
+    },
+    {
+      "path": "C:\\Users\\cresp\\Documents\\Dandelion Engineering\\LLMs in Robotics\\Long-Horizon Adaptive Robotics Expirement\\Robot-Codex Integration 001\\local-evidence\\campaign002\\qualification\\RCI001-C02-smoke-020\\orchestrator\\interrupt\\client\\native-quiescence.json",
+      "bytes": 6918,
+      "sha256": "789e04ac8d53982b4c3ba2b6893abba6c5fc8c161eb9d0f204be62511c4f8192"
+    }
+  ],
+  "frozen_source_bindings": {
+    "codehost_mux_protocol.py": {
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_mux_protocol.py",
+      "bytes": 22070,
+      "sha256": "557337234c109e364b3ccce717da553ad31d69a90bc750ca0b33ebb2a85db75a",
+      "current_matches_archive": true
+    },
+    "codehost_bridge_v3.py": {
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_bridge_v3.py",
+      "bytes": 43362,
+      "sha256": "5fb47c6cb083b510e5d7f7b965612c7426c132ea262f12ae44044a4448b4353b",
+      "current_matches_archive": true
+    },
+    "codehost_inside_v3.py": {
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/codehost_inside_v3.py",
+      "bytes": 30797,
+      "sha256": "44906afa4691cf52c7aa9f2e12dea7233827f6a2b75bb0960de6d80ff09123f2",
+      "current_matches_archive": true
+    },
+    "bootstrap_client_v4.py": {
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/bootstrap_client_v4.py",
+      "bytes": 23326,
+      "sha256": "a08f0b820c5ce30c0a68bc8ea7fc19102b29834a6b9b0dd447157568060706ad",
+      "current_matches_archive": true
+    },
+    "native_quiescence.py": {
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/native_quiescence.py",
+      "bytes": 17208,
+      "sha256": "6a43907863e50a62bb652a82ebce143ff86cd84cd1da86d510a3c86f5ca389bc",
+      "current_matches_archive": true
+    },
+    "physical.py": {
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/physical.py",
+      "bytes": 11167,
+      "sha256": "e20030568bd5d0905092a1e76f38386e6bd463541b5ff291083867e5ec9da572",
+      "current_matches_archive": true
+    },
+    "runtime.py": {
+      "archive_member": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/harness/runtime.py",
+      "bytes": 24609,
+      "sha256": "4e521d64b45de426d31cabecf25669e9f50346a6d82b97a2bcd7f53b6f4dd6ad",
+      "current_matches_archive": true
+    }
+  }
+}

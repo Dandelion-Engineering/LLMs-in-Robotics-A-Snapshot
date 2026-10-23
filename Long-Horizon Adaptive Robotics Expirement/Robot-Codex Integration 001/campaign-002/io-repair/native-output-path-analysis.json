@@ -1,0 +1,108 @@
+{
+  "schema": "campaign002-native-output-path-analysis-1",
+  "created_utc": "2026-09-28T06:19:40.386479+00:00",
+  "scope": "Read-only source investigation, no empirical probe or production change",
+  "model_calls": 0,
+  "observed_failure": {
+    "attempt": "RCI001-C02-smoke-008",
+    "delivered_bytes": 13029,
+    "public_projected_bytes": 4837,
+    "missing_first_bytes": 8192,
+    "unchanged_assessment_passed": false
+  },
+  "source_interpretation": {
+    "exec_server_subscriber": "Bounded replay under one history mutex; late subscriber at this layer is not a supported missing-prefix explanation below its retention bound.",
+    "unified_exec_internal_buffer": "Incoming output is appended to a retained HeadTailBuffer and independently published to a non-replaying broadcast channel.",
+    "display_subscription": "The process is already created and its output task running before start_streaming_output subscribes. The subscription populates a separate display transcript.",
+    "completion_selection": "resolve_aggregated_output uses a nonempty display transcript in preference to fallback collected output, even when the transcript is shorter.",
+    "tool_response": "ExecCommandToolOutput uses collected retained bytes separately from displayed transcript; original model max_output_tokens and actual returned result were not captured.",
+    "supported_inference": "An early-output/display-subscription race is compatible with smoke008; full model tool output is possible but not established for the retained run.",
+    "unknown": "Exact installed-binary internals, actual model input/result bytes and unique causal interleaving remain unproven."
+  },
+  "rejected_diagnostic": {
+    "method": "OUTPUT_DELIVERY_PROBE_V1.md",
+    "reason": "Pinned app-server command_exec.rs directly launches local PTY/pipes or Windows sandbox and does not use remote ExecBackend. Standalone command/exec cannot support the declared remote route.",
+    "stage": "rejected before freeze or queue submission",
+    "empirical_attempts": 0,
+    "no_local_fallback": true
+  },
+  "next_supported_path": "Investigate exact tool-result observability on the existing code-mode path, with immutable forwarding, complete native/app result equality and separately declared parity/failure checks; no output reconstruction or criterion relaxation. A native display-code fix is a separate possible infrastructure path requiring a bound build and full qualification.",
+  "limitations": [
+    "Pinned public tag and installed package version correspond; this is not an attestation that the executable was built from these exact source bytes.",
+    "Source inspection is not reproduction of the retained event interleaving.",
+    "Send completion is not model attention.",
+    "Original smoke008 result remains failed and both pilots007 remain unlaunched."
+  ],
+  "inputs": [
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/smoke-008-output-delivery-analysis.json",
+      "sha256": "25d8bb55ccf3fd064fc8d35373015e0e0a2e92f7ef06c9b0aa60e4e1b5da0c74",
+      "bytes": 20042
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/smoke-008-output-delivery-analysis.md",
+      "sha256": "49fd5b2af1c6bdd36b0a8e150b85d237104fccf78a07e5a450e5ca5ed1c957bd",
+      "bytes": 9503
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__app-server__src__command_exec.rs",
+      "sha256": "73015751277a57d978d44dc047ff365858b5db1992d7405e49531372ea781057",
+      "bytes": 38308
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__code-mode-protocol__src__grpc__codex.code_mode.v1.proto",
+      "sha256": "406d8f47d8d0b95a9d4ae104890e5e52764c9597e9271f75ff434a4ce24748d0",
+      "bytes": 6699
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__code-mode__src__grpc_session__callbacks.rs",
+      "sha256": "fa3f9bced103e74dda43cd27fddf1c805773b57bfd33ee6223d80026f25bed35",
+      "bytes": 9967
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__code-mode__src__grpc_session__conversion.rs",
+      "sha256": "011f8d47fb55c6fbe0caf962208c0a9a77ef81c96d59e5dd5e400bf5e7f5718b",
+      "bytes": 6406
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__core__src__unified_exec__async_watcher.rs",
+      "sha256": "f6c98e8a515f0cc5e5e714658a2eacf35f7365f5b08367553a7c0c152a909f25",
+      "bytes": 16035
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__core__src__unified_exec__process.rs",
+      "sha256": "9c110e349cc12408f945ac0eee30467bf9a6640f26444a3d79a06b259ce49b13",
+      "bytes": 24820
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__core__src__unified_exec__process_manager.rs",
+      "sha256": "17d2d564fecd30ea0bbd2301ccd013a07a91e14404094619bd79edc2c1c2750a",
+      "bytes": 73353
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/codex-rs__exec-server__src__process.rs",
+      "sha256": "63b2029f79a5bc7f07575c66afe4025f888173f2932041b30e6d94315c356dc4",
+      "bytes": 10658
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/LICENSE",
+      "sha256": "d17f227e4df5da1600391338865ce0f3055211760a36688f816941d58232d8dc",
+      "bytes": 10926
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/source-evidence-002.json",
+      "sha256": "2bfa86ffaef135c8e9487d66cbd09e03d1846895f8a03cf59c4373988f266241",
+      "bytes": 1469
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/source-evidence-003.json",
+      "sha256": "c1124a9c55180f68c0ac574f387fa27215789bfea8bcece57e64f28cfa5d3cfa",
+      "bytes": 1657
+    },
+    {
+      "path": "Long-Horizon Adaptive Robotics Expirement/Robot-Codex Integration 001/campaign-002/io-repair/native-output-source-001/source-evidence.json",
+      "sha256": "427b9f4bbe8dfcbdae11b7ce408fcb5e4c25cfcdfb6a1c43f4957152db034fbc",
+      "bytes": 3555
+    }
+  ]
+}

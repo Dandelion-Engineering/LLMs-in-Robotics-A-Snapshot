@@ -1,0 +1,33 @@
+--- test_prepared_index_label_operator.py
++++ test_pilot_retirement_inventory_operator.py
+@@ -8,7 +8,7 @@
+ from unittest.mock import patch
+ 
+ IO = Path(__file__).resolve().parent
+-spec = importlib.util.spec_from_file_location('v27_operator_under_test', IO / 'control_prepared_index_label_qualification.py')
++spec = importlib.util.spec_from_file_location('v28_operator_under_test', IO / 'control_pilot_retirement_inventory_qualification.py')
+ control = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(control)
+ c = control.c
+@@ -16,10 +16,10 @@
+ 
+ class OperatorGateTests(unittest.TestCase):
+     def setUp(self):
+-        self.temp = tempfile.TemporaryDirectory(prefix='v27-source-only-')
++        self.temp = tempfile.TemporaryDirectory(prefix='v28-source-only-')
+         self.addCleanup(self.temp.cleanup)
+         self.root = Path(self.temp.name)
+-        self.checks = self.root / 'io-repair/checks-030'
++        self.checks = self.root / 'io-repair/checks-031'
+         self.checks.mkdir(parents=True)
+         self.lineage = self.root / 'io-repair/lineage.json'
+         self.state = self.root / 'io-repair/source-state.json'
+@@ -55,7 +55,7 @@
+             'sources': [c.identity(self.root / name) for name in sources]})
+         self.declaration = {'development_checks': c.identity(self.checks / 'test-execution.json'),
+             'lineage_checks': c.identity(self.lineage), 'development_source_state': c.identity(self.state),
+-            'stages': [['native-026', 'native', 'RCI001-C02-dev-084', 24000]]}
++            'stages': [['native-027', 'native', 'RCI001-C02-dev-088', 24000]]}
+         self.repair = {'schema': c.TEST_RECEIPT_SCHEMA, 'passed': True,
+             'source_snapshot': c.identity(self.snapshot), 'commands': copy.deepcopy(commands)}
+         self.write(self.checks / 'repair-test-receipt.json', self.repair)

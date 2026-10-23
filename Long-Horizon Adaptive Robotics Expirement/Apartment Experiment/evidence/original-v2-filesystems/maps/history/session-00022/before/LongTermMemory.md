@@ -1,0 +1,134 @@
+# Long-Term Memory
+
+This file stores durable learned knowledge that may remain useful after the recent session-report window has passed.
+
+It is semantic memory, not a chronological log, not current task state, and not a duplicate of other startup files.
+
+## What belongs here
+
+Add or update a memory when the current session has reasonably evidence-backed knowledge that:
+
+- is likely to matter beyond the current episode or task step;
+- is reusable across future sessions;
+- would be costly, unsafe, or wasteful to repeatedly rediscover;
+- is not merely temporary world state;
+- is not already represented adequately in another canonical startup file.
+
+Examples may include learned failure modes, reusable environmental regularities, empirically discovered constraints, robust strategies, or other generalizable knowledge.
+
+## What does not belong here
+
+Do **not** copy information that already belongs in or is already adequately represented by:
+
+- `README.md` — filesystem structure;
+- `RobotDetails.md` — robot embodiment, hardware, sensors, interfaces, intrinsic limits, calibration, or built-in capabilities;
+- `ProjectDetails.md` — deployment, environment, task, authority, safety, or evaluation rules;
+- `Maps/` — fixed spatial structure such as room topology, doorways, furniture/fixture locations, charging stations, and other persistent landmarks;
+- `SummaryOfOnlyNecessaryContext.md` — current objective, current state, and active unresolved work;
+- recent `SessionReports/` — episode-level chronology and detailed evidence.
+
+If learned information belongs canonically in one of those files, update that file rather than duplicating it here when the agent is authorized to do so.
+
+Dynamic regularities are not fixed-map facts and may still belong here when durable and evidence-backed. For example, "the movable cup has repeatedly appeared on the middle mat" can be a long-term memory even though the cup's current position must not be written into the fixed spatial map.
+
+## Memory-entry requirements
+
+Each long-term memory should be concise and include enough provenance to understand why it exists.
+
+For each memory, record:
+
+- **Memory:** the durable claim, lesson, or reusable knowledge;
+- **Scope:** where and when it is expected to apply;
+- **Evidence:** session-report or artifact pointers supporting it;
+- **Status:** provisional, established, contradicted, or superseded;
+- **Last updated:** session identifier or timestamp;
+- **Notes / limitations:** important exceptions, uncertainty, or context.
+
+A memory may be updated when later evidence confirms, narrows, contradicts, or supersedes it. Preserve provenance when doing so.
+
+## Promotion rule
+
+At the end of each session, the active agent decides whether anything learned deserves long-term retention. Promotion is selective: most session details should remain only in the immutable session report.
+
+Do not promote a claim merely because it was observed once if the evidence is too weak to justify retaining it. When useful but uncertain knowledge is worth preserving, mark it as provisional and include its limitations.
+
+## Current memories
+
+### Recurring cup on its side: two floor acquisitions, with subsequent grip losses
+
+- **Memory:** Two perception-directed floor approaches followed by commanded width 0.005 m acquired the cup on its side. Bilateral contact persisted through lifting and base transport, with carry aperture about 0.089–0.090 m and effort about 25.35. Both grips were later lost without a release command: during a drawer-approach arm motion in session 010 and across a kitchen base-turn/head-recentering interval in session 019.
+- **Scope:** Two observed floor poses produced acquisition; numerous intervening approaches failed. This supplies narrow acquisition/carry evidence, not a validated general floor/countertop grasp, universal closure setting, turn-safe carry pose or complete placement procedure. Use fresh geometry, check pose stability, and verify alignment before closure and contact after every movement.
+- **Evidence:** `SessionReports/2026-10-08T195151Z-session-010.md`, observations 207–216. A visible cup surface was about (0.982, -0.003, 0.058) m; default positioning at (0.99, 0, 0.06) and width 0.005 produced bilateral contact. Lift feedback was still false at commanded (0.4, 0, 0.60), then true at (0.4, 0, 1.20). Observation 212 visibly showed the carried cup. Contact remained true after lateral stow at (0.25, -0.30, 1.20), but was lost during the 1.2-second approach to (0.80, 0.24, 1.12); observation 216 showed the cup on the floor beside B.
+- **Additional negative evidence:** `SessionReports/2026-10-08T200335Z-session-011.md`, observations 227–237. A default approach and two staged open approaches near fresh surface estimates displaced the cup; raising the final target from approximately 0.06 m to 0.115 m did not prevent displacement in the tested geometry. A later target about 0.10 m short of the sampled surface ended with no bilateral contact at width 0.005 m. Individual interfering surfaces and causes were not isolated.
+- **Further negative evidence:** `SessionReports/2026-10-08T201504Z-session-012.md`, observations 245–255. A default approach to a fresh floor target ended in an empty closure. A separate staged open approach through z=0.22 m to z=0.16 m also left the cup displaced before closure; no closure was attempted there. The submotions were not separately imaged, so this does not identify the contact step or a height threshold. Later cup positions also changed across navigation/stowing; do not assume a sampled floor pose has settled.
+- **Motion without a new command:** `SessionReports/2026-10-08T202518Z-session-013.md`, observations 263–264 at sim 8909.712–8918.400. With unchanged base/head/arm settings and no intervening physical command, the cup shifted from approximately pixel (322,94) to (315,98); sampled surfaces changed from (1.9744,-0.7384,0.0440) to (1.8963,-0.6586,0.0505) m. The cause and dynamics remain unresolved. This supports checking stability and limits attributing every later displacement to approach contact. A default open approach and a shorter arm approach followed by correction and closure again failed to acquire the cup; observations 268 and 273–275.
+- **Additional motion and unsuccessful correction evidence:** `SessionReports/2026-10-08T214813Z-session-020.md`, kitchen views 427–428, sim 13854.696–13874.620. With unchanged base/head/arm settings and no intervening physical command, the cup visibly shifted; sampled surfaces changed from about (0.8505,0.1506,0.0609) to (0.7966,0.0259,0.0640) m. These are different visible surface samples, not a calibrated velocity or object-center trajectory. Two later low-arm closures, including small anticipatory offsets from earlier samples, were empty. Alignment was not separately established immediately before either closure. Fresh sensing alone did not eliminate observation-to-action drift; no constant-velocity prediction or interception procedure was validated.
+- **Wall-adjacent approach and visibility evidence:** `SessionReports/2026-10-08T212543Z-session-018.md`, observations 384–391. A pitch-1.2-radian approach followed by vertical lowering and closure failed, as did default positioning about 0.07 m short of the freshly sampled cup surface. Neither trial established finger alignment or contact. Retracting the empty arm to a short reach with a lateral offset exposed the cup again in head views 388 and 391; this is a provisional visibility aid, not a grasp procedure. Unobstructed samples before, between and after the trials showed no discernible net displacement. Motion during occlusion remains unobserved; neither permanent stability nor successful pitched acquisition is established.
+- **Second acquisition with improved visibility:** `SessionReports/2026-10-08T213728Z-session-019.md`, observations 409–417. Approaching with the cup laterally offset exposed it beneath the open fingers in head images. A fresh cup surface was about (0.855,0.385,0.046) m; the open arm approached (0.855,0.384,0.22), pitch zero, then lowered to commanded (0.86,0.385,0.025). Width 0.005 produced bilateral contact; a 3-second lift/retract to (0.4,0.35,1.18) confirmed secure lift. Cup pixels and contact supported transport from bathroom to kitchen. The low command did not prove achieved Cartesian height: measured lift stayed near -0.370 m, also seen in failed trials. Lateral visibility, target height and other geometric differences were not isolated as the cause of success.
+- **Return-motion loss:** In session 019, contact and secure lift were still true in observation 418, but both were false in 419 after a -0.9005-radian base turn and head recentering. Arm target remained (0.4,0.35,1.18), desired width 0.005; no release was commanded. Carry reach within the driving limit did not guarantee retention during this interval. Fixture contact, head motion and inertial effects were not isolated. Final cup location was not seen.
+- **Status:** Provisional and narrowly scoped; two verified acquisitions/carries with later grip losses, plus many unsuccessful approaches. Neither the pitched lowering trial nor the successful session-019 geometry is a validated general remedy.
+- **Last updated:** Session 020, 2026-10-08.
+- **Notes / limitations:** Aperture is contact feedback, not a surveyed cup dimension. The delayed lift flag does not establish a universal height threshold. Acceleration, alignment and fixture contact were not isolated as causes of the placement slip. Slower staged placement remains untested; staged floor approaches were insufficient in the tested session-011/012 geometries. Episode coordinates are not replay targets. Cup positions can change before any closure; direct contact and continued motion were not isolated in every trial. Occluded head views and the black floor-height wrist view in session 012 did not establish finger/cup alignment.
+
+### Kitchen counter: low arm obstruction and recovery
+
+- **Memory:** At a close counter approach with the arm initially low, default open-gripper positioning did not reach the cup. The arm remained below the worktop and the base shifted backward. Attempts to raise and retract together remained obstructed. Lowering to the stowed height, retracting, and backing away allowed a subsequent short-reach vertical raise to reach the higher pose; approaching again with the raised, retracted arm avoided that particular obstruction.
+- **Scope:** This kitchen counter and the observed low-arm approach. Check current clearance and achieved encoders before advancing or extending; this is recovery evidence, not a validated cup grasp.
+- **Evidence:** `SessionReports/2026-10-08T194041Z-session-009.md`, observations 188–191 and status at sim 6294.800–6343.800. Default target (1.015,0.20,0.905) m ended with lift about 0.171 m and backward base displacement. Later lowering to (0.20,0,0.45), backing 0.5 m, and raising at short reach to z=1.18 produced measured lift about 0.735–0.749 m.
+- **Status:** Provisional; one observed obstruction and recovery, with exact interfering geometry unresolved.
+- **Last updated:** Session 009, 2026-10-08.
+- **Notes / limitations:** Some intermediate base commands were blocked, and arm action completion did not prove the requested height. Low approaches also displaced the cup. No cup closure or lift succeeded, and the episode coordinates are not replay targets.
+
+### Drawer B: open jaws and false bilateral feedback do not establish disengagement
+
+- **Memory:** An open gripper can remain engaged enough to pull B even with bilateral_contact false and a discrepancy between requested and achieved height. Opening the jaws or reading false bilateral feedback alone does not establish handle release; inspect actual geometry before driving.
+- **Scope:** The known kitchen cabinet and the observed left-handle approaches. The candidate operating procedure now lives in `Playbooks/Learned/OpenDrawerB.md`; fixed geometry remains in Maps.
+- **Evidence:** `SessionReports/2026-10-08T192917Z-session-008.md`, observations 167–168, and `SessionReports/2026-10-08T204519Z-session-015.md`, observations 314–318. Session 015 separately imaged an opening after one retract with a small commanded rise, then retained extension after raising/retracting clear. Bilateral feedback stayed false. Session 007 observation 150 supplies weaker corroboration.
+- **Status:** Provisional, supported by two more closely observed openings. The exact engagement and fixture mechanism remain unresolved.
+- **Last updated:** Session 015, 2026-10-08.
+- **Notes / limitations:** Session 008 included a deliberate orange-fixture approach. Session 015 did not, but incidental fixture contact and inherited state were not isolated. Do not infer universal fixture irrelevance, exact handle geometry or usable cup clearance from these results.
+
+### Recurring green toy: one verified grasp and carry
+
+- **Memory:** A commanded gripper width of 0.005 m held the green toy through lifting, base transport, and controlled placement. Measured aperture was approximately 0.052 m, effort approximately 14, with bilateral contact and secure-lift confirmation.
+- **Scope:** The recurring green bedroom toy, with fresh perception and alignment. This does not establish settings for the other toys.
+- **Evidence:** `SessionReports/2026-10-08T181847Z-session-002.md`, observations 39–43 and status around simulated times 1368–1440.
+- **Status:** Provisional; one successful acquisition and placement.
+- **Last updated:** Session 002, 2026-10-08.
+- **Notes / limitations:** The measured aperture is contact feedback, not a surveyed object dimension. Use current contact and lift feedback; the command alone does not prove a grasp. Do not reuse the episode's object coordinates without sensing.
+
+### Recurring red and blue toys: verified grips
+
+- **Memory:** Commanded width 0.005 m acquired each of the red and blue toys with bilateral contact and confirmed lift. Both were subsequently placed in the chest and visually confirmed inside. Red's aperture settled to about 0.059 m with effort about 16.4 during carry; blue's immediate post-lift aperture was about 0.087 m with effort about 24.9.
+- **Scope:** These recurring red and blue toys, individually, after fresh perception-directed positioning; yellow has separate evidence below.
+- **Evidence:** `SessionReports/2026-10-08T183144Z-session-003.md`, observations 61–70 and status at sim 2114–2224.
+- **Status:** Provisional; one successful acquisition and placement per toy.
+- **Last updated:** Session 003, 2026-10-08.
+- **Notes / limitations:** Aperture varied as contact settled and is not a measured object dimension. Closure and initial lift do not replace continued feedback or containment verification.
+
+### Chest containment: resolve rim occlusion with the wrist view
+
+- **Memory:** From an ordinary approach pose, the bedroom chest looked empty in head images even when toys were inside near its front wall. A wrist image from the extended placement pose clearly showed three colored toys on the interior floor; a second session used the wrist view to see all four after the head view showed only part of the contents.
+- **Scope:** Verification of this chest when its front wall obscures the head camera's view.
+- **Evidence:** `SessionReports/2026-10-08T183144Z-session-003.md`; head observations 66 and 69 versus wrist observation 70 after release, arm commanded (1.03, 0.4, 0.72) m at that session's base pose. Also `SessionReports/2026-10-08T184440Z-session-004.md`, head observation 91 versus wrist observation 92 from a different approach.
+- **Status:** Established for the observed chest and these two placement views; other viewpoints remain geometry-dependent.
+- **Last updated:** Session 004, 2026-10-08.
+- **Notes / limitations:** The coordinates are episode evidence, not a reusable target. Position from current geometry; inspect actual wrist pixels before claiming containment.
+
+### Docking immediately after a base action
+
+- **Memory:** A base action reported completed, but an immediate dock request was rejected with “Stop the robot before docking.” A subsequent 0.8-second wait and dock request succeeded. Deliberate 0.8-second waits after the final approaches in sessions 004–006 were followed by successful docking on the first requests, at the living-room station and twice at the kitchen station.
+- **Scope:** Docking after a final approach segment; completion may precede sufficient physical settling.
+- **Evidence:** `SessionReports/2026-10-08T183144Z-session-003.md`, sim 2445.956 rejection and 2456.004 successful docking; `SessionReports/2026-10-08T184440Z-session-004.md`, wait ending 3199.568 and docking at 3199.672; `SessionReports/2026-10-08T185529Z-session-005.md`, kitchen docking at 3841.000; `SessionReports/2026-10-08T190640Z-session-006.md`, kitchen docking at 4502.904. Each preventive trial included the 0.8-second wait.
+- **Status:** Provisional timing guidance; one rejection/recovery and three preventive-wait successes.
+- **Last updated:** Session 006, 2026-10-08.
+- **Notes / limitations:** Elapsed tool/decision time also contributed to settling; 0.8 seconds is not established as a universal minimum.
+
+### Recurring yellow toy: verified grip and placement
+
+- **Memory:** Commanded width 0.005 m acquired the yellow toy with bilateral contact; lifting to a retracted carry pose confirmed secure acquisition. Immediate post-lift aperture was about 0.070 m and effort about 19.4. Contact persisted during transport, and release into the chest completed the aggregate toy task.
+- **Scope:** The recurring yellow toy after fresh perception-directed positioning.
+- **Evidence:** `SessionReports/2026-10-08T184440Z-session-004.md`, observations 88–92; closure at sim 2942.568, lift at 2944.176, wrist observation 92 and `task_success: true` at 2990.672.
+- **Status:** Provisional; one verified acquisition, carry and placement.
+- **Last updated:** Session 004, 2026-10-08.
+- **Notes / limitations:** Measured aperture is contact feedback, not object dimensions. Recheck alignment, contact, lift and containment every time.

@@ -1,0 +1,264 @@
+{
+  "candidate": "candidate-004",
+  "tested_url": "http://127.0.0.1:8784/Long-Horizon%20Adaptive%20Robotics%20Expirement/Robot-Codex%20Integration%20001/campaign-002/investigation/replays/home01/candidate-004/index.html",
+  "viewport_override_reset": true,
+  "inherited": {
+    "inherited_receipt": "../candidate-003/browser.json",
+    "inherited_receipt_sha256": "3a3a5a4d58cab7fbc7c59ec28f5cf4460bb6da0f983e5c217420ba018199d4ed",
+    "identical_contract_and_controls": [
+      {
+        "path": "data.json",
+        "candidate_003_sha256": "2a852605fc000b4206d6f27a51844bc8120d08cbed874e47946462ca3165daf5",
+        "candidate_004_sha256": "2a852605fc000b4206d6f27a51844bc8120d08cbed874e47946462ca3165daf5",
+        "identical": true
+      },
+      {
+        "path": "data.js",
+        "candidate_003_sha256": "b0306ee429b3e41c9a4fd22875c4a13c5f9f418c6e866d5298753b2f92703dc8",
+        "candidate_004_sha256": "b0306ee429b3e41c9a4fd22875c4a13c5f9f418c6e866d5298753b2f92703dc8",
+        "identical": true
+      },
+      {
+        "path": "index.html",
+        "candidate_003_sha256": "af63312ea43dc2fb64ea5da0b5b8ada95d499b5dd33f31e496607bf59ae15995",
+        "candidate_004_sha256": "af63312ea43dc2fb64ea5da0b5b8ada95d499b5dd33f31e496607bf59ae15995",
+        "identical": true
+      },
+      {
+        "path": "viewer.css",
+        "candidate_003_sha256": "62b2505035c2649417d28adb110aeec0fce27e9735e70d12c34fccef6a4fe567",
+        "candidate_004_sha256": "62b2505035c2649417d28adb110aeec0fce27e9735e70d12c34fccef6a4fe567",
+        "identical": true
+      },
+      {
+        "path": "public-client.json",
+        "candidate_003_sha256": "135332cfd8a3ffeb22488984a8ad037d962fc2d1b9d09e73e29a8d9b8a9a7379",
+        "candidate_004_sha256": "135332cfd8a3ffeb22488984a8ad037d962fc2d1b9d09e73e29a8d9b8a9a7379",
+        "identical": true
+      }
+    ],
+    "viewer_diff": [
+      "--- candidate-003/viewer.js\n",
+      "+++ candidate-004/viewer.js\n",
+      "@@ -12,7 +12,7 @@\n",
+      "   function versions(file){return file.versions.filter(v=>v.final_only ? S.terminal : v.at!==null && v.at<=S.t+1e-9);}",
+      "   function owner(){const rows=D.events.filter(e=>e.lane==='authority'&&e.sim!==null&&e.sim<=S.t+1e-9);let value='conventional';for(const e of rows){const p=e.detail;value=e.owner||p.owner||p.new_owner||value;if(e.kind==='conventional_assistance_requested')value='assistance requested';}return value;}",
+      "   function seek(t, id=null){S.t=Math.max(D.meta.start,Math.min(D.meta.end,Number(t)||D.meta.start));S.terminal=S.t>=D.meta.end-1e-9;S.selected=id;S.version='latest';render();}",
+      "-  function drawMap(obs){const c=$('map'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.fillStyle='#edf2f3';ctx.fillRect(0,0,w,h);const xy=p=>[(p[0]-.02)/.88*(w-90)+45,h-45-(p[1]+.55)/1.1*(h-90)];ctx.strokeStyle='#d0dce4';ctx.fillStyle='#52697b';ctx.font='12px system-ui';for(let x=.1;x<=.8;x+=.1){const px=xy([x,0])[0];ctx.beginPath();ctx.moveTo(px,30);ctx.lineTo(px,h-30);ctx.stroke();ctx.fillText(x.toFixed(1)+' m',px-12,h-10);}for(let y=-.5;y<=.5;y+=.1){const py=xy([.1,y])[1];ctx.beginPath();ctx.moveTo(30,py);ctx.lineTo(w-30,py);ctx.stroke();}ctx.fillStyle='#183f57';ctx.fillText('PUBLIC DETECTIONS · TOP VIEW SCHEMATIC',20,21);const ds=obs?.detections;const rows=Array.isArray(ds)?ds:Object.entries(ds||{}).map(([id,v])=>({id,...v}));let count=0;for(const r of rows){const pos=r.pos||r.position_m||r.position_world_m||r.world_position_m||r.position||r.pose?.position_m||r.pose?.position||r.world_pose?.position;if(!Array.isArray(pos)||pos.length<2)continue;const [x,y]=xy(pos);ctx.fillStyle=String(r.id||r.object_id||r.part_id).includes('insert')?'#bd7a3c':'#24739b';ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#163046';const name=r.id||r.object_id||r.part_id||'detection';ctx.font='bold 14px system-ui';ctx.fillText(name,x+15,y+3);ctx.font='12px system-ui';ctx.fillText(r.zone||r.pad||r.location||'',x+15,y+18);count++;}if(!count){ctx.fillStyle='#a34718';ctx.font='16px system-ui';ctx.fillText('No position-bearing detections in this sample.',45,h/2);}ctx.fillStyle='#52697b';ctx.font='12px system-ui';ctx.fillText('Measured samples held until next publication; no simulated motion or hidden state.',20,h-28);}",
+      "+  function drawMap(obs){const c=$('map'),ctx=c.getContext('2d'),w=c.width,h=c.height,zoom=Math.max(1,w/Math.max(1,c.clientWidth)),font=(n,bold=false)=>(bold?'bold ':'')+(n*zoom)+'px system-ui';ctx.clearRect(0,0,w,h);ctx.fillStyle='#edf2f3';ctx.fillRect(0,0,w,h);const xy=p=>[(p[0]-.02)/.88*(w-90)+45,h-45-(p[1]+.55)/1.1*(h-90)];ctx.strokeStyle='#d0dce4';ctx.fillStyle='#52697b';ctx.font=font(10);for(let x=.1;x<=.8;x+=.1){const px=xy([x,0])[0];ctx.beginPath();ctx.moveTo(px,30);ctx.lineTo(px,h-30);ctx.stroke();ctx.fillText(x.toFixed(1)+' m',px-12,h-10);}for(let y=-.5;y<=.5;y+=.1){const py=xy([.1,y])[1];ctx.beginPath();ctx.moveTo(30,py);ctx.lineTo(w-30,py);ctx.stroke();}ctx.fillStyle='#183f57';ctx.fillText('Public detections · top view',20,21);const ds=obs?.detections;const rows=Array.isArray(ds)?ds:Object.entries(ds||{}).map(([id,v])=>({id,...v}));let count=0;for(const r of rows){const pos=r.pos||r.position_m||r.position_world_m||r.world_position_m||r.position||r.pose?.position_m||r.pose?.position||r.world_pose?.position;if(!Array.isArray(pos)||pos.length<2)continue;const [x,y]=xy(pos);ctx.fillStyle=String(r.id||r.object_id||r.part_id).includes('insert')?'#bd7a3c':'#24739b';ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#163046';const name=r.id||r.object_id||r.part_id||'detection';ctx.font=font(12,true);ctx.fillText(name,x+15,y+3);ctx.font=font(10);ctx.fillText(r.zone||r.pad||r.location||'',x+15,y+18);count++;}if(!count){ctx.fillStyle='#a34718';ctx.font=font(11);ctx.fillText('No position-bearing detections in this sample.',45,h/2);}ctx.fillStyle='#52697b';ctx.font=font(10);ctx.fillText('Held samples · no interpolation',20,h-28);}",
+      "   function world(){const obs=latest(D.observations,'sim',S.t),frame=latest(D.frames,'published_sim',S.t);const age=frame?S.t-frame.capture_time_s:null;const camera=S.mode==='camera'||S.mode==='auto'&&frame&&age<=2.5;const usable=camera&&frame;$('camera').hidden=!usable;$('map').hidden=camera||!obs;$('worldEmpty').hidden=!!(usable||!camera&&obs);if(usable){if($('camera').getAttribute('src')!==frame.href)$('camera').src=frame.href;$('worldCaption').textContent=(age>2.5?'STALE RECORDED RGB · ':'Original retained RGB · ')+'capture '+fmt(frame.capture_time_s)+' s · first published '+fmt(frame.published_sim)+' s';$('sampleInfo').textContent='Recorded pixels held at this cursor · age '+fmt(age)+' simulation s · '+frame.id+' · no interpolated footage';if(age>2.5)$('sampleInfo').textContent+=' · Later pixels were not retained';$('worldSource').replaceWith(Object.assign(link(frame.source,'Frame publication evidence'),{id:'worldSource'}));}else if(obs){drawMap(obs);$('worldCaption').textContent='OBSERVATION MAP · schematic from public detections; camera pixels unavailable at this moment';$('sampleInfo').textContent='Sample captured '+fmt(obs.capture_sim_time_s)+' s · published '+fmt(obs.sim)+' s · age '+fmt(S.t-obs.capture_sim_time_s)+' s'+(frame?' · last recorded RGB '+fmt(frame.capture_time_s)+' s':'');$('worldSource').replaceWith(Object.assign(link(obs.source,'Observation evidence'),{id:'worldSource'}));}else{$('worldCaption').textContent='World evidence unavailable before first published sample';$('sampleInfo').textContent='No future sample is shown.';}$('station').textContent=obs?'Station: '+[obs.station?.fixture_insert||obs.station?.installed_family||obs.station?.installed_insert||'',obs.station?.state||obs.station?.mode||(obs.station?.busy?'busy':'idle')].filter(Boolean).join(' · '):'';$('observationInfo').textContent=obs?'Observation '+obs.sequence+' · published '+fmt(obs.sim)+' s':'';$('observationDetail').textContent=obs?json(obs):'No published observation at this cursor.';}",
+      "   function detail(e){const box=$('eventDetail');box.replaceChildren();if(!e){box.textContent='No matching record is visible at this cursor.';return;}const h=document.createElement('h3');h.textContent=e.title;const p=document.createElement('p');p.className='timing';p.textContent=timingText(e)+(e.wall?' · wall '+new Date(e.wall*1000).toISOString():'')+' · '+e.id;const nav=document.createElement('nav');nav.append(link(e.source,e.source.line?'Source · line '+e.source.line:'Source'));const pre=document.createElement('pre');pre.textContent=json(e.detail);box.append(h,p,nav,pre);}",
+      "   function behavior(){const lane=$('lane').value,query=$('eventSearch').value.toLowerCase();let rows=D.events.filter(e=>visible(e)&&(lane==='all'||lane==='meaningful'&&meaningful(e)||lane===e.lane));if(query)rows=rows.filter(e=>(e.title+' '+json(e.detail)).toLowerCase().includes(query));let selected=rows.find(e=>e.id===S.selected)||rows.at(-1);if(!selected&&S.selected)selected=D.events.find(e=>e.id===S.selected&&visible(e));const shown=rows.slice(-70);$('eventCount').textContent=rows.length+' visible matching records'+(rows.length>70?' · latest 70 listed; filter to reach earlier records':'');const list=$('eventList');list.replaceChildren();if(!shown.length){const p=document.createElement('p');p.className='empty';p.textContent='No matching records at this cursor.';list.append(p);}for(const e of shown){const b=document.createElement('button');b.className='eventRow';b.setAttribute('aria-current',String(e===selected));const time=document.createElement('time');time.textContent=e.at===null?'terminal':fmt(e.at)+' s';const span=document.createElement('span');span.className='eventTitle';span.textContent=e.title;const tag=document.createElement('span');tag.className='tag';tag.textContent=e.lane+(e.timing.kind==='wall-bracket'?' · bracketed receipt':'');span.append(tag);b.append(time,span);b.onclick=()=>{pause();seek(e.at===null?D.meta.end:e.at,e.id);if(e.detail?.path&&D.files.some(f=>f.path===e.detail.path)){S.file=e.detail.path;files();}list.scrollTop=list.scrollHeight;};list.append(b);}detail(selected);list.scrollTop=list.scrollHeight;}"
+    ],
+    "final_viewer_sha256": "9d9de6f471ec77afb2e73464624ca84253654eb23c91c31bf981cb983faf66f5",
+    "inherited_schema_keys": [
+      "candidate",
+      "checks",
+      "failed",
+      "source_preview",
+      "functional_checks_passed"
+    ],
+    "inherited_check_count": 79,
+    "harness_correction": "First comparison command had a Python parenthesis syntax error before reading or writing files; corrected command passes."
+  },
+  "checks": [
+    {
+      "name": "Accepted handback keeps schematic world, conventional owner and evidenced continuity synchronized",
+      "passed": true,
+      "state": {
+        "caption": "OBSERVATION MAP · schematic from public detections; camera pixels unavailable at this moment",
+        "clock": "302.358 s",
+        "detail": "control owner changed · pilot-412a819bc501-handback-v2Recorded simulation 302.358 s · wall 2026-09-30T21:50:10.405Z · world-3041Source · line 3041{\n  \"reason\": \"Activation-001 setup obstruction repaired. A1 transport pilot-412a819bc501-clear-home-a-v1 verified at event 1143/sequence 1121; A1 remains parking1. After unsupported_resumption on handback-v1, setup pilot-412a819bc501-setup-b-v1 completed 266.066 s with observed support sequence 2635. Status sequence 2679 shows insert_A at insert_home_A, insert_B installed in fixture, B2 raw, idle ready station without part/fault, idle arm, open .080 m jaws/no held visible ID, no unresolved commands. Conventional next action can load B2 in B fixture then recipe B, linked inspection and tray2 delivery. Continuity updated; no order completion claim.\",\n  \"request_id\": \"pilot-412a819bc501-handback-v2\",\n  \"supported_next_action\": {\n    \"destination\": \"fixture\",\n    \"operation\": \"transport\",\n    \"part_id\": \"B2\"\n  }\n}",
+        "file": "Continuity.md ↪ public alias",
+        "fileButtons": 17,
+        "owner": "conventional controller",
+        "sample": "Sample captured 302.278 s · published 302.336 s · age 0.080 s · last recorded RGB 138.778 s",
+        "status": "Protected atomic continuity commit · 291.702 s conservative evidence boundary · 2187 bytes · SHA256 9e303fbf3bd4f76d943410fa2ec072b09d763bf4b76bcd5d58216211dec2eb33",
+        "terminal": false,
+        "text": "# Recovery continuity\n\nRun episode-feba3fead8f14219; activation activation-001; invocation pilot-412a819bc501. Pinned epoch 3/order 1, incarnation 3/restart generation 0. Configured development recovery. Latest owner robot; no active/unresolved commands. Canary qualified. Use python3.\n\nLast reviewed event: 24 (contiguous startup window). Also revie"
+      }
+    },
+    {
+      "name": "Rejected handback retains robot authority",
+      "passed": true,
+      "state": {
+        "caption": "OBSERVATION MAP · schematic from public detections; camera pixels unavailable at this moment",
+        "clock": "189.072 s",
+        "detail": "command rejected · pilot-412a819bc501-handback-v1 · unsupported_resumptionRecorded simulation 189.072 s · wall 2026-09-30T21:48:17.119Z · world-1894Source · line 1894{\n  \"actor\": \"robot\",\n  \"envelope\": {\n    \"authority_epoch\": 3,\n    \"observation_sequence\": 1864,\n    \"order_version\": 1,\n    \"reason\": \"Activation-001 setup B destination-occupied incident (events 5,10,16,19) resolved by moving A1 from insert_home_A to parking1. Transport pilot-412a819bc501-clear-home-a-v1 completed at event 1140; public effect verified event 1143/sequence 1121. Requested capture pilot-412a819bc501-verify-clear-home-a-v1 completed sequence 1361; status sequence 1578 confirms A1 parked, idle arm/station, open .080 m jaws with no held visible ID, no unresolved commands. Insert_A remains fixture, insert_B home, B2 raw; conventional setup B and ordered processing/inspection/tray2 delivery remain. Continuity committed.\",\n    \"request_id\": \"pilot-412a819bc501-handback-v1\"\n  },\n  \"error\": {\n    \"code\": \"unsupported_resumption\",\n    \"message\": \"Frozen conventional controller lacks a currently supported next action\"\n  },\n  \"fingerprint\": \"d074d447b4c6093a7d0614e59c5c13e3d51c6878eb40f2f0b4069a03221f2b24\",\n  \"kind\": \"handback\",\n  \"phase\": \"terminal\",\n  \"request_event_id\": 1893,\n  \"request_id\": \"pilot-412a819bc",
+        "file": "Continuity.md ↪ public alias",
+        "fileButtons": 17,
+        "owner": "robot controller",
+        "sample": "Sample captured 188.978 s · published 189.038 s · age 0.094 s · last recorded RGB 138.778 s",
+        "status": "Protected atomic continuity commit · 180.224 s conservative evidence boundary · 2179 bytes · SHA256 7f920c979f05808e99eee1cb4c8b22107494f51c60f419d48a4cb235e0f6a7d1",
+        "terminal": false,
+        "text": "# Recovery continuity\n\nRun episode-feba3fead8f14219; activation activation-001; invocation pilot-412a819bc501. Pinned epoch 3/order 1, incarnation 3/restart generation 0. Configured development recovery. Latest gateway owner robot; no active or unresolved commands. Canary qualified. Use python3.\n\nLast reviewed event: 24 (contiguous startup window)."
+      }
+    },
+    {
+      "name": "Unavailable later camera pixels stay explicitly stale",
+      "passed": true,
+      "state": {
+        "caption": "STALE RECORDED RGB · capture 138.778 s · first published 138.866 s",
+        "clock": "189.072 s",
+        "detail": "command rejected · pilot-412a819bc501-handback-v1 · unsupported_resumptionRecorded simulation 189.072 s · wall 2026-09-30T21:48:17.119Z · world-1894Source · line 1894{\n  \"actor\": \"robot\",\n  \"envelope\": {\n    \"authority_epoch\": 3,\n    \"observation_sequence\": 1864,\n    \"order_version\": 1,\n    \"reason\": \"Activation-001 setup B destination-occupied incident (events 5,10,16,19) resolved by moving A1 from insert_home_A to parking1. Transport pilot-412a819bc501-clear-home-a-v1 completed at event 1140; public effect verified event 1143/sequence 1121. Requested capture pilot-412a819bc501-verify-clear-home-a-v1 completed sequence 1361; status sequence 1578 confirms A1 parked, idle arm/station, open .080 m jaws with no held visible ID, no unresolved commands. Insert_A remains fixture, insert_B home, B2 raw; conventional setup B and ordered processing/inspection/tray2 delivery remain. Continuity committed.\",\n    \"request_id\": \"pilot-412a819bc501-handback-v1\"\n  },\n  \"error\": {\n    \"code\": \"unsupported_resumption\",\n    \"message\": \"Frozen conventional controller lacks a currently supported next action\"\n  },\n  \"fingerprint\": \"d074d447b4c6093a7d0614e59c5c13e3d51c6878eb40f2f0b4069a03221f2b24\",\n  \"kind\": \"handback\",\n  \"phase\": \"terminal\",\n  \"request_event_id\": 1893,\n  \"request_id\": \"pilot-412a819bc",
+        "file": "Continuity.md ↪ public alias",
+        "fileButtons": 17,
+        "owner": "robot controller",
+        "sample": "Recorded pixels held at this cursor · age 50.294 simulation s · overhead:1362 · no interpolated footage · Later pixels were not retained",
+        "status": "Protected atomic continuity commit · 180.224 s conservative evidence boundary · 2179 bytes · SHA256 7f920c979f05808e99eee1cb4c8b22107494f51c60f419d48a4cb235e0f6a7d1",
+        "terminal": false,
+        "text": "# Recovery continuity\n\nRun episode-feba3fead8f14219; activation activation-001; invocation pilot-412a819bc501. Pinned epoch 3/order 1, incarnation 3/restart generation 0. Configured development recovery. Latest gateway owner robot; no active or unresolved commands. Canary qualified. Use python3.\n\nLast reviewed event: 24 (contiguous startup window)."
+      }
+    },
+    {
+      "name": "Explicit numeric seek updates synchronized cursor",
+      "passed": true,
+      "state": {
+        "caption": "Original retained RGB · capture 98.102 s · first published 98.162 s",
+        "clock": "100.000 s",
+        "detail": "native trajectory dispatched · pilot-412a819bc501-clear-home-a-v1Recorded simulation 95.032 s · wall 2026-09-30T21:46:43.080Z · world-950Source · line 950{\n  \"request_id\": \"pilot-412a819bc501-clear-home-a-v1\",\n  \"sim_time\": 95.02999999995993,\n  \"type\": \"trajectory_dispatched\"\n}",
+        "file": "Continuity.md ↪ public alias",
+        "fileButtons": 17,
+        "owner": "robot controller",
+        "sample": "Recorded pixels held at this cursor · age 1.898 simulation s · overhead:961 · no interpolated footage",
+        "status": "Protected atomic continuity commit · 82.916 s conservative evidence boundary · 2094 bytes · SHA256 362aff06d938dc2d4e2fbff16809b0b6a5ba9e9965af73cc7b279eef0b7f96e5",
+        "terminal": false,
+        "text": "# Recovery continuity\n\nRun episode-feba3fead8f14219; activation activation-001; invocation pilot-412a819bc501. Authority epoch 3, order revision 1, incarnation 3, restart generation 0. Gateway status acknowledged owner robot; no active or unresolved commands. Configured development recovery stage; canary qualified. Use python3 (python alias unavail"
+      }
+    },
+    {
+      "name": "64× playback reaches the recorded stop and pauses automatically",
+      "passed": true,
+      "state": {
+        "caption": "OBSERVATION MAP · schematic from public detections; camera pixels unavailable at this moment",
+        "clock": "348.850 s",
+        "detail": "agentMessage completed · final_answerAfter world stop +13.796 wall seconds · wall 2026-09-30T21:51:10.773Z · client-642Source · line 642{\n  \"phase\": \"completed\",\n  \"item\": {\n    \"type\": \"agentMessage\",\n    \"id\": \"msg_0980540c6942fcc5016abd844acdec87d1b98455552bf773ae\",\n    \"text\": \"Moved blocking part `A1` to `parking1` and installed insert B. Fresh observations confirmed the placements, idle robot, and open jaws.\\n\\nHandback was accepted; control returned to the conventional controller. Remaining processing, inspection, and delivery are unverified.\\n\\n[Recovery evidence](/workspace/notes/recovery-outcome.md)\",\n    \"phase\": \"final_answer\",\n    \"memoryCitation\": null,\n    \"delivery\": null,\n    \"questions\": null\n  },\n  \"receipt_clock\": \"client emittedAtMs; not a reasoning timestamp\"\n}",
+        "file": "Continuity.md ↪ public alias",
+        "fileButtons": 20,
+        "owner": "conventional controller",
+        "sample": "Sample captured 348.778 s · published 348.842 s · age 0.072 s · last recorded RGB 138.778 s",
+        "status": "Public fixed-link alias to retained .continuity/Continuity.md · untimed terminal snapshot · 2187 bytes · SHA256 9e303fbf3bd4f76d943410fa2ec072b09d763bf4b76bcd5d58216211dec2eb33",
+        "terminal": true,
+        "text": "# Recovery continuity\n\nRun episode-feba3fead8f14219; activation activation-001; invocation pilot-412a819bc501. Pinned epoch 3/order 1, incarnation 3/restart generation 0. Configured development recovery. Latest owner robot; no active/unresolved commands. Canary qualified. Use python3.\n\nLast reviewed event: 24 (contiguous startup window). Also revie"
+      }
+    },
+    {
+      "name": "Pause click after 64× playback",
+      "category": "harness-assumption",
+      "passed": false,
+      "detail": "The replay had already reached the recorded end between tool calls. The unavailable Pause button is preserved as a timing assumption error; automatic end state is verified separately."
+    },
+    {
+      "name": "1× playback advances and manual pause works",
+      "passed": true,
+      "state": {
+        "caption": "Original retained RGB · capture 98.102 s · first published 98.162 s",
+        "clock": "100.200 s",
+        "detail": "native trajectory dispatched · pilot-412a819bc501-clear-home-a-v1Recorded simulation 95.032 s · wall 2026-09-30T21:46:43.080Z · world-950Source · line 950{\n  \"request_id\": \"pilot-412a819bc501-clear-home-a-v1\",\n  \"sim_time\": 95.02999999995993,\n  \"type\": \"trajectory_dispatched\"\n}",
+        "file": "Continuity.md ↪ public alias",
+        "fileButtons": 17,
+        "owner": "robot controller",
+        "sample": "Recorded pixels held at this cursor · age 2.098 simulation s · overhead:961 · no interpolated footage",
+        "status": "Protected atomic continuity commit · 82.916 s conservative evidence boundary · 2094 bytes · SHA256 362aff06d938dc2d4e2fbff16809b0b6a5ba9e9965af73cc7b279eef0b7f96e5",
+        "terminal": false,
+        "text": "# Recovery continuity\n\nRun episode-feba3fead8f14219; activation activation-001; invocation pilot-412a819bc501. Authority epoch 3, order revision 1, incarnation 3, restart generation 0. Gateway status acknowledged owner robot; no active or unresolved commands. Configured development recovery stage; canary qualified. Use python3 (python alias unavail"
+      }
+    },
+    {
+      "name": "Terminal cursor exposes complete retained tree and exact final note",
+      "passed": true,
+      "state": {
+        "caption": "OBSERVATION MAP · schematic from public detections; camera pixels unavailable at this moment",
+        "clock": "348.850 s",
+        "detail": "agentMessage completed · final_answerAfter world stop +13.796 wall seconds · wall 2026-09-30T21:51:10.773Z · client-642Source · line 642{\n  \"phase\": \"completed\",\n  \"item\": {\n    \"type\": \"agentMessage\",\n    \"id\": \"msg_0980540c6942fcc5016abd844acdec87d1b98455552bf773ae\",\n    \"text\": \"Moved blocking part `A1` to `parking1` and installed insert B. Fresh observations confirmed the placements, idle robot, and open jaws.\\n\\nHandback was accepted; control returned to the conventional controller. Remaining processing, inspection, and delivery are unverified.\\n\\n[Recovery evidence](/workspace/notes/recovery-outcome.md)\",\n    \"phase\": \"final_answer\",\n    \"memoryCitation\": null,\n    \"delivery\": null,\n    \"questions\": null\n  },\n  \"receipt_clock\": \"client emittedAtMs; not a reasoning timestamp\"\n}",
+        "file": "notes/recovery-outcome.md",
+        "fileButtons": 20,
+        "owner": "conventional controller",
+        "sample": "Sample captured 348.778 s · published 348.842 s · age 0.072 s · last recorded RGB 138.778 s",
+        "status": "Exact retained final workspace snapshot · untimed terminal snapshot · 1961 bytes · SHA256 bfe9c331b29375df05cc2bc9c6e9b5c62ed52173eb433be48b84d7d3cd6a1223",
+        "terminal": true,
+        "text": "# Recovery outcome: activation-001\n\nRun episode-feba3fead8f14219; invocation pilot-412a819bc501; fixed order revision 1.\n\nThe supervisor accepted handback request pilot-412a819bc501-handback-v2, request event 3040, terminal completed at simulation time 302.358 s. Response: ok true, owner conventional, authority_epoch 4; verification state public_re"
+      }
+    },
+    {
+      "name": "Final-only contents disappear when seeking backward",
+      "passed": false,
+      "state": {
+        "caption": "OBSERVATION MAP · schematic from public detections; camera pixels unavailable at this moment",
+        "clock": "170.500 s",
+        "detail": "commandExecution completed · /usr/bin/bash -lc 'python3 -B robot.py status'Receipt bracket 160.448–160.538 s · navigation at upper bound · anchors 1605 / 1606 · wall 2026-09-30T21:47:48.569Z · client-356Source · line 356{\n  \"phase\": \"completed\",\n  \"item\": {\n    \"type\": \"commandExecution\",\n    \"id\": \"exec-53cbca75-2313-4a40-b70a-764f7bde2bc4\",\n    \"pluginId\": null,\n    \"scriptPath\": null,\n    \"command\": \"/usr/bin/bash -lc 'python3 -B robot.py status'\",\n    \"cwd\": \"/workspace\",\n    \"processId\": \"86389\",\n    \"source\": \"unifiedExecStartup\",\n    \"status\": \"completed\",\n    \"commandActions\": [\n      {\n        \"type\": \"unknown\",\n        \"command\": \"python3 -B robot.py status\"\n      }\n    ],\n    \"aggregatedOutput\": \"{\\\"activation\\\": {\\\"activation_id\\\": \\\"activation-001\\\", \\\"authority_epoch\\\": 3, \\\"cause\\\": \\\"unknown\\\", \\\"invocation\\\": {\\\"authority_epoch\\\": 3, \\\"invocation_id\\\": \\\"pilot-412a819bc501\\\", \\\"started_sim_time_s\\\": 1.7700000000000014, \\\"state\\\": \\\"active\\\"}, \\\"order_version\\\": 1, \\\"reason\\\": \\\"scheduler cannot support proposed action: bounded attempt limit reached\\\", \\\"sim_time_s\\\": 1.6860000000000013, \\\"source\\\": \\\"public conventional feedback\\\", \\\"trigger_event_id\\\": null}, \\\"active_command\\\": null, \\\"authority_epoch\\\": 3, \\\"commands_recent\\\": [{\\\"actor\\\": \\\"conventional\\\", \\\"",
+        "file": "notes/recovery-outcome.md",
+        "fileButtons": 17,
+        "owner": "robot controller",
+        "sample": "Sample captured 170.378 s · published 170.454 s · age 0.122 s · last recorded RGB 138.778 s",
+        "status": "This path has not been evidenced at this cursor.",
+        "terminal": false,
+        "text": "No future file content is shown. Jump to the terminal view for the retained final workspace."
+      },
+      "category": "harness-assumption",
+      "detail": "Assertion expected invented wording \"not yet evidenced\"; the actual empty state says the path has not been evidenced at this cursor and explicitly excludes future contents. Raw observed state retained."
+    },
+    {
+      "name": "Earlier cursor excludes final-only bytes with explicit empty-state text",
+      "passed": true,
+      "state": {
+        "caption": "OBSERVATION MAP · schematic from public detections; camera pixels unavailable at this moment",
+        "clock": "170.500 s",
+        "detail": "commandExecution completed · /usr/bin/bash -lc 'python3 -B robot.py status'Receipt bracket 160.448–160.538 s · navigation at upper bound · anchors 1605 / 1606 · wall 2026-09-30T21:47:48.569Z · client-356Source · line 356{\n  \"phase\": \"completed\",\n  \"item\": {\n    \"type\": \"commandExecution\",\n    \"id\": \"exec-53cbca75-2313-4a40-b70a-764f7bde2bc4\",\n    \"pluginId\": null,\n    \"scriptPath\": null,\n    \"command\": \"/usr/bin/bash -lc 'python3 -B robot.py status'\",\n    \"cwd\": \"/workspace\",\n    \"processId\": \"86389\",\n    \"source\": \"unifiedExecStartup\",\n    \"status\": \"completed\",\n    \"commandActions\": [\n      {\n        \"type\": \"unknown\",\n        \"command\": \"python3 -B robot.py status\"\n      }\n    ],\n    \"aggregatedOutput\": \"{\\\"activation\\\": {\\\"activation_id\\\": \\\"activation-001\\\", \\\"authority_epoch\\\": 3, \\\"cause\\\": \\\"unknown\\\", \\\"invocation\\\": {\\\"authority_epoch\\\": 3, \\\"invocation_id\\\": \\\"pilot-412a819bc501\\\", \\\"started_sim_time_s\\\": 1.7700000000000014, \\\"state\\\": \\\"active\\\"}, \\\"order_version\\\": 1, \\\"reason\\\": \\\"scheduler cannot support proposed action: bounded attempt limit reached\\\", \\\"sim_time_s\\\": 1.6860000000000013, \\\"source\\\": \\\"public conventional feedback\\\", \\\"trigger_event_id\\\": null}, \\\"active_command\\\": null, \\\"authority_epoch\\\": 3, \\\"commands_recent\\\": [{\\\"actor\\\": \\\"conventional\\\", \\\"",
+        "file": "notes/recovery-outcome.md",
+        "fileButtons": 17,
+        "owner": "robot controller",
+        "sample": "Sample captured 170.378 s · published 170.454 s · age 0.122 s · last recorded RGB 138.778 s",
+        "status": "This path has not been evidenced at this cursor.",
+        "terminal": false,
+        "text": "No future file content is shown. Jump to the terminal view for the retained final workspace."
+      }
+    },
+    {
+      "name": "375 px layout has no horizontal overflow and schematic remains visible",
+      "passed": true,
+      "state": {
+        "clock": "302.358 s",
+        "mapWidth": 342.6875,
+        "scrollWidth": 1265,
+        "width": 1265
+      },
+      "category": "harness-assumption",
+      "detail": "Viewport override applied to the separately selected temporary source tab. First measurement was desktop width1265, not a phone. Preserve the measurement; exclude it from mobile evidence."
+    },
+    {
+      "name": "Actual 375 px override produces a stacked phone layout without overflow",
+      "passed": true,
+      "state": {
+        "clock": "302.358 s",
+        "filesX": 12,
+        "mapWidth": 322,
+        "scrollWidth": 360,
+        "width": 360,
+        "worldX": 12
+      }
+    },
+    {
+      "name": "Desktop and phone visual inspection",
+      "passed": true,
+      "detail": "Desktop shows all three panes and readable continuity content. Actual phone width360 at375 override stacks all panes, preserves controls and readable map labels. The first viewport attempt targeted the temporary source tab; it is retained as a harness assumption and superseded by measured phone QA."
+    },
+    {
+      "name": "Final viewer has no warning/error console messages",
+      "passed": true,
+      "state": []
+    }
+  ],
+  "functional_checks_passed": true,
+  "functional_check_count": 11,
+  "harness_assumptions": 3,
+  "source_preview": {
+    "inherited_from": "../candidate-003/browser.json",
+    "boundary": "In-app raw JSON preview was blocked by the client. No bypass. Exact allowlisted source details remain readable in the replay; static verifier checks source existence and identity."
+  },
+  "screenshots": [
+    "browser-desktop.png",
+    "browser-mobile.png"
+  ],
+  "console": []
+}

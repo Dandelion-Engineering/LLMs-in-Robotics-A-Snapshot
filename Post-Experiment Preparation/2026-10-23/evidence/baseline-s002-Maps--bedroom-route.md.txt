@@ -1,0 +1,37 @@
+# Observed living-room–bedroom route and chest
+
+Source: session-002, head observations 20–46, public odometry and selected-pixel depth. Everything here is approximate. Reconcile current RGB-D/lidar before motion; a copied waypoint is not a collision-free route guarantee.
+
+## Scene and manipulation areas
+
+- Bedroom lies approximately along initial-frame +y, through the opening beyond the living-room table and TV cabinet. Bed is to the left on entry; the open wooden toy chest is farther in on the right.
+- Successful green pickup base: (.574,3.563), yaw .675 rad. Successful blue pickup base: (1.109,4.703), yaw .603 rad. Pickup details are in [the placement record](../Artifacts/session-002-placements.md).
+- Successful chest deposit base: approximately (1.30,5.11), yaw 1.13 rad. Arm (1.00,.10,.78) placed green; (1.00,-.05,.78) placed blue. These endpoints were over the observed interior, not the front wall. Chest floor was observed around z=.11; wall height was not precisely surveyed.
+- Red remained nearer the bedroom doorway on the bed side (observations 23, 36, 37). Yellow remained farther in beside the bed (observations 23, 24, 35). These descriptions locate search regions, not grasp poses.
+- The dark green open receptacle behind the toy chest was not identified as a charger. The bedroom charger was not found in this session. The visually identified green/yellow pad used for docking was the living-room charger from session-001.
+
+## Successfully executed outbound route
+
+Starting living-room dock pose (-1.880,-.939), yaw -2.677:
+
+1. Looked behind using head pan 3.0, then backed .65 m to (-1.299,-.647).
+2. Turned in open floor and faced approximately .673 rad; drove 1.50 m to (-.156,.265), then .88 m toward (.53,.81).
+3. Faced approximately 1.555 rad and drove 1.50 m to (.554,2.269), then 1.25 m to (.574,3.564), inspecting the doorway and bedroom.
+
+The corridor alongside the table was traversed near x=.55. Base reach was retracted to .22 before travel. This route is evidence of one passage under then-current clearance.
+
+## Return obstruction and recovery
+
+- From (1.155,4.797), yaw -1.838, a 1.50 m segment reached (.769,3.410), yaw -1.816, near the doorway edge.
+- The next requested .85 m segment was **blocked**. Resulting odometry was (.672,3.344), yaw -1.497; nearest side lidar was about .034 m. The large heading change accompanied the obstruction. Do not replay that approach.
+- Recovery actually used: back .40 m to (.644,3.736); inspect; turn -.24 rad; forward .85 m to (.505,2.909), yaw -1.737. The latter segment completed normally.
+- Turn +.1658 rad to face approximately -pi/2, then forward 1.50 m to (.502,1.409), and .40 m to (.503,1.003). These segments completed with observation between stages.
+- This supports using fresh local clearance and a centered doorway approach, not trusting the earlier odometry line near x=.77. Robot footprint and map drift were not separately calibrated.
+
+## Successful charger approach in this session
+
+From (.503,1.003), turn to yaw -2.471. Observation 43 clearly showed the green pad, yellow mark and dark backstop. Pixel (238,175) projected to (3.0302,.0201,.0091) in the base frame, with an open approach between pedestal and sofa.
+
+Drove 1.50, 1.15 and .35 m along this heading, with current image/lidar inspection between segments. Docking succeeded at (-1.849,-.859), yaw -2.471, sim 1375.304. The arm was (.22,0,.70), empty and open; head tilt .65. The backstop is ahead. The reverse route from this dock toward (.50,1.00) is a candidate for a future departure, but must be observed before backing; that full reverse traversal was not executed here.
+
+See [session report](../SessionReports/2026-10-10-session-002.md). Observation identifiers are provenance and may not remain retrievable in a later invocation.

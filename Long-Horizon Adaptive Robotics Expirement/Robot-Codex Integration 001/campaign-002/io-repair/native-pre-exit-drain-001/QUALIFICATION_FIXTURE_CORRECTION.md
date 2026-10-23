@@ -1,0 +1,5 @@
+# Qualification fixture correction
+
+Checks037 passed all 445 harness tests and 558 assessment tests with unchanged sources. The first 96 qualification/inventory checks retained eight failures: six old coordinator fixtures omitted the new required method, one still expected the old registry script, and one negative host identity became the new valid host identity. The correction adds the new required method to those source fixtures, expects the Session 15 registry wrapper, and advances only the negative host identity. Production coordinator gates are unchanged.
+
+The final certificate preparer now binds V29's exact coordinator/readiness/completion and the new pre-exit method and independent assessor. These are prospective source/admission changes, not permission to score. No attempt has been launched on the repair. The next validation reuses the successful H/A executions only after verifying every tested harness/assessment source remains byte-identical to the full checks037 source receipt; it reruns the corrected qualification and admission suites under a fresh receipt. The earlier failed development records remain immutable.
