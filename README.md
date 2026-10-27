@@ -29,6 +29,8 @@ That development workspace is distinct from the persistent files available to **
 
 Randy talks through ideas, results, and next steps with ChatGPT using voice in project threads. ChatGPT helps interpret the repository and turn those discussions into written directions for Codex. Codex implements and tests the agreed work, records what happened, and hands the results back for another discussion. The repository messages preserve those directions, often drafted by AI on Randy’s behalf; they are not recordings of the voice conversations themselves.
 
+For a broader account of how and why I work with AI agents, see my essay, [Science, such a fun mess!](https://dandelionengineering.substack.com/p/science-such-a-fun-mess).
+
 ## Explore the working record
 
 - [Human–Codex conversations](chats/Codex-Human/) — decisions, requests, and responses.
